@@ -12,7 +12,7 @@ endpoints.getLandingPageData = async function () {
   return {user, todos};
 };
 
-// Endpoint to get all the data that the page showing the completed todos needs
+// Endpoint to get all the data needed by the page showing all completed todos
 endpoints.getCompletedTodosPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return;

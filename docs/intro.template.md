@@ -54,7 +54,7 @@ Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast dev
 
 ## Example
 
-Let's consider a API for a simple todo list app.
+Let's consider an API for a simple todo list app.
 
 ~~~js
 !INLINE ../example/api/view-endpoints --hide-source-path

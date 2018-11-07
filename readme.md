@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -130,11 +130,11 @@ Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast dev
 
 ## Example
 
-Let's consider a API for a simple todo list app.
+Let's consider an API for a simple todo list app.
 
 ~~~js
 const {endpoints} = require('../../');
-const db = require('../db');
+const db = require('wildcard-api');
 const {getLoggedUser} = require('../auth');
 
 // Endpoint to get all the data that the landing page needs
@@ -147,7 +147,7 @@ endpoints.getLandingPageData = async function () {
   return {user, todos};
 };
 
-// Endpoint to get all the data that the page showing the completed todos needs
+// Endpoint to get all the data needed by the page showing all completed todos
 endpoints.getCompletedTodosPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return;
@@ -170,7 +170,7 @@ We could have created generic endpoints instead:
 
 ~~~js
 const {endpoints} = require('../../');
-const db = require('../db');
+const db = require('wildcard-api');
 const {getLoggedUser} = require('../auth');
 
 endpoints.getUser = async function() {
@@ -296,7 +296,7 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -311,7 +311,7 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -326,7 +326,7 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -341,7 +341,7 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
@@ -356,7 +356,7 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/helpers/wildcard-api/docs/intro.template.md` instead.
+    Edit `/docs/intro.template.md` instead.
 
 
 
