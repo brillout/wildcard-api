@@ -6,3 +6,4 @@ package-lock.json
 dist/
 example/
 *.template.md
+yarn.lock
