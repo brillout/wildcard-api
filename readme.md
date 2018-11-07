@@ -95,7 +95,7 @@ const {endpoints} = require('wildcard-api');
 const db = require('./db');
 
 // We define a `getTodos` function on the server
-endpoints.getTodos = async () => {
+endpoints.getTodos = async function() {
   const todos = await db.query("SELECT text FROM todos;");
   return todos;
 };
@@ -150,7 +150,7 @@ endpoints.getLandingPageData = async function () {
 // Endpoint to get all the data needed by the page showing all completed todos
 endpoints.getCompletedTodosPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
-  if( ! user ) return;
+  if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = true;`);
 
@@ -228,17 +228,17 @@ but also NoSQL queries,
 cross-origin HTTP requests,
 etc.
 
-Wildcard is also effecient:
+Wildcard is also efficient:
 A tailored endpoint can return exactly and only the data the client needs.
 
 ###### But...
 
 A potential downside of a tailored API
-is in case you have many clients with many distinct data requirements:
+is if you have many clients with many distinct data requirements:
 Maintaining a huge amount of tailored endpoints can become cumbersome.
 
 In our todo app example above,
-where the browser is our only cient and we have only few endpoints,
+where the browser is our only client and where we have only few endpoints,
 there are virtually no reasons to not prefer a tailored API over a generic one.
 
 On the other side of the spectrum,
@@ -269,20 +269,20 @@ that effort can become high and using REST/GraphQL can be more appropriate.
 Rough estimate of when to use what:
 - A **prototype** typically has few endpoints and
   **Wildcard** is certainly the better choice.
-  Example: You're a startup and you need to ship an MVP ASAP.
+  Example: You are a startup and you need to ship an MVP ASAP.
 - A **medium-sized application** typically has a manageable amount of endpoints and
   **Wildcard** is most likely the better choice.
   Example: A team of 4-5 developers implementing a Q&A website like StackOverflow.
 - A **large application** may have so many endpoints that maintaining a Wildcard API can become cumbersome and
-  at that point **REST/GraphQL** starts to make more sense.
+  **REST/GraphQL** can make more sense.
 
 You can implement your prototype with Wildcard,
 and later,
 if your prototype grows into a large application having so many endpoints that your Wildcard API becomes cumbersome to maintain,
-migrate to a RESTful/GraphQL API.
+migrate to REST/GraphQL.
 Migration is easily manageable by progressively replacing Wildcard endpoints with RESTful/GraphQL endpoints.
 
-Also, combining a Wildcard API with RESTful/GraphQL API can be a fruitful strategy.
+Also, combining a Wildcard API with a RESTful/GraphQL API can be a fruitful strategy.
 For example, a RESTful API for third-party clients combined with a Wildcard API for your clients.
 Or a GraphQL API for most of your data requirements combined with a Wildcard API
 for couple of data requirements that cannot be fulfilled with your GraphQL API.

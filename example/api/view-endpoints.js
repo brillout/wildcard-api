@@ -15,7 +15,7 @@ endpoints.getLandingPageData = async function () {
 // Endpoint to get all the data needed by the page showing all completed todos
 endpoints.getCompletedTodosPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
-  if( ! user ) return;
+  if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = true;`);
 
