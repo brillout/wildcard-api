@@ -77,7 +77,11 @@ function WildcardApi({
       "Correct usage"
     );
 
-    if( url===apiUrlBase || apiUrlBase.endsWith('/') && url===apiUrlBase.slice(0, -1) ) {
+    if( method==='GET' )
+
+    if( ! ['GET', 'POST'].includes(method) ) return;
+
+    if( isDev() && url===apiUrlBase || apiUrlBase.endsWith('/') && url===apiUrlBase.slice(0, -1) ) {
       return {body: getListOfEndpoints(), statusCode: 200};
     }
 
@@ -218,6 +222,7 @@ function WildcardApi({
   }
 
   function getListOfEndpoints() {
+    assert.internal(isDev());
     return (
       [
         '<html>',
@@ -301,6 +306,10 @@ function isArrowFunction(fn) {
     }
     return true;
   }
+}
+
+function isDev() {
+  return process.env.NODE_ENV===undefined;
 }
 
 function WildcardContext(contextObject) {Object.assign(this, contextObject);}
