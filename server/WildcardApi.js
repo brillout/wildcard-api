@@ -26,7 +26,7 @@ function WildcardApi({
 
     const {url} = context;
 
-    if( showListOfEndpionts({url, method}) ) {
+    if( showListOfEndpoints({url, method}) ) {
       return {
         statusCode: 200,
         body: getListOfEndpoints(),
@@ -39,7 +39,7 @@ function WildcardApi({
 
     const result = await getResult({url, context});
 
-    if( method==='GET' && isBrowserRequest(context) ) {
+    if( method==='GET' ) {
       if( result.err ) {
         return {
           statusCode: 200,
@@ -62,7 +62,7 @@ function WildcardApi({
 
       return {
         statusCode: 200,
-        body: JSON.stringify(result.body),
+        body: result.body,
       };
     }
 
@@ -204,8 +204,11 @@ function WildcardApi({
     return !!endpoint;
   }
 
-  function showListOfEndpionts({url, method}) {
+  function showListOfEndpoints({url, method}) {
     if( ! isDev() ) {
+      return false;
+    }
+    if( method!=='GET') {
       return false;
     }
     if( url===apiUrlBase ) {
@@ -218,26 +221,24 @@ function WildcardApi({
   }
   function getListOfEndpoints() {
     assert.internal(isDev());
-    return (
+    const htmlBody = `
+Endpoints:
+<ul>
+${
+  Object.keys(endpoints__source)
+  .map(endpointName => {
+    const endpointURL = DEFAULT_API_URL_BASE+endpointName;
+    return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
+  })
+  .join('\n')
+}
+</ul>
+`;
+    return getHtmlWrapper(
+      htmlBody,
       [
-        '<html>',
-        '  Endpoints:',
-        '  <ul>',
-        ...(
-          Object.keys(endpoints__source)
-          .map(endpointName => {
-            const endpointURL = DEFAULT_API_URL_BASE+endpointName;
-            return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
-          })
-        ),
-        '  </ul>',
-        '  <br/>',
-        '  <small>',
-        '    This page only exists in development.',
-        '    <br/>',
-        '    (When server has `process.env.NODE_ENV===undefined`.)',
-        '  </small>',
-        '</html>',
+        "This page only exists in development.",
+        "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
       ].join('\n')
     );
   }
@@ -304,30 +305,59 @@ function isArrowFunction(fn) {
 }
 
 function isDev() {
-  return process.env.NODE_ENV===undefined;
-}
-
-function isBrowserRequest() {
-  // TODO
-  return true;
+  return [undefined, 'development'].includes(process.env.NODE_ENV);
 }
 
 function getHtml_body(result) {
   assert.internal('endpointReturnedValue' in result, result);
-  return (
-`<html><body>
-<pre>
+  return getHtmlWrapper(
+`<pre>
 ${JSON.stringify(result.endpointReturnedValue, null, 2)}
 </pre>
-</body></html>`
+`
   );
 }
 
 function getHtml_error(result) {
+  return getHtmlWrapper(
+`<h1>Error</h1>
+${result.err}
+`
+  );
+}
+
+function getHtmlWrapper(htmlBody, note) {
+  note = note || [
+    "(Showing HTML version because the request's method is <code>GET</code>.",
+    "Make a <code>POST</code> request to get JSON instead.)",
+  ].join('\n');
+
   return (
 `<html><body>
-<h1>Error</h1>
-${result.err}
-</body></html>`
+<style>
+  code {
+    display: inline-block;
+    padding: 0px 2px 1px 3px;
+    font-size: 0.98em;
+    border: 1px solid #d8d8d8;
+    border-radius: 3px;
+    background: #f5f5f5;
+  }
+</style>
+${htmlBody}
+${getHtmlNote(note)}
+</body></html>
+`
+  );
+}
+
+function getHtmlNote(note) {
+  return (
+`<br/>
+<br/>
+<small style="color: #777">
+${note.split('\n').join('<br/>\n')}
+</small>
+`
   );
 }
