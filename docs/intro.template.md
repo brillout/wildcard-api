@@ -1,6 +1,6 @@
 !OUTPUT ../readme.md
 
-[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148" width="201">](https://github.com/brillout/wildcard-api)
+[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148" width="181">](https://github.com/brillout/wildcard-api)
 
 # Wildcard API
 
@@ -14,7 +14,7 @@ Let your client load data from your server in an easy, flexible, and performant 
 It's super easy:
 
 ~~~js
-// Server
+// Node.js Server
 const {endpoints} = require('wildcard-api');
 const db = require('./db');
 
@@ -23,8 +23,8 @@ endpoints.getTodos = async function() {
   const todos = await db.query("SELECT text FROM todos;");
   return todos;
 };
-
-
+~~~
+~~~
 // Browser
 import {endpoints} from 'wildcard-api/client';
 
@@ -91,11 +91,9 @@ We want a page that shows all the todos that the user has shared with someone.
 
 Getting our list of shared todos is very difficult
 with a RESTful/GraphQL API.
-(You'd either need to overfetch a lot of data (which can be prohibitive)
-or extend the RESTful/GraphQL API in a clunky and unnatural way.)
-
+(You'd most likely need to extend the RESTful/GraphQL API in a clunky and unnatural way.)
 In general,
-any data requirement that doesn't the schema of a generic API is problematic.
+any data requirement that doesn't fit the schema of a generic API is problematic.
 
 But with a tailored API, it's easy:
 We simply create a new endpoint that uses SQL to query the list of shared todos.
@@ -110,7 +108,7 @@ Because a tailored API is more flexible than a generic API.
 
 A frontend developer can use any arbitrary SQL query to retrieve whatever the frontend needs.
 SQL is much (much!) more powerful than any RESTful or GraphQL API.
-Behind the curtain a RESTful/GraphQL will perform SQL queries anyways.
+Behind the curtain a RESTful/GraphQL API will perform SQL queries anyways.
 Going over a generic API is simply an indirection and a net loss in power.
 Whereas with Wildcard we preserve the full power of SQL.
 
@@ -145,7 +143,7 @@ and a generic API is required.
 | ------------------------- | :--------------: | :--------------: | :---------: |
 | Easy to setup             | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> |
 | Performant                | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> |
-| Flexible (few endpoints)  | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> |
+| Flexible (few endpoints)  | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/><img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> |
 | Flexible (many endpoints) | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> |
 
 \* Following the [Tailored Approach](#tailored-approach)
@@ -169,10 +167,9 @@ Rough estimate of when to use what:
 - A **large application** may have so many endpoints that maintaining a Wildcard API can become cumbersome and
   **REST/GraphQL** can make more sense.
 
-You can implement your prototype with Wildcard,
-and later,
-if your prototype grows into a large application having so many endpoints that your Wildcard API becomes cumbersome to maintain,
-migrate to REST/GraphQL.
+You can implement your prototype with Wildcard
+and later migrate to REST/GraphQL
+if your application grows into having too many endpoints.
 Migration is easily manageable by progressively replacing Wildcard endpoints with RESTful/GraphQL endpoints.
 
 Also, combining a Wildcard API with a RESTful/GraphQL API can be a fruitful strategy.
