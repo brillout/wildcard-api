@@ -174,4 +174,4 @@ for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
 Work-in-progress.
 
-(Although you can go ahead and use it. `npm install wildcard-api` then define functions on `const {endpoints} = require('wildcard-api')`, then use them on the browser with `import {endpoints} from 'wildcard-api/client';`. See the [./example](example) to see how to integrate with express (or any other server framework).)
+(Although you can go ahead and use it. `npm install wildcard-api` then define functions on `const {endpoints} = require('wildcard-api')` on the server, then use them in the browser with `import {endpoints} from 'wildcard-api/client';`. See the [example](/example/) to see how to integrate with Express (or any other server framework).)
