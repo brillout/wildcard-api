@@ -11,8 +11,6 @@ function WildcardApi({
 }={}) {
   const endpoints__source = {};
 
-  const __experimental_notAuthorized = Symbol();
-
   return {
     endpoints: new Proxy(endpoints__source, {set: validateEndpoint}),
     getApiResponse,
@@ -87,13 +85,6 @@ function WildcardApi({
 
     const endpointRet = await runEndpoint({endpointName, endpointArgs, context});
 
-    assert.usage(
-      endpointRet!==__experimental_notAuthorized,
-      {endpointArgs},
-      "Your code is doing an unauthorized request to the endpoint `"+endpointName+"`.",
-      "The endpoint arguments are printed above",
-    );
-
     return endpointRet;
   }
 
@@ -166,13 +157,6 @@ function WildcardApi({
       return couldNotHandle;
     }
 
-    if( endpointRet===__experimental_notAuthorized ) {
-      return {
-        err: "The request is not authorized.",
-        401,
-      };
-    }
-
     endpointRet = endpointRet=== undefined ? null : endpointRet;
     let body;
     try {
@@ -225,10 +209,7 @@ function WildcardApi({
 
     return (
       await endpoint.apply(
-        {
-          ...(context||{}),
-          __experimental_notAuthorized,
-        },
+        context,
         endpointArgs,
       )
     );
