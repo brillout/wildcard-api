@@ -1,6 +1,6 @@
 {
   "name": "wildcard-api",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./server",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
@@ -10,7 +10,7 @@
     "docs": "mdocs"
   },
   "devDependencies": {
-    "@brillout/mdocs": "^0.1.22"
+    "@brillout/mdocs": "^0.1.23"
   },
   "description": "A (much) easier alternative to GraphQL and REST.",
   "repository": "github:brillout/wildcard-api"

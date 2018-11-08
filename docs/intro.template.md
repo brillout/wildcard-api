@@ -24,7 +24,7 @@ endpoints.getTodos = async function() {
   return todos;
 };
 ~~~
-~~~
+~~~js
 // Browser
 import {endpoints} from 'wildcard-api/client';
 

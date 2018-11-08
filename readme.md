@@ -100,7 +100,7 @@ endpoints.getTodos = async function() {
   return todos;
 };
 ~~~
-~~~
+~~~js
 // Browser
 import {endpoints} from 'wildcard-api/client';
 
@@ -137,7 +137,7 @@ Let's consider an API for a simple todo app.
 
 ~~~js
 const {endpoints} = require('wildcard-api');
-const db = require('wildcard-api');
+const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
 // Endpoint to get all the data that the landing page needs
@@ -180,8 +180,8 @@ by the landing page that shows user information and all todos that aren't comple
 We could have created generic endpoints instead:
 
 ~~~js
-const {endpoints} = require('../../');
-const db = require('wildcard-api');
+const {endpoints} = require('wildcard-api');
+const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
 endpoints.getUser = async function() {
