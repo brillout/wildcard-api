@@ -129,6 +129,7 @@ Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast dev
  - [Example](#example)
  - [Tailored Approach](#tailored-approach)
  - [Wildcard vs REST vs GraphQL](#wildcard-vs-rest-vs-graphql)
+ - [Getting Started](#getting-started)
 
 
 ## Example
@@ -293,6 +294,12 @@ For example, a RESTful API for third-party clients combined with a Wildcard API 
 Or a GraphQL API for most of your data requirements combined with a Wildcard API
 for couple of data requirements that cannot be fulfilled with your GraphQL API.
 
+
+## Getting Started
+
+Work-in-progress.
+
+(Although you can go ahead and use it. `npm install wildcard-api` then define functions on `const {endpoints} = require('wildcard-api')`, then use them on the browser with `import {endpoints} from 'wildcard-api/client';`. See the [./example](example) to see how to integrate with express (or any other server framework).)
 
 <!---
 
