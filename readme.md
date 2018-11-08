@@ -76,7 +76,7 @@
 
 -->
 
-[<img src="https://github.com/wildcard-api/docs/images/logo.svg?sanitize=true" align="left" height="148">](https://github.com/brillout/wildcard-api)
+[<img src="https://github.com/brillout/wildcard-api/docs/images/logo.svg?sanitize=true" align="left" height="148">](https://github.com/brillout/wildcard-api)
 
 # Wildcard API
 
@@ -250,10 +250,10 @@ and a generic API is required.
 
 |                           | Wildcard API \*  | RESTful API \*\* | GraphQL API |
 | ------------------------- | :--------------: | :--------------: | :---------: |
-| Easy to setup             | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> |
-| Performant                | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
-| Flexible (few endpoints)  | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
-| Flexible (many endpoints) | <img src='https://github.com/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
+| Easy to setup             | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> |
+| Performant                | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
+| Flexible (few endpoints)  | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
+| Flexible (many endpoints) | <img src='https://github.com/brillout/wildcard-api/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/docs/images/plus.svg?sanitize=true'/> |
 
 \* Following the [Tailored Approach](#tailored-approach)
 <br/>
