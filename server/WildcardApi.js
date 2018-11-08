@@ -28,7 +28,7 @@ function WildcardApi({
 
     if( showListOfEndpionts({url, method}) ) {
       return {
-        statusCode: 200
+        statusCode: 200,
         body: getListOfEndpoints(),
       };
     }
@@ -37,32 +37,32 @@ function WildcardApi({
       return null;
     }
 
-    const apiResult = getApiResult({url, context});
+    const result = await getResult({url, context});
 
-    if( method==='GET' ) {
-      if( apiResult.err ) {
+    if( method==='GET' && isBrowserRequest(context) ) {
+      if( result.err ) {
         return {
           statusCode: 200,
-          body: getHtmlError(apiResult.err),
+          body: getHtml_error(result),
         };
       }
       return {
         statusCode: 200,
-        body: getHtmlBody(apiResult.body),
+        body: getHtml_body(result),
       };
     }
 
     if( method==='POST' ) {
-      if( apiResult.err ) {
+      if( result.err ) {
         return {
-          statusCode: apiResult.statusCode || 400,
-          body: JSON.stringify({usageError: apiResult.err}),
+          statusCode: result.statusCode || 400,
+          body: JSON.stringify({usageError: result.err}),
         };
       }
 
       return {
         statusCode: 200,
-        body: JSON.stringify(apiResult.body),
+        body: JSON.stringify(result.body),
       };
     }
 
@@ -88,7 +88,7 @@ function WildcardApi({
     return endpointRet;
   }
 
-  function getApiResult({url, context}) {
+  async function getResult({url, context}) {
     const urlArgs = url.slice(apiUrlBase.length);
 
     const urlParts = urlArgs.split('/');
@@ -112,21 +112,6 @@ function WildcardApi({
     }
     endpointArgs = endpointArgs || [];
 
-    /*
-    let payload = args.payload || {};
-    assert.usage([Object, String].includes(payload.constructor), "Payload should either be an object or a string.");
-    if( payload.constructor===String ) {
-      try {
-        payload = JSON.parse(payload);
-      } catch(err_) {
-        return {
-          err: 'Malformatted payload (i.e. endpoint arguments). Payload doesn\'t seem to be a JSON. Payload: `'+payload+'`.',
-        };
-      }
-    }
-    Object.assign(endpointArgs, payload);
-    */
-
     if( endpointArgs.constructor!==Array ) {
       return {
         err: [
@@ -149,24 +134,24 @@ function WildcardApi({
       err: 'Endpoint could not handle request.',
     };
 
-    let endpointRet;
+    let endpointReturnedValue;
     try {
-      endpointRet = await runEndpoint({endpointName, endpointArgs, context});
+      endpointReturnedValue = await runEndpoint({endpointName, endpointArgs, context});
     } catch(err_) {
       console.error(err_);
       return couldNotHandle;
     }
 
-    endpointRet = endpointRet=== undefined ? null : endpointRet;
+    const valueToStringify = endpointReturnedValue===undefined ? null : endpointReturnedValue;
     let body;
     try {
-      body = JSON.stringify(endpointRet);
+      body = JSON.stringify(valueToStringify);
     } catch(err_) {
       console.error(err_);
       return couldNotHandle;
     }
     assert.internal(body.constructor===String);
-    return {body};
+    return {body, endpointReturnedValue};
   }
 
   function assert_context(context) {
@@ -320,4 +305,29 @@ function isArrowFunction(fn) {
 
 function isDev() {
   return process.env.NODE_ENV===undefined;
+}
+
+function isBrowserRequest() {
+  // TODO
+  return true;
+}
+
+function getHtml_body(result) {
+  assert.internal('endpointReturnedValue' in result, result);
+  return (
+`<html><body>
+<pre>
+${JSON.stringify(result.endpointReturnedValue, null, 2)}
+</pre>
+</body></html>`
+  );
+}
+
+function getHtml_error(result) {
+  return (
+`<html><body>
+<h1>Error</h1>
+${result.err}
+</body></html>`
+  );
 }
