@@ -16,5 +16,5 @@ endpoints.getTodos = async function(completed) {
   const todos = await (
     db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = ${completed};`)
   );
-  return {todos};
+  return todos;
 };

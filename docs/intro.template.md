@@ -1,17 +1,17 @@
 !OUTPUT ../readme.md
 
-[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148">](https://github.com/brillout/wildcard-api)
+[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148" width="201">](https://github.com/brillout/wildcard-api)
 
 # Wildcard API
 
-*Cheap 'n Easy.*
+*APIs. Cheap 'n Easy.*
 
 <br/>
 <br/>
 
-Wildcard lets your client load data from your server in an easy, flexible, and performant way.
+Let your client load data from your server in an easy, flexible, and performant way.
 
-Wildcard is super easy:
+It's super easy:
 
 ~~~js
 // Server
@@ -23,6 +23,7 @@ endpoints.getTodos = async function() {
   const todos = await db.query("SELECT text FROM todos;");
   return todos;
 };
+
 
 // Browser
 import {endpoints} from 'wildcard-api/client';
@@ -40,7 +41,9 @@ import {endpoints} from 'wildcard-api/client';
 ~~~
 
 You simply define functions on the server and Wildcard makes them availabe in the browser.
+<br/>
 (Behind the curtain, Wildcard makes an HTTP request and uses JSON.)
+
 Creating a new API endpoint is as easy as creating a new function.
 
 Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast development iterations.
@@ -54,19 +57,19 @@ Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast dev
 
 ## Example
 
-Let's consider an API for a simple todo list app.
+Let's consider an API for a simple todo app.
 
 ~~~js
 !INLINE ../example/api/view-endpoints --hide-source-path
 ~~~
 
-(You can read and run the entire example's code at [./example](/example/).)
+(This is a snippet of the example at [./example](/example/).)
 
-The endpoints above are tailored to our frontend:
-The endpoint `getCompletedTodosPageData` returns exactly and only the data needed by `completedTodosPage`,
-a page that shows all completed todos.
-And the endpoint `getLandingPageData` returns exactly and only the data needed by the landing page,
-which shows user information and all todos that aren't completed.
+Our endpoints are tailored to our frontend:
+The endpoint `getCompletedTodosPageData` returns exactly and only the data needed
+by the page `completedTodosPage` that shows all completed todos, and
+the endpoint `getLandingPageData` returns exactly and only the data needed
+by the landing page that shows user information and all todos that aren't completed.
 
 We could have created generic endpoints instead:
 
@@ -86,15 +89,22 @@ To see why a tailored API makes sense,
 let's imagine we want to implement a new feature for our todo example app:
 We want a page that shows all the todos that the user has shared with someone.
 
-Such data requirements (like getting the list of shared todos)
-are very difficult to fulfil with a RESTful/GraphQL API.
+Getting our list of shared todos is very difficult
+with a RESTful/GraphQL API.
 (You'd either need to overfetch a lot of data (which can be prohibitive)
 or extend the RESTful/GraphQL API in a clunky and unnatural way.)
 
+In general,
+any data requirement that doesn't the schema of a generic API is problematic.
+
 But with a tailored API, it's easy:
 We simply create a new endpoint that uses SQL to query the list of shared todos.
-(In our example the SQL query would join the tables `Todo` and `SharedWith`.)
+(The SQL query would join the tables `Todo` and `SharedWith`.)
 We can "directly" run SQL queries and we don't have to go over the indirection of a generic API.
+
+We could create a generic API with Wildcard but we choose not to.
+Because a tailored API is more flexible than a generic API.
+(And also easier and more performant.)
 
 ###### Full backend power
 
