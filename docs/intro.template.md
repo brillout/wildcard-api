@@ -83,26 +83,19 @@ Let's see why.
 
 ## Tailored Approach
 
-###### Why tailored
-
 To see why a tailored API makes sense,
-let's imagine we want to implement a new feature for our todo example app:
+let's imagine we want to implement a new feature for our todo app:
 We want a page that shows all the todos that the user has shared with someone.
 
 Getting our list of shared todos is very difficult
 with a RESTful/GraphQL API.
-(You'd most likely need to extend the RESTful/GraphQL API in a clunky and unnatural way.)
+(You'd need to extend the RESTful/GraphQL API in a clunky and unnatural way.)
 In general,
 any data requirement that doesn't fit the schema of a generic API is problematic.
 
 But with a tailored API, it's easy:
 We simply create a new endpoint that uses SQL to query the list of shared todos.
-(The SQL query would join the tables `Todo` and `SharedWith`.)
 We can "directly" run SQL queries and we don't have to go over the indirection of a generic API.
-
-We could create a generic API with Wildcard but we choose not to.
-Because a tailored API is more flexible than a generic API.
-(And also easier and more performant.)
 
 ###### Full backend power
 
@@ -176,3 +169,4 @@ Also, combining a Wildcard API with a RESTful/GraphQL API can be a fruitful stra
 For example, a RESTful API for third-party clients combined with a Wildcard API for your clients.
 Or a GraphQL API for most of your data requirements combined with a Wildcard API
 for couple of data requirements that cannot be fulfilled with your GraphQL API.
+
