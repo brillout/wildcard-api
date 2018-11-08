@@ -228,10 +228,8 @@ A frontend developer can use any arbitrary SQL query to retrieve whatever the fr
 SQL is much (much!) more powerful than any RESTful or GraphQL API.
 Behind the curtain a RESTful/GraphQL API will perform SQL queries anyways.
 Going over a generic API is simply an indirection and a net loss in power.
-Whereas with Wildcard we preserve the full power of SQL.
 
-One way to think about Wildcard is that it exposes the whole power of your backend to the client in a secure way.
-The server has vastly more capabilities as its disposal than the browser.
+One way to think about Wildcard is that it directly exposes the whole power of your backend to the client in a secure way.
 Not only SQL queries,
 but also NoSQL queries,
 cross-origin HTTP requests,

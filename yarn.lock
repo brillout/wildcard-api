@@ -25,9 +25,9 @@
     reassert "^1.1.14"
     string-width "^2.1.1"
 
-"@brillout/mdocs@^0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@brillout/mdocs/-/mdocs-0.1.23.tgz#ca792ff45f181b475e05deccee7e528d5b643cb0"
+"@brillout/mdocs@^0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@brillout/mdocs/-/mdocs-0.1.24.tgz#5e2ad2534a26049e9e89cca67f17046d33554c93"
   dependencies:
     "@brillout/find-package-files" "^0.1.0"
     find-up "^2.1.0"
