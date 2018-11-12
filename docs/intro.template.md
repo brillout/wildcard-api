@@ -15,32 +15,14 @@ It's super easy:
 
 ~~~js
 // Node.js Server
+const {endpoints} = require('wildcard-api');
+const db = require('./db');
 
-const {endpoints, getApiResponse} = require('wildcard-api');
-
-// We define a `hello` function on the server
-endpoints.hello = async function(name) {
-  // Our function 
-  // Here we just return the parameter back
-  // But that could be a SQL query, a NoSQL, or whatever 
-  return {
-    message: 'Hi '+name,
-  };
+// We define a `getTodos` function on the server
+endpoints.getTodos = async function() {
+  const todos = await db.query("SELECT text FROM todos;");
+  return todos;
 };
-
-
-const express = require('express');
-const app = express();
-app.all('/wildcard/*' , async(req, res, next) => {
-  const {method, url} = req;
-  const apiResponse = await getApiResponse({method, url});
-  if( apiResponse ) {
-    res.status(apiResponse.statusCode);
-    res.send(apiResponse.body);
-  }
-  next();
-});
-app.listen(3000);
 ~~~
 ~~~js
 // Browser
@@ -49,11 +31,12 @@ import {endpoints} from 'wildcard-api/client';
 (async () => {
   // Wildcard makes our `getTodos` function
   // available in the browser
-  const {message} = await endpoints.hello('alice');
+  const todos = await endpoints.getTodos();
 
-  // Here we do use the DOM API
-  // You could use React, Vue, Angular, etc.
-  document.body.textContent = message;
+  document.body.textContent =
+    todos
+    .map(todo => ' - '+todo.text)
+    .join('\n');
 })();
 ~~~
 
