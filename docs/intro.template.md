@@ -4,14 +4,19 @@
 
 # Wildcard API
 
-*APIs. Cheap 'n Easy.*
+*API for rapid prototyping (and beyond).*
 
 <br/>
 <br/>
 
-Let your client load data from your server in an easy, flexible, and performant way.
+Wildcard is a small JavaScript library to create a custom API.
 
-It's super easy:
+REST and GraphQL are wonderful tools to create a generic API.
+And for a large application a generic API is great.
+But for a smaller application a custom API is often the better choice:
+A custom API is easier to set up and can, in certain situations, be more powerful than a generic API.
+
+With Wildcard, creating a custom API is easy:
 
 ~~~js
 // Node.js Server
@@ -20,6 +25,7 @@ const db = require('./db');
 
 // We define a `getTodos` function on the server
 endpoints.getTodos = async function() {
+  // We run a SQL query but we could as well use an ORM, fetch a third party API, etc.
   const todos = await db.query("SELECT text FROM todos;");
   return todos;
 };
@@ -33,6 +39,7 @@ import {endpoints} from 'wildcard-api/client';
   // available in the browser
   const todos = await endpoints.getTodos();
 
+  // We use the DOM API but we could as well use React, Angular, Vue, etc.
   document.body.textContent =
     todos
     .map(todo => ' - '+todo.text)
@@ -51,9 +58,8 @@ Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast dev
 #### Contents
 
  - [Example](#example)
- - [Tailored Approach](#tailored-approach)
- - [Wildcard vs REST vs GraphQL](#wildcard-vs-rest-vs-graphql)
- - [Getting Started](#getting-started)
+ - [Custom API vs Generic API](#custom-api-vs-generic-api)
+ - [Quick Start](#getting-started)
 
 
 ## Example
@@ -66,9 +72,16 @@ Let's consider an API for a simple todo app.
 
 (This is a snippet of the example at [./example](/example/).)
 
-Our endpoints are tailored to our frontend:
-The endpoint `getCompletedTodosPageData` returns exactly and only the data needed
+Our endpoints are 100% tailored to our frontend:
+For The endpoint `getCompletedTodosPageData` returns exactly and only the data needed
 by the page `completedTodosPage` that shows all completed todos, and
+
+We could have something like
+
+But we deliberately choose to have the entire data retrieval logic on the server.
+This is dramatic improvement in flexiblity.
+(More at "Usage Manual - Tailored Appraoch")
+
 the endpoint `getLandingPageData` returns exactly and only the data needed
 by the landing page that shows user information and all todos that aren't completed.
 
@@ -81,6 +94,127 @@ We could have created generic endpoints instead:
 But we deliberately choose to implement a tailored API instead of a generic API.
 
 Let's see why.
+
+
+
+## Custom API vs generic API
+
+> TLDR;
+> If you have a tight frontend-backend development, then use a custom API.
+> If you need to decouple the frontend development from the backend development, then use a generic API.
+
+> 
+> If you want decoupled
+> With a custom API we completely shift the data retrieval logic from the client to the server.
+> This means that a custom API is more powerful than a generic API but it comes with three conditions: frontend and backend need to be developed hand in hand and
+> When these conditions are met,
+> which is the case for most small/medium sized full-stack JavaScript apps,
+> then a custom API is the right choice,
+> For large application these conditions are often not met and a generic API is the right choice.
+
+The crucial structural difference between a custom API and generic API is that a custom API tightly couples frontend and server development whereas a generic API decouples them.
+
+Let's 
+The fundamental difference between a custom API and generic API
+is where the data retrieve logic lives.
+or example
+
+With a custom API it is the server that determines what data the client receives.
+With a generic API the control 
+The data retrieval logic 
+
+With a custom API the data retrieval logic lives on the server.
+With a generic API the data retrieval logic lives on the client.
+
+The fundamental difference between a custom API and a generic API is that a custom API is 
+of the problem of a custom API
+
+~~~js
+endpoints.getTodos = async function() {
+  const todos = await runSQL('SELECT id, text FROM todos;');
+  return todos;
+};
+~~~
+
+##### Tight full-stack dev
+
+The SQL is predefined on the server.
+So if the frontend needs a change, then we need to modify the SQL query on the server.
+This means that the frontend and the server need to be developed hand in hand.
+The frontend developed becomes tightly coupled with the server development.
+This can be an issue for large applications that have a strict separation between clients and server.
+
+
+##### Benefit
+
+On the other hand, this means that we can use any arbitrary SQL query to whatever data need.
+We are not limited by the schema of a generic API.
+Instead we can write any SQL query to retrieve whatever data the frontend needs.
+Instead of going over the schema generic API, we can write any SQL query to retreive the data the frontend needs.
+We don't need
+
+This means that a custom API is certainly the right choice
+for a prototype developed by one full-stack developer, this thight development is given.
+But for a prototype that is
+A single full-stack dev developing a full-stack JavaScript app.
+With something like Next.js or Reframe
+
+Or a medium-sized application with one team that develops both the frontend and the backend.
+
+For example if you use SQL, then SQL and a custom API is vastly more powerful than any generic API.
+
+##### Disadvantage
+
+Third parties are developed by, well, third parties.
+. The development is decoupled.
+A custom API is of no use and a generic API is required.
+
+For large application, having a frontend developed independently from the backend can make sense.
+For example to be able to have a team that focus fully on the backend without worrying about the frontend and vice versa.
+
+
+The second is for large application where the frontend development happens indepentently of backend development.
+For large appl
+It often makes sense
+
+We have an inherent decoupled development
+This is a limitation
+On the other
+but on the other hand it comes with great fle
+If we accept 
+
+This means that we frontend 
+It is the server that 
+Everytime 
+Predef
+
+A full-stack engineer develops the frontend and the backend hand in hand.
+
+Framework such as Next.js 
+develop deploy at the same time
+
+The trend 
+
+But because 
+
+In our example above we
+
+
+predefined on the server.
+
+A prototype implement with a JavaScript web framework Next.js or Reframe meets
+
+full-stack JavaScript apps
+
+The SQL query.
+This 
+Predefined.
+
+ - developed and deployed hand in hand
+ - the API isn't consumed by third parties
+ - not too many endpoints
+
+
 
 ## Tailored Approach
 
