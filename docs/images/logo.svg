@@ -1,7 +1,7 @@
 <svg width="210.6999969482422" height="172" xmlns="http://www.w3.org/2000/svg">
 <style>.st2{fill:#5A676F;}</style>
-<style>.cls-18{stroke-linecap:round;stroke-linejoin:round}.cls-18{fill:#fff;stroke-width:17px}</style>
+<style>.cls-18{stroke-linecap:round;stroke-linejoin:round}.cls-18{fill:#fff;stroke-width:19px}</style>
 <ellipse id="svg_3" ry="86" rx="86" cy="86" cx="105.3" fill="#4a4a4a"/>
 <ellipse id="svg_6" ry="68" rx="68" cy="86" cx="105.3" class="st2"/>
-<path id="svg_49" d="m57.85,85.94614l94.15,0m-21.05144,-39.22807l-52.05146,78.45616m0.30926,-78.65652l51.43731,78.85688" class="cls-18" stroke="#01B9A7"/>
+<path stroke="#01B9A7" class="cls-18" d="m54.85,85.77101l101.7318,0m-22.74669,-42.38707l-56.24311,84.77415m0.33416,-84.99065l55.5795,85.20714" id="svg_49"/>
 </svg>
