@@ -8,6 +8,8 @@ endpoints.getLandingPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
+  // Our example uses SQLite3 with knex
+  // You can use Wildcard with any 
   const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = false;`);
 
   // The landing page displays user information.
