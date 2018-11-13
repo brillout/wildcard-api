@@ -9,51 +9,66 @@
 <br/>
 <br/>
 
-Wildcard is a small JavaScript library to create a custom API.
+Wildcard has two goals:
+ 1. Provide a small JavaScript package `wildcard-api` to make custom API creation super easy.
+ 1. Provide a small JavaScript library to make custom API creation super easy.
+ 2. Debunk the common misconception that a generic API (REST/GraphQL) is always better than a custom API.
 
-REST and GraphQL are wonderful tools to create a generic API.
-And for a large application a generic API is great.
-But for a smaller application a custom API is often the better choice:
-A custom API is easier to set up and can, in certain situations, be more powerful than a generic API.
-
-With Wildcard, creating a custom API is easy:
+With Wildcard,
+creating an endpoint is as easy as creating a JavaScript function:
 
 ~~~js
 // Node.js Server
-const {endpoints} = require('wildcard-api');
-const db = require('./db');
 
-// We define a `getTodos` function on the server
-endpoints.getTodos = async function() {
-  // We run a SQL query but we could as well use an ORM, fetch a third party API, etc.
-  const todos = await db.query("SELECT text FROM todos;");
-  return todos;
+const {endpoints} = require('wildcard-api');
+
+// We define a `hello` function on the server
+endpoints.hello = async function(name) {
+  // Our `hello` endpoint doesn't do much.
+  // But we could use anything available to the server such as querying data.
+  // E.g. with SQL:
+  //    const user = await db.run(`SELECT * FROM users WHERE name = ${escape(name)};`);
+  // Or ORM / NoSQL:
+  //    const user = await User.findOne({name});
+  return {message: 'Hi '+name};
 };
 ~~~
 ~~~js
 // Browser
+
 import {endpoints} from 'wildcard-api/client';
 
 (async () => {
-  // Wildcard makes our `getTodos` function
-  // available in the browser
-  const todos = await endpoints.getTodos();
+  // Wildcard makes our `hello` function available in the browser
+  // (Behind the curtain Wildcard makes an HTTP request)
+  const {message} = await endpoints.hello('Alice');
 
-  // We use the DOM API but we could as well use React, Angular, Vue, etc.
-  document.body.textContent =
-    todos
-    .map(todo => ' - '+todo.text)
-    .join('\n');
+  // We use the DOM API but we could also use React, Angular, Vue, etc.
+  document.body.textContent = message;
 })();
 ~~~
 
-You simply define functions on the server and Wildcard makes them availabe in the browser.
-<br/>
-(Behind the curtain, Wildcard makes an HTTP request and uses JSON.)
+When calling `endpoints.hello` in the browser Wildcard does the following:
+ 1. Serializes the argument list `['Alice']` to `["Alice"]`
+ 2. Makes a HTTP request to `/wildcard/hello/["Alice"]`
+ 3. Runs the `endpoints.hello` function on the server
+ 4. Serializes the returned value  `{message: 'Hi Alice'}` to `{"message":"Hi Alice"}`
+ 5. HTTP response with the serialzed returned value as body
+ 6. Resolves the promise
 
-Creating a new API endpoint is as easy as creating a new function.
 
-Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast development iterations.
+Wildcard provides
+correct serialization
+(we use JSON++ instead of JSON),
+default error handlings
+(such as showing a popup to the user when the client looses network connection),
+dev tools
+(such as pretty API browsing),
+Universal/Isomorphic/SSR support,
+etc.
+
+Wildcard is ideal for rapid prototyping.
+It can as well can be a successfully used for medium sized and large applications.
 
 #### Contents
 
