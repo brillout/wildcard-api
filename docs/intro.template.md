@@ -23,8 +23,7 @@ const {endpoints} = require('wildcard-api');
 
 // We define a `hello` function on the server
 endpoints.hello = async function(name) {
-  // Our `hello` endpoint doesn't do much.
-  // But we could use anything available to the server such as querying data.
+  // Our example doesn't do much. In a more realistic case, we would query data.
   // E.g. with SQL:
   //    const user = await db.run(`SELECT * FROM users WHERE name = ${escape(name)};`);
   // Or ORM / NoSQL:
@@ -39,18 +38,17 @@ import {endpoints} from 'wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  // (Behind the curtain Wildcard makes an HTTP request)
   const {message} = await endpoints.hello('Alice');
 
-  // We use the DOM API but we could also use React, Angular, Vue, etc.
+  // We use the DOM API. We could as well use React, Angular, Vue, etc.
   document.body.textContent = message;
 })();
 ~~~
 
-Calling `endpoints.hello` in the browser returns a promise that is resolved after Wildcard as done the following:
- 1. Serializes the argument `'Alice'`, makes an HTTP request to `/wildcard/hello`
- 2. Calls the `endpoints.hello` function we defined on the server, serializes `{message: 'Hi Alice'}`, sends an HTTP response
- 3. Deserializes the HTTP response, and resolve the promise
+Calling `endpoints.hello` in the browser returns a promise and Wildcard does the following:
+ 1. Serializes the argument `'Alice'`, makes an HTTP request to `/wildcard/hello`,
+ 2. calls the `endpoints.hello` function we defined on the server, serializes `{message: 'Hi Alice'}`, sends an HTTP response,
+ 3. deserializes the HTTP response, and resolves the promise
 
 Wildcard provides:
  - Correct serialization (we use JSON++ instead of JSON)
@@ -106,6 +104,8 @@ Let's see why.
 > If you have a tight frontend-backend development, then use a custom API.
 > If you need to decouple the frontend development from the backend development, then use a generic API.
 
+
+
 > 
 > If you want decoupled
 > With a custom API we completely shift the data retrieval logic from the client to the server.
@@ -132,23 +132,54 @@ With a generic API the data retrieval logic lives on the client.
 The fundamental difference between a custom API and a generic API is that a custom API is 
 of the problem of a custom API
 
+##### Tight frontend-backend development
+
+
+A highly tailored endpoint like
+
 ~~~js
-endpoints.getTodos = async function() {
-  const todos = await runSQL('SELECT id, text FROM todos;');
-  return todos;
+endpoints.getLandingPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+  // Or with NoSQL/ORM `const todos = await Todo.find({authorId: user.id}, {fields: ['id', 'text']});`
+  const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
+  return {user, todos};
 };
 ~~~
 
-##### Tight full-stack dev
-
-The SQL is predefined on the server.
-So if the frontend needs a change, then we need to modify the SQL query on the server.
-This means that the frontend and the server need to be developed hand in hand.
-The frontend developed becomes tightly coupled with the server development.
-This can be an issue for large applications that have a strict separation between clients and server.
-
+tightly couples the frontend development with the backend development:
+If the frontend needs the todo creation dates, then the SQL query defined on the server needs to be changed to `SELECT id, text, created_at`.
 
 ##### Benefit
+
+A custom API with
+a tight frontend-backend development is a powerful combination:
+A frontend developer can use any arbitrary SQL query (or NoSQL/ORM query) to retrieve whatever the frontend needs.
+
+If you have a SQL database and a tight frontend-backend development,
+then a generic API is a net loss of power (the frontend developer is constrainted to the RESTful/GraphQL schema)
+whereas with a custom API we preseve the full power of SQL (the frontend developer can use any SQL query).
+And SQL is much more powerful than any RESTful/GraphQL schema.
+(There are queries that can be expressed with SQL but not with REST/GraphQL
+(Queries, such as "get all the todos that the user has shared to someone".)
+
+For example, in the following situation a tight a custom API
+ - You are a full-stack developer writing an MVP
+ - You are using Node.js full-stack JavaScript app
+
+Frameworks such as Next.js or Reframe deploy
+
+Not only is a custom API more powerful but also much easier to set up.
+
+
+
+
+
+
+Or if
+A frontend developer can use any arbitrary SQL query to retrieve whatever data the frontend needs.
+
+(E.g. querying is not easily feasible
+They are many request that cannot be with a GraphQL schema 
 
 On the other hand, this means that we can use any arbitrary SQL query to whatever data need.
 We are not limited by the schema of a generic API.
@@ -167,6 +198,16 @@ Or a medium-sized application with one team that develops both the frontend and 
 For example if you use SQL, then SQL and a custom API is vastly more powerful than any generic API.
 
 ##### Disadvantage
+
+A custom API is problematic when
+ - Third parties need to access your data
+ - Your application is developed by a large team
+
+A generic API is
+
+Third party clients are developed indepentently of your server and a tight frontend-backend is not possible.
+
+The bigger your applications the more it can make sense to have the backend developed indepentently of the frontend.
 
 Third parties are developed by, well, third parties.
 . The development is decoupled.
