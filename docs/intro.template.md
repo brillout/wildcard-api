@@ -10,8 +10,7 @@
 <br/>
 
 Wildcard has two goals:
- 1. Provide a small JavaScript package `wildcard-api` to make custom API creation super easy.
- 1. Provide a small JavaScript library to make custom API creation super easy.
+ 1. Provide a small JavaScript library to make the creation of a custom API super easy.
  2. Debunk the common misconception that a generic API (REST/GraphQL) is always better than a custom API.
 
 With Wildcard,
@@ -48,27 +47,16 @@ import {endpoints} from 'wildcard-api/client';
 })();
 ~~~
 
-When calling `endpoints.hello` in the browser Wildcard does the following:
- 1. Serializes the argument list `['Alice']` to `["Alice"]`
- 2. Makes a HTTP request to `/wildcard/hello/["Alice"]`
- 3. Runs the `endpoints.hello` function on the server
- 4. Serializes the returned value  `{message: 'Hi Alice'}` to `{"message":"Hi Alice"}`
- 5. HTTP response with the serialzed returned value as body
- 6. Resolves the promise
+Calling `endpoints.hello` in the browser returns a promise that is resolved after Wildcard as done the following:
+ 1. Serializes the argument `'Alice'`, makes an HTTP request to `/wildcard/hello`
+ 2. Calls the `endpoints.hello` function we defined on the server, serializes `{message: 'Hi Alice'}`, sends an HTTP response
+ 3. Deserializes the HTTP response, and resolve the promise
 
-
-Wildcard provides
-correct serialization
-(we use JSON++ instead of JSON),
-default error handlings
-(such as showing a popup to the user when the client looses network connection),
-dev tools
-(such as pretty API browsing),
-Universal/Isomorphic/SSR support,
-etc.
-
-Wildcard is ideal for rapid prototyping.
-It can as well can be a successfully used for medium sized and large applications.
+Wildcard provides:
+ - Correct serialization (we use JSON++ instead of JSON)
+ - Error handlings (such as showing a popup to the user when the client looses network connection)
+ - Dev tools (such as API inspection)
+ - Universal/Isomorphic/SSR support
 
 #### Contents
 
