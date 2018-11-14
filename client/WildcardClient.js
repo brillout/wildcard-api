@@ -9,11 +9,20 @@ function WildcardClient({
   apiUrlBase=DEFAULT_API_URL_BASE,
   wildcardApi,
   stringify,
+  parse,
 }={}) {
 
   assert.usage(
     makeHttpRequest,
-    "You need to provide a `makeHttpRequest` to `new WildcardClient({makeHttpRequest})`.",
+    "You need to provide `makeHttpRequest`: `new WildcardClient({makeHttpRequest})`.",
+  );
+  assert.usage(
+    stringify,
+    "You need to provide `stringify`: `new WildcardClient({stringify})`.",
+  );
+  assert.usage(
+    parse,
+    "You need to provide `parse`: `new WildcardClient({parse})`.",
   );
 
   const isCalledByProxy = Symbol();
@@ -46,7 +55,7 @@ function WildcardClient({
     } else {
       assert.internal(!context);
       const url = getUrl({endpointName, endpointArgs, serverRootUrl});
-      return makeHttpRequest({url});
+      return parse(makeHttpRequest({url}));
     }
   }
 
