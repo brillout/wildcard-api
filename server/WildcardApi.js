@@ -1,4 +1,6 @@
 const assert = require('reassert');
+const parse_jpp = require('@brillout/jpp/parse');
+const stringify_jpp = require('@brillout/jpp/stringify');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -8,6 +10,8 @@ module.exports = WildcardApi;
 
 function WildcardApi({
   apiUrlBase=DEFAULT_API_URL_BASE,
+  parse=parse_jpp,
+  stringify=stringify_jpp,
 }={}) {
   const endpoints__source = {};
 
@@ -56,7 +60,7 @@ function WildcardApi({
       if( result.err ) {
         return {
           statusCode: result.statusCode || 400,
-          body: JSON.stringify({usageError: result.err}),
+          body: stringify({usageError: result.err}),
         };
       }
 
@@ -101,7 +105,7 @@ function WildcardApi({
     let endpointArgs;
     if( endpointArgsString ) {
       try {
-        endpointArgs = JSON.parse(endpointArgsString);
+        endpointArgs = parse(endpointArgsString);
       } catch(err_) {
         return {err: [
           'Malformatted API URL `'+url+'`.',
@@ -145,9 +149,18 @@ function WildcardApi({
     const valueToStringify = endpointReturnedValue===undefined ? null : endpointReturnedValue;
     let body;
     try {
-      body = JSON.stringify(valueToStringify);
+      body = stringify(valueToStringify);
     } catch(err_) {
       console.error(err_);
+      console.log('\n');
+      console.log('Returned value');
+      console.log(valueToStringify);
+      console.log('\n');
+      assert.warning(
+        false,
+        "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
+        "The returned value in question and the serialization error are printed above.",
+      );
       return couldNotHandle;
     }
     assert.internal(body.constructor===String);

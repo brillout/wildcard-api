@@ -8,6 +8,7 @@ function WildcardClient({
   makeHttpRequest,
   apiUrlBase=DEFAULT_API_URL_BASE,
   wildcardApi,
+  stringify,
 }={}) {
 
   assert.usage(
@@ -209,19 +210,18 @@ function serializeArgs(endpointArgs, endpointName) {
   }
   let serializedArgs;
   try {
-    serializedArgs = JSON.stringify(endpointArgs);
-  } catch(err) {
+    serializedArgs = stringify(endpointArgs);
+  } catch(err_) {
+    console.error(err_);
+    console.log('\n');
+    console.log('Endpoint arguments:');
+    console.log(endpointArgs);
+    console.log('\n');
     assert.usage(
       false,
-      {err},
-      {endpointArgs},
-      [
-        "Couldn't serialize arguments for `"+endpointName+"`.",
-        "Using `JSON.stringify`.",
-        "The endpoint arguments in question and the `JSON.stringify` error are printed above.",
-      ].join('\n')
+      "Couldn't serialize arguments for `"+endpointName+"`.",
+      "The endpoint arguments in question and the serialization error are printed above.",
     );
-    assert.internal(false);
   }
   return serializedArgs;
 }
