@@ -37,7 +37,7 @@ function WildcardClient({
     return getEndpointsProxy(context);
   }
 
-  function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
+  async function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
     endpointArgs = endpointArgs || [];
 
@@ -55,7 +55,9 @@ function WildcardClient({
     } else {
       assert.internal(!context);
       const url = getUrl({endpointName, endpointArgs, serverRootUrl});
-      return parse(makeHttpRequest({url}));
+      const responseText = await makeHttpRequest({url});
+      const responseObject = parse(responseText);
+      return responseObject;
     }
   }
 
@@ -142,7 +144,7 @@ function WildcardClient({
       apiUrlBase = '/'+apiUrlBase;
     }
 
-    let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
+    let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
     endpointArgsStr = endpointArgsStr ? ('/'+encodeURIComponent(endpointArgsStr)) : '';
 
     assert.internal(apiUrlBase.startsWith('/') && apiUrlBase.endsWith('/'));
@@ -212,7 +214,7 @@ function envSupportsProxy() {
   return typeof "Proxy" !== "undefined";
 }
 
-function serializeArgs(endpointArgs, endpointName) {
+function serializeArgs({endpointArgs, endpointName, stringify}) {
   assert.internal(endpointArgs.length>=0);
   if( endpointArgs.length===0 ) {
     return undefined;

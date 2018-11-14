@@ -1,5 +1,7 @@
 const fetch = require('@brillout/fetch');
 
+module.exports = makeHttpRequest;
+
 async function makeHttpRequest({url, ...args}) {
   const response = await fetch(
     url,
@@ -9,6 +11,6 @@ async function makeHttpRequest({url, ...args}) {
       ...args
     }
   );
-  const body = await response.text();
-  return body;
+  const responseText = await response.text();
+  return responseText;
 }
