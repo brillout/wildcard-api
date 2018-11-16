@@ -1,22 +1,10 @@
 const fetch = require('@brillout/fetch');
-const FetchErrorHandler = require('./FetchErrorHandler');
-const showModal = require('./showModal');
-
-/*
-if( typeof window !== "undefined" ) {
-	showModal('test');
-}
-*/
+const handli = require('handli');
 
 module.exports = makeHttpRequest;
 
 async function makeHttpRequest({url, ...args}) {
-  const errorHandler = new FetchErrorHandler({
-    noInternetConnection: true,
-		showModal,
-  });
-
-  const response = await errorHandler(() => fetch(
+  const response = await handli(() => fetch(
     url,
     {
       method: 'POST',
