@@ -11,7 +11,9 @@
 
 Wildcard has two goals:
  1. Provide a small JavaScript library to make the creation of a custom API super easy.
- 2. Debunk the common misconception that a generic API (REST/GraphQL) is always better than a custom API.
+ 2. Debunk the common misconception that a generic API (REST/GraphQL) is a silver bullet.
+    A generic API is great for third party clients and large applications
+    but is an unecessary burden for rapid prototyping and medium-sized applications.
 
 With Wildcard,
 creating an endpoint is as easy as creating a JavaScript function:
@@ -22,15 +24,11 @@ creating an endpoint is as easy as creating a JavaScript function:
 const {endpoints} = require('wildcard-api');
 
 // We define a `hello` function on the server
-endpoints.hello = async function(name) {
-  // Our example doesn't do much. In a more realistic case, we would query data.
-  // E.g. with SQL:
-  //    const user = await db.run(`SELECT * FROM users WHERE name = ${escape(name)};`);
-  // Or ORM / NoSQL:
-  //    const user = await User.findOne({name});
+endpoints.hello = function(name) {
   return {message: 'Hi '+name};
 };
 ~~~
+
 ~~~js
 // Browser
 
@@ -39,22 +37,56 @@ import {endpoints} from 'wildcard-api/client';
 (async () => {
   // Wildcard makes our `hello` function available in the browser
   const {message} = await endpoints.hello('Alice');
-
-  // We use the DOM API. We could as well use React, Angular, Vue, etc.
-  document.body.textContent = message;
+  console.log(message); // Prints `Hi Alice`
 })();
 ~~~
 
-Calling `endpoints.hello` in the browser returns a promise and Wildcard does the following:
- 1. Serializes the argument `'Alice'`, makes an HTTP request to `/wildcard/hello`,
- 2. calls the `endpoints.hello` function we defined on the server, serializes `{message: 'Hi Alice'}`, sends an HTTP response,
- 3. deserializes the HTTP response, and resolves the promise
+That's all Wildcard does:
+It simply makes a function defined on the server "callable" in the browser.
+(Behind the curtain Wildcard makes an HTTP request.)
 
+How you retrieve data is entirely up to you.
+You can use SQL, ORM, NoSQL, GraphQL, etc.
+(The Wildcard-GraphQL combination is explained later.)
+
+
+### Why Wildcard
+
+Wildcard makes
+retrieving (and mutating) data from the frontend a seamless experience:
+No schema,
+no permission rules,
+just create functions on `endpoints`.
+
+Your endpoint functions effectively act as "permission holes".
+This is a simple alternative to otherwise complex permissions mechanisms.
+
+To make the experience further seamless,
 Wildcard provides:
- - Correct serialization (we use JSON++ instead of JSON)
- - Error handlings (such as showing a popup to the user when the client looses network connection)
- - Dev tools (such as API inspection)
- - Universal/Isomorphic/SSR support
+ - Error handling
+   <br/>
+   Using [fetch-error-handling](https://github.com/brillout/fetch-error-handling).
+ - Extended JavaScript serialization
+   <br/>
+   Using [JSON++](https://github.com/brillout/jpp) instead of JSON.
+ - Universal/Isomorphic/SSR support.
+   <br/>
+   In a seamless way.
+   (To preserve the request context,
+   endpoints are directly called instead of going over HTTP
+   when the client and server are running in the same process.)
+
+It is an ideal tool for rapid protoyping:
+Write the couple of data queries (SQL/ORM/NoSQL/GraphQL) your prototype needs, wrap them in endpoint functions, and you're good to go.
+(That's it! Without any schema and permission rules.)
+
+That said, a custom API and Wildcard are not suitable for:
+ - Third party clients where a generic API is inherently required.
+ - Large applications with a backend development decoupled from frontend development.
+ - Large applications with a backend development independently of the frontend development.
+
+[Custom API vs Generic API](#custom-api-vs-generic-api)
+explores the different uses cases for custom and generic APIs.
 
 #### Contents
 
@@ -97,12 +129,129 @@ But we deliberately choose to implement a tailored API instead of a generic API.
 Let's see why.
 
 
-
 ## Custom API vs generic API
 
 > TLDR;
 > If you have a tight frontend-backend development, then use a custom API.
 > If you need to decouple the frontend development from the backend development, then use a generic API.
+
+
+#### Tight frontend-backend development
+
+An endpoint like
+
+~~~js
+endpoints.getLandingPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+  // Or with NoSQL/ORM `const todos = await Todo.find({authorId: user.id}, {fields: ['id', 'text']});`
+  const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
+  return {user, todos};
+};
+~~~
+
+tightly couples frontend development with backend development.
+For example,
+if the frontend needs the todo creation dates,
+then the SQL query defined on the server needs to be changed to `SELECT id, text, created_at`.
+
+Using a custom API requires a tight frotnend-backend development.
+This requirement comes with benefits.
+
+### Benefits
+
+With a tight frontend-backend development, the frontend and backend can change at the same time.
+That means that a frontend developer can 
+The full power of the server is one endpoint function away.
+
+Whereas with a generic API the frontend is constrained by the schema of the generic API.
+A generic API i
+
+With tools that automatically generate RESTful API or GraphQL API, REST/GraphQL can be a convenient way to access data.
+But you still need to define permissions.
+You still need a permission layer on top of such generated API.
+Combining
+A generated API can be combined with Wildcard to create a perission layer.
+to provide a full frontend-to-database solution.
+Wildcard can act as such permission layer.
+For examle, Wildcard works well with a GraphQL API generated by Prisma or Hasura.
+
+
+When a generic API is automatically generic (e.g. with tools such as Prisma and Hasura) can be a convenient.
+But still, a permission layer is still required on top of such automatically generated APIs.
+Wildcard GraphQL
+One useful 
+
+A generic API 
+
+A frontend developer has the whole power as its dispsoal
+
+In a tight frontend-backend development context,
+In a sense a generic API is simply an unecessary indirection.
+
+**Transparent**
+
+The full power of the backend is away for a frontend developer.
+In contrast 
+
+
+**Lightweight permission layer**
+
+Instead of a generic complex access control layer.
+Fine grained
+
+The trick here is that instead of thinking of a global permission at once aheed.
+we care about permission as the frontend
+
+
+### Limitations
+
+A tight frontend-backend development is not always feasiable/desirable.
+
+Wildcard cannot be used with a decoupled:
+If a frontend developer cannot make changes to an endpoint function, then a cusotm API is prohabitvely inflexible.
+
+needs to be able to change the endpoint functions
+If a frontend 
+
+###### Third parties
+
+In particular third party clients are developed independetly of you backend and API.
+If you want third parties to access your data, then you need a generic API.
+That said, you can still use Wildcard for your clients in addition to maintaining a generic API for third parties.
+
+###### Large applications
+
+For large application, having a frontend developed independently from the backend can make sense.
+For example to be able to have a team that focus fully on the backend without worrying about the frontend and vice versa.
+Also, for large applications, having a team that develops the backend independently of the frontend can make sense.
+In such decoupled sce
+
+A server API can be a solution for large scale applications.
+The server API holds the endpoint functions and is developed hand-in-hand with the frontend.
+It would essentially act as a permission bridge between the frontend and the database.
+
+
+
+
+
+A custom API tightly couples frontend development with backend development.
+For example
+
+If .
+A frontend change induces a backend change.
+In other words, the frontend development is tightly coupled with backend development.
+
+
+
+
+Long before de facto standard
+Historally because tightly couples 
+and REST .
+With the
+
+When using JavaScript on the browser as well on the server
+When using  both the client and the server are developed and deployed at the same time.
+This means that 
 
 
 
@@ -134,22 +283,10 @@ of the problem of a custom API
 
 ##### Tight frontend-backend development
 
-
-A highly tailored endpoint like
-
-~~~js
-endpoints.getLandingPageData = async function() {
-  const user = await getLoggedUser(this.headers);
-  // Or with NoSQL/ORM `const todos = await Todo.find({authorId: user.id}, {fields: ['id', 'text']});`
-  const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
-  return {user, todos};
-};
-~~~
-
-tightly couples the frontend development with the backend development:
-If the frontend needs the todo creation dates, then the SQL query defined on the server needs to be changed to `SELECT id, text, created_at`.
-
 ##### Benefit
+
+Custom APIs are nothing new and even existed long before REST.
+Back then, one problem then with Custom API
 
 A custom API with
 a tight frontend-backend development is a powerful combination:
