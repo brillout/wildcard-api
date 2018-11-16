@@ -63,12 +63,12 @@ This is a simple alternative to otherwise complex permissions mechanisms.
 
 To make the experience further seamless,
 Wildcard provides:
- - Error handling
+ - Automatic Error handling (optional).
    <br/>
-   Using [fetch-error-handling](https://github.com/brillout/fetch-error-handling).
- - Extended JavaScript serialization
+   Using [Handli](https://github.com/brillout/handli).
+ - Extended JavaScript serialization (optional).
    <br/>
-   Using [JSON++](https://github.com/brillout/jpp) instead of JSON.
+   Using [JSON-S](https://github.com/brillout/json-s) instead of JSON.
  - Universal/Isomorphic/SSR support.
    <br/>
    In a seamless way.

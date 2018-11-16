@@ -1,6 +1,6 @@
 const assert = require('reassert');
-const parse_jpp = require('@brillout/jpp/parse');
-const stringify_jpp = require('@brillout/jpp/stringify');
+const parse_json_s = require('json-s/parse');
+const stringify_json_s = require('json-s/stringify');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -10,8 +10,8 @@ module.exports = WildcardApi;
 
 function WildcardApi({
   apiUrlBase=DEFAULT_API_URL_BASE,
-  parse=parse_jpp,
-  stringify=stringify_jpp,
+  parse=parse_json_s,
+  stringify=stringify_json_s,
 }={}) {
   const endpoints__source = {};
 
