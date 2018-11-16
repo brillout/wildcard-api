@@ -49,10 +49,15 @@ How you retrieve data is entirely up to you.
 You can use SQL, ORM, NoSQL, GraphQL, etc.
 (The Wildcard-GraphQL combination is explained later.)
 
+#### Contents
+
+ - [Why Wildcard](#why-wildcard)
+ - [Example](#example)
+ - [Quick Start](#getting-started)
 
 ### Why Wildcard
 
-Wildcard makes
+Wildcard is about making
 retrieving (and mutating) data from the frontend a seamless experience:
 No schema,
 no permission rules,
@@ -65,34 +70,36 @@ To make the experience further seamless,
 Wildcard provides:
  - Automatic Error handling (optional).
    <br/>
+   So that failures such as lost of internet connection are automatically handled for you.
+   <br/>
    Using [Handli](https://github.com/brillout/handli).
  - Extended JavaScript serialization (optional).
+   <br/>
+   To support further JavaScript types.
+   (Such as `Date` which JSON doesn't support.)
+   <br/>
+   So that your endpoint functions can use a return any JavaScript object.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) instead of JSON.
  - Universal/Isomorphic/SSR support.
    <br/>
-   In a seamless way.
-   (To preserve the request context,
-   endpoints are directly called instead of going over HTTP
-   when the client and server are running in the same process.)
+   SSR is supported in a seamless way.
+   <br/>
+   (SSR is a increasingly common approach to render (React/Vue/Angular) views on the server.)
 
-It is an ideal tool for rapid protoyping:
-Write the couple of data queries (SQL/ORM/NoSQL/GraphQL) your prototype needs, wrap them in endpoint functions, and you're good to go.
+Wildcard is an ideal tool for rapid protoyping:
+Write the couple of data queries (SQL/ORM/NoSQL/GraphQL) your prototype needs,
+wrap them in endpoint functions,
+and you're good to go.
 (That's it! Without any schema and permission rules.)
 
-That said, a custom API and Wildcard are not suitable for:
+That said, a custom API (and thus Wildcard) are not suitable for:
  - Third party clients where a generic API is inherently required.
  - Large applications with a backend development decoupled from frontend development.
  - Large applications with a backend development independently of the frontend development.
 
-[Custom API vs Generic API](#custom-api-vs-generic-api)
-explores the different uses cases for custom and generic APIs.
-
-#### Contents
-
- - [Example](#example)
- - [Custom API vs Generic API](#custom-api-vs-generic-api)
- - [Quick Start](#getting-started)
+At [Usage Manual - Custom API vs Generic API](#custom-api-vs-generic-api)
+we further explore the different uses cases for generic and custom APIs.
 
 
 ## Example
