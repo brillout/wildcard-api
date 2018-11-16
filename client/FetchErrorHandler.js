@@ -8,6 +8,7 @@ function FetchErrorHandler({showModal}) {
 
     const response = await getResponse();
 
+		console.log(response.ok, response.statusCode);
     if( response.ok ) {
       return response;
     }
@@ -16,11 +17,13 @@ function FetchErrorHandler({showModal}) {
 
     return;
 
-    async function getResponse() {
+    async function getResponse(close) {
       try {
         const response = await makeRequest();
+        if( close ) close();
         return response;
       } catch(_) {
+        if( close ) close();
         return handleNoconnection();
       }
     }
@@ -42,13 +45,12 @@ function FetchErrorHandler({showModal}) {
             "Retrying now...",
           ].join('<br/>')
         );
-        const response = await getResponse();
-        close();
+        const response = await getResponse(close);
         return response;
       }
 
-      const message = "Cannot connect to server.";
-      const {close, udpate} = showModal(message);
+      const message = "⚠ Cannot connect to server.";
+      const {close, update} = showModal(message);
 
       await wait(timeLeft => {
         update(
@@ -66,16 +68,14 @@ function FetchErrorHandler({showModal}) {
         ].join('<br/>')
       );
 
-      const response = await getResponse();
-      close();
+      const response = await getResponse(close);
       return response;
     }
 
     var attempts;
     function wait(timeListener) {
       attempts = attempts || 0;
-      attempts++;
-      secondsLeft = 5*Math.pow(2, attempts);
+      let secondsLeft = 5*Math.pow(2, attempts++)+1;
       const callListener = () => {
         --secondsLeft;
         if( secondsLeft===0 ) {
