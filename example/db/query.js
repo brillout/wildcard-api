@@ -1,11 +1,21 @@
+const fs = require('fs-extra');
+
 module.exports = query;
 
-const Knex = require('knex');
-const knexfile = require('./knexfile');
-
-const knex = Knex(knexfile);
-
-async function query(SQL) {
-  const ret = await knex.raw(SQL);
+async function query(...args) {
+  await ensureDatabase();
+  const knex = require('./knex');
+  const ret = await knex.raw(...args);
   return ret;
+}
+
+var databaseExists;
+async function ensureDatabase() {
+  if( databaseExists ) {
+    return true;
+  }
+  if( ! await fs.pathExists(__dirname+'/data.sqlite') ) {
+    await require('./reset');
+  }
+  databaseExists = true;
 }

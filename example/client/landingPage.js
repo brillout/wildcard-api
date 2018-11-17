@@ -11,20 +11,22 @@ ReactDOM.render(
 function LandingPage() {
   const [data, setData] = useState(null);
 
-  if( data === null ) {
-    useEffect(() => {
-      (async () => {
-        const data = await endpoints.getLandingPageData();
-        setData(data);
-      })();
-    });
+  useEffect(() => {
+    (async () => {
+      const data = await endpoints.getLandingPageData();
+      setData(data);
+    })();
+  }, {});
 
+  if( data === null ) {
     return 'Loading...';
   }
 
+  const {todos, user} = data;
+
   return (
     <div>{
-      data.todos.map(({id, text}) => <div key={id}>{text}</div>)
+      todos.map(({id, text}) => <div key={id}>{text}</div>)
     }</div>
   );
 }

@@ -130,6 +130,9 @@ at [Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach).
 
 We can also mutate data.
 
+~~~js
+~~~
+
 Wildcard can be used with any server framework such as Hapi or Koa.
 We use Express in this example.
 
