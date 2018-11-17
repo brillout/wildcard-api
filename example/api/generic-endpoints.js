@@ -13,8 +13,10 @@ endpoints.getTodos = async function(completed) {
 
   if( ![true, false].includes(completed) ) return;
 
-  const todos = await (
-    db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = ${completed};`)
+  const todos = await db.query(
+    `SELECT * FROM todos WHERE authorId = :authorId AND completed = :completed;`,
+    {authorId: user.id, completed}
   );
+
   return todos;
 };
