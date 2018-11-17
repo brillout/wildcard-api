@@ -1,7 +1,6 @@
 const express = require('express');
 const {getApiResponse} = require('../');
-require('./api/view-endpoints');
-require('./api/generic-endpoints');
+require('./api');
 
 start();
 

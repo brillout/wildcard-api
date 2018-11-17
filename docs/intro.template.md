@@ -84,7 +84,7 @@ Wildcard provides:
    Using [JSON-S](https://github.com/brillout/json-s) instead of JSON.
  - Universal/Isomorphic/SSR support.
    <br/>
-   The client works in the browser as well as on Node.js,
+   The Wildcard client works in the browser as well as on Node.js,
    and SSR is supported in a seamless way.
    <br/>
    (SSR is an increasingly used approach to render (React/Vue/Angular) views on the server.)
@@ -102,7 +102,7 @@ That said, a custom API (and thus Wildcard) is not suitable for:
 Wildcard (and any custom API) works best with a tight frontend-backend development.
 
 At [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
-we further explore the different uses cases between generic and custom APIs.
+we further explore the different uses cases for custom APIs.
 
 
 <br/>
@@ -115,24 +115,27 @@ Let's consider an API for a simple todo app.
 !INLINE ../example/api/view-endpoints --hide-source-path
 ~~~
 
-(This is a snippet of the example at [./example](/example/).)
+(This is a snippet of [./example](/example/).)
 
-Our endpoints are 100% tailored to our frontend.
-For example,
-the endpoint `getLandingPageData` returns exactly and only the data needed
-by the landing page
-
-We could have created generic endpoints instead:
+Instead of tailored endpoints, we could
+create generic endpoints, such as:
 
 ~~~js
 !INLINE ../example/api/generic-endpoints --hide-source-path
 ~~~
 
-But we deliberately choose to implement a tailored API instead of a generic API.
+But we deliberately choose a tailored API over a generic API.
+The benefits are explored at
+at [Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach).
 
-At [Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach)
-we explore the benefits of creating tailored endpoints.
+We can also mutate data.
 
+Wildcard can be used with any server framework such as Hapi or Koa.
+We use Express in this example.
+
+~~~js
+!INLINE ../example/start --hide-source-path
+~~~
 
 <br/>
 

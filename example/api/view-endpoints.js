@@ -2,32 +2,28 @@ const {endpoints} = require('../..');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
-// Endpoint to get all the data that the landing page needs
+// Our view endpoints are tailored to the frontend: For example, the endpoint
+// `getLandingPageData` returns exactly and only the data needed by the landing page
+
+// Endpoint to get data the landing page needs
 endpoints.getLandingPageData = async function () {
-  // `this` holds contextual information such as the HTTP headers
+  // `this` holds contextual information such as HTTP headers
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
-  // Our example uses SQLite3 with knex
-  // You can use Wildcard with any 
   const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = false;`);
 
-  // The landing page displays user information.
-  // Thus we return `user`.
+  // We return `user` as the landing page displays user information.
   return {user, todos};
 };
 
-// Endpoint to get all the data needed by the page showing all completed todos
-endpoints.getCompletedTodosPageData = async function (
-  // We could have parameters here just like any regular JavaScript function.
-  // (Although the passed arguments need to be JSON serializable.)
-) {
+// Endpoint to get the data needed by the page showing all completed todos
+endpoints.getCompletedTodosPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = true;`);
 
-  // Our `completedTodosPage` only displays the list of completed todos.
-  // We don't need to return `user`.
+  // We don't return `user` as the page doesn't need it
   return {todos};
 };
