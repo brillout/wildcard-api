@@ -20,5 +20,5 @@ async function makeHttpRequest({url, ...args}) {
 }
 
 function isBrowser() {
-  typeof window !== "undefined" && window.document;
+  return typeof window !== "undefined" && window.document;
 }
