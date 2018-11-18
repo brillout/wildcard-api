@@ -1,40 +1,20 @@
-import "babel-polyfill";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import renderPage from './renderPage';
+import LoadingWrapper from './LoadingWrapper';
 import {endpoints} from '../../client';
 import createTodo from './createTodo';
-import renderPage from './renderPage';
 
-renderPage(<LandingPage/>);
+renderPage(<CompletedPage/>);
 
-function LandingPage() {
-  const [data, setData] = useState(null);
-
-  loadData();
-
-  if( data === null ) {
-    return 'Loading...';
-  }
-
-  const {todos, user} = data;
-
+function CompletedPage() {
   return (
-    <div>
-      <div>
+    <LoadingWrapper fetchData={endpoints.getCompletedPageData}>{
+      ({data, setData}) => <React.Fragment>
         Completed todos:
         <div>
-          {todos.map(todo => createTodo(todo, data, setData))}
+          {data.todos.map(todo => createTodo(todo, data, setData))}
         </div>
-      </div>
-    </div>
+      </React.Fragment>
+    }</LoadingWrapper>
   );
-
-  function loadData() {
-    useEffect(() => {
-      (async () => {
-        const data = await endpoints.getCompletedPageData();
-        setData(data);
-      })();
-    }, {});
-  }
-
 }
