@@ -19,7 +19,7 @@ endpoints.getLandingPageData = async function () {
   return {user, todos};
 };
 
-endpoints.getCompletedTodosPageData = async function () {
+endpoints.getCompletedPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 

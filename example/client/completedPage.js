@@ -20,15 +20,10 @@ function LandingPage() {
   return (
     <div>
       <div>
-        Hi, {user.username}.
-        <br/>
-        <br/>
-        Your todos are:
+        Completed todos:
         <div>
           {todos.map(todo => createTodo(todo, data, setData))}
         </div>
-        <br/>
-        Your completed todos: <a href="/completed">/completed</a>.
       </div>
     </div>
   );
@@ -36,7 +31,7 @@ function LandingPage() {
   function loadData() {
     useEffect(() => {
       (async () => {
-        const data = await endpoints.getLandingPageData();
+        const data = await endpoints.getCompletedPageData();
         setData(data);
       })();
     }, {});

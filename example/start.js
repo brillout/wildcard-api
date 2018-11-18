@@ -19,7 +19,7 @@ async function start() {
     next();
   });
 
-  app.use(express.static('client/dist'));
+  app.use(express.static('client/dist', {extensions: ['html']}));
 
   app.listen(3000);
 }

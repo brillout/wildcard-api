@@ -13,16 +13,13 @@ endpoints.toggleComplete = async function(todoId) {
   // Do nothing if the user is not the author of the todo
   if( todo.authorId !== user.id ) return;
 
-  const result = await db.query(
+  const completed = !todo.completed;
+  await db.query(
     "UPDATE todos SET completed = :completed WHERE id = :todoId;",
-    {completed: !todo.completed, todoId}
+    {completed, todoId}
   );
 
-  console.log(result);
-
-  const [todoUpdated] = result;
-
-  return todoUpdated;
+  return completed;
 };
 
 async function getTodo(todoId) {
