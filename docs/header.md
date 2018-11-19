@@ -1,3 +1,5 @@
-<a href="/../../#readme">
-	<img align="center" src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=79 alt="Wildcard API"/>
-</a>
+<p align="center">
+  <a href="/../../#readme">
+    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
+  </a>
+</p>
