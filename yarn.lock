@@ -25,12 +25,6 @@
     reassert "^1.1.14"
     string-width "^2.1.1"
 
-"@brillout/jpp@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@brillout/jpp/-/jpp-0.1.0.tgz#2b242948103ee6a2a94662c4d950ae2be8dc9bb1"
-  dependencies:
-    reassert "^1.1.19"
-
 "@brillout/mdocs@^0.1.24":
   version "0.1.24"
   resolved "https://registry.yarnpkg.com/@brillout/mdocs/-/mdocs-0.1.24.tgz#5e2ad2534a26049e9e89cca67f17046d33554c93"
@@ -196,7 +190,7 @@ path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
 
-reassert@^1.1.14, reassert@^1.1.16, reassert@^1.1.19, reassert@^1.1.8:
+reassert@^1.1.14, reassert@^1.1.16, reassert@^1.1.8:
   version "1.1.19"
   resolved "https://registry.yarnpkg.com/reassert/-/reassert-1.1.19.tgz#0afc71d575706c822586b2e2fc8a0b714a890b1b"
   dependencies:

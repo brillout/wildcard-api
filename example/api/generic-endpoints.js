@@ -1,4 +1,4 @@
-const {endpoints} = require('../..');
+const {endpoints} = require('wildcard-api');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 

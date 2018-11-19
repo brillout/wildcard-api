@@ -1,9 +1,9 @@
 import React from 'react';
-import {endpoints} from '../../client';
+import {endpoints} from 'wildcard-api/client';
 
-export default createTodo;
+export default createTodoView;
 
-function createTodo(todo, data, setData) {
+function createTodoView(todo, data, setData) {
     return (
       <div key={todo.id}>
         <TodoCheckbox todo={todo} onChange={onCompleteToggle}/>

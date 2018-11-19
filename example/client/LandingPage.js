@@ -1,8 +1,8 @@
 import React from 'react';
 import renderPage from './renderPage';
 import LoadingWrapper from './LoadingWrapper';
-import {endpoints} from '../../client';
-import createTodo from './createTodo';
+import {endpoints} from 'wildcard-api/client';
+import createTodoView from './createTodoView';
 
 renderPage(<LandingPage/>);
 
@@ -15,7 +15,7 @@ function LandingPage() {
         <br/>
         Your todos are:
         <div>
-          {data.todos.map(todo => createTodo(todo, data, setData))}
+          {data.todos.map(todo => createTodoView(todo, data, setData))}
         </div>
         <br/>
         Your completed todos: <a href="/completed">/completed</a>.

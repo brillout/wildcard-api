@@ -1,5 +1,5 @@
 const express = require('express');
-const {getApiResponse} = require('../');
+const {getApiResponse} = require('wildcard-api');
 require('./api');
 
 start();
