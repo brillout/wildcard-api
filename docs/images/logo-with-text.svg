@@ -1,0 +1,9 @@
+<svg width="700" height="172" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <ellipse fill="#4a4a4a" cx="86.98968" cy="86" rx="86" ry="86"/>
+    <ellipse fill="#5A676F" cx="86.98968" cy="86" rx="68" ry="68"/>
+    <path stroke-linejoin="round" stroke-linecap="round" stroke-width="18" d="m38.17338,86.17874l97.7318,0m-21.85231,-40.72045l-54.03168,81.44091m0.32102,-81.64889l53.39416,81.85687" id="svg_49" stroke="#01B9A7"/>
+  </g>
+  <text fill="#595959" stroke-width="0" stroke-opacity="null" x="244.62656" y="89.29044" id="svg_2" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(3.49715769386529,0,0,3.49715769386529,-652.8139890591804,-216.81572498694962) " stroke="null">Wildcard API</text>
+  <text fill="#595959" stroke-width="0" stroke-opacity="null" x="208.79038" y="134.48423" id="svg_4" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(1.1210369985541888,0,0,1.1210369985541888,-26.01466078739108,-16.794653525428448) " stroke="null">API for rapid prototyping (and beoyond.)</text>
+</svg>
