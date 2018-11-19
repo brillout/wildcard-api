@@ -1,17 +1,24 @@
 {
   "private": true,
   "scripts": {
-    "setup": "npm install yarn --no-save && yarn",
-    "setup-dev": "npm install yarn --no-save && (cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
+    "build": "cd client && parcel build *.html",
+    "server": "node ./start.js",
+    "install-yarn": "npm install --only=dev --no-save",
+    "setup": "npm run install-yarn && yarn",
+    "setup-dev": "npm run install-yarn && (cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",
     "knex": "^0.15.2",
+    "parcel": "^1.10.3",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "sqlite3": "^4.0.3",
     "wildcard-api": "*"
+  },
+  "devDependencies": {
+    "yarn": "1.12.3"
   }
 }

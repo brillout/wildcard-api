@@ -131,8 +131,8 @@ In our example we use Express:
 !INLINE ../example/start --hide-source-path
 ~~~
 
-You can see the entire example's code,
-including the React frontend,
+You can see
+the example's React frontend and entire code
 at [./example](/example/).
 
 <br/>
