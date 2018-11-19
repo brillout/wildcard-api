@@ -81,7 +81,7 @@
   </a>
 </p>
 <p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme"><b>Usage Manual</b></a></p>
-&nbps;
+&nbsp;
 
 # Usage Manual
 

@@ -81,7 +81,7 @@
   </a>
 </p>
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a></p>
-&nbps;
+&nbsp;
 
 Wildcard has two goals:
  1. Provide a small JavaScript library to make the creation of a custom API super easy.

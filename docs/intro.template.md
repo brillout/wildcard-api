@@ -3,7 +3,7 @@
 !OUTPUT ../readme.md
 !INLINE ./header.md --hide-source-path
 !MENU
-&nbps;
+&nbsp;
 
 Wildcard has two goals:
  1. Provide a small JavaScript library to make the creation of a custom API super easy.
