@@ -80,105 +80,178 @@
 
 # Wildcard API
 
-*APIs. Cheap 'n Easy.*
+*API for rapid prototyping (and beyond).*
 
 <br/>
 <br/>
 
-Let your client load data from your server in an easy, flexible, and performant way.
+Wildcard has two goals:
+ 1. Provide a small JavaScript library to make the creation of a custom API super easy.
+ 2. Debunk the common misconception that a generic API (REST/GraphQL) is a silver bullet.
+    A generic API is great for third party clients and large applications
+    but is an unecessary burden for rapid prototyping and medium-sized applications.
 
-It's super easy:
+With Wildcard,
+creating an endpoint is as easy as creating a JavaScript function:
 
 ~~~js
 // Node.js Server
-const {endpoints} = require('wildcard-api');
-const db = require('./db');
 
-// We define a `getTodos` function on the server
-endpoints.getTodos = async function() {
-  const todos = await db.query("SELECT text FROM todos;");
-  return todos;
+const {endpoints} = require('wildcard-api');
+
+// We define a `hello` function on the server
+endpoints.hello = function(name) {
+  return {message: 'Hi '+name};
 };
 ~~~
+
 ~~~js
 // Browser
+
 import {endpoints} from 'wildcard-api/client';
 
 (async () => {
-  // Wildcard makes our `getTodos` function
-  // available in the browser
-  const todos = await endpoints.getTodos();
-
-  document.body.textContent =
-    todos
-    .map(todo => ' - '+todo.text)
-    .join('\n');
+  // Wildcard makes our `hello` function available in the browser
+  const {message} = await endpoints.hello('Alice');
+  console.log(message); // Prints `Hi Alice`
 })();
 ~~~
 
-You simply define functions on the server and Wildcard makes them availabe in the browser.
-<br/>
-(Behind the curtain, Wildcard makes an HTTP request and uses JSON.)
-
-Creating a new API endpoint is as easy as creating a new function.
-
-Wildcard is ideal for rapid prototyping, quickly delivering an MVP, and fast development iterations.
+That's all Wildcard does:
+It simply makes a function defined on the server "callable" in the browser.
+(Behind the curtain Wildcard makes an HTTP request.)
+How you retrieve and mutate data is up to you.
+You can use SQL, ORM, NoSQL, etc.
 
 #### Contents
 
+ - [Why Wildcard](#why-wildcard)
  - [Example](#example)
- - [Tailored Approach](#tailored-approach)
- - [Wildcard vs REST vs GraphQL](#wildcard-vs-rest-vs-graphql)
- - [Getting Started](#getting-started)
+ - [Quick Start](#getting-started)
 
+
+<br/>
+
+### Why Wildcard
+
+Wildcard is about making
+retrieving (and mutating) data from the frontend a seamless experience:
+No schema,
+no permission rules,
+just create functions on `endpoints`.
+
+These endpoint functions effectively act as "permission holes".
+This is a simple alternative to otherwise complex permissions mechanisms.
+
+To make the experience further seamless,
+Wildcard provides:
+ - Automatic error handling (optional).
+   <br/>
+   Failures, such as when the user looses his internet connection, are automatically handled for you.
+   <br/>
+   Using [Handli](https://github.com/brillout/handli).
+ - Extended serialization.
+   <br/>
+   Using [JSON-S](https://github.com/brillout/json-s) instead of JSON to support further JavaScript types.
+   (Such as `Date` which JSON doesn't support.)
+ - Universal/Isomorphic/SSR support.
+   <br/>
+   The Wildcard client works in the browser as well as on Node.js and
+   SSR is supported in a seamless way.
+   (SSR is an increasingly common approach to render (React/Vue/Angular) views on the server.)
+
+Wildcard is an ideal tool for rapid protoyping:
+Write the couple of data queries (SQL/ORM/NoSQL) your prototype needs,
+wrap them in endpoint functions,
+and you're good to go.
+
+That said, a custom API (and thus Wildcard) is not suitable for:
+ - Third party clients. (A generic API is inherently required.)
+ - Large applications with a frontend development decoupled from backend development.
+
+Wildcard (and any custom API) works best with a tight frontend-backend development.
+
+At [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
+we further explore the different uses cases for custom APIs.
+
+
+<br/>
 
 ## Example
 
-Let's consider an API for a simple todo app.
+Let's look at a Wildcard API for a simple todo app:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
-// Endpoint to get all the data that the landing page needs
+// Our view endpoints are tailored to the frontend. For example, the endpoint
+// `getLandingPageData` returns exactly and only the data needed by the landing page
+
 endpoints.getLandingPageData = async function () {
-  // `this` holds contextual information such as the HTTP headers
+  // `this` holds contextual information such as HTTP headers
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
-  const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = false;`);
+  const todos = await db.query(
+    `SELECT * FROM todos WHERE authorId = :authorId AND completed = false;`,
+    {authorId: user.id}
+  );
 
-  // The landing page displays user information.
-  // Thus we return `user`.
+  // We return `user` as the landing page displays user information.
   return {user, todos};
 };
 
-// Endpoint to get all the data needed by the page showing all completed todos
-endpoints.getCompletedTodosPageData = async function (
-  // We could have parameters here just like any regular JavaScript function.
-  // (Although the passed arguments need to be JSON serializable.)
-) {
+endpoints.getCompletedPageData = async function () {
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
-  const todos = await db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = true;`);
+  const todos = await db.query(
+    `SELECT * FROM todos WHERE authorId = :authorId AND completed = true;`,
+    {authorId: user.id}
+  );
 
-  // Our `completedTodosPage` only displays the list of completed todos.
-  // We don't need to return `user`.
+  // We don't return `user` as the page doesn't need it
   return {todos};
 };
 ~~~
+~~~js
+const {endpoints} = require('wildcard-api');
+const db = require('../db');
+const {getLoggedUser} = require('../auth');
 
-(This is a snippet of the example at [./example](/example/).)
+endpoints.toggleComplete = async function(todoId) {
+  const user = await getLoggedUser(this.headers.cookie);
+  if( !user ) return;
 
-Our endpoints are tailored to our frontend:
-The endpoint `getCompletedTodosPageData` returns exactly and only the data needed
-by the page `completedTodosPage` that shows all completed todos, and
-the endpoint `getLandingPageData` returns exactly and only the data needed
-by the landing page that shows user information and all todos that aren't completed.
+  const todo = await getTodo(todoId);
+  // Do nothing if no todo found with id `todoId`
+  if( !todo ) return;
 
-We could have created generic endpoints instead:
+  // Do nothing if the user is not the author of the todo
+  if( todo.authorId !== user.id ) return;
+
+  const completed = !todo.completed;
+  await db.query(
+    "UPDATE todos SET completed = :completed WHERE id = :todoId;",
+    {completed, todoId}
+  );
+
+  return completed;
+};
+
+async function getTodo(todoId) {
+  const [todo] = await db.query(
+    `SELECT * FROM todos WHERE id = :todoId;`,
+    {todoId}
+  );
+  return todo;
+}
+~~~
+
+Instead of tailored endpoints, we could
+create generic endpoints, such as:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
@@ -196,110 +269,60 @@ endpoints.getTodos = async function(completed) {
 
   if( ![true, false].includes(completed) ) return;
 
-  const todos = await (
-    db.query(`SELECT * FROM todos WHERE authorId = ${user.id} AND completed = ${completed};`)
+  const todos = await db.query(
+    `SELECT * FROM todos WHERE authorId = :authorId AND completed = :completed;`,
+    {authorId: user.id, completed}
   );
+
   return todos;
 };
 ~~~
 
-But we deliberately choose to implement a tailored API instead of a generic API.
+But we deliberately choose a tailored API over a generic API.
+The benefits of a tailored API are explained at
+[Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach).
 
-Let's see why.
+Wildcard can be used with any server framework such as Express, Hapi, Koa, etc.
+In our example we use Express:
 
-## Tailored Approach
+~~~js
+const express = require('express');
+const {getApiResponse} = require('wildcard-api');
+require('./api');
 
-To see why a tailored API makes sense,
-let's imagine we want to implement a new feature for our todo app:
-We want a page that shows all the todos that the user has shared with someone.
+start();
 
-Getting our list of shared todos is very difficult
-with a RESTful/GraphQL API.
-(You'd need to extend the RESTful/GraphQL API in a clunky and unnatural way.)
-In general,
-any data requirement that doesn't fit the schema of a generic API is problematic.
+async function start() {
+  const app = express();
 
-But with a tailored API, it's easy:
-We simply create a new endpoint that uses SQL to query the list of shared todos.
-We can "directly" run SQL queries and we don't have to go over the indirection of a generic API.
+  app.all('/wildcard/*' , async(req, res, next) => {
+    const {method, url, headers} = req;
+    const apiResponse = await getApiResponse({method, url, headers});
 
-###### Full backend power
+    if( apiResponse ) {
+      res.status(apiResponse.statusCode);
+      res.send(apiResponse.body);
+    }
 
-A frontend developer can use any arbitrary SQL query to retrieve whatever the frontend needs.
-SQL is much (much!) more powerful than any RESTful or GraphQL API.
-Behind the curtain a RESTful/GraphQL API will perform SQL queries anyways.
-Going over a generic API is simply an indirection and a net loss in power.
+    next();
+  });
 
-One way to think about Wildcard is that it directly exposes the whole power of your backend to the client in a secure way.
-Not only SQL queries,
-but also NoSQL queries,
-cross-origin HTTP requests,
-etc.
+  app.use(express.static('client/dist', {extensions: ['html']}));
 
-Wildcard is also efficient:
-A tailored endpoint can return exactly and only the data the client needs.
+  app.listen(3000);
+}
+~~~
 
-###### But...
+The example's code,
+including a React frontend,
+is at
+[./example](/example/).
 
-A potential downside of a tailored API
-is if you have many clients with many distinct data requirements:
-Maintaining a huge amount of tailored endpoints can become cumbersome.
-
-In our todo app example above,
-where the browser is our only client and where we have only few endpoints,
-there are virtually no reasons to not prefer a tailored API over a generic one.
-
-On the other side of the spectrum,
-if you want third parties to access your data,
-then you basically have an unlimited number of clients
-and a generic API is required.
-
-## Wildcard vs REST vs GraphQL
-
-|                           | Wildcard API \*  | RESTful API \*\* | GraphQL API |
-| ------------------------- | :--------------: | :--------------: | :---------: |
-| Easy to setup             | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> |
-| Performant                | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> |
-| Flexible (few endpoints)  | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/><img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> |
-| Flexible (many endpoints) | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/minus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> | <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> <img src='https://github.com/brillout/wildcard-api/raw/master/docs/images/plus.svg?sanitize=true'/> |
-
-\* Following the [Tailored Approach](#tailored-approach)
 <br/>
-\*\* Following at least [REST level-1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1)
 
-With many endpoints we denote a high number of endpoints
-to the point of being unmanageable.
-The criteria is this:
-For a database change, how much effort is required to adapt the affected endpoints?
-With a large amount of endpoints,
-that effort can become high and using REST/GraphQL can be more appropriate.
-
-Rough estimate of when to use what:
-- A **prototype** typically has few endpoints and
-  **Wildcard** is certainly the better choice.
-  Example: You are a startup and you need to ship an MVP ASAP.
-- A **medium-sized application** typically has a manageable amount of endpoints and
-  **Wildcard** is most likely the better choice.
-  Example: A team of 4-5 developers implementing a Q&A website like StackOverflow.
-- A **large application** may have so many endpoints that maintaining a Wildcard API can become cumbersome and
-  **REST/GraphQL** can make more sense.
-
-You can implement your prototype with Wildcard
-and later migrate to REST/GraphQL
-if your application grows into having too many endpoints.
-Migration is easily manageable by progressively replacing Wildcard endpoints with RESTful/GraphQL endpoints.
-
-Also, combining a Wildcard API with a RESTful/GraphQL API can be a fruitful strategy.
-For example, a RESTful API for third-party clients combined with a Wildcard API for your clients.
-Or a GraphQL API for most of your data requirements combined with a Wildcard API
-for couple of data requirements that cannot be fulfilled with your GraphQL API.
-
-
-## Getting Started
+## Quick Start
 
 Work-in-progress.
-
-(Although you can go ahead and use it. `npm install wildcard-api` then define functions on `const {endpoints} = require('wildcard-api')` on the server, then use them in the browser with `import {endpoints} from 'wildcard-api/client';`. See the [example](/example/) to see how to integrate with Express (or any other server framework).)
 
 <!---
 
