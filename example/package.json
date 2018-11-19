@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "setup": "npm install yarn --no-save && (cd .. && yarn) && yarn",
-    "setup-dev": "npm run setup && (cd .. && yarn link) && yarn link wildcard-api"
+    "setup": "npm install yarn --no-save && yarn",
+    "setup-dev": "npm install yarn --no-save && (cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -12,6 +12,6 @@
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "sqlite3": "^4.0.3",
-    "wildcard-api": "../"
+    "wildcard-api": "*"
   }
 }
