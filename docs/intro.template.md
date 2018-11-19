@@ -44,7 +44,7 @@ import {endpoints} from 'wildcard-api/client';
 That's all Wildcard does:
 It simply makes a function defined on the server "callable" in the browser.
 (Behind the curtain Wildcard makes an HTTP request.)
-How you retrieve and mutate data is entirely up to you.
+How you retrieve and mutate data is up to you.
 You can use SQL, ORM, NoSQL, etc.
 
 #### Contents
@@ -69,19 +69,18 @@ This is a simple alternative to otherwise complex permissions mechanisms.
 
 To make the experience further seamless,
 Wildcard provides:
- - Automatic Error handling (optional).
+ - Automatic error handling (optional).
    <br/>
    Failures, such as when the user looses his internet connection, are automatically handled for you.
    <br/>
    Using [Handli](https://github.com/brillout/handli).
- - Extended JavaScript serialization.
+ - Extended serialization.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) instead of JSON to support further JavaScript types.
    (Such as `Date` which JSON doesn't support.)
  - Universal/Isomorphic/SSR support.
    <br/>
-   The Wildcard client works in the browser as well as on Node.js.
-   <br/>
+   The Wildcard client works in the browser as well as on Node.js and
    SSR is supported in a seamless way.
    (SSR is an increasingly common approach to render (React/Vue/Angular) views on the server.)
 
@@ -104,7 +103,7 @@ we further explore the different uses cases for custom APIs.
 
 ## Example
 
-Let's look at a Wildcard API of a simple todo app:
+Let's look at a Wildcard API for a simple todo app:
 
 ~~~js
 !INLINE ../example/api/view-endpoints --hide-source-path
@@ -131,9 +130,10 @@ In our example we use Express:
 !INLINE ../example/start --hide-source-path
 ~~~
 
-You can see
-the example's React frontend and entire code
-at [./example](/example/).
+The example's code,
+including a React frontend,
+is at
+[./example](/example/).
 
 <br/>
 
