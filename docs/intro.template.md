@@ -44,10 +44,8 @@ import {endpoints} from 'wildcard-api/client';
 That's all Wildcard does:
 It simply makes a function defined on the server "callable" in the browser.
 (Behind the curtain Wildcard makes an HTTP request.)
-
-How you retrieve data is entirely up to you.
-You can use SQL, ORM, NoSQL, GraphQL, etc.
-(The Wildcard-GraphQL combination is explained later.)
+How you retrieve and mutate data is entirely up to you.
+You can use SQL, ORM, NoSQL, etc.
 
 #### Contents
 
@@ -66,7 +64,7 @@ No schema,
 no permission rules,
 just create functions on `endpoints`.
 
-Your endpoint functions effectively act as "permission holes".
+These endpoint functions effectively act as "permission holes".
 This is a simple alternative to otherwise complex permissions mechanisms.
 
 To make the experience further seamless,
@@ -78,22 +76,19 @@ Wildcard provides:
    Using [Handli](https://github.com/brillout/handli).
  - Extended JavaScript serialization.
    <br/>
-   To support further JavaScript types.
+   Using [JSON-S](https://github.com/brillout/json-s) instead of JSON to support further JavaScript types.
    (Such as `Date` which JSON doesn't support.)
-   <br/>
-   Using [JSON-S](https://github.com/brillout/json-s) instead of JSON.
  - Universal/Isomorphic/SSR support.
    <br/>
-   The Wildcard client works in the browser as well as on Node.js,
-   and SSR is supported in a seamless way.
+   The Wildcard client works in the browser as well as on Node.js.
    <br/>
-   (SSR is an increasingly used approach to render (React/Vue/Angular) views on the server.)
+   SSR is supported in a seamless way.
+   (SSR is an increasingly common approach to render (React/Vue/Angular) views on the server.)
 
 Wildcard is an ideal tool for rapid protoyping:
-Write the couple of data queries (SQL/ORM/NoSQL/GraphQL) your prototype needs,
+Write the couple of data queries (SQL/ORM/NoSQL) your prototype needs,
 wrap them in endpoint functions,
 and you're good to go.
-(That's it! Without any schema nor permission rules.)
 
 That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
@@ -109,13 +104,14 @@ we further explore the different uses cases for custom APIs.
 
 ## Example
 
-Let's consider an API for a simple todo app.
+Let's look at a Wildcard API of a simple todo app:
 
 ~~~js
 !INLINE ../example/api/view-endpoints --hide-source-path
 ~~~
-
-(This is a snippet of [./example](/example/).)
+~~~js
+!INLINE ../example/api/action-endpoints --hide-source-path
+~~~
 
 Instead of tailored endpoints, we could
 create generic endpoints, such as:
@@ -125,20 +121,19 @@ create generic endpoints, such as:
 ~~~
 
 But we deliberately choose a tailored API over a generic API.
-The benefits are explored at
-at [Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach).
+The benefits of a tailored API are explained at
+[Usage Manual - Tailored Aproach](/docs/usage-manual.md#tailored-approach).
 
-We can also mutate data.
-
-~~~js
-~~~
-
-Wildcard can be used with any server framework such as Hapi or Koa.
-We use Express in this example.
+Wildcard can be used with any server framework such as Express, Hapi, Koa, etc.
+In our example we use Express:
 
 ~~~js
 !INLINE ../example/start --hide-source-path
 ~~~
+
+You can see the entire example's code,
+including the React frontend,
+at [./example](/example/).
 
 <br/>
 
