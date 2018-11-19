@@ -1,13 +1,9 @@
+!MENU_ORDER 1
+!MENU_LINK /../../
 !OUTPUT ../readme.md
-
-[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148" width="181">](https://github.com/brillout/wildcard-api)
-
-# Wildcard API
-
-*API for rapid prototyping (and beyond).*
-
-<br/>
-<br/>
+!INLINE ./header.md --hide-source-path
+!MENU
+&nbps;
 
 Wildcard has two goals:
  1. Provide a small JavaScript library to make the creation of a custom API super easy.

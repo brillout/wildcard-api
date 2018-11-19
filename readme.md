@@ -75,15 +75,11 @@
 
 
 -->
-
-[<img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" align="left" height="148" width="181">](https://github.com/brillout/wildcard-api)
-
-# Wildcard API
-
-*API for rapid prototyping (and beyond).*
-
-<br/>
-<br/>
+<a href="/../../#readme">
+	<img align="center" src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=79 alt="Wildcard API"/>
+</a>
+<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a></p>
+&nbps;
 
 Wildcard has two goals:
  1. Provide a small JavaScript library to make the creation of a custom API super easy.
