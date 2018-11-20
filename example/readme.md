@@ -1,4 +1,4 @@
-A (simplistic) todo app built on top of:
+A (simplistic) todo app built with:
  - SQLite
  - Node.js
  - Express

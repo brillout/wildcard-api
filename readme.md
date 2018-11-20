@@ -139,14 +139,14 @@ No schema,
 no permission rules,
 just create functions on `endpoints`.
 
-These endpoint functions effectively act as "permission holes".
+These endpoint functions effectively act as fine-grained "permission holes".
 This is a simple alternative to otherwise complex permissions mechanisms.
 
 To make the experience further seamless,
 Wildcard provides:
- - Automatic error handling (optional).
+ - Automatic handling of network errors. (Optional)
    <br/>
-   Using [Handli](https://github.com/brillout/handli) to handle network corner cases
+   By using [Handli](https://github.com/brillout/handli) which handles network corner cases
    such as when the user looses his internet connection.
  - Extended serialization.
    <br/>
@@ -258,7 +258,7 @@ In our example we use Express:
 ~~~js
 const express = require('express');
 const {getApiResponse} = require('wildcard-api');
-require('./api');
+require('./api/endpoints');
 
 start();
 
@@ -266,10 +266,9 @@ async function start() {
   const app = express();
 
   app.all('/wildcard/*' , async(req, res, next) => {
-    const {method, url, headers} = req;
-
     // `context` is made available to endpoint functions over `this`
     // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`
+    const {method, url, headers} = req;
     const context = {method, url, headers};
     const apiResponse = await getApiResponse(context);
 
@@ -281,6 +280,7 @@ async function start() {
     next();
   });
 
+  // Serve the frontend
   app.use(express.static('client/dist', {extensions: ['html']}));
 
   app.listen(3000);
