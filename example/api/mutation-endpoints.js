@@ -2,8 +2,11 @@ const {endpoints} = require('wildcard-api');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
+// We make mutation endpoints tailored to the frontend as well
+
 endpoints.toggleComplete = async function(todoId) {
   const user = await getLoggedUser(this.headers.cookie);
+  // Do nothing if user is not logged in
   if( !user ) return;
 
   const todo = await getTodo(todoId);

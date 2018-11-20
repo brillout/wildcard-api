@@ -9,7 +9,11 @@ async function start() {
 
   app.all('/wildcard/*' , async(req, res, next) => {
     const {method, url, headers} = req;
-    const apiResponse = await getApiResponse({method, url, headers});
+
+    // `context` is made available to endpoint functions over `this`
+    // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`
+    const context = {method, url, headers};
+    const apiResponse = await getApiResponse(context);
 
     if( apiResponse ) {
       res.status(apiResponse.statusCode);

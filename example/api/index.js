@@ -1,5 +1,5 @@
 require('./view-endpoints');
-require('./action-endpoints');
+require('./mutation-endpoints');
 
 // Example of unrecommended way of designing endpoints
-require('./generic-endpoints');
+require('./generic-view-endpoints');
