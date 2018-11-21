@@ -47,7 +47,7 @@ You can use SQL, an ORM, NoSQL, etc.
 
  - [Why Wildcard](#why-wildcard)
  - [Example](#example)
- - [Quick Start](#getting-started)
+ - [Quick Start](#quick-start)
 
 
 <br/>

@@ -125,7 +125,7 @@ You can use SQL, an ORM, NoSQL, etc.
 
  - [Why Wildcard](#why-wildcard)
  - [Example](#example)
- - [Quick Start](#getting-started)
+ - [Quick Start](#quick-start)
 
 
 <br/>
@@ -175,6 +175,7 @@ and
 .
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
 
 
@@ -298,6 +299,7 @@ is at
 [./example](/example/).
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
 
 
@@ -310,6 +312,7 @@ is at
 Work-in-progress.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
 
 
