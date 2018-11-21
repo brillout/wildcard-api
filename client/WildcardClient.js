@@ -30,12 +30,7 @@ function WildcardClient({
   return {
     fetchEndpoint,
     endpoints: getEndpointsProxy(),
-    addContext,
   };
-
-  function addContext(_, context) {
-    return getEndpointsProxy(context);
-  }
 
   async function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
@@ -61,6 +56,7 @@ function WildcardClient({
     }
   }
 
+  // TODO-eventually improve error messages
   function validateArgs({endpointName, endpointArgs, wildcardApiArgs, restArgs, wildcardApiFound, runDirectlyWithoutHTTP}) {
     assert.internal(wildcardApiArgs);
     const fetchEndpoint__validArgs = (
@@ -117,13 +113,17 @@ function WildcardClient({
         "But `context` is missing.",
         "You should provive `context`.",
         "(`context` should be an object holding information about the original HTTP request from the user's browser.)",
-        "(Such as HTTP headers that would typically include the user authentication information.)",
+        "(Such as HTTP headers that would typically include user authentication information.)",
       );
     } else {
       assert.usage(
         context===undefined,
-        "You are fetching an API endpoint by doing an HTTP request.",
-        "You are providing `context` but that doens't make sense. (Since we are doing an HTTP request anyways.)",
+        "Wrong SSR usage.",
+        "You are:",
+        "  - Fetching an API endpiont over HTTP",
+        "  - Providing a `context` object",
+        "But you should provide a `context` only while doing server-side rendering.",
+        "(Providing a `context` object is obsolete on the browser-side since the HTTP request will be the context and will override your provided `context` object.)",
       );
     }
   }
@@ -169,28 +169,47 @@ function WildcardClient({
     return url;
   }
 
-  function getEndpointsProxy(context) {
+  function getEndpointsProxy() {
     assertProxySupport();
 
     const dummyObject = {};
 
-    return (
-      new Proxy(dummyObject, {get: (target, prop) => {
-        if( (typeof prop !== "string") || (prop in dummyObject) ) {
-          return dummyObject[prop];
-        }
+    const proxy = new Proxy(dummyObject, {get, set});
+    return proxy;
 
-        // TODO-enventually
-        if( prop==='inspect' ) {
-          return undefined;
-        }
+    function get(target, prop) {
+      if( (typeof prop !== "string") || (prop in dummyObject) ) {
+        return dummyObject[prop];
+      }
 
-     // console.log(prop, target===dummyObject, typeof prop, new Error().stack);
-        return (...endpointArgs) => {
-          return fetchEndpoint(prop, endpointArgs, {context, [isCalledByProxy]: true});
-        }
-      }})
-    );
+      // TODO-enventually
+      if( prop==='inspect' ) {
+        return undefined;
+      }
+
+   // console.log(prop, target===dummyObject, typeof prop, new Error().stack);
+
+      (function() {
+        assert.internal(this===undefined);
+      })();
+
+      return function(...endpointArgs) {
+        assert.internal(typeof window === "undefined" || this!==window);
+        const context = this===proxy ? undefined : this;
+        return fetchEndpoint(prop, endpointArgs, {context, [isCalledByProxy]: true});
+      };
+    }
+
+    function set(){
+      assert.usage(
+        false,
+        "You cannot add/modify endpoint functions on the client.",
+        "Instead, define your endpoint functions on the server:",
+        "    const {endpoints} = require('wildcard-api');",
+        "    endpoints.newEndpoint = function(){return 'hello'};",
+        "Note that `endpoints` is loaded from `require('wildcard-api')` and not `require('wildcard-api/client')`.",
+      );
+    }
   }
 }
 
