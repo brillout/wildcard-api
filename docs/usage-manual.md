@@ -81,125 +81,42 @@
   </a>
 </p>
 <p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme"><b>Usage Manual</b></a></p>
-&nbsp;
 
 # Usage Manual
 
+ - [API](#api)
+ - [SSR](#ssr)
+ - [Error Handling](#error-handling)
+ - [Custom API vs Generic API (Wildcard API vs GraphQL/RESTful API)](/docs/usage-manual.md#custom-api-vs-generic-api-wildcard-api-vs-graphql-restful-api)
 
-## Custom API vs Generic API
 
+<br/>
 
-## Tailored Aproach
+## Custom API vs Generic API (Wildcard API vs GraphQL/RESTful API)
 
-In our example todo app we implement a tailored API:
+> TLDR;
+>  - If you have a tight client-API development, then use a custom API.
+>  - If you need to decouple client development from API development, then use a generic API.
+>  - Start your prototype with a custom API, then progressively replace it with a generic API
 
-~~~js
-// /example/api/view-endpoints
+Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
 
-const {endpoints} = require('wildcard-api');
-const db = require('../db');
-const {getLoggedUser} = require('../auth');
+With custom API we denote an API that is designed to fulfill only the data requirements of your clients.
+For example:
+ - Wildcard API (following the [Tailored Approach](#tailored-approach))
+ - [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API
 
-// Our view endpoints are tailored to the frontend. For example, the endpoint
-// `getLandingPageData` returns exactly and only the data needed by the landing page
+With generic API we denote an API that is designed to support a maximum number of data requirements.
+For example:
+ - GraphQL API
+ - RESTful API (following at least [REST level 1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1))
 
-endpoints.getLandingPageData = async function () {
-  // `this` holds contextual information such as HTTP headers
-  const user = await getLoggedUser(this.headers.cookie);
-  if( ! user ) return {userIsNotLoggedIn: true};
+#### Contents
 
-  const todos = await db.query(
-    `SELECT * FROM todos WHERE authorId = :authorId AND completed = false;`,
-    {authorId: user.id}
-  );
+ - [Tight client-API development](#tight-client-api-development)
+ - [Use Cases - Custom API](#use-cases--custom-api)
+ - [Use Cases - Generic API](#use-cases--generic-api)
 
-  // We return `user` as the landing page displays user information.
-  return {user, todos};
-};
-
-endpoints.getCompletedPageData = async function () {
-  const user = await getLoggedUser(this.headers.cookie);
-  if( ! user ) return {userIsNotLoggedIn: true};
-
-  const todos = await db.query(
-    `SELECT * FROM todos WHERE authorId = :authorId AND completed = true;`,
-    {authorId: user.id}
-  );
-
-  // We don't return `user` as the page doesn't need it
-  return {todos};
-};
-~~~
-~~~js
-// /example/api/mutation-endpoints
-
-const {endpoints} = require('wildcard-api');
-const db = require('../db');
-const {getLoggedUser} = require('../auth');
-
-// We make mutation endpoints tailored to the frontend as well
-
-endpoints.toggleComplete = async function(todoId) {
-  const user = await getLoggedUser(this.headers.cookie);
-  // Do nothing if user is not logged in
-  if( !user ) return;
-
-  const todo = await getTodo(todoId);
-  // Do nothing if no todo found with id `todoId`
-  if( !todo ) return;
-
-  // Do nothing if the user is not the author of the todo
-  if( todo.authorId !== user.id ) return;
-
-  const completed = !todo.completed;
-  await db.query(
-    "UPDATE todos SET completed = :completed WHERE id = :todoId;",
-    {completed, todoId}
-  );
-
-  return completed;
-};
-
-async function getTodo(todoId) {
-  const [todo] = await db.query(
-    `SELECT * FROM todos WHERE id = :todoId;`,
-    {todoId}
-  );
-  return todo;
-}
-~~~
-
-Instead of tailored endpoints, we could
-create generic endpoints, such as:
-
-~~~js
-// /example/api/generic-view-endpoints
-
-const {endpoints} = require('wildcard-api');
-const db = require('../db');
-const {getLoggedUser} = require('../auth');
-
-endpoints.getUser = async function() {
-  const user = await getLoggedUser(this.headers.cookie);
-  return user;
-};
-
-endpoints.getTodos = async function(completed) {
-  const user = await getLoggedUser(this.headers.cookie);
-  if( ! user ) return;
-
-  if( ![true, false].includes(completed) ) return;
-
-  const todos = await db.query(
-    `SELECT * FROM todos WHERE authorId = :authorId AND completed = :completed;`,
-    {authorId: user.id, completed}
-  );
-
-  return todos;
-};
-~~~
-
-But we deliberately choose a tailored API over a generic API.
 
 <!---
 

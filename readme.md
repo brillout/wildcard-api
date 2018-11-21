@@ -81,13 +81,12 @@
   </a>
 </p>
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a></p>
-&nbsp;
 
 Goals:
  1. JavaScript library to make the creation of a custom API super easy.
  2. Debunk the common misconception that a generic API (REST/GraphQL) is a silver bullet.
     A generic API is great for third party clients and large applications
-    but is an unecessary burden for rapid prototyping and medium-sized applications.
+    but is an unecessary burden for prototypes and medium-sized applications.
 
 With Wildcard,
 creating an API endpoint is as easy as creating a JavaScript function:
@@ -144,9 +143,12 @@ This is a simple alternative to otherwise complex permissions mechanisms.
 
 To make the experience further seamless,
 Wildcard provides:
+ - Zero setup.
+   <br/>
+   Create a Wildcard API with Express, Koa, Hapi, etc. with only a couple of lines.
  - Automatic handling of network errors. (Optional)
    <br/>
-   By using [Handli](https://github.com/brillout/handli) which handles network corner cases
+   Using [Handli](https://github.com/brillout/handli) to handles network corner cases
    such as when the user looses his internet connection.
  - Extended serialization.
    <br/>
@@ -166,8 +168,8 @@ That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
  - Large applications with a frontend development decoupled from API development.
 
-At [Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
-we explore custom API use cases.
+We explore the use cases for custom APIs and generic APIs at
+[Custom API vs Generic API (Wildcard API vs GraphQL/RESTful API)](/docs/usage-manual.md#custom-api-vs-generic-api-wildcard-api-vs-graphql-restful-api)
 
 
 <br/>
@@ -216,7 +218,7 @@ const {endpoints} = require('wildcard-api');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
-// We make mutation endpoints tailored to the frontend as well
+// We tailor mutation endpoints to the frontend as well
 
 endpoints.toggleComplete = async function(todoId) {
   const user = await getLoggedUser(this.headers.cookie);
@@ -224,7 +226,9 @@ endpoints.toggleComplete = async function(todoId) {
   if( !user ) return;
 
   const todo = await getTodo(todoId);
-  // Do nothing if no todo found with id `todoId`
+  // Do nothing if todo not found.
+  // (This can happen since `toggleComplete` is essentially public and anyone
+  // on the internet can "call" it with an arbitrary `todoId`.)
   if( !todo ) return;
 
   // Do nothing if the user is not the author of the todo
@@ -247,10 +251,6 @@ async function getTodo(todoId) {
   return todo;
 }
 ~~~
-
-We deliberately choose to implement tailored endpoints over generic ones.
-We explain why at
-[Tailored Aproach](/docs/usage-manual.md#tailored-approach).
 
 Wildcard can be used with any server framework such as Express, Hapi, Koa, etc.
 In our example we use Express:
