@@ -9,18 +9,18 @@ To run the app:
 
 1. Install dependencies.
 
-  ~~~shell
-  $ npm run setup
-  ~~~
+   ~~~shell
+   $ npm run setup
+   ~~~
 
 2. Build the frontend.
 
-  ~~~shell
-  $ npm run build
-  ~~~
+   ~~~shell
+   $ npm run build
+   ~~~
 
-2. Run the server
+2. Run the server.
 
-  ~~~shell
-  $ npm run server
-  ~~~
+   ~~~shell
+   $ npm run server
+   ~~~
