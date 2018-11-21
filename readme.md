@@ -80,7 +80,7 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a></p>
+<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme">Usage</a></p>
 
 Goals:
  1. JavaScript library to make the creation of a custom API super easy.
@@ -168,11 +168,16 @@ That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
  - Large applications with a frontend development decoupled from API development.
 
-We explore the use cases for custom APIs and generic APIs at
-[Custom API vs Generic API (Wildcard API vs GraphQL/RESTful API)](/docs/usage-manual.md#custom-api-vs-generic-api-wildcard-api-vs-graphql-restful-api)
+We explore the use cases for different kind of APIs at
+[Wildcard API vs GraphQL/RESTful API](/docs/usage-manual.md#wildcard-api-vs-graphqlrestful-api)
+and
+[Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
+.
 
-
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+
+
 
 ## Example
 
@@ -292,11 +297,24 @@ including a React frontend,
 is at
 [./example](/example/).
 
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+
+
+
+
+
 
 ## Quick Start
 
 Work-in-progress.
+
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
+
+
+
+
 
 <!---
 

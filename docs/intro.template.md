@@ -90,11 +90,15 @@ That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
  - Large applications with a frontend development decoupled from API development.
 
-We explore the use cases for custom APIs and generic APIs at
-[Custom API vs Generic API (Wildcard API vs GraphQL/RESTful API)](/docs/usage-manual.md#custom-api-vs-generic-api-wildcard-api-vs-graphql-restful-api)
+We explore the use cases for different kind of APIs at
+[Wildcard API vs GraphQL/RESTful API](/docs/usage-manual.md#wildcard-api-vs-graphqlrestful-api)
+and
+[Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
+.
+
+!INLINE ./snippets/intro-section-footer.md --hide-source-path
 
 
-<br/>
 
 ## Example
 
@@ -119,8 +123,19 @@ including a React frontend,
 is at
 [./example](/example/).
 
-<br/>
+!INLINE ./snippets/intro-section-footer.md --hide-source-path
+
+
+
+
+
 
 ## Quick Start
 
 Work-in-progress.
+
+!INLINE ./snippets/intro-section-footer.md --hide-source-path
+
+
+
+
