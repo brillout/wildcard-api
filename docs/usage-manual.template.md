@@ -1,86 +1,6 @@
-<!---
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
--->
-<p align="center">
-  <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
-  </a>
-</p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme"><b>Usage</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
+!MENU_ORDER 2
+!INLINE ./header.md --hide-source-path
+!MENU
 &nbsp;
 
 # Usage
@@ -112,10 +32,7 @@ We explore the use cases for custom APIs and generic APIs in the next section
 [Custom API vs Generic API](#custom-api-vs-generic-api)
 .
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
 
 
 
@@ -153,10 +70,7 @@ then the SQL query of the `getLoggedUser` endpoint needs to be changed to `SELEC
 
 Using a custom API requires a tight client-API development.
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
 
 
 
@@ -165,81 +79,3 @@ Using a custom API requires a tight client-API development.
 
 
 
-
-<!---
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/usage.template.md` instead.
-
-
-
-
-
-
--->

@@ -80,7 +80,7 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme">Usage</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
+<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
 Goals:
  1. JavaScript library to make the creation of a custom API super easy.

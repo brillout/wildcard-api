@@ -1,4 +1,4 @@
-!INLINE ./top-link.md #usage --hide-source-path
+!INLINE ./top-link.md #contents --hide-source-path
 <br/>
 <br/>
 <br/>

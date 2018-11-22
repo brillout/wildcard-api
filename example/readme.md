@@ -80,7 +80,7 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme">Usage</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
 
 A (simplistic) todo app built with:
  - React
@@ -127,7 +127,7 @@ To run the app:
    $ npm run server
    ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -178,7 +178,7 @@ endpoints.getCompletedPageData = async function () {
 };
 ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -219,7 +219,7 @@ async function start() {
 }
 ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -267,7 +267,7 @@ async function getTodo(todoId) {
 }
 ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -339,7 +339,7 @@ function Todo({todo, updateTodo}) {
 }
 ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
