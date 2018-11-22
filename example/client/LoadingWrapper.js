@@ -16,5 +16,17 @@ function LoadingWrapper({fetchData, children: renderContent}) {
     return 'Loading...';
   }
 
-  return renderContent({data, setData});
+  return renderContent({data, updateTodo});
+
+  function updateTodo(todo, newValues) {
+    setData({
+      ...data,
+      todos: data.todos.map(_todo => {
+        if( _todo.id === todo.id ) {
+          return {..._todo, ...newValues};
+        }
+        return _todo;
+      })
+    });
+  }
 }

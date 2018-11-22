@@ -190,12 +190,14 @@ function WildcardClient({
    // console.log(prop, target===dummyObject, typeof prop, new Error().stack);
 
       (function() {
-        assert.internal(this===undefined);
+        // Webpack set this to `undefined`
+        // Parcel sets `this` to `window`
+        assert.internal(this===undefined || typeof window !== "undefined" && this===window, this);
       })();
 
       return function(...endpointArgs) {
-        assert.internal(typeof window === "undefined" || this!==window);
-        const context = this===proxy ? undefined : this;
+        const noContext = this===proxy || this===undefined || typeof window !== "undefined" && this===window;
+        const context = noContext ? undefined : this;
         return fetchEndpoint(prop, endpointArgs, {context, [isCalledByProxy]: true});
       };
     }

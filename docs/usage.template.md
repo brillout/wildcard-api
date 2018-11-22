@@ -32,7 +32,7 @@ We explore the use cases for custom APIs and generic APIs in the next section
 [Custom API vs Generic API](#custom-api-vs-generic-api)
 .
 
-!INLINE ./snippets/usage-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md --hide-source-path
 
 
 
@@ -70,7 +70,7 @@ then the SQL query of the `getLoggedUser` endpoint needs to be changed to `SELEC
 
 Using a custom API requires a tight client-API development.
 
-!INLINE ./snippets/usage-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md --hide-source-path
 
 
 
