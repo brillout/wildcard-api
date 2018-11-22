@@ -125,7 +125,7 @@ You can use SQL, ORM, NoSQL, etc.
 
  - [Why Wildcard](#why-wildcard)
  - [Example](#example)
- - [Wildcard API vs GraphQL/RESTful API](#wildcard-api-vs-graphqlrestful-api)
+ - [Wildcard vs GraphQL/RESTful](#wildcard-vs-graphqlrestful)
  - [Quick Start](#quick-start)
 
 
@@ -266,6 +266,36 @@ and a React frontend.
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 
 <br/>
+
+
+
+
+
+
+## Wildcard vs GraphQL/RESTful
+
+Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
+
+With "custom API" we denote an API that is designed to fulfill only the data requirements of your clients.
+For example:
+ - Wildcard API
+ - [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API
+
+With "generic API" we denote an API that is designed to support a maximum number of data requirements.
+For example:
+ - GraphQL API
+ - [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API
+
+We explore use cases for custom APIs and for generic APIs at
+[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
+.
+
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+
+
 
 
 
