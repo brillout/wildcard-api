@@ -108,7 +108,7 @@
 
 ### Tight client-API development
 
-An endpoint like
+Endpoints such as
 
 ~~~js
 endpoints.getLandingPageData = async function() {
@@ -121,7 +121,7 @@ endpoints.getLandingPageData = async function() {
 
 tightly couples frontend development with API development.
 For example, if the frontend needs the todo creation dates,
-then the SQL query of the `getLoggedUser` endpoint needs to be changed to `SELECT id, text, created_at`.
+then the SQL query of our `getLandingPageData` endpoint needs to be changed to `SELECT id, text, created_at`.
 
 Using a custom API requires a tight client-API development.
 
