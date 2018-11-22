@@ -88,7 +88,6 @@
  - [API](#api)
  - [SSR](#ssr)
  - [Error Handling](#error-handling)
- - [Wildcard API vs GraphQL/RESTful API](#wildcard-api-vs-graphqlrestful-api)
  - [Custom API vs Generic API](#custom-api-vs-generic-api)
 
 
@@ -98,18 +97,18 @@
 
 Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
 
-With custom API we denote an API that is designed to fulfill only the data requirements of your clients.
+With "custom API" we denote an API that is designed to fulfill only the data requirements of your clients.
 For example:
- - Wildcard API (following the [Tailored Approach](#tailored-approach))
+ - Wildcard API
  - [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API
 
-With generic API we denote an API that is designed to support a maximum number of data requirements.
+With "generic API" we denote an API that is designed to support a maximum number of data requirements.
 For example:
  - GraphQL API
- - RESTful API (following at least [REST level 1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1))
+ - [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API
 
-We explore the use cases for custom APIs and generic APIs in the next section
-[Custom API vs Generic API](#custom-api-vs-generic-api)
+We explore the use cases for custom APIs and generic APIs in
+[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
 .
 
 <b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
