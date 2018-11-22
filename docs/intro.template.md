@@ -136,13 +136,13 @@ Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custo
 
 With "custom API" we denote an API that is designed to fulfill only the data requirements of your clients.
 E.g.:
-<br/> &nbsp; &nbsp; &bull; Wildcard API
-<br/> &nbsp; &nbsp; &bull; API with [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0)
+<br/> &nbsp; &nbsp; &bull; &nbsp; Wildcard API
+<br/> &nbsp; &nbsp; &bull; &nbsp; API with [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0)
 
 With "generic API" we denote an API that is designed to support a maximum number of data requirements.
 E.g.:
-<br/> &nbsp; &nbsp; &bull; GraphQL API
-<br/> &nbsp; &nbsp; &bull; API with [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1)
+<br/> &nbsp; &nbsp; &bull; &nbsp; GraphQL API
+<br/> &nbsp; &nbsp; &bull; &nbsp; API with [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1)
 
 We explore use cases for custom APIs and for generic APIs at
 [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
