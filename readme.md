@@ -80,12 +80,12 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme">Usage</a></p>
+<p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme">Usage</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
 Goals:
  1. JavaScript library to make the creation of a custom API super easy.
- 2. Debunk the common misconception that a generic API (REST/GraphQL) is a silver bullet.
-    A generic API is great for third party clients and large applications
+ 2. Debunk the common misconception that a generic API is a silver bullet.
+    A generic API, such as a RESTful API or GraphQL API, is great for third party clients and large applications
     but is an unecessary burden for prototypes and medium-sized applications.
 
 With Wildcard,
@@ -119,7 +119,7 @@ It makes functions defined on the server "callable" in the browser.
 That's it.
 Wildcard takes care of HTTP requests and serialization.
 How you retrieve/mutate data is up to you.
-You can use SQL, an ORM, NoSQL, etc.
+You can use SQL, ORM, NoSQL, etc.
 
 #### Contents
 
@@ -145,11 +145,12 @@ To make the experience further seamless,
 Wildcard provides:
  - Zero setup.
    <br/>
-   Create a Wildcard API with Express, Koa, Hapi, etc. with only a couple of lines.
- - Automatic handling of network errors. (Optional)
+   Create a Wildcard API with Express, Koa, Hapi, etc. with only couple of lines.
+ - Error handling.
    <br/>
-   Using [Handli](https://github.com/brillout/handli) to handles network corner cases
+   Using [Handli](https://github.com/brillout/handli) to automatically handle network corner cases
    such as when the user looses his internet connection.
+   (But you can also provide your own error handling.)
  - Extended serialization.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) to support further JavaScript types.
@@ -159,16 +160,21 @@ Wildcard provides:
    The Wildcard client works in the browser as well as on Node.js with seamless support for
    server-side rendering.
 
-Wildcard is an ideal tool for rapid protoyping:
-Write the couple of data queries (SQL/ORM/NoSQL) your prototype needs,
+Wildcard's simplicity is ideal to quickly deliver a protoype:
+Write the couple of SQL/ORM/NoSQL queries your prototype's frontend needs,
 wrap them in endpoint functions,
 and you're good to go.
+
+The structureless nature of a custom API is a great fit for rapid prototyping
+whereas the rigid structure of a generic API's schema and permission rules
+gets in the way of evolving your prototype.
 
 That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
  - Large applications with a frontend development decoupled from API development.
 
-We explore the use cases for different kind of APIs at
+We explore all kinds of different use cases
+at
 [Wildcard API vs GraphQL/RESTful API](/docs/usage-manual.md#wildcard-api-vs-graphqlrestful-api)
 and
 [Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
@@ -182,7 +188,7 @@ and
 
 ## Example
 
-A Wildcard API for a simple todo app:
+View endpoints of a simple todo app:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
@@ -218,44 +224,6 @@ endpoints.getCompletedPageData = async function () {
   // We don't return `user` as the page doesn't need it
   return {todos};
 };
-~~~
-~~~js
-const {endpoints} = require('wildcard-api');
-const db = require('../db');
-const {getLoggedUser} = require('../auth');
-
-// We tailor mutation endpoints to the frontend as well
-
-endpoints.toggleComplete = async function(todoId) {
-  const user = await getLoggedUser(this.headers.cookie);
-  // Do nothing if user is not logged in
-  if( !user ) return;
-
-  const todo = await getTodo(todoId);
-  // Do nothing if todo not found.
-  // (This can happen since `toggleComplete` is essentially public and anyone
-  // on the internet can "call" it with an arbitrary `todoId`.)
-  if( !todo ) return;
-
-  // Do nothing if the user is not the author of the todo
-  if( todo.authorId !== user.id ) return;
-
-  const completed = !todo.completed;
-  await db.query(
-    "UPDATE todos SET completed = :completed WHERE id = :todoId;",
-    {completed, todoId}
-  );
-
-  return completed;
-};
-
-async function getTodo(todoId) {
-  const [todo] = await db.query(
-    `SELECT * FROM todos WHERE id = :todoId;`,
-    {todoId}
-  );
-  return todo;
-}
 ~~~
 
 Wildcard can be used with any server framework such as Express, Hapi, Koa, etc.
@@ -293,10 +261,11 @@ async function start() {
 }
 ~~~
 
-The example's entire code,
-including a React frontend,
-is at
-[./example](/example/).
+At [Example](/example/)
+we further showcase our toto app,
+including mutation endpoints,
+and a React frontend.
+
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 

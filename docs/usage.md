@@ -80,7 +80,7 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=90 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme"><b>Usage</b></a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage.md#readme"><b>Usage</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 &nbsp;
 
 # Usage
