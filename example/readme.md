@@ -192,14 +192,14 @@ const express = require('express');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
-start();
+startServer();
 
-async function start() {
+async function startServer() {
   const app = express();
 
   app.all('/wildcard/*' , async(req, res, next) => {
-    // `context` is made available to endpoint functions over `this`
-    // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`
+    // Our `context` object is made available to endpoint functions over `this`.
+    // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
     const {method, url, headers} = req;
     const context = {method, url, headers};
     const apiResponse = await getApiResponse(context);
@@ -212,7 +212,7 @@ async function start() {
     next();
   });
 
-  // Serve the frontend
+  // Serve our frontend
   app.use(express.static('client/dist', {extensions: ['html']}));
 
   app.listen(3000);

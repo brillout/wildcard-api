@@ -11,7 +11,7 @@ Goals:
     but is an **unecessary burden for prototypes and medium-sized applications**.
 
 With Wildcard,
-creating an API endpoint is as easy as creating a JavaScript function:
+**creating an API endpoint is as easy as creating a JavaScript function**:
 
 ~~~js
 // Node.js Server
@@ -117,7 +117,7 @@ In our example we use Express:
 !INLINE ../example/start --hide-source-path
 ~~~
 
-At [Example](/example/)
+At [Example](/example/#readme)
 we further showcase our toto app,
 including mutation endpoints,
 and a React frontend.
@@ -135,14 +135,14 @@ and a React frontend.
 Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
 
 With "custom API" we denote an API that is designed to fulfill only the data requirements of your clients.
-For example:
- - Wildcard API
- - [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API
+E.g.:
+ &nbps; &nbps; &#2022; Wildcard API
+ &nbps; &nbps; &#2022; API with [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0)
 
 With "generic API" we denote an API that is designed to support a maximum number of data requirements.
-For example:
- - GraphQL API
- - [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API
+E.g.:
+ &nbps; &nbps; &#2022; GraphQL API
+ &nbps; &nbps; &#2022; API with [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1)
 
 We explore use cases for custom APIs and for generic APIs at
 [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
