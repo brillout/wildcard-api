@@ -6,9 +6,6 @@
 # Usage
 
 
- - [API](#api)
- - [SSR](#ssr)
- - [Error Handling](#error-handling)
  - [Custom API vs Generic API](#custom-api-vs-generic-api)
 
 
@@ -150,6 +147,7 @@ In particular, with Wildcard, the whole power of the backend is only one JavaScr
 Combining a custom API with a generic API can be a successfull strategy.
 
 - **First custom API, later generic API**.
+  <br/>
   Your first prototype will most likely have a tight frontend-backend development
   and a custom API is the right choice.
   Afterwards,
@@ -164,10 +162,12 @@ Combining a custom API with a generic API can be a successfull strategy.
   A custom API / Wildcard can then act as a permission layer on top of such generated API.
 
 - **Custom API + GraphQL API**
+  <br/>
   This is the most powerful setup:
   Third parties have the full power of GraphQL and your clients have even more power with custom endpoints.
 
 - **Custom API + RESTful API**.
+  <br/>
   From the perspective of a third party,
   GraphQL is superior to REST.
   But a GraphQL API is considerably more difficult to implement than a RESTful API.
