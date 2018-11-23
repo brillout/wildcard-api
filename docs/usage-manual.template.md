@@ -6,12 +6,108 @@
 # Usage
 
 
+ - [API](#api)
+ - [SSR](#ssr)
+ - [Error Handling](#error-handling)
  - [Custom API vs Generic API](#custom-api-vs-generic-api)
 
-
-
-
 <br/>
+
+## API
+
+TODO
+
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
+
+
+
+
+## Error Handling
+
+By default, Wildcard uses
+[Handli](https://github.com/brillout/handli)
+to automatically handle network corner cases.
+
+You can get rid of Handli and handle network errors yourself
+by constructing the Wildcard client yourself
+and providing your own implementation of `makeHttpRequest`.
+You have then full control over how HTTP requests are made,
+including how HTTP errors are handled.
+
+More infos at [API](#api).
+
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
+
+
+
+
+
+## SSR
+
+The request context needs to be preserved while doing server-side rendering.
+
+You can use JavaScript's `Function.prototype.bind()` method to do so:
+
+~~~js
+const {endpoints} = require('wildcard-api/client');
+
+async function getInitialProps({isServer, request: {headers}={}}) {
+  let {getLandingPageData} = endpoints;
+  if( isServer ) {
+    // We pass on the HTTP headers of the original user request
+    const context = {headers};
+    getLandingPageData = getLandingPageData.bind(context);
+  }
+
+	const landingPageData = await getLandingPageData();
+  return landingPageData;
+}
+~~~
+
+The endpoint `getLandingPageData` then has access to `headers`:
+
+~~~js
+const {endpoints} = require('wildcard');
+
+endpoints.getLandingPageData = async function(){
+  const {headers} = this;
+
+  const user = await getLoggedUser(headers);
+
+  const moreInfo = await getMoreInfo();
+
+  return {user, ...moreInfo};
+};
+~~~
+
+When the client runs in Node.js,
+the context originates from our `bind` call above.
+
+When the client runs in the browswer, the context originates from:
+
+~~~js
+const express = require('express');
+const {getApiResponse} = require('wildcard-api');
+
+const app = express();
+
+app.all('/wildcard/*' , async(req, res, next) => {
+  const {headers} = req;
+  const context = {headers};
+  const apiResponse = await getApiResponse(context);
+
+  if( apiResponse ) {
+    res.status(apiResponse.statusCode);
+    res.send(apiResponse.body);
+  }
+
+  next();
+});
+~~~
+
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
+
+
 
 ## Custom API vs Generic API
 
@@ -103,7 +199,7 @@ In particular, with Wildcard, the whole power of the backend is only one JavaScr
 
 - **Large application + API server**.
   <br/>
-  Decoupling backend development from frontend development makes sense for large applications with a high number of developers.
+  Decoupling backend development from frontend development makes sense for large applications that have a high number of developers.
   A way to achieve this is to setup an Node.js API server maintained by the frontend team.
   The rest of the backend is maintained by the backend team and can be written
   with Node.js or with Python, Go, Rust, etc.
@@ -127,7 +223,7 @@ In particular, with Wildcard, the whole power of the backend is only one JavaScr
   In other words: Third parties want a generic API.
   This is the use case where GraphQL excels most.
 
-- **Large applications**.
+- **Large application**.
   <br/>
   Developers of a large application are often split into a frontend and backend team.
   The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
@@ -154,14 +250,14 @@ Combining a custom API with a generic API can be a successfull strategy.
   and as your prototype grows into a large application,
   you can progressively replace custom API endpoints with a generic API.
 
-- **Permission layer for generated GraphQL/REST API**.
+- **Permission layer for generated GraphQL/RESTful API**.
   <br/>
   A RESTful/GraphQL API that is automatically generated,
   such as with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine),
   can be a convenient way to retrieve/mutate data.
   A custom API / Wildcard can then act as a permission layer on top of such generated API.
 
-- **Custom API + GraphQL API**
+- **Custom API + GraphQL API**.
   <br/>
   This is the most powerful setup:
   Third parties have the full power of GraphQL and your clients have even more power with custom endpoints.
