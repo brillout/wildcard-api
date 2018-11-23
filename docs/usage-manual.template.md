@@ -18,14 +18,14 @@
 > TLDR;
 >  - If you have a tight client-API development, then use a custom API.
 >  - If you need to decouple client development from API development, then use a generic API.
->  - Start your prototype with a custom API, then progressively replace it with a generic API
+>  - Start your prototype with a custom API then progressively replace it with a generic API
 
 #### Contents
 
  - [Tight client-API development](#tight-client-api-development)
  - [Use Cases - Custom API](#use-cases--custom-api)
  - [Use Cases - Generic API](#use-cases--generic-api)
- - [Use Cases - Mixed API](#use-cases--mixed-api)
+ - [Use Cases - Hybrid](#use-cases--Hybrid)
 
 ### Tight client-API development
 
@@ -44,7 +44,7 @@ tightly couples frontend development with API development.
 For example, if the frontend needs the todo creation dates,
 then the SQL query of the `getLandingPageData` endpoint needs to be changed to `SELECT id, text, created_at`.
 
-Using a custom API requires a tight client-API development.
+A custom API requires a tight client-API development.
 
 !INLINE ./snippets/usage-section-footer.md --hide-source-path
 
@@ -78,14 +78,14 @@ Using a custom API requires a tight client-API development.
 - **Single developer**.
   <br/>
   If you want to develop an app by yourself,
-  you will then own the frontend development as well as the backend development.
-  Choosing a full-stack JavaScript with Wildcard is then a good choice for rapid development.
+  you will own the frontend and backend development.
+  Choosing full-stack JavaScript with Wildcard is then a good choice for rapid development.
 
 - **Full-stack developers**.
   <br/>
   If the frontend is developed by full-stack developers,
   then using a Node.js API server with Wildcard can be used to retrieve/mutate data from the frontend.
-  The rest of the backend can be written with Node.js or in another programming environment such as Python.
+  The rest of the backend can be written with Node.js or with Python, Go, Rust, etc.
 
 - **Mobile apps with PWA**.
   <br/>
@@ -100,10 +100,41 @@ Using a custom API requires a tight client-API development.
   The server API has access to the whole backend while using Wildcard as permission layer.
   That way the frontend team can directly access the backend/databases without being constraint by the schema of a generic API.
 
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
 
-### Mixed API
 
-Also, combining a custom API with a generic API can be a successfull strategy.
+
+
+
+
+### Use Cases - Generic API
+
+- **Third parties**.
+  <br/>
+  A third party wants to be
+  able to retrieve/mutate all kinds of data in all kinds of ways.
+  In other words: it expects a generic API.
+  This is the use case where GraphQL excels.
+
+- **Large applications**.
+  <br/>
+  Developers of a large application are often split into a frontend and backend team.
+  The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
+  This is a good use case for a generic API.
+  An alternative is to set up a custom API with a server API that is maintained by the frontend team
+  (see
+  [Use Cases - Custom API - Server API](#use-cases--custom-api)
+  )
+  .
+
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
+
+
+
+
+### Hybrid
+
+Combining a custom API with a generic API can be a successfull strategy.
 
 - **First custom API, later generic API**.
   decouple client development from API development,
@@ -128,31 +159,4 @@ Also, combining a custom API with a generic API can be a successfull strategy.
   <br/>
   Browser frontend for Large application
 
-### Use Cases - Generic API
-
-- **Third parties**.
-  <br/>
-  A third party wants to be
-  able to retrieve/mutate all kinds of data in all kinds of ways.
-  In other words: it expects a generic API.
-  This is the use case where GraphQL excels.
-
-- **Large applications**.
-  <br/>
-  Developers of a large application are often split into a frontend and backend team.
-  The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
-  This is a good use case for a generic API.
-  An alternative is to set up a custom API with a server API that is maintained by the frontend team
-  (see
-  [Use Cases - Custom API - Server API](#use-cases--custom-api)
-  )
-  .
-
-
-
-
-
-
-
-
-
+!INLINE ./snippets/usage-section-footer.md --hide-source-path

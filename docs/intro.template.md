@@ -39,15 +39,15 @@ import {endpoints} from 'wildcard-api/client';
 That's the only thing Wildcard does:
 It makes functions defined on the server "callable" in the browser.
 That's it.
-Wildcard takes care of HTTP requests and serialization.
-How you retrieve/mutate data is up to you.
+Wildcard takes care of HTTP request and serialization.
+How you retrieve/mutate data is up to you:
 You can use SQL, ORM, NoSQL, etc.
 
 #### Contents
 
  - [Why Wildcard](#why-wildcard)
  - [Example](#example)
- - [Wildcard vs GraphQL/RESTful](#wildcard-vs-graphqlrestful)
+ - [Wildcard vs GraphQL/REST](#wildcard-vs-graphqlrest)
  - [Quick Start](#quick-start)
 
 
@@ -56,8 +56,7 @@ You can use SQL, ORM, NoSQL, etc.
 ### Why Wildcard
 
 With Wildcard you
-**retrieve/mutate data from the frontend in a seamless way**
-:
+**retrieve/mutate data from the frontend in a seamless way**:
 No schema,
 no permission rules,
 just create functions on `endpoints`.
@@ -72,7 +71,7 @@ and you're good to go.
 
 The **structureless nature of a custom API is a good fit for rapid prototyping**
 whereas the rigid structure of a generic API's schema
-gets in the way of evolving your prototype.
+gets in the way of quickly evolving your prototype.
 
 That said, a custom API (and thus Wildcard) is not suitable for:
  - Third party clients. (A generic API is inherently required.)
@@ -82,17 +81,18 @@ To make the developing experience further seamless,
 Wildcard provides:
  - **Zero setup**.
    <br/>
-   Couple of lines are enough to set up a Wildcard API with Express, Koa, Hapi, etc.
+   Set up a Wildcard API with only couple of lines.
+   Works with any server framework: Express, Koa, Hapi, etc.
  - **Error handling**.
    <br/>
    Using [Handli](https://github.com/brillout/handli) to automatically handle network corner cases,
    such as when the user looses his internet connection.
-   (You can also provide your own error handling.)
+   (You can implement your own error handling.)
  - **Extended serialization**.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) to support further JavaScript types.
    (Such as `Date` which JSON doesn't support.)
- - **Universal/Isomorphic/SSR support**.
+ - **Universal / Isomorphic / SSR support**.
    <br/>
    The Wildcard client works in the browser as well as on Node.js.
    With seamless support for
@@ -130,7 +130,7 @@ and a React frontend.
 
 
 
-## Wildcard vs GraphQL/RESTful
+## Wildcard vs GraphQL/REST
 
 Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
 

@@ -56,6 +56,9 @@ To run the app:
 
 ## Code Highlights
 
+Showcase of the example's code.
+
+<br/>
 
 ### View Endpoints
 
