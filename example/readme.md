@@ -137,6 +137,9 @@ To run the app:
 
 ## Code Highlights
 
+Showcase of the example's code.
+
+<br/>
 
 ### View Endpoints
 
@@ -160,7 +163,7 @@ endpoints.getLandingPageData = async function () {
     {authorId: user.id}
   );
 
-  // We return `user` as the landing page displays user information.
+  // The landing page displays user information, so we return `user`
   return {user, todos};
 };
 
