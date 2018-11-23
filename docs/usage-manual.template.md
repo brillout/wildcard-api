@@ -5,10 +5,13 @@
 
 # Usage
 
+
  - [API](#api)
  - [SSR](#ssr)
  - [Error Handling](#error-handling)
  - [Custom API vs Generic API](#custom-api-vs-generic-api)
+
+
 
 
 <br/>
@@ -23,9 +26,13 @@
 #### Contents
 
  - [Tight client-API development](#tight-client-api-development)
- - [Use Cases - Custom API](#use-cases--custom-api)
- - [Use Cases - Generic API](#use-cases--generic-api)
- - [Use Cases - Hybrid](#use-cases--Hybrid)
+ - [Use Cases: Custom API](#use-cases-custom-api)
+ - [Use Cases: Generic API](#use-cases-generic-api)
+ - [Use Cases: Hybrid](#use-cases-hybrid)
+
+<br/>
+
+
 
 ### Tight client-API development
 
@@ -46,24 +53,28 @@ then the SQL query of the `getLandingPageData` endpoint needs to be changed to `
 
 A custom API requires a tight client-API development.
 
+A prototype is usually developed by one or two developers and a tight frontend-backend development is given.
+
+A tight frontend-backend development combined with a custom API is powerful:
+Instead of being limited by the structure of a generic API's schema,
+all kinds of custom endpoints can be written and do exactly what the frontend needs.
+In particular, with Wildcard, the whole power of the backend is only one JavaScript function away to the frontend.
+
 !INLINE ./snippets/usage-section-footer.md --hide-source-path
 
 
-### Use Cases - Custom API
+
+
+
+
+### Use Cases: Custom API
 
 - **Full-stack JavaScript**.
   <br/>
-  Wildcard excels with following setup:
-  Node.js + React/Vue/Angular/etc. + tight frontend-backend development.
-  The ease of Wildcard is hard to beat:
-  You write the data queries (SQL/ORM/NoSQL) the frontend needs, wrap them in endpoint functions, and that's it.
-  And, because you develop the frontend and backend at the same time,
-  changing these data queries as you develop the frontend is not a problem.
-  We would argue that there are no reason to not use Wildcard in such setup.
-  One way to think about Wildcard
-  a thin permission layer to expose the whole power of the backend to the frontend:
-  the whole power of the backend is on endpoint function away.
-  Anything the backend can do is one endpoint function.
+  A frontend + backend written in the same language
+  lends itself to a tight frontend-backend development and a custom API is recommended.
+  And with full-stack JavaScript,
+  Wildcard allows you to create a custom API with JavaScript functions and zero setup.
 
 - **SSR frameworks**.
   <br/>
@@ -73,7 +84,7 @@ A custom API requires a tight client-API development.
   [Reframe](https://github.com/reframejs/reframe#readme)
   ,
   the frontend and backend are written in JavaScript and developed at the same time.
-  This corresponds to the full-stack JavaScript setup described and Wildcard is a good fit.
+  Here again, a custom API / Wildcard is good fit.
 
 - **Single developer**.
   <br/>
@@ -84,21 +95,23 @@ A custom API requires a tight client-API development.
 - **Full-stack developers**.
   <br/>
   If the frontend is developed by full-stack developers,
-  then using a Node.js API server with Wildcard can be used to retrieve/mutate data from the frontend.
-  The rest of the backend can be written with Node.js or with Python, Go, Rust, etc.
+  having a custom API developed by the frontend is a sensible choice.
 
 - **Mobile apps with PWA**.
   <br/>
   [PWA](https://developers.google.com/web/progressive-web-apps/)
-  is an exciting new technology that bridges the web with mobile.
+  is an new technology that bridges the web with mobile.
   With PWA your mobile app is simply a web app.
-  You can then choose a setup with full-stack JavaScript and Wildcard.
+  You can then choose full-stack JavaScript and Wildcard.
 
 - **Large application + API server**.
+  <br/>
   Decoupling backend development from frontend development makes sense for large applications with a high number of developers.
-  A way to achieve this is to setup an Node.js API Server that is maintained by the frontend team while the rest of the backend is maintained by the backend team.
+  A way to achieve this is to setup an Node.js API server maintained by the frontend team.
+  The rest of the backend is maintained by the backend team and can be written
+  with Node.js or with Python, Go, Rust, etc.
   The server API has access to the whole backend while using Wildcard as permission layer.
-  That way the frontend team can directly access the backend/databases without being constraint by the schema of a generic API.
+  That way the frontend team can directly access the backend/databases without being constrained by the schema of a generic API.
 
 !INLINE ./snippets/usage-section-footer.md --hide-source-path
 
@@ -107,56 +120,61 @@ A custom API requires a tight client-API development.
 
 
 
-### Use Cases - Generic API
+
+### Use Cases: Generic API
 
 - **Third parties**.
   <br/>
-  A third party wants to be
+  Third parties want to be
   able to retrieve/mutate all kinds of data in all kinds of ways.
-  In other words: it expects a generic API.
-  This is the use case where GraphQL excels.
+  In other words: Third parties want a generic API.
+  This is the use case where GraphQL excels most.
 
 - **Large applications**.
   <br/>
   Developers of a large application are often split into a frontend and backend team.
   The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
-  This is a good use case for a generic API.
-  An alternative is to set up a custom API with a server API that is maintained by the frontend team
-  (see
-  [Use Cases - Custom API - Server API](#use-cases--custom-api)
-  )
-  .
+  An alternative is to set up a custom API on an API server maintained by the frontend team.
 
 !INLINE ./snippets/usage-section-footer.md --hide-source-path
 
 
 
 
-### Hybrid
+
+
+
+
+### Use Cases: Hybrid
 
 Combining a custom API with a generic API can be a successfull strategy.
 
 - **First custom API, later generic API**.
-  decouple client development from API development,
+  Your first prototype will most likely have a tight frontend-backend development
+  and a custom API is the right choice.
+  Afterwards,
+  and as your prototype grows into a large application,
   you can progressively replace custom API endpoints with a generic API.
 
-- **Permission layer for GraphQL/REST**.
+- **Permission layer for generated GraphQL/REST API**.
   <br/>
-  When a RESTful/GraphQL API is automatically generated,
-  (such as with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine))
-  it can be a convenient way to retrieve/mutate data.
-  Still, a permission layer is required
-  and Wildcard can act as such permission layer.
+  A RESTful/GraphQL API that is automatically generated,
+  such as with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine),
+  can be a convenient way to retrieve/mutate data.
+  A custom API / Wildcard can then act as a permission layer on top of such generated API.
 
-- Custom API for your clients + RESTful API for third party clients
-  From the is superior in almost every way.
-  But GraphQL comes with considerably higher setup cost than
+- **Custom API + GraphQL API**
+  This is the most powerful setup:
+  Third parties have the full power of GraphQL and your clients have even more power with custom endpoints.
 
-  from the a develo
-  GraphQL for third parties provides an important increase in flexibility GraphQL 
-
-- GraphQL API + Custom API for couple of data requirements.
-  <br/>
-  Browser frontend for Large application
+- **Custom API + RESTful API**.
+  From the perspective of a third party,
+  GraphQL is superior to REST.
+  But a GraphQL API is considerably more difficult to implement than a RESTful API.
+  You can, instead and at first, offer a RESTful API for third party clients
+  while your clients use
+  a custom API to get full power/flexibility.
 
 !INLINE ./snippets/usage-section-footer.md --hide-source-path
+
+
