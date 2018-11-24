@@ -5,7 +5,7 @@
 !MENU
 
 Goals:
- 1. JavaScript library to make the **creation of a custom API super easy**.
+ 1. JavaScript library to **easily create a custom API**.
  2. Debunk the **common misconception that a generic API is a silver bullet**.
     A generic API, such as REST or GraphQL, is great for third party clients and large applications
     but is an **unecessary burden for prototypes and medium-sized applications**.
@@ -81,20 +81,20 @@ To make the developing experience further seamless,
 Wildcard provides:
  - **Zero setup**.
    <br/>
-   Set up a Wildcard API with only couple of lines.
+   Set up a Wildcard API with couple of lines.
    Works with any server framework: Express, Koa, Hapi, etc.
  - **Error handling**.
    <br/>
    Using [Handli](https://github.com/brillout/handli) to automatically handle network corner cases,
    such as when the user looses his internet connection.
-   (You can implement your own error handling.)
+   (You can progressively remove Handli to handle errors yourself.)
  - **Extended serialization**.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) to support further JavaScript types.
    (Such as `Date` which JSON doesn't support.)
- - **Universal / Isomorphic / SSR support**.
+ - **Universal/Isomorphic/SSR support**.
    <br/>
-   The Wildcard client works in the browser as well as on Node.js.
+   The Wildcard client works in the browser and on Node.js.
    With seamless support for
    server-side rendering.
 

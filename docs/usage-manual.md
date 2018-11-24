@@ -95,6 +95,7 @@
 
 ## API
 
+
 TODO
 
 <b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
@@ -132,7 +133,7 @@ More infos at [API](#api).
 
 The request context needs to be preserved while doing server-side rendering.
 
-You can use JavaScript's `Function.prototype.bind()` method to do so:
+You can use the `Function.prototype.bind()` method to do so:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
