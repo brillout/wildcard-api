@@ -83,7 +83,7 @@
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
 Goals:
- 1. JavaScript library to **easily create a custom API**.
+ 1. JavaScript **library to easily create a custom API**.
  2. Debunk the **common misconception that a generic API is a silver bullet**.
     A generic API, such as REST or GraphQL, is great for third party clients and large applications
     but is an **unecessary burden for prototypes and medium-sized applications**.
@@ -117,9 +117,9 @@ import {endpoints} from 'wildcard-api/client';
 That's the only thing Wildcard does:
 It makes functions defined on the server "callable" in the browser.
 That's it.
-Wildcard takes care of HTTP request and serialization.
-How you retrieve/mutate data is up to you:
-You can use SQL, ORM, NoSQL, etc.
+Wildcard takes care of the HTTP request and serialization.
+How you retrieve/mutate data is up to you and
+you can use SQL, ORM, NoSQL, etc.
 
 #### Contents
 
@@ -143,29 +143,29 @@ These endpoint functions effectively act as fine-grained "permission holes".
 This is a simple alternative to permission rules.
 
 Wildcard's simplicity is **ideal to quickly deliver a protoype**:
-Write the couple of SQL/ORM/NoSQL queries your prototype's frontend needs,
+Write the couple of SQL/ORM/NoSQL queries your frontend needs,
 wrap them in endpoint functions,
 and you're good to go.
+No schema.
+No permission rules.
 
 The **structureless nature of a custom API is a good fit for rapid prototyping**
-whereas the rigid structure of a generic API's schema
+whereas the rigid structure of a generic API
 gets in the way of quickly evolving your prototype.
 
-That said, a custom API (and thus Wildcard) is not suitable for:
- - Third party clients. (A generic API is inherently required.)
- - Large applications with a frontend development decoupled from API development.
+On the other hand, a custom API (and thus Wildcard) is not suitable for:
+ - Third party clients.
+ - Large applications with an API developed independently of the frontend.
 
-To make the developing experience further seamless,
 Wildcard provides:
  - **Zero setup**.
    <br/>
    Set up a Wildcard API with couple of lines.
    Works with any server framework: Express, Koa, Hapi, etc.
- - **Error handling**.
+ - **Error handling**. (Optional.)
    <br/>
    Using [Handli](https://github.com/brillout/handli) to automatically handle network corner cases,
-   such as when the user looses his internet connection.
-   (You can progressively remove Handli to handle errors yourself.)
+   such as when the user goes offline.
  - **Extended serialization**.
    <br/>
    Using [JSON-S](https://github.com/brillout/json-s) to support further JavaScript types.
