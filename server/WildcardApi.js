@@ -18,7 +18,7 @@ function WildcardApi({
   return {
     endpoints: new Proxy(endpoints__source, {set: validateEndpoint}),
     getApiResponse,
-    wildcardUniversalPlug,
+    wildcardPlug,
     __directCall,
   };
 
@@ -73,7 +73,7 @@ function WildcardApi({
     assert.internal(false);
   }
 
-  async function wildcardUniversalPlug(requestContext) {
+  async function wildcardPlug(requestContext) {
     return getApiResponse(requestContext);
   }
 
