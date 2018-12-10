@@ -22,13 +22,13 @@ function WildcardApi({
     __directCall,
   };
 
-  async function getApiResponse(context) {
-    const {method} = context;
+  async function getApiResponse(requestContext) {
+    assert_context(requestContext);
+
+    const {method} = requestContext;
     if( ! ['GET', 'POST'].includes(method) ) return null;
 
-    assert_context(context);
-
-    const {url} = context;
+    const {url} = requestContext;
 
     if( showListOfEndpoints({url, method}) ) {
       return {
@@ -41,7 +41,7 @@ function WildcardApi({
       return null;
     }
 
-    const result = await getResult({url, context});
+    const result = await getResult({url, context: requestContext});
 
     if( method==='GET' ) {
       if( result.err ) {
@@ -73,8 +73,8 @@ function WildcardApi({
     assert.internal(false);
   }
 
-  async function universalPlug(context) {
-    return getApiResponse(context);
+  async function universalPlug(requestContext) {
+    return getApiResponse(requestContext);
   }
 
   async function __directCall({endpointName, endpointArgs, context}) {
