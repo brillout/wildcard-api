@@ -1,14 +1,11 @@
 {
   "name": "wildcard-api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "./server",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
-    "reassert": "^1.1.16"
-  },
-  "dependencies-TODO": {
     "json-s": "^0.1.0",
-    "handli": "^0.1.0"
+    "reassert": "^1.1.16"
   },
   "scripts": {
     "docs": "mdocs"

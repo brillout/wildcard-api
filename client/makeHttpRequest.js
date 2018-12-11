@@ -1,10 +1,9 @@
 const fetch = require('@brillout/fetch');
-const handli = require('handli');
 
 module.exports = makeHttpRequest;
 
 async function makeHttpRequest({url, ...args}) {
-  const makeRequest = () => fetch(
+  const runFetchRequest = () => fetch(
     url,
     {
       method: 'POST',
@@ -13,12 +12,15 @@ async function makeHttpRequest({url, ...args}) {
     }
   );
 
-  const response = await (isBrowser() ? handli(makeRequest) : makeRequest());
+  const response = await makeRequest(runFetchRequest);
 
   const responseText = await response.text();
   return responseText;
 }
 
-function isBrowser() {
-  return typeof window !== "undefined" && window.document;
+function makeRequest(runFetchRequest) {
+  if( typeof window !== "undefined" && window.handli ) {
+    return window.handli(runFetchRequest)
+  }
+  return runFetchRequest();
 }
