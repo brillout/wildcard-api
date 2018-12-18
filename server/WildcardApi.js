@@ -80,7 +80,7 @@ function WildcardApi({
   async function __directCall({endpointName, endpointArgs, context}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
-    assert.internal(!context || context.constructor===Object);
+    context = context || getContextErrorProxy(endpointName);
 
     assert.usage(
       endpointExists(endpointName),
@@ -199,7 +199,6 @@ function WildcardApi({
   async function runEndpoint({endpointName, endpointArgs, context}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
-    assert.internal(!context || context.constructor===Object);
 
     const endpoint = endpoints__source[endpointName];
     assert.internal(endpoint);
@@ -373,4 +372,21 @@ ${note.split('\n').join('<br/>\n')}
 </small>
 `
   );
+}
+
+function getContextErrorProxy(endpointName) {
+  return new Proxy({}, {get: (_, prop) => {
+    assert.usage(false,
+      "Cannot get context `this"+getPropString(prop)+"`.",
+      "Context is missing while running the Wildcard client on Node.js.",
+      "Make sure to add the request context with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestContext)`.",
+    );
+  }});
+  function getPropString(prop) {
+    return (
+      /^[a-zA-Z0-9_]+$/.test(prop) ?
+        '.'+prop :
+        "['"+prop+"']"
+    );
+  }
 }

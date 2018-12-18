@@ -45,7 +45,6 @@ function WildcardClient({
 
     if( runDirectlyWithoutHTTP ) {
       assert.internal(isNodejs());
-      assert.internal(context);
       return wildcardApiFound.__directCall({endpointName, endpointArgs, context});
     } else {
       assert.internal(!context);
@@ -98,7 +97,7 @@ function WildcardClient({
         isNodejs(),
         errorIntro,
         "But you are trying to do so in the browser which doesn't make sense.",
-        "Running endpionts directly without HTTP should be done in Node.js only.",
+        "Running endpoints directly should be done in Node.js only.",
       );
       assert.usage(
         wildcardApiFound.__directCall,
@@ -106,24 +105,15 @@ function WildcardClient({
         "You are providing the `wildcardApi` parameter to `new WildcardClient({wildcardApi})`.",
         "But `wildcardApi` doesn't seem to be a instance of `new WildcardApi()`.",
       );
-      assert.usage(
-        context,
-        errorIntro,
-        "(This usually means that you are using the Wildcard API Client on Node.js while doing server-side rendering.)",
-        "But `context` is missing.",
-        "You should provive `context`.",
-        "(`context` should be an object holding information about the original HTTP request from the user's browser.)",
-        "(Such as HTTP headers that would typically include user authentication information.)",
-      );
     } else {
       assert.usage(
-        context===undefined,
+        Object.keys(context||{}).length===0,
         "Wrong SSR usage.",
         "You are:",
-        "  - Fetching an API endpiont over HTTP",
-        "  - Providing a `context` object",
-        "But you should provide a `context` only while doing server-side rendering.",
-        "(Providing a `context` object is obsolete on the browser-side since the HTTP request will be the context and will override your provided `context` object.)",
+        "  - Fetching an API endpoint over HTTP",
+        "  - Providing a context object",
+        "But you should provide a context only while doing server-side rendering.",
+        "(Providing a context object is obsolete on the browser-side since the HTTP request will be the context and would override any context you provide.)",
       );
     }
   }
