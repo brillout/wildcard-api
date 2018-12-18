@@ -180,13 +180,26 @@ function WildcardClient({
    // console.log(prop, target===dummyObject, typeof prop, new Error().stack);
 
       (function() {
-        // Webpack set this to `undefined`
-        // Parcel sets `this` to `window`
-        assert.internal(this===undefined || typeof window !== "undefined" && this===window, this);
+        // Webpack: `this===undefined`
+        // New webpack version: `this===global`
+        // Parcel: `this===window`
+        assert.internal(
+          (
+            this===undefined ||
+            typeof window !== "undefined" && this===window ||
+            typeof global !== "undefined" && this===global
+          ),
+          this,
+        );
       })();
 
       return function(...endpointArgs) {
-        const noContext = this===proxy || this===undefined || typeof window !== "undefined" && this===window;
+        const noContext = (
+          this===proxy ||
+          this===undefined ||
+          typeof window !== "undefined" && this===window ||
+          typeof global !== "undefined" && this===global
+        );
         const context = noContext ? undefined : this;
         return fetchEndpoint(prop, endpointArgs, {context, [isCalledByProxy]: true});
       };
