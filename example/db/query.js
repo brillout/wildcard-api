@@ -12,7 +12,7 @@ async function query(...args) {
 var databaseExists;
 async function ensureDatabase() {
   if( databaseExists ) {
-    return true;
+    return;
   }
   if( ! await fs.pathExists(__dirname+'/data.sqlite') ) {
     await require('./reset');
