@@ -100,30 +100,6 @@ Wildcard provides:
 
 
 
-## Example
-
-View endpoints of a simple todo app:
-
-~~~js
-!INLINE ../example/api/view-endpoints --hide-source-path
-~~~
-
-Wildcard can be used with any server framework such as Express, Hapi, Koa, etc.
-In our example we use Express:
-
-~~~js
-!INLINE ../example/start --hide-source-path
-~~~
-
-At [Example](/example/#readme)
-we further showcase our toto app,
-including mutation endpoints,
-and a React frontend.
-
-
-!INLINE ./snippets/intro-section-footer.md --hide-source-path
-
-
 
 
 ## Usage
