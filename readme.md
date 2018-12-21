@@ -82,14 +82,14 @@
 </p>
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
-Goals:
- 1. JavaScript **library to easily create a custom API**.
- 2. Debunk the **common misconception that a generic API is a silver bullet**.
-    A generic API, such as REST or GraphQL, is great for third party clients and large applications
-    but is an **unecessary burden for prototypes and medium-sized applications**.
+Project goals:
+ 1. JavaScript library to easily create a custom API.
+ 2. Debunk the common misconception that a generic API is a silver bullet.
+    REST and GraphQL are great tools for large applications
+    but are less suited for prototypes and smaller apps.
 
 With Wildcard,
-**creating an API endpoint is as easy as creating a JavaScript function**:
+creating an API endpoint is as easy as creating a JavaScript function:
 
 ~~~js
 // Node.js Server
@@ -124,47 +124,45 @@ you can use SQL, ORM, NoSQL, etc.
 #### Contents
 
  - [Why Wildcard](#why-wildcard)
- - [Example](#example)
+ - [Usage](#usage)
  - [Wildcard vs GraphQL/REST](#wildcard-vs-graphqlrest)
- - [Quick Start](#quick-start)
 
 
 <br/>
 
 ### Why Wildcard
 
-With Wildcard you
-**retrieve/mutate data from the frontend in a seamless way**:
-No schema,
-no permission rules,
-just create functions on `endpoints`.
+REST and GraphQL are great but
+creating a schema and permission rules for
+a prototype
+that has only couple of data requirements is overkill.
 
-These endpoint functions effectively act as fine-grained "permission holes".
+In contrast, with Wildcard, you simply define JavaScript functions on Wildcard's `endpoints` object.
+No schema,
+no permission rules.
+
+In essence,
+these endpoint functions you define act as fine-grained "permission holes":
+You allow your clients to access and do things on a case-by-case basis.
 This is a simple alternative to permission rules.
 
-Wildcard's simplicity is **ideal to quickly deliver a protoype**:
-Write the couple of SQL/ORM/NoSQL queries your frontend needs,
-wrap them in endpoint functions,
-and you're good to go.
-No schema.
-No permission rules.
+The structureless nature of Wildcard is a great fit for rapid prototyping
+where flexibility is paramount.
+Whereas the rigid structure of a generic API
+gets in the way of quickly evolving a prototype.
 
-The **structureless nature of a custom API is a good fit for rapid prototyping**
-whereas the rigid structure of a generic API
-gets in the way of quickly evolving your prototype.
-
-On the other hand, a custom API (and thus Wildcard) is not suitable for:
- - Third party clients.
+That said, Wildcard is not suitable for:
+ - Third-party clients.
  - Large applications with an API developed independently of the frontend.
 
 Wildcard provides:
- - **Zero setup**.
+ - **Easy setup**.
    <br/>
-   Set up a Wildcard API with couple of lines.
+   Set up a Wildcard API with only couple of lines.
    Works with any server framework: Express, Koa, Hapi, etc.
  - **Error handling**. (Optional.)
    <br/>
-   Using [Handli](https://github.com/brillout/handli) to automatically handle network corner cases,
+   Using [Handli](https://github.com/brillout/handli) to automatically handle network errors
    such as when the user goes offline.
  - **Extended serialization**.
    <br/>
@@ -270,25 +268,9 @@ and a React frontend.
 
 
 
+## Usage
 
-
-## Wildcard vs GraphQL/REST
-
-Comparing Wildcard with REST and GraphQL mostly boilds down to comparing a custom API with a generic API.
-
-With "custom API" we denote an API that is designed to fulfill only the data requirements of your clients.
-E.g.:
-<br/> &nbsp; &nbsp; &bull; &nbsp; Wildcard API
-<br/> &nbsp; &nbsp; &bull; &nbsp; API with [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0)
-
-With "generic API" we denote an API that is designed to support a maximum number of data requirements.
-E.g.:
-<br/> &nbsp; &nbsp; &bull; &nbsp; GraphQL API
-<br/> &nbsp; &nbsp; &bull; &nbsp; API with [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1)
-
-We explore use cases for custom APIs and for generic APIs at
-[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
-.
+Work-in-progress.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 
@@ -298,13 +280,25 @@ We explore use cases for custom APIs and for generic APIs at
 
 
 
+## Wildcard vs GraphQL/REST
 
+Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
 
+*Custom API*:
+An API that fulfills only the data requirements of your clients.
+Such as
+a Wildcard API or
+a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
 
+*Generic API*:
+An API that is designed to support a maximum number of data requirements.
+Such as
+a GraphQL API or
+a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
-## Quick Start
-
-Work-in-progress.
+We compare them at
+[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
+.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 

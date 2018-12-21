@@ -91,57 +91,26 @@ A (simplistic) todo app built with:
 
 #### Contents
 
- - [Run](#run)
- - [Code Highlights](#code-highlights)
-   - [View Endpoints](#view-endpoints)
-   - [Express Integration](#express-integration)
-   - [Mutation Endpoints](#mutation-endpoints)
-   - [React Frontend](#react-frontend)
-
-## Run
-
-To run the app:
-
-0. Get the code.
-
-   ~~~shell
-   $ git clone git@github.com:brillout/wildcard-api
-   $ cd example/
-   ~~~
-
-1. Install dependencies.
-
-   ~~~shell
-   $ npm run setup
-   ~~~
-
-2. Build the frontend.
-
-   ~~~shell
-   $ npm run build
-   ~~~
-
-3. Run the server.
-
-   ~~~shell
-   $ npm run server
-   ~~~
-
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
-
+- [Code Highlights](#code-highlights)
+  - [View Endpoints](#view-endpoints)
+  - [Express Integration](#express-integration)
+  - [Mutation Endpoints](#mutation-endpoints)
+  - [React Frontend](#react-frontend)
+- [Run](#run)
 
 
 
 ## Code Highlights
 
 Showcase of the example's code.
-
-<br/>
+- [View Endpoints](#view-endpoints)
+- [Express Integration](#express-integration)
+- [Mutation Endpoints](#mutation-endpoints)
+- [React Frontend](#react-frontend)
 
 ### View Endpoints
+
+*View endpoint*: An endpoints to retrieve data.
 
 ~~~js
 // /example/api/view-endpoints
@@ -228,6 +197,8 @@ async function startServer() {
 <br/>
 
 ### Mutation Endpoints
+
+*Mutation endpoint*: An endpoint to mutate data.
 
 ~~~js
 // /example/api/mutation-endpoints
@@ -347,6 +318,39 @@ function Todo({todo, updateTodo}) {
 <br/>
 <br/>
 
+## Run
+
+To run the app:
+
+0. Get the code.
+
+   ~~~shell
+   $ git clone git@github.com:brillout/wildcard-api
+   $ cd example/
+   ~~~
+
+1. Install dependencies.
+
+   ~~~shell
+   $ npm run setup
+   ~~~
+
+2. Build the frontend.
+
+   ~~~shell
+   $ npm run build
+   ~~~
+
+3. Run the server.
+
+   ~~~shell
+   $ npm run server
+   ~~~
+
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
+<br/>
+<br/>
 
 
 
