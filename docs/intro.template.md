@@ -80,6 +80,62 @@ That said, Wildcard is not suitable for:
 
 ## Usage
 
+Add the Wildcard routes to your Node.js server.
+
+With Express:
+~~~js
+// npm install wildcard-api
+const express = require('express');
+const {getApiResponse} = require('wildcard-api');
+
+const app = express();
+
+app.all('/wildcard/*' , async (req, res, next) => {
+  const apiResponse = await getApiResponse(req);
+  if( apiResponse ) {
+    res.status(apiResponse.statusCode);
+    res.send(apiResponse.body);
+  }
+  next();
+});
+~~~
+
+With Hapi:
+
+With Koa:
+
+With other frameworks:
+
+You can now define functions on
+`require('wildcard-api').endpoints`
+in Node.js which you can then "call"
+in the browser at
+`require('wildcard-api/client').endpoints`.
+
+~~~js
+// Node.js
+
+const {endpoints} = require('wildcard-api');
+
+endpoints.getLandingPageData = async function () {
+};
+~~~
+
+~~~js
+// Browser
+
+const {endpoints} = require('wildcard-api/client');
+// Or with ES6 modules:
+// import {endpoints} from 'wildcard-api/client';
+
+(async () {
+  const data = await endpoints.myFirstEndpoint();
+
+  await endpoints.mySecondEndpoint();
+})();
+~~~
+
+Then define
 Work-in-progress.
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
