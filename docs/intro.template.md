@@ -77,30 +77,6 @@ That said, Wildcard is not suitable for:
  - Third-party clients.
  - Large applications with an API developed independently of the frontend.
 
-Wildcard provides:
- - **Easy setup**.
-   <br/>
-   Set up a Wildcard API with only couple of lines.
-   Works with any server framework: Express, Koa, Hapi, etc.
- - **Error handling**. (Optional.)
-   <br/>
-   Using [Handli](https://github.com/brillout/handli) to automatically handle network errors
-   such as when the user goes offline.
- - **Extended serialization**.
-   <br/>
-   Using [JSON-S](https://github.com/brillout/json-s) to support further JavaScript types.
-   (Such as `Date` which JSON doesn't support.)
- - **Universal/Isomorphic/SSR support**.
-   <br/>
-   The Wildcard client works in the browser and on Node.js.
-   With seamless support for
-   server-side rendering.
-
-!INLINE ./snippets/intro-section-footer.md --hide-source-path
-
-
-
-
 
 ## Usage
 
