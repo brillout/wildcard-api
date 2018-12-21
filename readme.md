@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo.svg?sanitize=true" height=100 alt="Wildcard API"/>
+    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=70 alt="Wildcard API"/>
   </a>
 </p>
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
