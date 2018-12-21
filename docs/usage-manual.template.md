@@ -3,25 +3,14 @@
 !MENU
 &nbsp;
 
-# Usage
+# Usage Manual
 
 
- - [API](#api)
  - [SSR](#ssr)
  - [Error Handling](#error-handling)
  - [Custom API vs Generic API](#custom-api-vs-generic-api)
 
 <br/>
-
-## API
-
-
-TODO
-
-!INLINE ./snippets/usage-section-footer.md --hide-source-path
-
-
-
 
 ## Error Handling
 
@@ -113,13 +102,13 @@ app.all('/wildcard/*' , async(req, res, next) => {
 ## Custom API vs Generic API
 
 > TLDR;
->  - If you have a tight client-API development, then use a custom API.
+>  - If you have a tight client API development, then use a custom API.
 >  - If you need to decouple client development from API development, then use a generic API.
 >  - Start your prototype with a custom API then progressively replace it with a generic API
 
 #### Contents
 
- - [Tight client-API development](#tight-client-api-development)
+ - [Tight client API development](#tight-client-api-development)
  - [Use Cases: Custom API](#use-cases-custom-api)
  - [Use Cases: Generic API](#use-cases-generic-api)
  - [Use Cases: Hybrid](#use-cases-hybrid)
@@ -128,7 +117,7 @@ app.all('/wildcard/*' , async(req, res, next) => {
 
 
 
-### Tight client-API development
+### Tight client API development
 
 Endpoints such as
 
@@ -145,7 +134,7 @@ tightly couples frontend development with API development.
 For example, if the frontend needs the todo creation dates,
 then the SQL query of the `getLandingPageData` endpoint needs to be changed to `SELECT id, text, created_at`.
 
-A custom API requires a tight client-API development.
+A custom API requires a tight client API development.
 
 A prototype is usually developed by one or two developers and a tight frontend-backend development is given.
 

@@ -13,12 +13,67 @@ A (simplistic) todo app built with:
 
 #### Contents
 
- - [Run](#run)
- - [Code Highlights](#code-highlights)
-   - [View Endpoints](#view-endpoints)
-   - [Express Integration](#express-integration)
-   - [Mutation Endpoints](#mutation-endpoints)
-   - [React Frontend](#react-frontend)
+- [Code Highlights](#code-highlights)
+  - [View Endpoints](#view-endpoints)
+  - [Express Integration](#express-integration)
+  - [Mutation Endpoints](#mutation-endpoints)
+  - [React Frontend](#react-frontend)
+- [Run](#run)
+
+
+
+## Code Highlights
+
+Showcase of the example's code.
+- [View Endpoints](#view-endpoints)
+- [Express Integration](#express-integration)
+- [Mutation Endpoints](#mutation-endpoints)
+- [React Frontend](#react-frontend)
+
+### View Endpoints
+
+*View endpoint*: An endpoints to retrieve data.
+
+~~~js
+!INLINE ../example/api/view-endpoints
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+### Express Integration
+
+~~~js
+!INLINE ../example/start
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+### Mutation Endpoints
+
+*Mutation endpoint*: An endpoint to mutate data.
+
+~~~js
+!INLINE ../example/api/mutation-endpoints
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+### React Frontend
+
+The following code shows how our frontend
+uses our Wildcard API to retrieve the user information,
+the user todos,
+and to update a todo.
+
+~~~js
+!INLINE ../example/client/LandingPage
+~~~
+
+~~~js
+!INLINE ../example/client/Todo
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
 
 ## Run
 
@@ -50,56 +105,5 @@ To run the app:
    ~~~
 
 !INLINE ./snippets/section-footer.md --hide-source-path
-
-
-
-
-## Code Highlights
-
-Showcase of the example's code.
-
-<br/>
-
-### View Endpoints
-
-~~~js
-!INLINE ../example/api/view-endpoints
-~~~
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
-### Express Integration
-
-~~~js
-!INLINE ../example/start
-~~~
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
-### Mutation Endpoints
-
-~~~js
-!INLINE ../example/api/mutation-endpoints
-~~~
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
-### React Frontend
-
-The following code shows how our frontend
-uses our Wildcard API to retrieve the user information,
-the user todos,
-and to update a todo.
-
-~~~js
-!INLINE ../example/client/LandingPage
-~~~
-
-~~~js
-!INLINE ../example/client/Todo
-~~~
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
 
 

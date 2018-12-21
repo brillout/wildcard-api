@@ -168,7 +168,7 @@ function WildcardApi({
   }
 
   function assert_context(context) {
-    const {url, method} = context;
+    const {url, method, headers} = context;
 
     const correctUsage = [
       "Usage:",
@@ -193,6 +193,15 @@ function WildcardApi({
       "(`method=="+method+"`)",
       "",
       ...correctUsage,
+    );
+    assert.warning(
+      headers,
+      "Context is missing `headers`."
+    );
+    assert.usage(
+      !headers || headers.constructor===Array,
+      {headers},
+      "Context's `headers` should be an array."
     );
   }
 
