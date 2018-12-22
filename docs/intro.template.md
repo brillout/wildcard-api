@@ -80,7 +80,7 @@ That said, Wildcard is not suitable for:
 
 ## Usage
 
-Add the Wildcard routes to your Node.js server.
+First, add the Wildcard routes to your Node.js server.
 
 With Express:
 ~~~js
@@ -106,18 +106,26 @@ With Koa:
 
 With other frameworks:
 
-You can now define functions on
+You can then define functions on
 `require('wildcard-api').endpoints`
-in Node.js which you can then "call"
+in Node.js which are available
 in the browser at
 `require('wildcard-api/client').endpoints`.
+
+For example:
 
 ~~~js
 // Node.js
 
 const {endpoints} = require('wildcard-api');
 
-endpoints.getLandingPageData = async function () {
+endpoints.myFirstEndpoint = async function () {
+  const data = await getData();
+  return data;
+};
+
+endpoints.mySecondEndpoint = async function(newData) {
+  await saveData(newData);
 };
 ~~~
 
@@ -128,15 +136,13 @@ const {endpoints} = require('wildcard-api/client');
 // Or with ES6 modules:
 // import {endpoints} from 'wildcard-api/client';
 
-(async () {
+(async () => {
   const data = await endpoints.myFirstEndpoint();
 
-  await endpoints.mySecondEndpoint();
+  const newData = getNewData();
+  await endpoints.mySecondEndpoint(newData);
 })();
 ~~~
-
-Then define
-Work-in-progress.
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
 

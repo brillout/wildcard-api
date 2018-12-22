@@ -32,7 +32,7 @@ Showcase of the example's code.
 
 ### View Endpoints
 
-*View endpoint*: An endpoints to retrieve data.
+*View endpoint*: An endpoint to retrieve data.
 
 ~~~js
 !INLINE ../example/api/view-endpoints
@@ -43,7 +43,7 @@ Showcase of the example's code.
 ### Express Integration
 
 ~~~js
-!INLINE ../example/start
+!INLINE ../example/start-with-express
 ~~~
 
 !INLINE ./snippets/section-footer.md --hide-source-path

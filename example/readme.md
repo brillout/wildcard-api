@@ -110,7 +110,7 @@ Showcase of the example's code.
 
 ### View Endpoints
 
-*View endpoint*: An endpoints to retrieve data.
+*View endpoint*: An endpoint to retrieve data.
 
 ~~~js
 // /example/api/view-endpoints
@@ -158,37 +158,34 @@ endpoints.getCompletedPageData = async function () {
 ### Express Integration
 
 ~~~js
-// /example/start
+// /example/start-with-express
 
 const express = require('express');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
-startServer();
+const app = express();
 
-async function startServer() {
-  const app = express();
-
-  app.all('/wildcard/*' , async(req, res, next) => {
-    // Our `context` object is made available to endpoint functions over `this`.
-    // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
-    const {method, url, headers} = req;
-    const context = {method, url, headers};
-    const apiResponse = await getApiResponse(context);
-
+app.all('/wildcard/*' , (req, res, next) => {
+  // Our `context` object is made available to endpoint functions over `this`.
+  // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
+  const {method, url, headers} = req;
+  const context = {method, url, headers};
+  getApiResponse(context)
+  .then(apiResponse => {
     if( apiResponse ) {
       res.status(apiResponse.statusCode);
       res.send(apiResponse.body);
     }
-
     next();
-  });
+  })
+  .catch(next);
+});
 
-  // Serve our frontend
-  app.use(express.static('client/dist', {extensions: ['html']}));
+// Serve our frontend
+app.use(express.static('client/dist', {extensions: ['html']}));
 
-  app.listen(3000);
-}
+app.listen(3000);
 ~~~
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>

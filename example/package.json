@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "cd client && parcel build *.html",
-    "server": "node ./start.js",
+    "server": "node ./start-with-express.js",
     "install-yarn": "npm install --only=dev --no-save",
     "setup": "npm run install-yarn && yarn",
     "setup-dev": "npm run install-yarn && (cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
@@ -11,7 +11,12 @@
     "babel-polyfill": "^6.26.0",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",
+    "hapi": "^17.8.1",
+    "inert": "^5.1.2",
     "knex": "^0.15.2",
+    "koa": "^2.6.2",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "parcel": "^1.10.3",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",

@@ -198,11 +198,6 @@ function WildcardApi({
       headers,
       "Context is missing `headers`."
     );
-    assert.usage(
-      !headers || headers.constructor===Array,
-      {headers},
-      "Context's `headers` should be an array."
-    );
   }
 
   async function runEndpoint({endpointName, endpointArgs, context}) {
