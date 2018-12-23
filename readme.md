@@ -158,121 +158,119 @@ That said, Wildcard is not suitable for:
 
 ## Usage
 
-First, add the Wildcard routes to your Node.js server.
+1. Add the Wildcard routes to your Node.js server.
 
-With Express:
-~~~js
-// npm install wildcard-api
-const express = require('express');
-const {getApiResponse} = require('wildcard-api');
+   With Express:
+   ~~~js
+   // npm install wildcard-api
+   const express = require('express');
+   const {getApiResponse} = require('wildcard-api');
 
-const app = express();
+   const app = express();
 
-app.all('/wildcard/*' , async (req, res, next) => {
-  const {body, statusCode} = await getApiResponse(req);
-  res.status(statusCode);
-  res.send(body);
-  next();
-});
-~~~
+   app.all('/wildcard/*' , async (req, res, next) => {
+     const {body, statusCode} = await getApiResponse(req);
+     res.status(statusCode);
+     res.send(body);
+     next();
+   });
+   ~~~
 
-<summary>
-With Hapi:
-</summary>
-<details>
-~~~js
-const Hapi = require('hapi');
-const {getApiResponse} = require('wildcard-api');
+   <summary>
+   With Hapi:
+   <details>
+   ~~~js
+   const Hapi = require('hapi');
+   const {getApiResponse} = require('wildcard-api');
 
-const server = Hapi.Server();
+   const server = Hapi.Server();
 
-server.route({
-  method: '*',
-  path: '/wildcard/{param*}',
-  handler: async (request, h) => {
-    const {body, statusCode} = await getApiResponse(request.raw.req);
-    const resp = h.response(body);
-    resp.code(statusCode);
-    return resp;
-  }
-});
-~~~
-</details>
+   server.route({
+     method: '*',
+     path: '/wildcard/{param*}',
+     handler: async (request, h) => {
+       const {body, statusCode} = await getApiResponse(request.raw.req);
+       const resp = h.response(body);
+       resp.code(statusCode);
+       return resp;
+     }
+   });
+   ~~~
+   </details>
+   </summary>
 
-<summary>
-With Koa:
-</summary>
-<details>
-~~~js
-const Koa = require('koa');
-const Router = require('koa-router');
-const {getApiResponse} = require('wildcard-api');
+   <summary>
+   With Koa:
+   <details>
+   ~~~js
+   const Koa = require('koa');
+   const Router = require('koa-router');
+   const {getApiResponse} = require('wildcard-api');
 
-const server = new Koa();
+   const server = new Koa();
 
-const router = new Router();
+   const router = new Router();
 
-router.all('/wildcard/*', async (ctx, next) => {
-  const {body, statusCode} = await getApiResponse(ctx);
-  ctx.status = apiResponse.statusCode;
-  ctx.body = apiResponse.body;
-});
+   router.all('/wildcard/*', async (ctx, next) => {
+     const {body, statusCode} = await getApiResponse(ctx);
+     ctx.status = apiResponse.statusCode;
+     ctx.body = apiResponse.body;
+   });
 
-server.use(router.routes());
-~~~
-</details>
+   server.use(router.routes());
+   ~~~
+   </details>
+   </summary>
 
-<summary>
-With other server frameworks:
-</summary>
-<details>
-You can use Wildcard with any server framework as long as you
-reply HTTP requests made to URLs matching `/wildcard/*`
-with the HTTP response body and HTTP response status code returned by
-`const {body, statusCode} = await getApiResponse({method, url, headers});` where `method` is the HTTP request method, `url` the HTTP request URL, and `headers` the HTTP request headers.
-</details>
+   <summary>
+   With other server frameworks:
+   <details>
+   You can use Wildcard with any server framework as long as you
+   reply HTTP requests made to URLs matching `/wildcard/*`
+   with the HTTP response body and HTTP response status code returned by
+   `const {body, statusCode} = await getApiResponse({method, url, headers});` where `method` is the HTTP request method, `url` the HTTP request URL, and `headers` the HTTP request headers.
+   </details>
+   </summary>
 
-You can now define functions on
-`require('wildcard-api').endpoints`
-in Node.js which are then available
-in the browser at
-`require('wildcard-api/client').endpoints`.
+2. You can now define functions on
+   `require('wildcard-api').endpoints`
+   in Node.js which are then available
+   in the browser at
+   `require('wildcard-api/client').endpoints`.
 
-For example:
+   For example:
 
-~~~js
-// Node.js
+   ~~~js
+   // Node.js
 
-const {endpoints} = require('wildcard-api');
+   const {endpoints} = require('wildcard-api');
 
-endpoints.myFirstEndpoint = async function () {
-  const data = await getData();
-  return data;
-};
+   endpoints.myFirstEndpoint = async function () {
+     const data = await getData();
+     return data;
+   };
 
-endpoints.mySecondEndpoint = async function(newData) {
-  await saveData(newData);
-};
-~~~
+   endpoints.mySecondEndpoint = async function(newData) {
+     await saveData(newData);
+   };
+   ~~~
 
-~~~js
-// Browser
+   ~~~js
+   // Browser
 
-const {endpoints} = require('wildcard-api/client');
-// Or with ES6 modules:
-// import {endpoints} from 'wildcard-api/client';
+   const {endpoints} = require('wildcard-api/client');
+   // Or with ES6 modules:
+   // import {endpoints} from 'wildcard-api/client';
 
-(async () => {
-  const data = await endpoints.myFirstEndpoint();
+   (async () => {
+     const data = await endpoints.myFirstEndpoint();
 
-  const newData = getNewData();
-  await endpoints.mySecondEndpoint(newData);
-})();
-~~~
+     const newData = getNewData();
+     await endpoints.mySecondEndpoint(newData);
+   })();
+   ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
-
-<br/>
+ !INLINE ./snippets/intro-section-footer.md --hide-source-path
 
 
 
