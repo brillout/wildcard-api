@@ -77,6 +77,10 @@ That said, Wildcard is not suitable for:
  - Third-party clients.
  - Large applications with an API developed independently of the frontend.
 
+!INLINE ./snippets/intro-section-footer.md --hide-source-path
+
+
+
 
 ## Usage
 
@@ -196,7 +200,7 @@ That said, Wildcard is not suitable for:
 Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
 
 *Custom API*:
-An API that fulfills only the data requirements of your clients.
+An API that only fulfills the data requirements of your clients.
 Such as
 a Wildcard API or
 a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.

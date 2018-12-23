@@ -1,10 +1,10 @@
-<svg viewBox="0 0 880 120" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 670 120" xmlns="http://www.w3.org/2000/svg">
 <g transform="scale(.68) translate(40 3)">
 <ellipse cx="86.99" cy="86" rx="86" ry="86" fill="#4a4a4a"/>
 <ellipse cx="86.99" cy="86" rx="68" ry="68" fill="#5A676F"/>
 <path d="m38.173 86.179h97.732m-21.852-40.72l-54.032 81.441m0.32102-81.649l53.394 81.857" stroke="#01B9A7" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
 </g>
 <g transform="scale(1.2 .8) translate(-30 3)" fill="#595959" font-family="Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif">
-<text x="174" y="108" font-size="100">Wildcard API</text>
+<text x="174" y="108" font-size="100">Wildcard</text>
 </g>
 </svg>
