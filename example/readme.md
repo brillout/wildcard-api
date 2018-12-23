@@ -173,10 +173,8 @@ app.all('/wildcard/*' , (req, res, next) => {
   const context = {method, url, headers};
   getApiResponse(context)
   .then(apiResponse => {
-    if( apiResponse ) {
-      res.status(apiResponse.statusCode);
-      res.send(apiResponse.body);
-    }
+    res.status(apiResponse.statusCode);
+    res.send(apiResponse.body);
     next();
   })
   .catch(next);

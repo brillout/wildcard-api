@@ -21,13 +21,9 @@ async function startServer() {
       const context = {method, url, headers};
       const apiResponse = await getApiResponse(context);
 
-      if( apiResponse ) {
-        const resp = h.response(apiResponse.body);
-        resp.code(apiResponse.statusCode);
-        return resp;
-      }
-
-      return h.continue;
+      const resp = h.response(apiResponse.body);
+      resp.code(apiResponse.statusCode);
+      return resp;
     }
   });
 
