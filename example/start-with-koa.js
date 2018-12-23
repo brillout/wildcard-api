@@ -4,7 +4,7 @@ const Static = require('koa-static');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
-const server = new Koa();
+const app = new Koa();
 
 const router = new Router();
 
@@ -18,8 +18,8 @@ router.all('/wildcard/*', async (ctx, next) => {
   ctx.body = apiResponse.body;
 });
 
-server.use(router.routes());
+app.use(router.routes());
 
-server.use(Static('client/dist'));
+app.use(Static('client/dist'));
 
-server.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000);

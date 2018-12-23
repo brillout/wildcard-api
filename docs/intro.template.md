@@ -131,7 +131,7 @@ That said, Wildcard is not suitable for:
    const Router = require('koa-router');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
-   const server = new Koa();
+   const app = new Koa();
 
    const router = new Router();
 
@@ -141,7 +141,7 @@ That said, Wildcard is not suitable for:
      ctx.body = apiResponse.body;
    });
 
-   server.use(router.routes());
+   app.use(router.routes());
    ~~~
    </details>
 
