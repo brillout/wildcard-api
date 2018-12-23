@@ -157,12 +157,8 @@ That said, Wildcard is not suitable for:
    </details>
 
 2. You can now define functions on
-   `require('wildcard-api').endpoints`
-   in Node.js which are then available
-   in the browser at
-   `require('wildcard-api/client').endpoints`.
-
-   For example:
+   `require('wildcard-api').endpoints`.
+   in Node.js.
 
    ~~~js
    // Node.js
@@ -173,11 +169,10 @@ That said, Wildcard is not suitable for:
      const data = await getData();
      return data;
    };
-
-   endpoints.mySecondEndpoint = async function(newData) {
-     await saveData(newData);
-   };
    ~~~
+
+   You endpoint functions are then "callable" from the browser
+   at `require('wildcard-api/client').endpoints`.
 
    ~~~js
    // Browser
@@ -188,9 +183,6 @@ That said, Wildcard is not suitable for:
 
    (async () => {
      const data = await endpoints.myFirstEndpoint();
-
-     const newData = getNewData();
-     await endpoints.mySecondEndpoint(newData);
    })();
    ~~~
 
