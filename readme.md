@@ -235,9 +235,9 @@ That said, Wildcard is not suitable for:
    where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
    </details>
 
-2. The functions defined on
+2. Functions you define on
    `require('wildcard-api').endpoints`
-   in Node.js.
+   in Node.js...
 
    ~~~js
    // Node.js
@@ -250,7 +250,7 @@ That said, Wildcard is not suitable for:
    };
    ~~~
 
-   are then "available" from the browser
+   ...are then "available" in the browser
    at `require('wildcard-api/client').endpoints`.
 
    ~~~js
