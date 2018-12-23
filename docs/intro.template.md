@@ -4,8 +4,8 @@
 !INLINE ./header.md --hide-source-path
 !MENU
 
-With Wildcard,
-creating an API endpoint is as easy as creating a JavaScript function:
+<br/>
+Create API endpoints as easily as creating JavaScript functions:
 
 ~~~js
 // Node.js Server
@@ -59,13 +59,13 @@ no permission rules.
 
 In essence,
 these endpoint functions you define act as fine-grained "permission holes":
-You allow your clients to access and do things on a case-by-case basis.
+You allow your client to access and do things on a case-by-case basis.
 This is a simple alternative to permission rules.
 
 The structureless nature of Wildcard is a great fit for rapid prototyping
 where flexibility is paramount.
 Whereas the rigid structure of a generic API
-gets in the way of quickly evolving a prototype.
+gets in the way of quickly evolving your prototype.
 
 That said, Wildcard is not suitable for:
  - Third-party clients.
