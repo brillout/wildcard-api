@@ -229,9 +229,10 @@ That said, Wildcard is not suitable for:
    </summary>
 
    You can use Wildcard with any server framework as long as you
-   reply HTTP requests made to URLs matching `/wildcard/*`
-   with the HTTP response body and HTTP response status code returned by
-   `const {body, statusCode} = await getApiResponse({method, url, headers});` where `method` is the HTTP request method, `url` the HTTP request URL, and `headers` the HTTP request headers.
+   reply HTTP requests made to `/wildcard/*`
+   with the HTTP response body and status code returned by
+   `const {body, statusCode} = await getApiResponse({method, url, headers});`
+   where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
    </details>
 
 2. You can now define functions on
@@ -255,16 +256,16 @@ That said, Wildcard is not suitable for:
    ~~~js
    // Browser
 
-   const {endpoints} = require('wildcard-api/client');
-   // Or with ES6 modules:
-   // import {endpoints} from 'wildcard-api/client';
+   import {endpoints} from 'wildcard-api/client';
 
    (async () => {
      const data = await endpoints.myFirstEndpoint();
    })();
    ~~~
 
- !INLINE ./snippets/intro-section-footer.md --hide-source-path
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
 
 
 
