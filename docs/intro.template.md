@@ -5,7 +5,9 @@
 !MENU
 
 <br/>
+<p>
 Create API endpoints as easily as creating JavaScript functions:
+</p>
 
 ~~~js
 // Node.js Server

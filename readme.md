@@ -83,7 +83,9 @@
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
 <br/>
+<p>
 Create API endpoints as easily as creating JavaScript functions:
+</p>
 
 ~~~js
 // Node.js Server
