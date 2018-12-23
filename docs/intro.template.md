@@ -98,9 +98,10 @@ That said, Wildcard is not suitable for:
    });
    ~~~
 
+   <details>
    <summary>
    With Hapi:
-   <details>
+   </summary>
    ~~~js
    const Hapi = require('hapi');
    const {getApiResponse} = require('wildcard-api');
@@ -119,11 +120,11 @@ That said, Wildcard is not suitable for:
    });
    ~~~
    </details>
-   </summary>
 
+   <details>
    <summary>
    With Koa:
-   <details>
+   </summary>
    ~~~js
    const Koa = require('koa');
    const Router = require('koa-router');
@@ -142,17 +143,16 @@ That said, Wildcard is not suitable for:
    server.use(router.routes());
    ~~~
    </details>
-   </summary>
 
+   <details>
    <summary>
    With other server frameworks:
-   <details>
+   </summary>
    You can use Wildcard with any server framework as long as you
    reply HTTP requests made to URLs matching `/wildcard/*`
    with the HTTP response body and HTTP response status code returned by
    `const {body, statusCode} = await getApiResponse({method, url, headers});` where `method` is the HTTP request method, `url` the HTTP request URL, and `headers` the HTTP request headers.
    </details>
-   </summary>
 
 2. You can now define functions on
    `require('wildcard-api').endpoints`
