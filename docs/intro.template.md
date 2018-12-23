@@ -84,9 +84,8 @@ That said, Wildcard is not suitable for:
 
    With Express:
    ~~~js
-   // npm install wildcard-api
    const express = require('express');
-   const {getApiResponse} = require('wildcard-api');
+   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = express();
 
@@ -100,12 +99,12 @@ That said, Wildcard is not suitable for:
 
    <details>
    <summary>
-   With Hapi:
+   With Hapi
    </summary>
 
    ~~~js
    const Hapi = require('hapi');
-   const {getApiResponse} = require('wildcard-api');
+   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const server = Hapi.Server();
 
@@ -124,13 +123,13 @@ That said, Wildcard is not suitable for:
 
    <details>
    <summary>
-   With Koa:
+   With Koa
    </summary>
 
    ~~~js
    const Koa = require('koa');
    const Router = require('koa-router');
-   const {getApiResponse} = require('wildcard-api');
+   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const server = new Koa();
 
@@ -148,7 +147,7 @@ That said, Wildcard is not suitable for:
 
    <details>
    <summary>
-   With other server frameworks:
+   With other server frameworks
    </summary>
 
    You can use Wildcard with any server framework as long as you
