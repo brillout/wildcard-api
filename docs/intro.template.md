@@ -6,7 +6,8 @@
 
 <br/>
 <p>
-Create API endpoints as easily as creating JavaScript functions:
+With Wildcard,
+creating an API endpoint is as easy as creating a JavaScript function:
 </p>
 
 ~~~js
@@ -35,9 +36,8 @@ import {endpoints} from 'wildcard-api/client';
 That's the only thing Wildcard does:
 It makes functions defined on the server "callable" in the browser.
 That's it.
-Wildcard takes care of the HTTP request and serialization.
-How you retrieve/mutate data is up to you and
-you can use SQL, ORM, NoSQL, etc.
+Wildcard takes care of HTTP requests and serialization,
+how you retrieve/mutate data is up to you.
 
 #### Contents
 
