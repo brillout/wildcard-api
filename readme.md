@@ -82,12 +82,6 @@
 </p>
 <p align='center'><a href="/../../#readme"><b>Intro</b></a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 
-Project goals:
- 1. JavaScript library to easily create a custom API.
- 2. Debunk the common misconception that a generic API is a silver bullet.
-    REST and GraphQL are great tools for large applications
-    but are less suited for prototypes and smaller apps.
-
 With Wildcard,
 creating an API endpoint is as easy as creating a JavaScript function:
 
