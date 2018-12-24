@@ -101,6 +101,18 @@ app.all('/wildcard/*' , async(req, res, next) => {
 
 ## Custom API vs Generic API
 
+*Custom API*:
+An API that only fulfills the data requirements of your clients.
+Such as
+a Wildcard API or
+a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+
+*Generic API*:
+An API that is designed to support a maximum number of data requirements.
+Such as
+a GraphQL API or
+a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
+
 > TLDR;
 >  - If you have a tight client API development, then use a custom API.
 >  - If you need to decouple client development from API development, then use a generic API.

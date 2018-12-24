@@ -33,20 +33,17 @@ import {endpoints} from 'wildcard-api/client';
 })();
 ~~~
 
-That's the only thing Wildcard does:
+That's all Wildcard does:
 It makes functions defined on the server "callable" in the browser.
-That's it.
-Wildcard takes care of HTTP requests and serialization,
-how you retrieve/mutate data is up to you.
+Nothing more, nothing less.
+How you retrieve/mutate data is up to you.
 
 #### Contents
 
  - [Usage](#usage)
- - [Wildcard vs GraphQL/REST](#wildcard-vs-graphqlrest)
-
+ - [FAQ](#faq)
 
 <br/>
-
 
 ## Usage
 
@@ -137,7 +134,11 @@ how you retrieve/mutate data is up to you.
    const {endpoints} = require('wildcard-api');
 
    endpoints.myFirstEndpoint = async function () {
-     const data = await getData();
+     // `this` is the object that you pass to `getApiResponse`
+     // In the Express code above we passed `req`. So we have `this===req`
+     // and we can access `req.headers.cookie` over `this.headers.cookie`.
+     const loggedInUser = await getLoggedInUser(this.headers.cookie);
+     const data = await getData(loggedInUser);
      return data;
    };
    ~~~
@@ -155,34 +156,108 @@ how you retrieve/mutate data is up to you.
    })();
    ~~~
 
+> You can also scaffold a full-stack app with a Wildcard API using [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
 
 
 
 
+## FAQ
 
-## Wildcard vs GraphQL/REST
+### Should I create a Wildcard API or a GraphQL/RESTful API?
+
+For prototypes we recommend Wildcard and
+for large applications we recommand REST or GraphQL.
+
+Flexibility is paramount when prototyping,
+and Wildcard's structureless nature is a great fit.
+Whereas the rigid structure of a generic API
+gets in the way of quickly evolving your prototype.
+
+Also,
+Wildcard is trivial to setup,
+allowing you quickly ship a prototype.
+
+We go in more depth and explore different use cases at
+[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
+
+### How does a Wildcard API compare to a GraphQL API / RESTful API?
 
 Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
+See
+[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
 
-*Custom API*:
-An API that only fulfills the data requirements of your clients.
-Such as
-a Wildcard API or
-a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+### How about authentication? Where are the HTTP headers?
 
-*Generic API*:
-An API that is designed to support a maximum number of data requirements.
-Such as
-a GraphQL API or
-a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
+The object `context` passed to `getApiResponse(context)`
+is available to endpoint functions as `this`.
 
-We compare them at
-[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api)
-.
+~~~js
+endpoints.getLoggedUserInfo = async function() {
+  const userthis.headers.cookie
+  // Or, for example, when using Express's authentication library Passport,
+  // the logged user is available at `req.user`.
+  // Since `this.req` we can access it at
+  // :using your server's fram
+  const loggedUser = this.user;
+  return loggedUser;
+};
+~~~
+
+### How about permissions? Is it safe?
+
+Yes it's safe but it's your job.
+
+For example, if you SQL:
+
+~~~js
+endpoints.updateTodoText = async function(todoId, newText) {
+  const user = await getLoggedUser(this.headers.cookie);
+  // Do nothing if user is not logged in
+  if( !user ) return;
+
+  const [todo] = await db.query(
+    `SELECT * FROM todos WHERE id = :todoId;`,
+    {todoId}
+  );
+  if( !todo ) {
+    // Because `updateTodoText` is essentialy public, `todoId` can be anything
+    // and it doesn't have to be the id of a todo.
+    // (What were are doing here is bascailly validation.)
+    return;
+  }
+
+  // Do nothing if the user is not the author of the todo
+  if( todo.authorId !== user.id ) {
+    // (What we are doing here is basically permission control.)
+    return;
+  }
+
+  await db.query(
+    "UPDATE todos SET text = :newText WHERE id = :todoId;",
+    {newText, todoId}
+  );
+};
+~~~
+
+
+### How does it work?
+
+In contrast, with Wildcard, you simply define JavaScript functions on Wildcard's `endpoints` object.
+No schema,
+no permission rules.
+
+In essence,
+these endpoint functions you define act as fine-grained "permission holes":
+You allow your client to access and do things on a case-by-case basis.
+This is a simple alternative to permission rules.
+
+That said, Wildcard is not suitable for:
+ - Third-party clients.
+ - Large applications with an API developed independently of the frontend.
+
+
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
-
-
-
 
