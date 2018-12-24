@@ -41,41 +41,11 @@ how you retrieve/mutate data is up to you.
 
 #### Contents
 
- - [Why Wildcard](#why-wildcard)
  - [Usage](#usage)
  - [Wildcard vs GraphQL/REST](#wildcard-vs-graphqlrest)
 
 
 <br/>
-
-### Why Wildcard
-
-REST and GraphQL are great but
-creating a schema and permission rules for
-a prototype
-that has only couple of data requirements is overkill.
-
-In contrast, with Wildcard, you simply define JavaScript functions on Wildcard's `endpoints` object.
-No schema,
-no permission rules.
-
-In essence,
-these endpoint functions you define act as fine-grained "permission holes":
-You allow your client to access and do things on a case-by-case basis.
-This is a simple alternative to permission rules.
-
-The structureless nature of Wildcard is a great fit for rapid prototyping
-where flexibility is paramount.
-Whereas the rigid structure of a generic API
-gets in the way of quickly evolving your prototype.
-
-That said, Wildcard is not suitable for:
- - Third-party clients.
- - Large applications with an API developed independently of the frontend.
-
-!INLINE ./snippets/intro-section-footer.md --hide-source-path
-
-
 
 
 ## Usage
