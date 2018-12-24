@@ -49,7 +49,7 @@ How you retrieve/mutate data is up to you.
 
 1. Add the Wildcard routes to your Node.js server.
 
-   With Express:
+   With [Express](https://github.com/expressjs/express):
    ~~~js
    const express = require('express');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
@@ -66,7 +66,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With Hapi
+   With [Hapi](https://github.com/hapijs/hapi)
    </summary>
 
    ~~~js
@@ -90,7 +90,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With Koa
+   With [Koa](https://github.com/koajs/koa)
    </summary>
 
    ~~~js
@@ -134,9 +134,9 @@ How you retrieve/mutate data is up to you.
    const {endpoints} = require('wildcard-api');
 
    endpoints.myFirstEndpoint = async function () {
-     // `this` is the object that you pass to `getApiResponse`
-     // In the Express code above we passed `req`. So we have `this===req`
-     // and we can access `req.headers.cookie` over `this.headers.cookie`.
+     // `this` is the object you pass to `getApiResponse`
+     // In the Express code above we passed `req` and we can
+     // access `req.headers.cookie` over `this.headers.cookie`.
      const loggedInUser = await getLoggedInUser(this.headers.cookie);
      const data = await getData(loggedInUser);
      return data;
@@ -170,16 +170,17 @@ How you retrieve/mutate data is up to you.
 For prototypes we recommend Wildcard and
 for large applications we recommand REST or GraphQL.
 
-Flexibility is paramount when prototyping,
+When prototyping
+Flexibility is paramount,
 and Wildcard's structureless nature is a great fit.
 Whereas the rigid structure of a generic API
-gets in the way of quickly evolving your prototype.
+gets in the way of quickly evolving a prototype.
 
 Also,
 Wildcard is trivial to setup,
 allowing you quickly ship a prototype.
 
-We go in more depth and explore different use cases at
+We go in depth and explore different use cases at
 [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
 
 ### How does a Wildcard API compare to a GraphQL API / RESTful API?
@@ -190,26 +191,47 @@ See
 
 ### How about authentication? Where are the HTTP headers?
 
-The object `context` passed to `getApiResponse(context)`
-is available to endpoint functions as `this`.
+Any object `context` you pass to `getApiResponse(context)`
+is available to your endpoint functions as `this`.
+So that you can pass the information your endpoint functions need, such as HTTP headers.
+
+For example you can pass Express's `req` object:
+
+~~~js
+ async (req, res, next) => {
+   // We use `req` as request context
+   const apiResponse = await getApiResponse(req);
+   // ...
+ });
+~~~
+
+to then be able to access the cookie header:
 
 ~~~js
 endpoints.getLoggedUserInfo = async function() {
-  const userthis.headers.cookie
-  // Or, for example, when using Express's authentication library Passport,
-  // the logged user is available at `req.user`.
-  // Since `this.req` we can access it at
-  // :using your server's fram
-  const loggedUser = this.user;
-  return loggedUser;
+  // Since `this===req` we can access `req.headers` with `this.headers`
+  const user = await getUserFromSessionCookie(this.headers.cookie);
+  return user;
+};
+~~~
+
+Or when using Express with [Passport](https://github.com/jaredhanson/passport):
+
+~~~js
+endpoints.getLoggedUserInfo = async function() {
+  // When using Passport `req.user` holds the logged in user.
+  // Since `this===req` we can access `req.user` with `this.user`
+  return this.user;
 };
 ~~~
 
 ### How about permissions? Is it safe?
 
-Yes it's safe but it's your job.
+Yes it's safe.
+But unlike generic APIs where safety is ensured with declarative permission rules,
+safety is ensured by your code.
 
-For example, if you SQL:
+For example for a to-do list app with a SQL database:
 
 ~~~js
 endpoints.updateTodoText = async function(todoId, newText) {
@@ -222,18 +244,19 @@ endpoints.updateTodoText = async function(todoId, newText) {
     {todoId}
   );
   if( !todo ) {
-    // Because `updateTodoText` is essentialy public, `todoId` can be anything
-    // and it doesn't have to be the id of a todo.
-    // (What were are doing here is bascailly validation.)
+    // Because `updateTodoText` is essentialy public,
+    // `todoId` can hold any value and doesn't have to be the id of a todo.
     return;
   }
 
   // Do nothing if the user is not the author of the todo
   if( todo.authorId !== user.id ) {
-    // (What we are doing here is basically permission control.)
+    // The logged user is not the auther of the todo and doesn't
+    // have the permission to change the todo's text.
     return;
   }
 
+  // The logged user is the todo's author and has permission
   await db.query(
     "UPDATE todos SET text = :newText WHERE id = :todoId;",
     {newText, todoId}
@@ -243,6 +266,11 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 
 ### How does it work?
+
+On a high-level Wildcard is trivial:
+It simple serializes t
+
+When
 
 In contrast, with Wildcard, you simply define JavaScript functions on Wildcard's `endpoints` object.
 No schema,
