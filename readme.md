@@ -144,7 +144,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With [Hapi](https://github.com/hapijs/hapi)
+   With <a href="https://github.com/hapijs/hapi">Hapi</a>
    </summary>
 
    ~~~js
@@ -168,7 +168,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With [Koa](https://github.com/koajs/koa)
+   With <a href="https://github.com/koajs/koa">Koa</a>
    </summary>
 
    ~~~js

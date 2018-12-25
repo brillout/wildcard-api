@@ -188,8 +188,9 @@ app.listen(3000);
 
 <details>
 <summary>
-With [Hapi](https://github.com/hapijs/hapi)
+With <a href="https://github.com/hapijs/hapi">Hapi</a>
 </summary>
+
 ~~~js
 // /example/start-with-hapi
 
@@ -240,8 +241,9 @@ async function startServer() {
 
 <details>
 <summary>
-With [Koa](https://github.com/koajs/koa)
+With <a href="https://github.com/koajs/koa">Koa</a>
 </summary>
+
 ~~~js
 // /example/start-with-koa
 
