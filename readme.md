@@ -234,7 +234,8 @@ How you retrieve/mutate data is up to you.
    })();
    ~~~
 
-> You can also scaffold a full-stack app with a Wildcard API using [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+> You can also scaffold a Reframe + Wildcard API stack using
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 

@@ -7,9 +7,12 @@
 A (simplistic) todo app built with:
  - React
  - Wildcard API
- - Express
+ - Express (Also has Hapi and Koa variants)
  - Node.js
  - SQLite
+
+> You can also play with a Reframe + Wildcard API stack by using
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
 
 #### Contents
 
@@ -25,10 +28,6 @@ A (simplistic) todo app built with:
 ## Code Highlights
 
 Showcase of the example's code.
-- [View Endpoints](#view-endpoints)
-- [Express Integration](#express-integration)
-- [Mutation Endpoints](#mutation-endpoints)
-- [React Frontend](#react-frontend)
 
 ### View Endpoints
 

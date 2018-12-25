@@ -109,8 +109,8 @@ a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.htm
  - [Use Cases: Generic API](#use-cases-generic-api)
  - [Use Cases: Hybrid](#use-cases-hybrid)
 
-<br/>
 
+<br/>
 
 
 ### Tight client API development
