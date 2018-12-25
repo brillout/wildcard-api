@@ -170,15 +170,15 @@ How you retrieve/mutate data is up to you.
 For prototypes we recommend Wildcard and
 for large applications we recommand REST or GraphQL.
 
-When prototyping
-Flexibility is paramount,
+Flexibility is paramount
+when prototyping,
 and Wildcard's structureless nature is a great fit.
 Whereas the rigid structure of a generic API
 gets in the way of quickly evolving a prototype.
 
 Also,
 Wildcard is trivial to setup,
-allowing you quickly ship a prototype.
+allowing you to quickly ship a prototype.
 
 We go in depth and explore different use cases at
 [Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
@@ -219,16 +219,15 @@ Or when using Express with [Passport](https://github.com/jaredhanson/passport):
 
 ~~~js
 endpoints.getLoggedUserInfo = async function() {
-  // When using Passport `req.user` holds the logged in user.
-  // Since `this===req` we can access `req.user` with `this.user`
+  // When using Passport, `req.user` holds the logged in user.
+  // And since `this===req` we can access `req.user` with `this.user`.
   return this.user;
 };
 ~~~
 
 ### How about permissions? Is it safe?
 
-Yes it's safe.
-But unlike generic APIs where safety is ensured with declarative permission rules,
+Unlike generic APIs where safety is ensured with declarative permission rules,
 safety is ensured by your code.
 
 For example for a to-do list app with a SQL database:
@@ -236,7 +235,7 @@ For example for a to-do list app with a SQL database:
 ~~~js
 endpoints.updateTodoText = async function(todoId, newText) {
   const user = await getLoggedUser(this.headers.cookie);
-  // Do nothing if user is not logged in
+  // Do nothing if the user is not logged in
   if( !user ) return;
 
   const [todo] = await db.query(
@@ -244,8 +243,8 @@ endpoints.updateTodoText = async function(todoId, newText) {
     {todoId}
   );
   if( !todo ) {
-    // Because `updateTodoText` is essentialy public,
-    // `todoId` can hold any value and doesn't have to be the id of a todo.
+    // In essence `updateTodoText` is public, and `todoId`
+    // can hold any value and doesn't have to be the id of a todo.
     return;
   }
 
@@ -267,25 +266,112 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 ### How does it work?
 
-On a high-level Wildcard is trivial:
-It simple serializes t
+When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
-When
+1. The arguments are serialized to `"["some",{"arg":"val"}]"` using [JSON-S](https://github.com/brillout/json-s).
+   (All (de-)serialization is made with JSON-S.)
 
-In contrast, with Wildcard, you simply define JavaScript functions on Wildcard's `endpoints` object.
-No schema,
-no permission rules.
+2. An HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"` to your Node.js server
 
-In essence,
-these endpoint functions you define act as fine-grained "permission holes":
-You allow your client to access and do things on a case-by-case basis.
-This is a simple alternative to permission rules.
+3. On your Node.js server, your endpoint function defined on `endpoints.endpointName` is called with the arguments deserialized back to `{arg: 'val'}`
 
-That said, Wildcard is not suitable for:
- - Third-party clients.
- - Large applications with an API developed independently of the frontend.
+5. Once your endpoint function's return promise resolves,
+   an HTTP response is replied with the promise's resolved value serialized in the HTTP body.
+
+6. In the browser,
+   the HTTP body is deserialized and the promise of your original `endpoints.endpointName` call is resolved with the deserialized HTTP body.
 
 
 
-!INLINE ./snippets/intro-section-footer.md --hide-source-path
+### What happens upon network errors?
+
+Wildcard uses fetch and doesn't catch fetch's errors allowing you to handle network errors as you wish.
+
+You can also load
+[Handli](https://github.com/brillout/handli)...
+
+~~~js
+import 'handli';
+// Or: `require('handli')`;
+~~~
+
+...and Wildcard will then automatically use Handli to handle network errors.
+
+
+### Does the Wildcard client work in Node.js?
+
+Yes.
+
+If the Wildcard client and Wildcard server run in the same Node.js process
+then, instead of doing a HTTP request, the endpoint function is then directly called.
+
+Otherwise the Wildcard client will make a HTTP request like when run in the browser.
+
+### Does it work with SSR?
+
+Yes.
+But you'll have to manually preserve the request context when running the Wildcard client on the server-side.
+
+You can use the `Function.prototype.bind()` method to do so:
+
+~~~js
+const {endpoints} = require('wildcard-api/client');
+
+async function getInitialProps({isNodejs, request: {headers}={}}) {
+  let {getLandingPageData} = endpoints;
+
+  // When calling `getLandingPageData` on the server, we have to
+  // preserve the request context.
+  if( isNodejs ) {
+    // E.g. we pass on the HTTP headers of the original HTTP request:
+    const context = {headers};
+    getLandingPageData = getLandingPageData.bind(context);
+  }
+
+	const landingPageData = await getLandingPageData();
+  return landingPageData;
+}
+~~~
+
+The endpoint `getLandingPageData` then has access to `headers`:
+
+~~~js
+const {endpoints} = require('wildcard');
+
+endpoints.getLandingPageData = async function(){
+  const {headers} = this;
+
+  const user = await getLoggedUser(headers);
+
+  const moreInfo = await getMoreInfo();
+
+  return {user, ...moreInfo};
+};
+~~~
+
+When the Wildcard client runs in Node.js,
+the context originates from our `bind` call above.
+
+When the Wildcard client runs in the browswer, the context originates from `getApiResponse`:
+
+~~~js
+const express = require('express');
+const {getApiResponse} = require('wildcard-api');
+
+const app = express();
+
+app.all('/wildcard/*' , async(req, res, next) => {
+  const {url, method, headers} = req;
+  const context = {url, method, headers};
+  const apiResponse = await getApiResponse(context);
+
+  res.status(apiResponse.statusCode);
+  res.send(apiResponse.body);
+
+  next();
+});
+~~~
+
+!INLINE ./snippets/usage-section-footer.md --hide-source-path
+
 
