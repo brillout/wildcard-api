@@ -80,24 +80,27 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme"><b>Custom API vs Generic API</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme"><b>Custom vs Generic</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 &nbsp;
 
-# Custom API vs Generic API
+# Custom vs Generic
 
-*Custom API*:
-An API that only fulfills the data requirements of your clients.
-Such as
-a Wildcard API or
-a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+Comparison of custom APIs with generic APIs.
 
-*Generic API*:
-An API that is designed to support a maximum number of data requirements.
-Such as
-a GraphQL API or
-a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
+- **_Custom API_**
+  <br/>
+  An API that only fulfills the data requirements of your clients.
+  Such as
+  a Wildcard API or
+  a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+- **_Generic API_**
+  <br/>
+  An API that is designed to support a maximum number of data requirements.
+  Such as
+  a GraphQL API or
+  a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
-> TLDR;
+> TL;DR
 >  - If you have a tight client API development, then use a custom API.
 >  - If you need to decouple client development from API development, then use a generic API.
 >  - Start your prototype with a custom API then progressively replace it with a generic API

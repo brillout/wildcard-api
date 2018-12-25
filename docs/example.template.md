@@ -7,7 +7,6 @@
 A (simplistic) todo app built with:
  - React
  - Wildcard API
- - Express (Also has Hapi and Koa variants)
  - Node.js
  - SQLite
 
@@ -18,7 +17,7 @@ A (simplistic) todo app built with:
 
 - [Code Highlights](#code-highlights)
   - [View Endpoints](#view-endpoints)
-  - [Express Integration](#express-integration)
+  - [Server Integration](#server-integration)
   - [Mutation Endpoints](#mutation-endpoints)
   - [React Frontend](#react-frontend)
 - [Run](#run)
@@ -39,11 +38,32 @@ Showcase of the example's code.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
-### Express Integration
+### Server Integration
+
+With Express:
 
 ~~~js
 !INLINE ../example/start-with-express
 ~~~
+
+<details>
+<summary>
+With [Hapi](https://github.com/hapijs/hapi)
+</summary>
+~~~js
+!INLINE ../example/start-with-hapi
+~~~
+</details>
+
+<details>
+<summary>
+With [Koa](https://github.com/koajs/koa)
+</summary>
+~~~js
+!INLINE ../example/start-with-koa
+~~~
+</details>
+
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 

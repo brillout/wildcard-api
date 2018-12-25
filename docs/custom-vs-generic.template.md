@@ -1,24 +1,27 @@
 !MENU_ORDER 2
 !INLINE ./header.md --hide-source-path
 !MENU
-!MENU_TITLE Custom API vs Generic API
+!MENU_TITLE Custom vs Generic
 &nbsp;
 
-# Custom API vs Generic API
+# Custom vs Generic
 
-*Custom API*:
-An API that only fulfills the data requirements of your clients.
-Such as
-a Wildcard API or
-a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+Comparison of custom APIs with generic APIs.
 
-*Generic API*:
-An API that is designed to support a maximum number of data requirements.
-Such as
-a GraphQL API or
-a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
+- **_Custom API_**
+  <br/>
+  An API that only fulfills the data requirements of your clients.
+  Such as
+  a Wildcard API or
+  a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
+- **_Generic API_**
+  <br/>
+  An API that is designed to support a maximum number of data requirements.
+  Such as
+  a GraphQL API or
+  a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
-> TLDR;
+> TL;DR
 >  - If you have a tight client API development, then use a custom API.
 >  - If you need to decouple client development from API development, then use a generic API.
 >  - Start your prototype with a custom API then progressively replace it with a generic API

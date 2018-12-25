@@ -80,12 +80,11 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme">Custom API vs Generic API</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme">Custom vs Generic</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
 
 A (simplistic) todo app built with:
  - React
  - Wildcard API
- - Express (Also has Hapi and Koa variants)
  - Node.js
  - SQLite
 
@@ -96,7 +95,7 @@ A (simplistic) todo app built with:
 
 - [Code Highlights](#code-highlights)
   - [View Endpoints](#view-endpoints)
-  - [Express Integration](#express-integration)
+  - [Server Integration](#server-integration)
   - [Mutation Endpoints](#mutation-endpoints)
   - [React Frontend](#react-frontend)
 - [Run](#run)
@@ -154,7 +153,9 @@ endpoints.getCompletedPageData = async function () {
 <br/>
 <br/>
 
-### Express Integration
+### Server Integration
+
+With Express:
 
 ~~~js
 // /example/start-with-express
@@ -184,6 +185,94 @@ app.use(express.static('client/dist', {extensions: ['html']}));
 
 app.listen(3000);
 ~~~
+
+<details>
+<summary>
+With [Hapi](https://github.com/hapijs/hapi)
+</summary>
+~~~js
+// /example/start-with-hapi
+
+const Hapi = require('hapi');
+const Inert = require('inert');
+const {getApiResponse} = require('wildcard-api');
+require('./api/endpoints');
+
+startServer();
+
+async function startServer() {
+  const server = Hapi.Server({
+    port: 3000,
+    debug: {request: ['internal']},
+  });
+
+  server.route({
+    method: '*',
+    path: '/wildcard/{param*}',
+    handler: async (request, h) => {
+      // Our `context` object is made available to endpoint functions over `this`.
+      // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
+      const {method, url, headers} = request.raw.req;
+      const context = {method, url, headers};
+      const apiResponse = await getApiResponse(context);
+
+      const resp = h.response(apiResponse.body);
+      resp.code(apiResponse.statusCode);
+      return resp;
+    }
+  });
+
+  await server.register(Inert);
+  server.route({
+    method: '*',
+    path: '/{param*}',
+    handler: {
+      directory: {
+        path: 'client/dist',
+      }
+    }
+  });
+
+  await server.start();
+}
+~~~
+</details>
+
+<details>
+<summary>
+With [Koa](https://github.com/koajs/koa)
+</summary>
+~~~js
+// /example/start-with-koa
+
+const Koa = require('koa');
+const Router = require('koa-router');
+const Static = require('koa-static');
+const {getApiResponse} = require('wildcard-api');
+require('./api/endpoints');
+
+const app = new Koa();
+
+const router = new Router();
+
+router.all('/wildcard/*', async (ctx, next) => {
+  const {method, url, headers} = ctx;
+  const context = {method, url, headers};
+
+  const apiResponse = await getApiResponse(context);
+
+  ctx.status = apiResponse.statusCode;
+  ctx.body = apiResponse.body;
+});
+
+app.use(router.routes());
+
+app.use(Static('client/dist'));
+
+app.listen(process.env.PORT || 3000);
+~~~
+</details>
+
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
