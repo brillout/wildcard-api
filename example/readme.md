@@ -80,7 +80,7 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme">Usage Manual</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme">Custom API vs Generic API</a> &nbsp; | &nbsp; <a href="/example/#readme"><b>Example</b></a></p>
 
 A (simplistic) todo app built with:
  - React

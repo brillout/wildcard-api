@@ -1,6 +1,7 @@
 !MENU_ORDER 2
 !INLINE ./header.md --hide-source-path
 !MENU
+!MENU_TITLE Custom API vs Generic API
 &nbsp;
 
 # Custom API vs Generic API

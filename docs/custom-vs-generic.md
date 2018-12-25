@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -80,112 +80,22 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/usage-manual.md#readme"><b>Usage Manual</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
+<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme"><b>Custom API vs Generic API</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 &nbsp;
 
-# Usage Manual
+# Custom API vs Generic API
 
+*Custom API*:
+An API that only fulfills the data requirements of your clients.
+Such as
+a Wildcard API or
+a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
 
- - [SSR](#ssr)
- - [Error Handling](#error-handling)
- - [Custom API vs Generic API](#custom-api-vs-generic-api)
-
-<br/>
-
-## Error Handling
-
-By default, Wildcard uses
-[Handli](https://github.com/brillout/handli)
-to automatically handle network corner cases.
-
-You can get rid of Handli and handle network errors yourself
-by constructing the Wildcard client yourself
-and providing your own implementation of `makeHttpRequest`.
-You have then full control over how HTTP requests are made,
-including how HTTP errors are handled.
-
-More infos at [API](#api).
-
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
-
-
-
-
-
-## SSR
-
-The request context needs to be preserved while doing server-side rendering.
-
-You can use the `Function.prototype.bind()` method to do so:
-
-~~~js
-const {endpoints} = require('wildcard-api/client');
-
-async function getInitialProps({isServer, request: {headers}={}}) {
-  let {getLandingPageData} = endpoints;
-  if( isServer ) {
-    // We pass on the HTTP headers of the original user request
-    const context = {headers};
-    getLandingPageData = getLandingPageData.bind(context);
-  }
-
-	const landingPageData = await getLandingPageData();
-  return landingPageData;
-}
-~~~
-
-The endpoint `getLandingPageData` then has access to `headers`:
-
-~~~js
-const {endpoints} = require('wildcard');
-
-endpoints.getLandingPageData = async function(){
-  const {headers} = this;
-
-  const user = await getLoggedUser(headers);
-
-  const moreInfo = await getMoreInfo();
-
-  return {user, ...moreInfo};
-};
-~~~
-
-When the client runs in Node.js,
-the context originates from our `bind` call above.
-
-When the client runs in the browswer, the context originates from:
-
-~~~js
-const express = require('express');
-const {getApiResponse} = require('wildcard-api');
-
-const app = express();
-
-app.all('/wildcard/*' , async(req, res, next) => {
-  const {headers} = req;
-  const context = {headers};
-  const apiResponse = await getApiResponse(context);
-
-  if( apiResponse ) {
-    res.status(apiResponse.statusCode);
-    res.send(apiResponse.body);
-  }
-
-  next();
-});
-~~~
-
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
-
-
-
-## Custom API vs Generic API
+*Generic API*:
+An API that is designed to support a maximum number of data requirements.
+Such as
+a GraphQL API or
+a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
 > TLDR;
 >  - If you have a tight client API development, then use a custom API.
@@ -372,7 +282,7 @@ Combining a custom API with a generic API can be a successfull strategy.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -387,7 +297,7 @@ Combining a custom API with a generic API can be a successfull strategy.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -402,7 +312,7 @@ Combining a custom API with a generic API can be a successfull strategy.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -417,7 +327,7 @@ Combining a custom API with a generic API can be a successfull strategy.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
@@ -432,7 +342,7 @@ Combining a custom API with a generic API can be a successfull strategy.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/usage-manual.template.md` instead.
+    Edit `/docs/custom-vs-generic.template.md` instead.
 
 
 
