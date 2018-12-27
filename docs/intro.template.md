@@ -49,7 +49,7 @@ How you retrieve/mutate data is up to you.
 
 1. Add the Wildcard routes to your Node.js server.
 
-   With [Express](https://github.com/expressjs/express):
+   With Express:
    ~~~js
    const express = require('express');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
@@ -66,7 +66,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With <a href="https://github.com/hapijs/hapi">Hapi</a>
+   With Hapi
    </summary>
 
    ~~~js
@@ -90,7 +90,7 @@ How you retrieve/mutate data is up to you.
 
    <details>
    <summary>
-   With <a href="https://github.com/koajs/koa">Koa</a>
+   With Koa
    </summary>
 
    ~~~js
@@ -117,8 +117,8 @@ How you retrieve/mutate data is up to you.
    With other server frameworks
    </summary>
 
-   You can use Wildcard with any server framework as long as you
-   reply HTTP requests made to `/wildcard/*`
+   You can use Wildcard with any server framework:
+   Reply HTTP requests made to `/wildcard/*`
    with the HTTP response body and status code returned by
    `const {body, statusCode} = await getApiResponse({method, url, headers});`
    where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.

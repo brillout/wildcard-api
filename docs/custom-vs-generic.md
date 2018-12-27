@@ -101,13 +101,13 @@ Comparison of custom APIs with generic APIs.
   a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
 > TL;DR
->  - If you have a tight client API development, then use a custom API.
->  - If you need to decouple client development from API development, then use a generic API.
->  - Start your prototype with a custom API then progressively replace it with a generic API
+>  - We recommend a custom API with an API tightly developed with your frontend.
+>  - We recommend a generic API if your API development needs to be decoupled from frontend development.
+>  - You can start with a custom API then progressively replace it with a generic API.
 
 #### Contents
 
- - [Tight client API development](#tight-client-api-development)
+ - [Tight development](#tight-development)
  - [Use Cases: Custom API](#use-cases-custom-api)
  - [Use Cases: Generic API](#use-cases-generic-api)
  - [Use Cases: Hybrid](#use-cases-hybrid)
@@ -116,24 +116,25 @@ Comparison of custom APIs with generic APIs.
 <br/>
 
 
-### Tight client API development
+### Tight development
 
-Endpoints such as
+An endpoint like
 
 ~~~js
+// This endpoint is tailored to the frontend: It returns exactly and only what the landing page needs
 endpoints.getLandingPageData = async function() {
   const user = await getLoggedUser(this.headers);
   const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
-  // Or with NoSQL/ORM `const todos = await Todo.find({authorId: user.id}, {fields: ['id', 'text']});`
   return {user, todos};
 };
 ~~~
 
-tightly couples frontend development with API development.
-For example, if the frontend needs the todo creation dates,
-then the SQL query of the `getLandingPageData` endpoint needs to be changed to `SELECT id, text, created_at`.
+tightly couples the API development with the frontend development:
+For example,
+if changes are made to the frontend that need the todos' creation date,
+then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, text, created_at`.
 
-A custom API requires a tight client API development.
+A custom API works best with an API developed tightly with your frontend.
 
 A prototype is usually developed by one or two developers and a tight frontend-backend development is given.
 

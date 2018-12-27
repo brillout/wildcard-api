@@ -48,7 +48,7 @@ With Express:
 
 <details>
 <summary>
-With <a href="https://github.com/hapijs/hapi">Hapi</a>
+With Hapi
 </summary>
 
 ~~~js
@@ -58,7 +58,7 @@ With <a href="https://github.com/hapijs/hapi">Hapi</a>
 
 <details>
 <summary>
-With <a href="https://github.com/koajs/koa">Koa</a>
+With Koa
 </summary>
 
 ~~~js
