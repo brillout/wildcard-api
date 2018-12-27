@@ -134,7 +134,7 @@ How you retrieve/mutate data is up to you.
    const {endpoints} = require('wildcard-api');
 
    endpoints.myFirstEndpoint = async function () {
-     // `this` is the object you pass to `getApiResponse`
+     // `this` is the object you pass to `getApiResponse`.
      // In the Express code above we passed `req` and we can
      // access `req.headers.cookie` over `this.headers.cookie`.
      const loggedInUser = await getLoggedInUser(this.headers.cookie);
@@ -169,26 +169,25 @@ How you retrieve/mutate data is up to you.
 ### Should I create a Wildcard API or a GraphQL/RESTful API?
 
 For prototypes we recommend Wildcard and
-for large applications we recommand REST or GraphQL.
+we recommend REST/GraphQL for large applications.
 
 Flexibility is paramount
 when prototyping,
-and Wildcard's structureless nature is a great fit.
+and Wildcard's structureless nature is a good fit.
 Whereas the rigid structure of a generic API
 gets in the way of quickly evolving a prototype.
-
-Also,
+And
 Wildcard is trivial to setup,
-allowing you to quickly ship a prototype.
+allowing you to more quickly ship a prototype.
 
 We go in depth and explore different use cases at
-[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
+[Custom vs Generic](/docs/custom-vs-generic.md).
 
 ### How does a Wildcard API compare to a GraphQL API / RESTful API?
 
 Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
 See
-[Usage Manual - Custom API vs Generic API](/docs/usage-manual.md#custom-api-vs-generic-api).
+[Custom vs Generic](/docs/custom-vs-generic.md).
 
 ### How about authentication? Where are the HTTP headers?
 

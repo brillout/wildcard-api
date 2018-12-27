@@ -136,13 +136,6 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 
 A custom API works best with an API developed tightly with your frontend.
 
-A prototype is usually developed by one or two developers and a tight frontend-backend development is given.
-
-A tight frontend-backend development combined with a custom API is powerful:
-Instead of being limited by the structure of a generic API's schema,
-all kinds of custom endpoints can be written and do exactly what the frontend needs.
-In particular, with Wildcard, the whole power of the backend is only one JavaScript function away to the frontend.
-
 <b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
@@ -158,11 +151,10 @@ In particular, with Wildcard, the whole power of the backend is only one JavaScr
 - **Full-stack JavaScript**.
   <br/>
   A frontend + backend written in the same language
-  lends itself to a tight frontend-backend development and a custom API is recommended.
-  And with full-stack JavaScript,
-  Wildcard allows you to create a custom API with JavaScript functions and zero setup.
+  lends itself to a tight frontend-backend development
+  and you can use a custom API developed hand-in-hand with your frontend.
 
-- **SSR frameworks**.
+- **JavaScript web frameworks**.
   <br/>
   With frameworks such as
   [Next.js](https://github.com/zeit/next.js#readme)
@@ -170,13 +162,13 @@ In particular, with Wildcard, the whole power of the backend is only one JavaScr
   [Reframe](https://github.com/reframejs/reframe#readme)
   ,
   the frontend and backend are written in JavaScript and developed at the same time.
-  Here again, a custom API / Wildcard is good fit.
+  Here again, a custom API is good fit.
 
 - **Single developer**.
   <br/>
   If you want to develop an app by yourself,
-  you will own the frontend and backend development.
-  Choosing full-stack JavaScript with Wildcard is then a good choice for rapid development.
+  you will own both the frontend and backend development.
+  You can then use a custom API to quickly ship a prototype.
 
 - **Full-stack developers**.
   <br/>
