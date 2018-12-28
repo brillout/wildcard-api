@@ -274,6 +274,7 @@ We explore use cases in more depth at
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+<br/>
 
 ### How does a Wildcard API compare to a GraphQL API / RESTful API?
 
@@ -282,6 +283,7 @@ See
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 <br/>
 
 ### What about authentication? Where are the HTTP headers?
@@ -321,6 +323,7 @@ endpoints.getLoggedUserInfo = async function() {
 ~~~
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 <br/>
 
 ### What about permissions?
@@ -363,6 +366,7 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+<br/>
 
 ### How does it work?
 
@@ -383,6 +387,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+<br/>
 
 ### What happens upon network errors?
 
@@ -401,6 +406,7 @@ import 'handli';
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
+<br/>
 
 ### Does the Wildcard client work in Node.js?
 
@@ -412,6 +418,7 @@ then, instead of doing an HTTP request, the endpoint function is directly called
 Otherwise the Wildcard client will make an HTTP request like when running in the browser.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 <br/>
 
 ### Does it work with SSR?
@@ -474,6 +481,7 @@ app.all('/wildcard/*' , async(req, res, next) => {
 ~~~
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 <br/>
 
 <!---
