@@ -166,21 +166,35 @@ How you retrieve/mutate data is up to you.
 
 ## FAQ
 
+ - [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphql/restful-api)
+ - [How does a Wildcard API compare to a GraphQL API / RESTful API?](#how-does-a-wildcard-api-compare-to-a-graphql-api--restful-api)
+ - [What about authentication? Where are the HTTP headers?](#how-about-authentication-where-are-the-http-headers)
+What about permissions?
+What about permissions?
+How does it work?
+How does it work?
+What happens upon network errors?
+What happens upon network errors?
+Does the Wildcard client work in Node.js?
+Does the Wildcard client work in Node.js?
+Does it work with SSR?
+Does it work with SSR?
+
 ### Should I create a Wildcard API or a GraphQL/RESTful API?
 
-For prototypes we recommend Wildcard and
-we recommend REST/GraphQL for large applications.
+We recommend Wildcard for prototypes, small- and medium-sized applications.
+For large applications we recommend REST/GraphQL.
 
 Flexibility is paramount
 when prototyping,
-and Wildcard's structureless nature is a good fit.
+and Wildcard's structureless nature is fitting.
 Whereas the rigid structure of a generic API
 gets in the way of quickly evolving a prototype.
-And
-Wildcard is trivial to setup,
-allowing you to more quickly ship a prototype.
 
-We go in depth and explore different use cases at
+Wildcard is trivial to setup,
+allowing you to quickly ship a prototype.
+
+We explore use cases in more depth at
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
 ### How does a Wildcard API compare to a GraphQL API / RESTful API?
@@ -189,27 +203,27 @@ Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom
 See
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
-### How about authentication? Where are the HTTP headers?
+### What about authentication? Where are the HTTP headers?
 
-Any object `context` you pass to `getApiResponse(context)`
+The object `context` you pass to `getApiResponse(context)`
 is available to your endpoint functions as `this`.
-So that you can pass the information your endpoint functions need, such as HTTP headers.
+So that you can pass the information your endpoint functions need, for example HTTP headers.
 
-For example you can pass Express's `req` object:
+When using Express you can pass the`req` object:
 
 ~~~js
  async (req, res, next) => {
-   // We use `req` as request context
+   // We use `req` as context
    const apiResponse = await getApiResponse(req);
    // ...
  });
 ~~~
 
-to then be able to access the cookie header:
+You'll then be able to access the cookie header:
 
 ~~~js
 endpoints.getLoggedUserInfo = async function() {
-  // Since `this===req` we can access `req.headers` with `this.headers`
+  // Since `this===req`, `req.headers` is available as `this.headers`
   const user = await getUserFromSessionCookie(this.headers.cookie);
   return user;
 };
@@ -219,22 +233,22 @@ Or when using Express with [Passport](https://github.com/jaredhanson/passport):
 
 ~~~js
 endpoints.getLoggedUserInfo = async function() {
-  // When using Passport, `req.user` holds the logged in user.
-  // And since `this===req` we can access `req.user` with `this.user`.
+  // When using Passport, `req.user` holds the logged-in user.
+  // And since `this===req`, `req.user` is available as `this.user`.
   return this.user;
 };
 ~~~
 
-### How about permissions? Is it safe?
+### What about permissions?
 
-Unlike generic APIs where safety is ensured with declarative permission rules,
-safety is ensured by your code.
+With Wildcard,
+permissions are specifided by code.
 
-For example for a to-do list app with a SQL database:
+Permission example for a to-do list app:
 
 ~~~js
 endpoints.updateTodoText = async function(todoId, newText) {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedInUser(this.headers.cookie);
   // Do nothing if the user is not logged in
   if( !user ) return;
 
@@ -243,15 +257,15 @@ endpoints.updateTodoText = async function(todoId, newText) {
     {todoId}
   );
   if( !todo ) {
-    // In essence `updateTodoText` is public, and `todoId`
-    // can hold any value and doesn't have to be the id of a todo.
+    // `updateTodoText` is essentially public; `todoId` can hold
+    // any value and doesn't have to be a todo's id.
     return;
   }
 
-  // Do nothing if the user is not the author of the todo
+  // This if block basically ensures that if the logged user is not
+  // the todo's author then it cannot change the todo's text.
   if( todo.authorId !== user.id ) {
-    // The logged user is not the auther of the todo and doesn't
-    // have the permission to change the todo's text.
+    // Abort the SQL query if the user is not the todo's author
     return;
   }
 
@@ -268,24 +282,25 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
-1. The arguments are serialized to `"["some",{"arg":"val"}]"` using [JSON-S](https://github.com/brillout/json-s).
-   (All (de-)serialization is made with JSON-S.)
+1. The arguments are serialized to `"["some",{"arg":"val"}]"`. using .
+   (Wildcard uses [JSON-S](https://github.com/brillout/json-s) to (de-)serialize.)
 
 2. An HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"` to your Node.js server
 
 3. On your Node.js server, your endpoint function defined on `endpoints.endpointName` is called with the arguments deserialized back to `{arg: 'val'}`
 
-5. Once your endpoint function's return promise resolves,
-   an HTTP response is replied with the promise's resolved value serialized in the HTTP body.
+5. Once your endpoint function's promise resolves,
+   an HTTP response is sent with the promise's resolved value serialized in the HTTP body.
 
 6. In the browser,
-   the HTTP body is deserialized and the promise of your original `endpoints.endpointName` call is resolved with the deserialized HTTP body.
+   the received HTTP body is deserialized and the promise of your original `endpoints.endpointName` call is resolved with the deserialized value.
 
 
 
 ### What happens upon network errors?
 
-Wildcard uses fetch and doesn't catch fetch's errors allowing you to handle network errors as you wish.
+Wildcard uses fetch and doesn't catch fetch's errors,
+allowing you to handle network errors as you wish.
 
 You can also load
 [Handli](https://github.com/brillout/handli)...
@@ -302,10 +317,10 @@ import 'handli';
 
 Yes.
 
-If the Wildcard client and Wildcard server run in the same Node.js process
-then, instead of doing a HTTP request, the endpoint function is then directly called.
+If the Wildcard client and the Wildcard server run in the same Node.js process
+then, instead of doing an HTTP request, the endpoint function is directly called.
 
-Otherwise the Wildcard client will make a HTTP request like when run in the browser.
+Otherwise the Wildcard client will make an HTTP request like when running in the browser.
 
 ### Does it work with SSR?
 
@@ -333,26 +348,20 @@ async function getInitialProps({isNodejs, request: {headers}={}}) {
 }
 ~~~
 
-The endpoint `getLandingPageData` then has access to `headers`:
+The endpoint `getLandingPageData` then always has access to `headers`:
 
 ~~~js
 const {endpoints} = require('wildcard');
 
 endpoints.getLandingPageData = async function(){
-  const {headers} = this;
-
-  const user = await getLoggedUser(headers);
-
-  const moreInfo = await getMoreInfo();
-
-  return {user, ...moreInfo};
+  const user = await getLoggedUser(this.headers);
+  // ...
 };
 ~~~
 
 When the Wildcard client runs in Node.js,
 the context originates from our `bind` call above.
-
-When the Wildcard client runs in the browswer, the context originates from `getApiResponse`:
+And when the Wildcard client runs in the browswer, the context originates from `getApiResponse`:
 
 ~~~js
 const express = require('express');
