@@ -136,7 +136,7 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 
 A custom API works best with an API developed tightly with your frontend.
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -191,7 +191,7 @@ A custom API works best with an API developed tightly with your frontend.
   The server API has access to the whole backend while using Wildcard as permission layer.
   That way the frontend team can directly access the backend/databases without being constrained by the schema of a generic API.
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -217,7 +217,7 @@ A custom API works best with an API developed tightly with your frontend.
   The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
   An alternative is to set up a custom API on an API server maintained by the frontend team.
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
@@ -262,7 +262,7 @@ Combining a custom API with a generic API can be a successfull strategy.
   while your clients use
   a custom API to get full power/flexibility.
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
