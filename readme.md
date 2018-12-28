@@ -272,11 +272,17 @@ allowing you to quickly ship a prototype.
 We explore use cases in more depth at
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
+
 ### How does a Wildcard API compare to a GraphQL API / RESTful API?
 
 Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
 See
 [Custom vs Generic](/docs/custom-vs-generic.md).
+
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### What about authentication? Where are the HTTP headers?
 
@@ -313,6 +319,9 @@ endpoints.getLoggedUserInfo = async function() {
   return this.user;
 };
 ~~~
+
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### What about permissions?
 
@@ -352,6 +361,8 @@ endpoints.updateTodoText = async function(todoId, newText) {
 };
 ~~~
 
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### How does it work?
 
@@ -370,7 +381,8 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
 6. In the browser,
    the received HTTP body is deserialized and the promise of your original `endpoints.endpointName` call is resolved with the deserialized value.
 
-
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### What happens upon network errors?
 
@@ -387,6 +399,8 @@ import 'handli';
 
 ...and Wildcard will then automatically use Handli to handle network errors.
 
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### Does the Wildcard client work in Node.js?
 
@@ -396,6 +410,9 @@ If the Wildcard client and the Wildcard server run in the same Node.js process
 then, instead of doing an HTTP request, the endpoint function is directly called.
 
 Otherwise the Wildcard client will make an HTTP request like when running in the browser.
+
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 
 ### Does it work with SSR?
 
@@ -456,12 +473,8 @@ app.all('/wildcard/*' , async(req, res, next) => {
 });
 ~~~
 
-<b><sub><a href="#usage">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
-<br/>
-<br/>
-
-
 
 <!---
 
