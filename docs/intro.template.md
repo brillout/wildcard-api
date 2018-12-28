@@ -166,19 +166,14 @@ How you retrieve/mutate data is up to you.
 
 ## FAQ
 
- - [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphql/restful-api)
- - [How does a Wildcard API compare to a GraphQL API / RESTful API?](#how-does-a-wildcard-api-compare-to-a-graphql-api--restful-api)
- - [What about authentication? Where are the HTTP headers?](#how-about-authentication-where-are-the-http-headers)
-What about permissions?
-What about permissions?
-How does it work?
-How does it work?
-What happens upon network errors?
-What happens upon network errors?
-Does the Wildcard client work in Node.js?
-Does the Wildcard client work in Node.js?
-Does it work with SSR?
-Does it work with SSR?
+- [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphqlrestful-api)
+- [How does a Wildcard API compare to a GraphQL API / RESTful API?](#how-does-a-wildcard-api-compare-to-a-graphql-api--restful-api)
+- [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
+- [What about permissions?](#what-about-permissions)
+- [How does it work?](#how-does-it-work)
+- [What happens upon network errors?](#what-happens-upon-network-errors)
+- [Does the Wildcard client work in Node.js?](#does-the-wildcard-client-work-in-nodejs)
+- [Does it work with SSR?](#does-it-work-with-ssr)
 
 ### Should I create a Wildcard API or a GraphQL/RESTful API?
 
