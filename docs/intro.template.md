@@ -117,14 +117,14 @@ How you retrieve/mutate data is up to you.
    With other server frameworks
    </summary>
 
-   You can use Wildcard with any server framework:
-   Reply HTTP requests made to `/wildcard/*`
-   with the HTTP response body and status code returned by
+   Wildcard can be used with any server framework.
+   Just make sure to reply any HTTP request made to `/wildcard/*`
+   with an HTTP response with the HTTP body and status code returned by
    `const {body, statusCode} = await getApiResponse({method, url, headers});`
    where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
    </details>
 
-2. Functions you define
+2. You can then define functions
    in Node.js on
    `require('wildcard-api').endpoints`...
 
@@ -143,7 +143,7 @@ How you retrieve/mutate data is up to you.
    };
    ~~~
 
-   ...are then "available" in the browser
+   ...and "call" them in the browser
    at `require('wildcard-api/client').endpoints`.
 
    ~~~js
@@ -181,15 +181,15 @@ We recommend Wildcard for prototypes, small- and medium-sized applications.
 For large applications we recommend REST/GraphQL.
 
 Flexibility is paramount
-when prototyping,
-and Wildcard's structureless nature is fitting.
-Whereas the rigid structure of a generic API
+when prototyping
+and Wildcard's structureless nature is fitting,
+whereas the rigid structure of a generic API
 gets in the way of quickly evolving a prototype.
 
 Wildcard is trivial to setup,
 allowing you to quickly ship a prototype.
 
-We explore use cases in more depth at
+We explore Wildcard use cases in more depth at
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
@@ -204,11 +204,13 @@ See
 
 ### What about authentication? Where are the HTTP headers?
 
-The object `context` you pass to `getApiResponse(context)`
+The `context` object you pass to `getApiResponse(context)`
 is available to your endpoint functions as `this`.
-So that you can pass the information your endpoint functions need, for example HTTP headers.
+That way,
+you can pass any information your endpoint functions need,
+such as HTTP headers.
 
-When using Express you can pass the`req` object:
+For example, when using Express, you can pass the`req` object:
 
 ~~~js
  async (req, res, next) => {
@@ -245,9 +247,11 @@ endpoints.getLoggedUserInfo = async function() {
 With Wildcard,
 permissions are specifided by code.
 
-Permission example for a to-do list app:
+For example:
 
 ~~~js
+// An endpoint for a to-do list app to update a todo's text
+
 endpoints.updateTodoText = async function(todoId, newText) {
   const user = await getLoggedInUser(this.headers.cookie);
   // Do nothing if the user is not logged in
@@ -257,20 +261,23 @@ endpoints.updateTodoText = async function(todoId, newText) {
     `SELECT * FROM todos WHERE id = :todoId;`,
     {todoId}
   );
+
+  // `updateTodoText` is essentially public; `todoId` can hold
+  // any value and doesn't have to be a todo's id.
   if( !todo ) {
-    // `updateTodoText` is essentially public; `todoId` can hold
-    // any value and doesn't have to be a todo's id.
+    // Abort if `todoId` doesn't match a todo's id.
     return;
   }
 
-  // This if block basically ensures that if the logged user is not
-  // the todo's author then it cannot change the todo's text.
+  // This if block ensures that, if the logged user is not the
+  // todo's author, then it cannot change the todo's text.
   if( todo.authorId !== user.id ) {
-    // Abort the SQL query if the user is not the todo's author
+    // Abort if the user is not the todo's author
     return;
   }
 
-  // The logged user is the todo's author and has permission
+  // The logged user is the todo's author and we update the
+  // todo's text
   await db.query(
     "UPDATE todos SET text = :newText WHERE id = :todoId;",
     {newText, todoId}
