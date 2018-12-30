@@ -180,14 +180,8 @@ How you retrieve/mutate data is up to you.
 We recommend Wildcard for prototypes, small- and medium-sized applications.
 For large applications we recommend REST/GraphQL.
 
-Flexibility is paramount
-when prototyping
-and Wildcard's structureless nature is fitting,
-whereas the rigid structure of a generic API
-gets in the way of quickly evolving a prototype.
-
-Wildcard is trivial to setup,
-allowing you to quickly ship a prototype.
+Wildcard is trivial to setup and its structureless nature is a good fit for prototyping.
+(Whereas the rigid structure of REST/GraphQL gets in the way of quickly evolving a prototype.)
 
 We explore Wildcard use cases in more depth at
 [Custom vs Generic](/docs/custom-vs-generic.md).
@@ -207,10 +201,10 @@ See
 The `context` object you pass to `getApiResponse(context)`
 is available to your endpoint functions as `this`.
 That way,
-you can pass any information your endpoint functions need,
+you can pass request information to your endpoint functions,
 such as HTTP headers.
 
-For example, when using Express, you can pass the`req` object:
+For example, when using Express, you can pass the `req` object:
 
 ~~~js
  async (req, res, next) => {
@@ -220,7 +214,7 @@ For example, when using Express, you can pass the`req` object:
  });
 ~~~
 
-You'll then be able to access the cookie header:
+Your endpoint functions will then be able to access the HTTP headers:
 
 ~~~js
 endpoints.getLoggedUserInfo = async function() {
