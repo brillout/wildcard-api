@@ -53,7 +53,7 @@ For example,
 if changes are made to the frontend that need the todos' creation date,
 then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, text, created_at`.
 
-A custom API works best with an API developed hand-in-hand with your frontend.
+A custom API works only when developed hand-in-hand with the frontend.
 
 !INLINE ./snippets/comparison-section-footer.md --hide-source-path
 
@@ -83,8 +83,8 @@ A custom API works best with an API developed hand-in-hand with your frontend.
 - **Single developer**.
   <br/>
   When developing an app by yourself,
-  you own both the frontend and backend development.
-  A custom API can be used to quickly ship a prototype.
+  you own both the frontend developing and the backend development.
+  You can use a custom API to quickly ship a prototype.
 
 - **Full-stack developers**.
   <br/>
@@ -107,10 +107,11 @@ A custom API works best with an API developed hand-in-hand with your frontend.
   (Because the API is not developed hand-in-hand with the frontend, see [Tight development](#tight-development).)
   Alternatively, you can set up an API server:
   A server that provides an API and that has unrestricted access to the database.
-  In essence, the server acts as permission layer between database and the frontend.
-  It could be a Node.js server developed by the frontend team.
-  In that case,
-  the API is tightly developed with the frontend,
+  In essence, the server acts as permission layer between the database and the frontend.
+  It could be a Node.js server developed by the frontend team,
+  and,
+  in that case,
+  the API can be tightly developed with the frontend,
   and a custom API / Wildcard can be used.
 
 !INLINE ./snippets/comparison-section-footer.md --hide-source-path
@@ -165,7 +166,7 @@ Combining a generic API with a custom API can be a successfull strategy.
   can be a convenient way to retrieve/mutate data.
   (For example with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine).)
   Such generated API are missing permissions,
-  and a custom API / Wildcard can be used as a permission layer.
+  and a custom API / Wildcard can be used as permission layer.
 
 - **Custom API + GraphQL API**.
   If your frontend has data requirements your GraphQL API cannot fulfill,

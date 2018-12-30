@@ -87,14 +87,12 @@
 
 Comparison of custom APIs with generic APIs.
 
-- **_Custom API_**
-  <br/>
+- **_Custom API_**:
   An API that only fulfills the data requirements of your clients.
   Such as
   a Wildcard API or
   a [REST level 0](https://martinfowler.com/articles/richardsonMaturityModel.html#level0) API.
-- **_Generic API_**
-  <br/>
+- **_Generic API_**:
   An API that is designed to support a maximum number of data requirements.
   Such as
   a GraphQL API or
@@ -102,7 +100,7 @@ Comparison of custom APIs with generic APIs.
 
 > TL;DR
 >  - We recommend a generic API if your API development needs to be decoupled from frontend development.
->  - Otherwise we recommend using a custom API with an API tightly developed with your frontend.
+>  - Otherwise we recommend using a custom API tightly developed with your frontend.
 >  - You can start with a custom API then progressively replace it with a generic API.
 
 #### Contents
@@ -129,12 +127,12 @@ endpoints.getLandingPageData = async function() {
 };
 ~~~
 
-tightly couples the API development with the frontend development:
+tightly couples API development with frontend development:
 For example,
 if changes are made to the frontend that need the todos' creation date,
 then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, text, created_at`.
 
-A custom API works best with an API developed tightly with your frontend.
+A custom API works only when developed hand-in-hand with the frontend.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -151,8 +149,8 @@ A custom API works best with an API developed tightly with your frontend.
 - **Full-stack JavaScript**.
   <br/>
   A frontend + backend written in the same language
-  lends itself to a tight frontend-backend development
-  and you can use a custom API developed hand-in-hand with your frontend.
+  lends itself to a tight frontend-backend development,
+  and a custom API can be developed hand-in-hand with the frontend.
 
 - **JavaScript web frameworks**.
   <br/>
@@ -161,35 +159,42 @@ A custom API works best with an API developed tightly with your frontend.
   or
   [Reframe](https://github.com/reframejs/reframe#readme)
   ,
-  the frontend and backend are written in JavaScript and developed at the same time.
-  Here again, a custom API is good fit.
+  the frontend and backend are written in JavaScript and developed at the same time,
+  and a custom API / Wildcard fits well.
 
 - **Single developer**.
   <br/>
-  If you want to develop an app by yourself,
-  you will own both the frontend and backend development.
-  You can then use a custom API to quickly ship a prototype.
+  When developing an app by yourself,
+  you own both the frontend developing and the backend development.
+  You can use a custom API to quickly ship a prototype.
 
 - **Full-stack developers**.
   <br/>
-  If the frontend is developed by full-stack developers,
-  having a custom API developed by the frontend is a sensible choice.
+  If the frontend is developed by full-stack software engineers,
+  having a custom API developed by the frontend team can be a sensible choice.
 
 - **Mobile apps with PWA**.
   <br/>
-  [PWA](https://developers.google.com/web/progressive-web-apps/)
-  is an new technology that bridges the web with mobile.
-  With PWA your mobile app is simply a web app.
-  You can then choose full-stack JavaScript and Wildcard.
+  With [PWA](https://developers.google.com/web/progressive-web-apps/)
+  your mobile app is simply a web app
+  which you can implement with full-stack JavaScript and Wildcard.
 
-- **Large application + API server**.
+- **API server**.
   <br/>
-  Decoupling backend development from frontend development makes sense for large applications that have a high number of developers.
-  A way to achieve this is to setup an Node.js API server maintained by the frontend team.
-  The rest of the backend is maintained by the backend team and can be written
-  with Node.js or with Python, Go, Rust, etc.
-  The server API has access to the whole backend while using Wildcard as permission layer.
-  That way the frontend team can directly access the backend/databases without being constrained by the schema of a generic API.
+  Decoupling frontend development from backend development
+  is a common practice.
+  There is a frontend team developing the frontend,
+  and a backend team developing the backend.
+  If the API is developed by the backend team then a custom API is of no use.
+  (Because the API is not developed hand-in-hand with the frontend, see [Tight development](#tight-development).)
+  Alternatively, you can set up an API server:
+  A server that provides an API and that has unrestricted access to the database.
+  In essence, the server acts as permission layer between the database and the frontend.
+  It could be a Node.js server developed by the frontend team,
+  and,
+  in that case,
+  the API can be tightly developed with the frontend,
+  and a custom API / Wildcard can be used.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -206,16 +211,19 @@ A custom API works best with an API developed tightly with your frontend.
 
 - **Third parties**.
   <br/>
-  Third parties want to be
-  able to retrieve/mutate all kinds of data in all kinds of ways.
-  In other words: Third parties want a generic API.
-  This is the use case where GraphQL excels most.
+  From the perspective of a third party,
+  the more data requirements the API can fulfill the better,
+  and a custom API is of no use.
 
 - **Large application**.
   <br/>
-  Developers of a large application are often split into a frontend and backend team.
-  The backend team doesn't know the frontend's data requirements and provides a generic API for the frontend team to consume.
-  An alternative is to set up a custom API on an API server maintained by the frontend team.
+  Developers of a large application are often split into a frontend team and a backend team.
+  The backend team develops an API independently of what the frontend needs.
+  From the perspective of the frontend team,
+  the more data requirements the API can fulfill the better,
+  and a custom API is of no use.
+  An alternative is to set up a custom API that is maintained by the frontend team,
+  see the "API server" section above.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -231,43 +239,41 @@ A custom API works best with an API developed tightly with your frontend.
 
 ### Use Cases: Hybrid
 
-Combining a custom API with a generic API can be a successfull strategy.
+Combining a generic API with a custom API can be a successfull strategy.
 
 - **First custom API, later generic API**.
   <br/>
-  Your first prototype will most likely have a tight frontend-backend development
-  and a custom API is the right choice.
-  Afterwards,
-  and as your prototype grows into a large application,
-  you can progressively replace custom API endpoints with a generic API.
+  You can start with a custom API to quickly ship a prototype
+  and,
+  as your prototype grows into a large application,
+  progressively remove your custom API endpoints and replace them with a generic API.
 
-- **Permission layer for generated GraphQL/RESTful API**.
+- **Permission layer for generated GraphQL API**.
   <br/>
-  A RESTful/GraphQL API that is automatically generated,
-  such as with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine),
+  An automatically generated GraphQL API
   can be a convenient way to retrieve/mutate data.
-  A custom API / Wildcard can then act as a permission layer on top of such generated API.
+  (For example with [Prisma](https://github.com/prisma/prisma) or [Hasura](https://github.com/hasura/graphql-engine).)
+  Such generated API are missing permissions,
+  and a custom API / Wildcard can be used as permission layer.
 
 - **Custom API + GraphQL API**.
-  <br/>
-  This is the most powerful setup:
-  Third parties have the full power of GraphQL and your clients have even more power with custom endpoints.
+  If your frontend has data requirements your GraphQL API cannot fulfill,
+  then a custom API can be used to fulfill these.
 
 - **Custom API + RESTful API**.
   <br/>
+  GraphQL can fulfill a broader range of data requirements than REST.
   From the perspective of a third party,
-  GraphQL is superior to REST.
-  But a GraphQL API is considerably more difficult to implement than a RESTful API.
-  You can, instead and at first, offer a RESTful API for third party clients
+  GraphQL is superior.
+  But a GraphQL API is considerably more difficult to set up than a RESTful API.
+  You can instead offer a RESTful API for third party clients
   while your clients use
-  a custom API to get full power/flexibility.
+  a custom API that fulfills a broader range of data requirements.
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 <br/>
-
-
 
 <!---
 
