@@ -75,8 +75,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   With frameworks such as
   [Next.js](https://github.com/zeit/next.js#readme)
   or
-  [Reframe](https://github.com/reframejs/reframe#readme)
-  ,
+  [Reframe](https://github.com/reframejs/reframe#readme),
   the frontend and backend are written in JavaScript and developed at the same time,
   and a custom API / Wildcard fits well.
 
