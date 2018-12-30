@@ -10,8 +10,9 @@ A (simplistic) todo app built with:
  - Node.js
  - SQLite
 
-> You can also play with a Reframe + Wildcard API stack by using
+> You can also poke around by using
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+> which includes a Wildcard API.
 
 #### Contents
 
@@ -26,11 +27,11 @@ A (simplistic) todo app built with:
 
 ## Code Highlights
 
-Showcase of the example's code.
+Source code showcase.
 
 ### View Endpoints
 
-*View endpoint*: An endpoint to retrieve data.
+(We denote an endpoint that retrieves data a *view endpoint*.)
 
 ~~~js
 !INLINE ../example/api/view-endpoints
@@ -71,7 +72,7 @@ With Koa
 
 ### Mutation Endpoints
 
-*Mutation endpoint*: An endpoint to mutate data.
+(We denote an endpoint that mutates data a *mutation endpoint*.)
 
 ~~~js
 !INLINE ../example/api/mutation-endpoints
@@ -98,7 +99,7 @@ and to update a todo.
 
 ## Run
 
-To run the app:
+To run the example:
 
 0. Get the code.
 

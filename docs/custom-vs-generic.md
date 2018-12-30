@@ -165,18 +165,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   <br/>
   When developing an app by yourself,
   you own both the frontend developing and the backend development.
-  You can use a custom API to quickly ship a prototype.
-
-- **Full-stack developers**.
-  <br/>
-  If the frontend is developed by full-stack software engineers,
-  having a custom API developed by the frontend team can be a sensible choice.
-
-- **Mobile apps with PWA**.
-  <br/>
-  With [PWA](https://developers.google.com/web/progressive-web-apps/)
-  your mobile app is simply a web app
-  which you can implement with full-stack JavaScript and Wildcard.
+  You can then use a custom API to quickly ship a prototype.
 
 - **API server**.
   <br/>

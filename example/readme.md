@@ -88,8 +88,9 @@ A (simplistic) todo app built with:
  - Node.js
  - SQLite
 
-> You can also play with a Reframe + Wildcard API stack by using
+> You can also poke around by using
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+> which includes a Wildcard API.
 
 #### Contents
 
@@ -104,11 +105,11 @@ A (simplistic) todo app built with:
 
 ## Code Highlights
 
-Showcase of the example's code.
+Source code showcase.
 
 ### View Endpoints
 
-*View endpoint*: An endpoint to retrieve data.
+(We denote an endpoint that retrieves data a *view endpoint*.)
 
 ~~~js
 // /example/api/view-endpoints
@@ -211,10 +212,9 @@ async function startServer() {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      // Our `context` object is made available to endpoint functions over `this`.
-      // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
       const {method, url, headers} = request.raw.req;
       const context = {method, url, headers};
+
       const apiResponse = await getApiResponse(context);
 
       const resp = h.response(apiResponse.body);
@@ -283,7 +283,7 @@ app.listen(process.env.PORT || 3000);
 
 ### Mutation Endpoints
 
-*Mutation endpoint*: An endpoint to mutate data.
+(We denote an endpoint that mutates data a *mutation endpoint*.)
 
 ~~~js
 // /example/api/mutation-endpoints
@@ -405,7 +405,7 @@ function Todo({todo, updateTodo}) {
 
 ## Run
 
-To run the app:
+To run the example:
 
 0. Get the code.
 

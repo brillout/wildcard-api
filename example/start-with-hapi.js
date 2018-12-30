@@ -15,10 +15,9 @@ async function startServer() {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      // Our `context` object is made available to endpoint functions over `this`.
-      // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
       const {method, url, headers} = request.raw.req;
       const context = {method, url, headers};
+
       const apiResponse = await getApiResponse(context);
 
       const resp = h.response(apiResponse.body);

@@ -83,7 +83,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   <br/>
   When developing an app by yourself,
   you own both the frontend developing and the backend development.
-  You can use a custom API to quickly ship a prototype.
+  You can then use a custom API to quickly ship a prototype.
 
 - **API server**.
   <br/>
