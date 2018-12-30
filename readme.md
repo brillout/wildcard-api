@@ -249,7 +249,7 @@ How you retrieve/mutate data is up to you.
 - [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphqlrestful-api)
 - [How does a Wildcard API compare to a GraphQL API / RESTful API?](#how-does-a-wildcard-api-compare-to-a-graphql-api--restful-api)
 - [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
-- [What about permissions?](#what-about-permissions)
+- [What about permission?](#what-about-permission)
 - [How does it work?](#how-does-it-work)
 - [What happens upon network errors?](#what-happens-upon-network-errors)
 - [Does the Wildcard client work in Node.js?](#does-the-wildcard-client-work-in-nodejs)
@@ -322,10 +322,10 @@ endpoints.getLoggedUserInfo = async function() {
 <br/>
 <br/>
 
-### What about permissions?
+### What about permission?
 
 With Wildcard,
-permissions are specifided by code.
+permission is specifided by code.
 
 For example:
 
@@ -373,12 +373,12 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
-1. The arguments are serialized to `"["some",{"arg":"val"}]"`. using .
-   (Wildcard uses [JSON-S](https://github.com/brillout/json-s) to (de-)serialize.)
+1. The arguments are serialized to `"["some",{"arg":"val"}]"`.
+   (Wildcard uses [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
-2. An HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"` to your Node.js server
+2. An HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"` to your Node.js server.
 
-3. On your Node.js server, your endpoint function defined on `endpoints.endpointName` is called with the arguments deserialized back to `{arg: 'val'}`
+3. On your Node.js server, your endpoint function defined on `endpoints.endpointName` is called with the arguments deserialized back to `{arg: 'val'}`.
 
 5. Once your endpoint function's promise resolves,
    an HTTP response is sent with the promise's resolved value serialized in the HTTP body.
