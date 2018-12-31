@@ -373,18 +373,21 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
-1. The arguments are serialized to `"["some",{"arg":"val"}]"`.
-   (Wildcard uses [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
+1. [Browser]
+   The arguments are serialized to `"["some",{"arg":"val"}]"`,
+   and an HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"`.
+   (Serialization is done with [JSON-S](https://github.com/brillout/json-s).)
 
-2. An HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"` to your Node.js server.
+2. [Node.js]
+   The arguments are deserialized to `{arg: 'val'}`,
+   and your endpoint function, defined on `endpoints.endpointName` in Node.js, is called.
 
-3. On your Node.js server, your endpoint function defined on `endpoints.endpointName` is called with the arguments deserialized back to `{arg: 'val'}`.
+3. [Node.js]
+   Once your endpoint function's promise resolves,
+   the resolved value is serialized and sent to the browser in an HTTP response.
 
-5. Once your endpoint function's promise resolves,
-   an HTTP response is sent with the promise's resolved value serialized in the HTTP body.
-
-6. In the browser,
-   the received HTTP body is deserialized and the promise of your original `endpoints.endpointName` call is resolved with the deserialized value.
+5. [Browser]
+   The received HTTP response is deserialized and the promise of your original `endpoints.endpointName` call is resolved.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -416,7 +419,7 @@ Yes.
 If the Wildcard client and the Wildcard server run in the same Node.js process
 then, instead of doing an HTTP request, the endpoint function is directly called.
 
-Otherwise the Wildcard client will make an HTTP request like when running in the browser.
+Otherwise the Wildcard client makes an HTTP request like when run in the browser.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -425,7 +428,7 @@ Otherwise the Wildcard client will make an HTTP request like when running in the
 ### Does it work with SSR?
 
 Yes.
-But you'll have to manually preserve the request context when running the Wildcard client on the server-side.
+But you have to provide the request context when running the Wildcard client on the server-side.
 
 You can use the `Function.prototype.bind()` method to do so:
 

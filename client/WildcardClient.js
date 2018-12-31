@@ -91,7 +91,7 @@ function WildcardClient({
     if( runDirectlyWithoutHTTP ) {
       const errorIntro = [
         "You are trying to run an endpoint directly.",
-        "(Instead of doing a HTTP request).",
+        "(Instead of doing an HTTP request).",
       ].join('\n');
       assert.usage(
         isNodejs(),
