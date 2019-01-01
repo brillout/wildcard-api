@@ -167,7 +167,7 @@ How you retrieve/mutate data is up to you.
 ## FAQ
 
 - [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphqlrestful-api)
-- [How does a Wildcard API compare to a GraphQL API / RESTful API?](#how-does-a-wildcard-api-compare-to-a-graphql-api--restful-api)
+- [How does Wildcard compare to GraphQL/RESTful?](#how-does-wildcard-compare-to-graphqlrestful)
 - [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
 - [What about permission?](#what-about-permission)
 - [How does it work?](#how-does-it-work)
@@ -183,15 +183,15 @@ For large applications we recommend REST/GraphQL.
 Wildcard is trivial to setup and its structureless nature is a good fit for prototyping.
 (Whereas the rigid structure of REST/GraphQL gets in the way of quickly evolving a prototype.)
 
-We explore Wildcard use cases in more depth at
+We explore use cases in more depth at
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
-### How does a Wildcard API compare to a GraphQL API / RESTful API?
+### How does Wildcard compare to GraphQL/RESTful?
 
-Comparing Wildcard with REST and GraphQL mostly boils down to comparing a custom API with a generic API.
-See
+Comparing Wildcard with REST/GraphQL mostly boils down to comparing a custom API with a generic API,
+see
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
