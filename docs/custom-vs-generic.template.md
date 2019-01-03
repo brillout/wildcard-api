@@ -91,7 +91,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   is a common practice.
   There is a frontend team developing the frontend,
   and a backend team developing the backend.
-  If the API is developed by the backend team then a custom API is of no use.
+  If the API is developed by the backend team then a generic API is required.
   (Because the API is not developed hand-in-hand with the frontend, see [Tight development](#tight-development).)
   Alternatively, you can set up an API server:
   A server that provides an API and that has unrestricted access to the database.
@@ -115,16 +115,16 @@ A custom API works only when developed hand-in-hand with the frontend.
 - **Third parties**.
   <br/>
   From the perspective of a third party,
-  the more data requirements the API can fulfill the better,
-  and a custom API is of no use.
+  the more data requirements the API can fulfill the better;
+  a generic API is required.
 
 - **Large application**.
   <br/>
   Developers of a large application are often split into a frontend team and a backend team.
   The backend team develops an API independently of what the frontend needs.
   From the perspective of the frontend team,
-  the more data requirements the API can fulfill the better,
-  and a custom API is of no use.
+  the more data requirements the API can fulfill the better;
+  a generic API is required.
   An alternative is to set up a custom API that is maintained by the frontend team,
   see the "API server" section above.
 

@@ -7,11 +7,11 @@
 <br/>
 <p>
 With Wildcard,
-creating an API endpoint is as easy as creating a JavaScript function:
+creating an API is as easy as creating a JavaScript functions:
 </p>
 
 ~~~js
-// Node.js Server
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 
@@ -36,7 +36,33 @@ import {endpoints} from 'wildcard-api/client';
 That's all Wildcard does:
 It makes functions defined on the server "callable" in the browser.
 Nothing more, nothing less.
-How you retrieve/mutate data is up to you.
+
+How you retrieve/mutate data is up to you:
+You can use NoSql/SQL queries, an ORM, etc.
+
+Contrary to common belief,
+most applications do not need REST nor GraphQL.
+Wildcard offers a simpler way to fetch and mutate data from the frontend.
+
+Let's look at a more realistic example:
+
+~~~js
+
+~~~
+
+One way to think about Wildcard is as a thin permission layer on top of
+
+
+REST and GraphQL are great tools if you want to
+expose your data to third parties.
+Otherwise REST and GraphQL are overengineering and something like Wildcard represents a simpler alternative.
+If your application doesn't have 
+
+.
+If ,
+then you do not need REST nor GraphQL.
+
+kkk
 
 #### Contents
 
@@ -166,8 +192,15 @@ How you retrieve/mutate data is up to you.
 
 ## FAQ
 
-- [Should I create a Wildcard API or a GraphQL/RESTful API?](#should-i-create-a-wildcard-api-or-a-graphqlrestful-api)
+###### High-level
+
 - [How does Wildcard compare to GraphQL/RESTful?](#how-does-wildcard-compare-to-graphqlrestful)
+- [GraphQL is cool, why should I use Wildcard?]
+- [Isn't Wildcard just RPC?]
+- [I can create custom endpoints myself, do I need Wildcard?]
+
+###### Low-level
+
 - [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
 - [What about permission?](#what-about-permission)
 - [How does it work?](#how-does-it-work)
@@ -175,26 +208,114 @@ How you retrieve/mutate data is up to you.
 - [Does the Wildcard client work in Node.js?](#does-the-wildcard-client-work-in-nodejs)
 - [Does it work with SSR?](#does-it-work-with-ssr)
 
-### Should I create a Wildcard API or a GraphQL/RESTful API?
-
-We recommend Wildcard for prototypes, small- and medium-sized applications.
-For large applications we recommend REST/GraphQL.
-
-Wildcard is trivial to setup and its structureless nature is a good fit for prototyping.
-(Whereas the rigid structure of REST/GraphQL gets in the way of quickly evolving a prototype.)
-
-We explore use cases in more depth at
-[Custom vs Generic](/docs/custom-vs-generic.md).
-
-!INLINE ./snippets/faq-section-footer.md --hide-source-path
-
 ### How does Wildcard compare to GraphQL/RESTful?
 
 Comparing Wildcard with REST/GraphQL mostly boils down to comparing a custom API with a generic API,
 see
 [Custom vs Generic](/docs/custom-vs-generic.md).
 
+In general, we recommend Wildcard for prototypes, small- and medium-sized applications.
+For large applications we recommend REST/GraphQL.
+
+Wildcard is trivial to setup and its structureless nature is a good fit for prototyping.
+(Whereas the rigid structure of REST/GraphQL gets in the way of quickly evolving a prototype.)
+
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
+
+### Isn't Wildcard just RPC? Why RPC instead of GraphQL?
+
+> TL;DR
+> - Wildcard is RPC
+> - Use Wildcard for clients that you control
+> - Use REST/GraphQL for clients that you don't control
+
+Yes,
+Wildcard is basically
+[RPC](https://en.wikipedia.org/wiki/Remote_procedure_call)
+between browser and Node.js.
+
+RPC existed long before REST.
+(Xerox PARC being among the first to use RPC in the early 1980s
+while REST was introduced in the early 2000s.)
+
+So, why should one use RPC instead of REST/GraphQL today?
+
+When REST came out,
+it allowed internet companies
+to expose their data
+to third parties in a safe and standardized way.
+Large companies,
+such as Ebay or Flickr,
+soon started providing a RESTful API,
+allowing them
+to become platforms with
+a flurishing ecosystem
+of thrid-party clients built on top of their public RESTful API.
+REST became a de facto standard for public APIs.
+
+GraphQL is a wonderful step forward:
+It allows third parties to retrieve data that were previously difficult, or even not possible, to retrieve with a RESTful API.
+GraphQL allows for a even more prospereous ecosystem of third-party applications.
+Large companies, such as Facebook or Github,
+now expose their data as a GraphQL API,
+reinforcing their position as a platform.
+
+If you want to grow an ecosystem of third-party applications built on top of your data,
+then setting up a generic API such as REST or GraphQL is
+an obligatory step.
+
+This is not Wildcard's use case.
+
+With Wildcard,
+you create APIs that are consumed by *your* clients
+That's because an API created with Wildcard
+is not intended to be generic:
+ahead of time.
+
+That's because an API created with Wildcard
+is tightly coupled with your frontend.
+Such API is commonly called a *custom API*.
+
+Wildcard's use case is for creating APIs that are consumed by clients *you* control.
+you *do not need*,
+all you want
+For example, your frontend speaking to 
+
+For clients you control,
+Wildcard (and in general any custom API or RPC-like API)
+is easier (to set up and to use),
+more flexible (can fulfill a broader range of data requirements),
+and more performant (less data sent over the network).
+
+Roughly speaking:
+ - Set up a custom API for clients you control.
+ - Set up a generic API for clients you don't control.
+
+!INLINE ./snippets/faq-section-footer.md --hide-source-path
+
+### I can create custom endpoints myself, do I need Wildcard?
+
+Instead of using Wildcard,
+you can create a custom API
+by adding HTTP routes to your web server.
+
+you can direclty use your HTTP server to add endpoints yourself.
+So, why use Wildcard?
+
+That said,
+Wildcard makes creating a custom API easier by taking care of:
+ - Serialization. (Using JSON-S instead of JSON, serializing arguments into the URL (, always using `POST`, etc.
+ - Caching. (Using ETag)
+ - SSR. (The Wilcard client works in Node.js, etc.
+
+It takes care of proper serialization (for example it uses JSON-S instead of JSON),
+works with server-side rendering (the Wildcard client is isomorphic),
+
+If you want control over these things,
+then don't use Wildcard and create HTTP routes yourself.
+
+!INLINE ./snippets/faq-section-footer.md --hide-source-path
+
 
 ### What about authentication? Where are the HTTP headers?
 
