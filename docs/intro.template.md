@@ -212,6 +212,11 @@ then a custom API offers a much simpler alternative.
 
 ###### Conceptual
 
+- [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
+- [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)
+- [I can create custom endpoints myself, why do I need Wildcard?](#i-can-create-custom-endpoints-myself-why-do-i-need-wildcard)
+- [Isn't Wildcard just RPC?](#isnt-wildcard-just-rpc)
+
 ###### Usage
 
 - [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
@@ -229,7 +234,7 @@ With GraphQL/REST you create a generic API
 that aims to fulfill a maximum number of data requirements,
 enabling third parties to build applications on top of your data.
 
-With Wildcard (and in general with a custom API)
+With Wildcard (and in general any custom API)
 you create an API that fulfills the data requirements of your clients and your clients only.
 
 If your goal is to grow a large ecosystem of third-party applications,
@@ -296,12 +301,7 @@ then don't use Wildcard.
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
-### Isn't Wildcard just RPC? Why RPC instead of GraphQL?
-
-> TL;DR
-> - Wildcard is RPC
-> - Use Wildcard for clients that you control
-> - Use REST/GraphQL for clients that you don't control
+### Isn't Wildcard just RPC?
 
 Yes,
 Wildcard is basically
@@ -350,7 +350,6 @@ then Wildcard
 offers a much simpler alternative.
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
-
 
 ### What about authentication? Where are the HTTP headers?
 
