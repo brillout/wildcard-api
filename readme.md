@@ -81,7 +81,6 @@
   </a>
 </p>
 
-<br/>
 JavaScript library to create an API between your Node.js server and your browser frontend.
 
 With Wildcard,
