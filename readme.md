@@ -112,12 +112,11 @@ import {endpoints} from 'wildcard-api/client';
 ~~~
 
 That's all Wildcard does:
-It makes functions defined on the server "callable" in the browser.
+it makes functions defined on the server "callable" in the browser.
 Nothing more, nothing less.
 
-How you retrieve/mutate data is up to you and
-you can use any NoSQL/SQL/ORM query.
-For example:
+How you retrieve/mutate data is up to you.
+For example, you can use any NoSQL/SQL/ORM query:
 
 ~~~js
 const endpoints = require('wildcard-api');
@@ -125,14 +124,14 @@ const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/models/Todo');
 
 endpoints.createTodo = async function(text) {
-  // We later explain `this.headers`
-  const user = await getLoggedUser(this.headers);
+  const user = await getLoggedUser(this.headers); // We explain `this.headers` later
 
   // Abort if the user is not logged in
   if( !user ) return;
 
   // With ORM/ODM:
-  const newTodo = Todo.insert({text, authorId: user.id});
+  const newTodo = new Todo({text, authorId: user.id});
+  await newTodo.save();
   /* Or with SQL:
   const db = require('path/to/your/favorite/sql/query/builder');
   const [newTodo] = await db.query(
@@ -144,21 +143,25 @@ endpoints.createTodo = async function(text) {
 };
 ~~~
 
+###### Wildcard vs REST/GraphQL
+
 REST and GraphQL are great tools to
-enable an ecosystem of third-party applications built on top of your data.
-With REST and GraphQL you create a generic API:
-An API that aims to be able to fulfill a maximum number of data requirements,
+enable an ecosystem of third-party applications built on top of your data;
+with REST and GraphQL you create a generic API.
+That is, an API that aims to be able to fulfill a maximum number of data requirements,
 allowing all kinds of third-party applications to be built.
 
 With Wildcard,
 instead of a generic API,
 you create a custom API:
-An API that is consumed by your clients,
+an API that is consumed by your clients,
 and only by your clients.
 A custom API only fulfills the data requirements of your clients.
 If you don't need third parties to be able to access your data,
-then a custom API offers a simpler alternative.
+then a custom API offers a simple alternative.
 
+We further compare Wildcard with REST/GraphQL
+and custom APIs with generic APIs in the FAQ.
 
 #### Contents
 
@@ -261,7 +264,7 @@ then a custom API offers a simpler alternative.
      // `this` is the object you pass to `getApiResponse`.
      // In the Express code above we passed `req` and we can
      // access `req.headers.cookie` over `this.headers.cookie`.
-     const user = await getLoddgedUser(this.headers.cookie);
+     const user = await getLoggedUser(this.headers.cookie);
      const data = await getData(user);
      return data;
    };
@@ -313,17 +316,17 @@ then a custom API offers a simpler alternative.
 They have different goals.
 
 With GraphQL/REST you create a generic API
-that aims to fulfill a maximum number of data requirements,
+that aims to fulfill a maximum number of data requirements;
 enabling third parties to build applications on top of your data.
 
 With Wildcard you create a custom API
 that fulfills the data requirements of your clients and your clients only.
 
-If your goal is to enable an ecosystem of third-party applications,
-then you need a generic API and REST/GraphQL.
+If your goal is to have an ecosystem of third-party applications,
+then you need a generic API and you'll have to use something like REST/GraphQL.
 
 If your goal is to retrieve and mutate data from your frontend,
-then Wildcard offers a simpler alternative.
+then Wildcard offers a simple alternative.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -333,13 +336,14 @@ then Wildcard offers a simpler alternative.
 
 Yes and no.
 
-From the perspective of a third-party client,
+From the perspective of a third-party,
 yes,
 GraphQL is more powerful.
 
 But,
-from the perspective of your frontend,
-everything the backend can do is only one JavaScript function away with Wildcard:
+from the perspective of your frontend development,
+and with Wildcard,
+everything the backend can do is only one JavaScript function away:
 
 ~~~js
 // Your Node.js server
@@ -354,28 +358,30 @@ const endpoints = require('wildcard-api/client');
 endpoints.iHavePower();
 ~~~
 
-The whole power of your backend is at your frontend's disposal.
-While developing the frontend,
+The whole power of your backend is at your disposal while developing your frontend.
+For example,
 you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
-(Note that the distinctive difference that makes a custom API powerful for your clients
-but not for third-party clients
-is that you can modify the custom API while developing your clients.)
+(The distinctive difference between a third party and your frontend development is that
+you can modify your custom API while the third party cannot.
+From the perspective of a third party, your custom API is set in stone.
+From your perspective, you can modify your custom API at will while developing your frontend.)
 
 GraphQL is a wonderful addition to our dev toolbox.
 But unfortunately,
-GraphQL's hype made us forget how great custom endpoints are.
+GraphQL's hype made us forget how great custom APIs are.
 Let's remember.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
-### I can create custom endpoints myself, do I need Wildcard?
+### I can create custom API myself, do I need Wildcard?
 
 You don't need Wildcard:
-Instead of Wildcard, you can create custom endpoints by adding HTTP routes to your web server.
+instead of Wildcard,
+you can create a custom API by adding HTTP routes to your web server.
 
 Wildcard is just a little tool that takes care of:
  - Serialization
@@ -409,16 +415,16 @@ it allowed internet companies
 to expose their data
 to third parties in a safe and standardized way.
 Large companies
-soon realize the potential:
-A RESTful API
+soon realized the potential:
+a RESTful API
 allowed them
 to become platforms with
 a flurishing ecosystem
-of thrid-party clients built on top of their RESTful API.
-REST became a de facto standard for public APIs.
+of thrid-party applications built on top of their RESTful API.
+REST became the de facto standard for public APIs.
 
 GraphQL is a great step forward:
-It allows third parties to retrieve data that were previously difficult (or even not possible) to retrieve with a RESTful API.
+it allows third parties to retrieve data that were previously difficult (or even not possible) to retrieve with a RESTful API.
 GraphQL allows for a even more prospereous ecosystem of third-party applications.
 Large companies,
 such as Facebook or GitHub,
@@ -434,19 +440,19 @@ An API created with Wildcard is meant to be consumed by your clients and your cl
 Such API is not generic and,
 from the perspective of a thrid party,
 a Wildcard API doesn't make sense.
-(Nor does any custom API / RPC-like API.)
+(Nor does any custom API or RPC-like API.)
 
 But if your goal is to retrieve and mutate data from your frontend,
 then Wildcard
-offers a simpler alternative.
-(So does a custom API / RPC-like API.)
+offers a simple alternative.
+(So does any custom API or RPC-like API.)
 
 The advent of REST and now GraphQL
 spur the rise of vast ecosystems of third-party apps.
 That's wonderful.
 But sadly,
-their success also cast a shadow over RPC,
-even though RPC is, and always was, a great way of communicating between two remote processes.
+their success is casting a shadow over RPC,
+even though RPC is (and always was) a great way of communicating between two remote processes.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -496,16 +502,18 @@ endpoints.getLoggedUserInfo = async function() {
 
 ### What about permission?
 
-With Wildcard,
-permission is specifided by code.
-
+Permission is specifided by code.
 For example:
 
 ~~~js
-// An endpoint for a to-do list app to update a todo's text
+const {endpoints} = require('wildcard-api');
+const getLoggedUser = require('./path/to/your/auth/code');
+const db = require('path/to/your/favorite/sql/query/builder');
+
+// An endpoint for a to-do list app to update the text of a todo
 
 endpoints.updateTodoText = async function(todoId, newText) {
-  const user = await getLoddgedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers.cookie);
   // Do nothing if the user is not logged in
   if( !user ) return;
 
@@ -514,14 +522,14 @@ endpoints.updateTodoText = async function(todoId, newText) {
     {todoId}
   );
 
-  // `updateTodoText` is essentially public; `todoId` can hold
-  // any value and doesn't have to be a todo's id.
+  // The `updateTodoText` function is essentially public; `todoId` can
+  // hold any value and doesn't have to be a todo's id.
   if( !todo ) {
     // Abort if `todoId` doesn't match a todo's id.
     return;
   }
 
-  // This if block ensures that, if the logged user is not the
+  // This if-block ensures the following: if the logged user is not the
   // todo's author, then it cannot change the todo's text.
   if( todo.authorId !== user.id ) {
     // Abort if the user is not the todo's author
@@ -546,13 +554,13 @@ endpoints.updateTodoText = async function(todoId, newText) {
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
 1. [Browser]
-   The arguments are serialized to `"["some",{"arg":"val"}]"`,
+   The arguments are serialized to `"["some",{"arg":"val"}]"`
    and an HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"`.
    (Serialization is done with [JSON-S](https://github.com/brillout/json-s).)
 
 2. [Node.js]
-   The arguments are deserialized to `{arg: 'val'}`,
-   and your endpoint function, defined on `endpoints.endpointName` in Node.js, is called.
+   The arguments are deserialized back to `{arg: 'val'}`
+   and your endpoint function (defined on `endpoints.endpointName` in Node.js) is called.
 
 3. [Node.js]
    Once your endpoint function's promise resolves,
@@ -567,7 +575,8 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
 
 ### What happens upon network errors?
 
-Wildcard uses fetch and doesn't catch fetch's errors,
+Wildcard uses the Fetch API
+and doesn't catch errors thrown by `fetch()`,
 allowing you to handle network errors as you wish.
 
 You can also load
@@ -575,10 +584,12 @@ You can also load
 
 ~~~js
 import 'handli';
-// Or: `require('handli')`;
+/* Or:
+require('handli')`;
+*/
 ~~~
 
-...and Wildcard will then automatically use Handli to handle network errors.
+...and Wildcard will automatically use Handli to handle network errors.
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -602,7 +613,7 @@ Otherwise the Wildcard client makes an HTTP request like when run in the browser
 Yes.
 But you have to provide the request context when running the Wildcard client on the server-side.
 
-You can use the `Function.prototype.bind()` method to do so:
+You can use `Function.prototype.bind()` to do so:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
@@ -618,7 +629,7 @@ async function getInitialProps({isNodejs, request: {headers}={}}) {
     getLandingPageData = getLandingPageData.bind(context);
   }
 
-	const landingPageData = await getLandingPageData();
+  const landingPageData = await getLandingPageData();
   return landingPageData;
 }
 ~~~
@@ -627,6 +638,7 @@ The endpoint `getLandingPageData` then always has access to `headers`:
 
 ~~~js
 const {endpoints} = require('wildcard');
+const getLoggedUser = require('./path/to/your/auth/code');
 
 endpoints.getLandingPageData = async function(){
   const user = await getLoggedUser(this.headers);
@@ -635,8 +647,8 @@ endpoints.getLandingPageData = async function(){
 ~~~
 
 When the Wildcard client runs in Node.js,
-the context originates from our `bind` call above.
-And when the Wildcard client runs in the browswer, the context originates from `getApiResponse`:
+the context `this` originates from our `bind` call above.
+And when the Wildcard client runs in the browswer, `this` originates from `getApiResponse`:
 
 ~~~js
 const express = require('express');
