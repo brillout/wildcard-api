@@ -115,8 +115,8 @@ That's all Wildcard does:
 it makes functions defined on the server "callable" in the browser.
 Nothing more, nothing less.
 
-How you retrieve/mutate data is up to you.
-For example, you can use any NoSQL/SQL/ORM query:
+How you retrieve/mutate data is up to you;
+you can use any NoSQL/SQL/ORM query:
 
 ~~~js
 const endpoints = require('wildcard-api');
@@ -133,7 +133,7 @@ endpoints.createTodo = async function(text) {
   const newTodo = new Todo({text, authorId: user.id});
   await newTodo.save();
   /* Or with SQL:
-  const db = require('path/to/your/favorite/sql/query/builder');
+  const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
     {text, authorId: user.id}
@@ -370,12 +370,12 @@ you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
 (The distinctive difference between a third party and your frontend development is that
-you have control over the custom API;
+*you* can modify the custom API;
 from the perspective of a third party,
 your custom API is set in stone,
 but,
 from your perspective,
-you can modify your custom API at will while developing your frontend.)
+your custom API can be modified at will while developing your frontend.)
 
 GraphQL is a wonderful addition to our dev toolbox.
 But unfortunately,
