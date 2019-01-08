@@ -219,7 +219,7 @@ and custom APIs with generic APIs in the FAQ.
 
 - [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
 - [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)
-- [I can create custom endpoints myself, do I need Wildcard?](#i-can-create-custom-endpoints-myself-do-i-need-wildcard)
+- [I can create a custom API myself, do I need Wildcard?](#i-can-create-a-custom-api-myself-do-i-need-wildcard)
 - [Isn't Wildcard just RPC?](#isnt-wildcard-just-rpc)
 
 ###### Usage
@@ -293,11 +293,10 @@ Let's remember.
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
-### I can create custom API myself, do I need Wildcard?
+### I can create a custom API myself, do I need Wildcard?
 
-You don't need Wildcard:
-instead of Wildcard,
-you can create a custom API by adding HTTP routes to your web server.
+Instead of Wildcard,
+you can create a custom API yourself by manually adding HTTP routes to your web server.
 
 Wildcard is just a little tool that takes care of:
  - Serialization
@@ -307,7 +306,7 @@ Wildcard is just a little tool that takes care of:
 If you want control over these things,
 then don't use Wildcard.
 Although note that these things are less trivial than you might think.
-(For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON to properly serialize dates.)
+(For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
