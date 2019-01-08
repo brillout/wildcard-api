@@ -342,9 +342,8 @@ GraphQL is more powerful.
 
 But,
 from the perspective of your frontend development,
-things are different.
-
-With Wildcard,
+things are different;
+with Wildcard,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
