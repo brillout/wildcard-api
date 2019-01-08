@@ -260,19 +260,26 @@ GraphQL is more powerful.
 
 But,
 from the perspective of your frontend development,
-and with Wildcard,
+things are different.
+
+With Wildcard,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
 // Your Node.js server
+
 const endpoints = require('wildcard-api');
+
 endpoints.iHavePower = function() {
   // I can do anything the Node.js server can do
 };
 ~~~
 ~~~js
 // Your browser frontend
+
 const endpoints = require('wildcard-api/client');
+
+// The backend power is one JavaScript function away
 endpoints.iHavePower();
 ~~~
 
@@ -282,9 +289,12 @@ you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
 (The distinctive difference between a third party and your frontend development is that
-you can modify your custom API while the third party cannot.
-From the perspective of a third party, your custom API is set in stone.
-From your perspective, you can modify your custom API at will while developing your frontend.)
+you have control over the custom API;
+from the perspective of a third party,
+your custom API is set in stone,
+but,
+from your perspective,
+you can modify your custom API at will while developing your frontend.)
 
 GraphQL is a wonderful addition to our dev toolbox.
 But unfortunately,
@@ -333,38 +343,39 @@ a RESTful API
 allowed them
 to become platforms with
 a flurishing ecosystem
-of thrid-party applications built on top of their RESTful API.
+of third-party applications built on top of their RESTful API.
 REST became the de facto standard for public APIs.
 
 GraphQL is a great step forward:
 it allows third parties to retrieve data that were previously difficult (or even not possible) to retrieve with a RESTful API.
 GraphQL allows for a even more prospereous ecosystem of third-party applications.
 Large companies,
-such as Facebook or GitHub,
+such as Facebook and GitHub,
 now expose their data as a GraphQL API,
 reinforcing their position as a platform.
 
 If you want to enable an ecosystem of third-party applications built on top of your data,
-then setting up a generic API such as REST or GraphQL is
-an obligatory step.
+then setting up a generic API,
+such as with REST or GraphQL,
+is an obligatory step.
 
 This is not Wildcard's use case.
 An API created with Wildcard is meant to be consumed by your clients and your clients only.
 Such API is not generic and,
-from the perspective of a thrid party,
+from the perspective of a third party,
 a Wildcard API doesn't make sense.
 (Nor does any custom API or RPC-like API.)
 
-But if your goal is to retrieve and mutate data from your frontend,
+But if your goal is to retrieve/mutate data from your frontend,
 then Wildcard
 offers a simple alternative.
 (So does any custom API or RPC-like API.)
 
-The advent of REST and now GraphQL
+The advent of REST and GraphQL
 spur the rise of vast ecosystems of third-party apps.
 That's wonderful.
 But sadly,
-their success is casting a shadow over RPC,
+their success is casting a shadow over RPC;
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
