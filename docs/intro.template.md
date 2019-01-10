@@ -76,7 +76,7 @@ an API that only fulfills the data requirements of your clients.
 A custom API is meant to be consumed by your clients
 and your clients only.
 
-We compare furhter in the FAQ.
+We compare further in the FAQ.
 
 #### Contents
 
