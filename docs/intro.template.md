@@ -185,7 +185,7 @@ We compare further in the FAQ.
    };
    ~~~
 
-   You can "call" your enpdoint functions in the browser
+   You can now "call" your enpdoint functions in the browser
    at `require('wildcard-api/client').endpoints`.
 
    ~~~js
@@ -198,8 +198,8 @@ We compare further in the FAQ.
    })();
    ~~~
 
-> You can poke around with Wildcard by scaffolding an app that has a Wildcard API using
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme).
+> If you want to poke around with Wildcard, you can use
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
 
