@@ -335,7 +335,7 @@ But,
 from the perspective of your frontend development,
 things are different.
 
-while developing your frontend,
+While developing your frontend,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
