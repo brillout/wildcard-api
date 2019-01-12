@@ -48,7 +48,7 @@ const Todo = require('./path/to/your/data/models/Todo');
 endpoints.createTodo = async function(text) {
   const user = await getLoggedUser(this.headers); // We explain `this.headers` later
 
-  // Abort if the user is not logged in (we explain how permission works later)
+  // Abort if the user is not logged in
   if( !user ) return;
 
   // With ORM/ODM:
