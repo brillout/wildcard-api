@@ -361,9 +361,9 @@ For example,
 you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
-(The distinctive difference is that
+(The distinctive difference is that,
 from the perspective of a third party,
-your custom API is set in stone,
+your custom API is set in stone
 but,
 from your perspective,
 your custom API can be modified at will while developing your frontend.)
