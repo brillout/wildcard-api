@@ -432,8 +432,8 @@ reinforcing their position as a platform.
 
 If you want to enable an ecosystem of third-party applications built on top of your data,
 then setting up a generic API
-(such as with REST or GraphQL)
-is an obligatory step.
+is an obligatory step
+(such as with REST or GraphQL).
 
 This is not Wildcard's use case.
 An API created with Wildcard is meant to be consumed by your clients and your clients only.
