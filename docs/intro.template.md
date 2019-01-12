@@ -5,7 +5,7 @@
 
 <br/>
 
-Small JavaScript library to create an API between your Node.js server and your browser frontend.
+JavaScript library to create an API between your Node.js server and your browser frontend.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -251,8 +251,9 @@ GraphQL is more powerful.
 
 But,
 from the perspective of your frontend development,
-things are different;
-with Wildcard,
+things are different.
+
+while developing your frontend,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
@@ -278,8 +279,7 @@ For example,
 you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
-(The distinctive difference between a third party and your frontend development is that
-you can modify your custom API;
+(The distinctive difference is that
 from the perspective of a third party,
 your custom API is set in stone,
 but,
@@ -288,7 +288,7 @@ your custom API can be modified at will while developing your frontend.)
 
 GraphQL is a wonderful addition to our developer toolbox.
 Unfortunately,
-GraphQL's hype made us forget how great custom APIs are.
+GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
@@ -334,7 +334,7 @@ allowed them
 to become platforms with
 a flurishing ecosystem
 of third-party applications built on top of their RESTful API.
-REST became the de facto standard for public APIs.
+REST soon became the de facto standard for public APIs.
 
 GraphQL is a great step forward:
 it allows third parties to retrieve data that were previously difficult (or even not possible) to retrieve with a RESTful API.
@@ -345,8 +345,8 @@ now expose their data as a GraphQL API,
 reinforcing their position as a platform.
 
 If you want to enable an ecosystem of third-party applications built on top of your data,
-then setting up a generic API,
-such as with REST or GraphQL,
+then setting up a generic API
+(such as with REST or GraphQL)
 is an obligatory step.
 
 This is not Wildcard's use case.
@@ -372,7 +372,7 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 ### What about authentication? Where are the HTTP headers?
 
-The `context` object you pass to `getApiResponse(context)`
+The object `context you pass to `getApiResponse(context)`
 is available to your endpoint functions as `this`.
 That way,
 you can pass request information to your endpoint functions,
@@ -420,7 +420,7 @@ const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('path/to/your/favorite/sql/query/builder');
 
-// An endpoint for a to-do list app to update the text of a todo
+// An endpoint to update the text of a to-do list item
 
 endpoints.updateTodoText = async function(todoId, newText) {
   const user = await getLoggedUser(this.headers.cookie);
@@ -446,8 +446,8 @@ endpoints.updateTodoText = async function(todoId, newText) {
     return;
   }
 
-  // The logged user is the todo's author and we update the
-  // todo's text
+  // The logged user is the todo's author and can we update
+  // the todo's text
   await db.query(
     "UPDATE todos SET text = :newText WHERE id = :todoId;",
     {newText, todoId}
@@ -462,12 +462,12 @@ endpoints.updateTodoText = async function(todoId, newText) {
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
 
 1. [Browser]
-   The arguments are serialized to `"["some",{"arg":"val"}]"`
-   and an HTTP request is made to `/wildcard/endpointName/"["some",{"arg":"val"}]"`.
+   The arguments are serialized to `'["some",{"arg":"val"}]'`
+   and an HTTP request is made to `/wildcard/endpointName/["some",{"arg":"val"}]`.
    (Serialization is done with [JSON-S](https://github.com/brillout/json-s).)
 
 2. [Node.js]
-   The arguments are deserialized back to `{arg: 'val'}`
+   The arguments are deserialized
    and your endpoint function (defined on `endpoints.endpointName` in Node.js) is called.
 
 3. [Node.js]
