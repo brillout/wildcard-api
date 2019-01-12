@@ -87,7 +87,7 @@ We compare further in the FAQ.
 
 ## Usage
 
-1. Add the Wildcard routes to your Node.js server.
+1. Add Wildcard to your Node.js server.
 
    With Express:
    ~~~js
@@ -158,15 +158,15 @@ We compare further in the FAQ.
    </summary>
 
    Wildcard can be used with any server framework.
-   Just make sure to reply any HTTP request made to `/wildcard/*`
+   Just make sure to reply HTTP requests made to `/wildcard/*`
    with an HTTP response with the HTTP body and status code returned by
    `const {body, statusCode} = await getApiResponse({method, url, headers});`
    where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
    </details>
 
-2. You can then define functions
+2. Define functions
    in Node.js on
-   `require('wildcard-api').endpoints`...
+   `require('wildcard-api').endpoints`.
 
    ~~~js
    // Node.js
@@ -177,7 +177,7 @@ We compare further in the FAQ.
 
    endpoints.myFirstEndpoint = async function () {
      // `this` is the object you pass to `getApiResponse`.
-     // In the Express code above we passed `req` and we can
+     // In the Express code above we passed `req`. Thus we can
      // access `req.headers.cookie` over `this.headers.cookie`.
      const user = await getLoggedUser(this.headers.cookie);
      const data = await getData(user);
@@ -185,7 +185,7 @@ We compare further in the FAQ.
    };
    ~~~
 
-   ...and "call" them in the browser
+   You can "call" your enpdoint functions in the browser
    at `require('wildcard-api/client').endpoints`.
 
    ~~~js
@@ -198,8 +198,8 @@ We compare further in the FAQ.
    })();
    ~~~
 
-> You can also scaffold a Reframe + Wildcard API stack using
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+> You can poke around with Wildcard by scaffolding an app that has a Wildcard API using
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme).
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
 
