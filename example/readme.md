@@ -94,22 +94,55 @@ A (simplistic) todo app built with:
 
 #### Contents
 
+- [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
   - [View Endpoints](#view-endpoints)
   - [Server Integration](#server-integration)
   - [Mutation Endpoints](#mutation-endpoints)
   - [React Frontend](#react-frontend)
-- [Run](#run)
 
+## Run the Example
+
+Run the following npm scripts to build and serve the example:
+
+0. Get the code.
+
+   ~~~shell
+   $ git clone git@github.com:brillout/wildcard-api
+   $ cd example/
+   ~~~
+
+1. Install dependencies.
+
+   ~~~shell
+   $ npm run setup
+   ~~~
+
+2. Build the frontend.
+
+   ~~~shell
+   $ npm run build
+   ~~~
+
+3. Run the server.
+
+   ~~~shell
+   $ npm run server
+   ~~~
+
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
+<br/>
+<br/>
 
 
 ## Code Highlights
 
-Source code showcase.
+This section highlights the interesting parts of the example.
 
 ### View Endpoints
 
-(We denote an endpoint that retrieves data a *view endpoint*.)
+(With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
 // /example/api/view-endpoints
@@ -185,6 +218,8 @@ app.all('/wildcard/*' , (req, res, next) => {
 app.use(express.static('client/dist', {extensions: ['html']}));
 
 app.listen(3000);
+
+console.log('Server is running. Go to http://localhost:3000')
 ~~~
 
 <details>
@@ -235,6 +270,8 @@ async function startServer() {
   });
 
   await server.start();
+
+  console.log('Server is running. Go to http://localhost:3000')
 }
 ~~~
 </details>
@@ -271,7 +308,9 @@ app.use(router.routes());
 
 app.use(Static('client/dist'));
 
-app.listen(process.env.PORT || 3000);
+app.listen(3000);
+
+console.log('Server is running. Go to http://localhost:3000')
 ~~~
 </details>
 
@@ -283,7 +322,7 @@ app.listen(process.env.PORT || 3000);
 
 ### Mutation Endpoints
 
-(We denote an endpoint that mutates data a *mutation endpoint*.)
+(With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
 // /example/api/mutation-endpoints
@@ -402,42 +441,6 @@ function Todo({todo, updateTodo}) {
 <br/>
 <br/>
 <br/>
-
-## Run
-
-To run the example:
-
-0. Get the code.
-
-   ~~~shell
-   $ git clone git@github.com:brillout/wildcard-api
-   $ cd example/
-   ~~~
-
-1. Install dependencies.
-
-   ~~~shell
-   $ npm run setup
-   ~~~
-
-2. Build the frontend.
-
-   ~~~shell
-   $ npm run build
-   ~~~
-
-3. Run the server.
-
-   ~~~shell
-   $ npm run server
-   ~~~
-
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
-<br/>
-
-
 
 <!---
 

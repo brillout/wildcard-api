@@ -16,22 +16,52 @@ A (simplistic) todo app built with:
 
 #### Contents
 
+- [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
   - [View Endpoints](#view-endpoints)
   - [Server Integration](#server-integration)
   - [Mutation Endpoints](#mutation-endpoints)
   - [React Frontend](#react-frontend)
-- [Run](#run)
 
+## Run the Example
+
+Run the following npm scripts to build and serve the example:
+
+0. Get the code.
+
+   ~~~shell
+   $ git clone git@github.com:brillout/wildcard-api
+   $ cd example/
+   ~~~
+
+1. Install dependencies.
+
+   ~~~shell
+   $ npm run setup
+   ~~~
+
+2. Build the frontend.
+
+   ~~~shell
+   $ npm run build
+   ~~~
+
+3. Run the server.
+
+   ~~~shell
+   $ npm run server
+   ~~~
+
+!INLINE ./snippets/example-section-footer.md --hide-source-path
 
 
 ## Code Highlights
 
-Source code showcase.
+This section highlights the interesting parts of the example.
 
 ### View Endpoints
 
-(We denote an endpoint that retrieves data a *view endpoint*.)
+(With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
 !INLINE ../example/api/view-endpoints
@@ -72,7 +102,7 @@ With Koa
 
 ### Mutation Endpoints
 
-(We denote an endpoint that mutates data a *mutation endpoint*.)
+(With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
 !INLINE ../example/api/mutation-endpoints
@@ -96,36 +126,3 @@ and to update a todo.
 ~~~
 
 !INLINE ./snippets/example-section-footer.md --hide-source-path
-
-## Run
-
-To run the example:
-
-0. Get the code.
-
-   ~~~shell
-   $ git clone git@github.com:brillout/wildcard-api
-   $ cd example/
-   ~~~
-
-1. Install dependencies.
-
-   ~~~shell
-   $ npm run setup
-   ~~~
-
-2. Build the frontend.
-
-   ~~~shell
-   $ npm run build
-   ~~~
-
-3. Run the server.
-
-   ~~~shell
-   $ npm run server
-   ~~~
-
-!INLINE ./snippets/example-section-footer.md --hide-source-path
-
-

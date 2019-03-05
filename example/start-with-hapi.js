@@ -38,4 +38,6 @@ async function startServer() {
   });
 
   await server.start();
+
+  console.log('Server is running. Go to http://localhost:3000')
 }

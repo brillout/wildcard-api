@@ -22,3 +22,5 @@ app.all('/wildcard/*' , (req, res, next) => {
 app.use(express.static('client/dist', {extensions: ['html']}));
 
 app.listen(3000);
+
+console.log('Server is running. Go to http://localhost:3000')

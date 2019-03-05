@@ -22,4 +22,6 @@ app.use(router.routes());
 
 app.use(Static('client/dist'));
 
-app.listen(process.env.PORT || 3000);
+app.listen(3000);
+
+console.log('Server is running. Go to http://localhost:3000')
