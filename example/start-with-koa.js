@@ -20,7 +20,7 @@ router.all('/wildcard/*', async (ctx, next) => {
 
 app.use(router.routes());
 
-app.use(Static('client/dist'));
+app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 
