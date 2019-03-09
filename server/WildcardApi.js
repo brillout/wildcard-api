@@ -41,36 +41,34 @@ function WildcardApi({
       return null;
     }
 
-    const result = await getResult({url, context: requestContext});
+    const resultObject = await getResultObject({url, context: requestContext});
+    const {contextProxy} = resultObject;
+
+    assert.internal(['GET', 'POST'].includes(method));
 
     if( method==='GET' ) {
-      if( result.err ) {
-        return {
-          statusCode: 200,
-          body: getHtml_error(result),
-        };
-      }
-      return {
-        statusCode: 200,
-        body: getHtml_body(result),
-      };
+      contextProxy.statusCode = contextProxy.statusCode || 200;
+      contextProxy.body = contextProxy.body || (
+        resultObject.err ? (
+          getHtml_error(resultObject)
+        ) : (
+          getHtml_body(resultObject)
+        )
+      );
     }
 
     if( method==='POST' ) {
-      if( result.err ) {
-        return {
-          statusCode: result.statusCode || 400,
-          body: stringify({usageError: result.err}),
-        };
-      }
-
-      return {
-        statusCode: 200,
-        body: result.body,
-      };
+      contextProxy.statusCode = contextProxy.statusCode || (resultObject.err ? 400 : 200);
+      contextProxy.body = contextProxy.body || (
+        resultObject.err ? (
+          stringify({usageError: resultObject.err})
+        ) : (
+          resultObject.body
+        )
+      );
     }
 
-    assert.internal(false);
+    return contextProxy;
   }
 
   async function wildcardPlug(requestContext) {
@@ -80,19 +78,18 @@ function WildcardApi({
   async function __directCall({endpointName, endpointArgs, context}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
-    context = context || getContextErrorProxy(endpointName);
 
     assert.usage(
       endpointExists(endpointName),
       'Endpoint '+endpointName+" doesn't exist.",
     );
 
-    const endpointRet = await runEndpoint({endpointName, endpointArgs, context});
+    const endpointReturnValue = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
 
-    return endpointRet;
+    return endpointReturnValue;
   }
 
-  async function getResult({url, context}) {
+  async function getResultObject({url, context}) {
     const urlArgs = url.slice(apiUrlBase.length);
 
     const urlParts = urlArgs.split('/');
@@ -138,15 +135,16 @@ function WildcardApi({
       err: 'Endpoint could not handle request.',
     };
 
-    let endpointReturnedValue;
+    let ret;
     try {
-      endpointReturnedValue = await runEndpoint({endpointName, endpointArgs, context});
+      ret = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
     } catch(err_) {
       console.error(err_);
       return couldNotHandle;
     }
+    const {endpointReturnValue, contextProxy} = ret;
 
-    const valueToStringify = endpointReturnedValue===undefined ? null : endpointReturnedValue;
+    const valueToStringify = endpointReturnValue===undefined ? null : endpointReturnValue;
     let body;
     try {
       body = stringify(valueToStringify);
@@ -164,7 +162,7 @@ function WildcardApi({
       return couldNotHandle;
     }
     assert.internal(body.constructor===String);
-    return {body, endpointReturnedValue};
+    return {body, endpointReturnValue, contextProxy};
   }
 
   function assert_context(context) {
@@ -200,20 +198,24 @@ function WildcardApi({
     );
   }
 
-  async function runEndpoint({endpointName, endpointArgs, context}) {
+  async function runEndpoint({endpointName, endpointArgs, context, isDirectCall}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
+    assert.internal([true, false].includes(isDirectCall));
 
     const endpoint = endpoints__source[endpointName];
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    return (
+    const contextProxy = getContextProxy({context, endpointName, isDirectCall});
+
+    const endpointReturnValue = (
       await endpoint.apply(
-        context,
+        contextProxy,
         endpointArgs,
       )
     );
+    return {endpointReturnValue, contextProxy};
   }
   function endpointExists(endpointName) {
     const endpoint = endpoints__source[endpointName];
@@ -324,20 +326,20 @@ function isDev() {
   return [undefined, 'development'].includes(process.env.NODE_ENV);
 }
 
-function getHtml_body(result) {
-  assert.internal('endpointReturnedValue' in result, result);
+function getHtml_body(resultObject) {
+  assert.internal('endpointReturnValue' in resultObject, resultObject);
   return getHtmlWrapper(
 `<pre>
-${JSON.stringify(result.endpointReturnedValue, null, 2)}
+${JSON.stringify(resultObject.endpointReturnValue, null, 2)}
 </pre>
 `
   );
 }
 
-function getHtml_error(result) {
+function getHtml_error(resultObject) {
   return getHtmlWrapper(
 `<h1>Error</h1>
-${result.err}
+${resultObject.err}
 `
   );
 }
@@ -378,19 +380,28 @@ ${note.split('\n').join('<br/>\n')}
   );
 }
 
-function getContextErrorProxy(endpointName) {
-  return new Proxy({}, {get: (_, prop) => {
-    assert.usage(false,
-      "Cannot get context `this"+getPropString(prop)+"`.",
-      "Context is missing while running the Wildcard client on Node.js.",
-      "Make sure to add the request context with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestContext)`.",
-    );
-  }});
-  function getPropString(prop) {
-    return (
-      /^[a-zA-Z0-9_]+$/.test(prop) ?
-        '.'+prop :
-        "['"+prop+"']"
-    );
+function getContextProxy({context, endpointName, isDirectCall}) {
+  const contextCopy = {...context};
+  const contextProxy = new Proxy(contextCopy, {get});
+  return contextProxy;
+
+  function get(_, prop) {
+    if( !context ) {
+      assert.internal(isDirectCall===true);
+      assert.usage(false,
+        "Cannot get context `this"+getPropString(prop)+"`.",
+        "Context is missing while running the Wildcard client on Node.js.",
+        "Make sure to add the request context with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestContext)`.",
+      );
+    } else {
+      return contextCopy[prop];
+    }
   }
+}
+function getPropString(prop) {
+  return (
+    /^[a-zA-Z0-9_]+$/.test(prop) ?
+      '.'+prop :
+      "['"+prop+"']"
+  );
 }
