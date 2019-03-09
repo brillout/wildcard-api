@@ -1,6 +1,5 @@
 const assert = require('reassert');
-const parse_json_s = require('json-s/parse');
-const stringify_json_s = require('json-s/stringify');
+const defaultSerializer = require('json-s');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -8,19 +7,19 @@ assert.usage(isNodejs(), "The server-side module should be loaded in Node.js and
 
 module.exports = WildcardApi;
 
-function WildcardApi({
-  apiUrlBase=DEFAULT_API_URL_BASE,
-  parse=parse_json_s,
-  stringify=stringify_json_s,
-}={}) {
-  const endpoints__source = {};
+function WildcardApi(options={}) {
+  const endpointsObject = getEndpointsObject();
 
-  return {
-    endpoints: new Proxy(endpoints__source, {set: validateEndpoint}),
-    getApiResponse,
-    wildcardPlug,
-    __directCall,
-  };
+  Object.assign(
+    options,
+    {
+      endpoints: endpointsObject,
+      getApiResponse,
+      wildcardPlug,
+      __directCall,
+    },
+  );
+  return options;
 
   async function getApiResponse(requestContext) {
     assert_context(requestContext);
@@ -37,7 +36,7 @@ function WildcardApi({
       };
     }
 
-    if( ! url.startsWith(apiUrlBase) ) {
+    if( ! url.startsWith(getUrlBase()) ) {
       return null;
     }
 
@@ -59,6 +58,7 @@ function WildcardApi({
 
     if( method==='POST' ) {
       contextProxy.statusCode = contextProxy.statusCode || (resultObject.err ? 400 : 200);
+      const stringify = options.stringify || defaultSerializer.stringify;
       contextProxy.body = contextProxy.body || (
         resultObject.err ? (
           stringify({usageError: resultObject.err})
@@ -84,13 +84,13 @@ function WildcardApi({
       'Endpoint '+endpointName+" doesn't exist.",
     );
 
-    const endpointReturnValue = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
+    const endpointResult = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
 
-    return endpointReturnValue;
+    return endpointResult;
   }
 
   async function getResultObject({url, context}) {
-    const urlArgs = url.slice(apiUrlBase.length);
+    const urlArgs = url.slice(getUrlBase().length);
 
     const urlParts = urlArgs.split('/');
     if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
@@ -101,6 +101,7 @@ function WildcardApi({
     const endpointArgsString = urlParts[1] && decodeURIComponent(urlParts[1]);
     let endpointArgs;
     if( endpointArgsString ) {
+      const parse = options.parse || defaultSerializer.parse;
       try {
         endpointArgs = parse(endpointArgsString);
       } catch(err_) {
@@ -142,9 +143,10 @@ function WildcardApi({
       console.error(err_);
       return couldNotHandle;
     }
-    const {endpointReturnValue, contextProxy} = ret;
+    const {endpointResult, contextProxy} = ret;
 
-    const valueToStringify = endpointReturnValue===undefined ? null : endpointReturnValue;
+    const valueToStringify = endpointResult===undefined ? null : endpointResult;
+    const stringify = options.stringify || defaultSerializer.stringify;
     let body;
     try {
       body = stringify(valueToStringify);
@@ -162,7 +164,7 @@ function WildcardApi({
       return couldNotHandle;
     }
     assert.internal(body.constructor===String);
-    return {body, endpointReturnValue, contextProxy};
+    return {body, endpointResult, contextProxy};
   }
 
   function assert_context(context) {
@@ -203,22 +205,36 @@ function WildcardApi({
     assert.internal(endpointArgs.constructor===Array);
     assert.internal([true, false].includes(isDirectCall));
 
-    const endpoint = endpoints__source[endpointName];
+    const endpoint = endpointsObject[endpointName];
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
     const contextProxy = getContextProxy({context, endpointName, isDirectCall});
 
-    const endpointReturnValue = (
+    let endpointResult = (
       await endpoint.apply(
         contextProxy,
         endpointArgs,
       )
     );
-    return {endpointReturnValue, contextProxy};
+
+    if( options.onNewEndpointResult ){
+      endpointResult = (
+        await options.onNewEndpointResult.call(
+          contextProxy,
+          {
+            endpointName,
+            endpointArgs,
+            endpointResult,
+          },
+        )
+      );
+    }
+
+    return {endpointResult, contextProxy};
   }
   function endpointExists(endpointName) {
-    const endpoint = endpoints__source[endpointName];
+    const endpoint = endpointsObject[endpointName];
     return !!endpoint;
   }
 
@@ -229,10 +245,11 @@ function WildcardApi({
     if( method!=='GET') {
       return false;
     }
-    if( url===apiUrlBase ) {
+    const urlBase = getUrlBase();
+    if( url===urlBase ) {
       return true;
     }
-    if( url===apiUrlBase.slice(0, -1) && apiUrlBase.endsWith('/') ) {
+    if( url===urlBase.slice(0, -1) && urlBase.endsWith('/') ) {
       return true;
     }
     return false;
@@ -243,9 +260,9 @@ function WildcardApi({
 Endpoints:
 <ul>
 ${
-  Object.keys(endpoints__source)
+  Object.keys(endpointsObject)
   .map(endpointName => {
-    const endpointURL = DEFAULT_API_URL_BASE+endpointName;
+    const endpointURL = getUrlBase()+endpointName;
     return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
   })
   .join('\n')
@@ -259,6 +276,10 @@ ${
         "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
       ].join('\n')
     );
+  }
+
+  function getUrlBase() {
+    return options.apiUrlBase || DEFAULT_API_URL_BASE;
   }
 }
 
@@ -274,8 +295,12 @@ function isCallable(thing) {
   return thing instanceof Function || typeof thing === "function";
 }
 
+function getEndpointsObject() {
+  return new Proxy({}, {set: validateEndpoint});
+}
+
 function validateEndpoint(obj, prop, value) {
-  const endpoints__source = obj;
+  const endpointsObject = obj;
   const endpoint = value;
   const endpointName = prop;
 
@@ -327,10 +352,10 @@ function isDev() {
 }
 
 function getHtml_body(resultObject) {
-  assert.internal('endpointReturnValue' in resultObject, resultObject);
+  assert.internal('endpointResult' in resultObject, resultObject);
   return getHtmlWrapper(
 `<pre>
-${JSON.stringify(resultObject.endpointReturnValue, null, 2)}
+${JSON.stringify(resultObject.endpointResult, null, 2)}
 </pre>
 `
   );
