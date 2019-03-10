@@ -5,7 +5,6 @@ const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
 // TODO:
-//  - validate that onNewEndpointResult is not an arrow function
 //  - intercept errors for onNewEndpointResult
 require('wildcard-api').onNewEndpointResult = ({endpointName, endpointResult}) => {
   console.log("on new");

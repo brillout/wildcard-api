@@ -11,7 +11,12 @@
     "docs": "mdocs"
   },
   "devDependencies": {
-    "@brillout/mdocs": "^0.1.24"
+    "@brillout/mdocs": "^0.1.24",
+    "babel-polyfill": "^6.26.0",
+    "hapi": "^18.1.0",
+    "inert": "^5.1.2",
+    "parcel-bundler": "^1.12.0",
+    "puppeteer": "^1.13.0"
   },
   "description": "API for rapid prototyping (and beyond).",
   "repository": "github:brillout/wildcard-api"

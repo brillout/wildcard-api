@@ -1,11 +1,9 @@
 const Hapi = require('hapi');
 const Inert = require('inert');
-const {getApiResponse} = require('wildcard-api');
-require('./api/endpoints');
 
-startServer();
+module.exports = startServer;
 
-async function startServer() {
+async function startServer(browserDist, wildcardApi) {
   const server = Hapi.Server({
     port: 3000,
     debug: {request: ['internal']},
@@ -18,12 +16,12 @@ async function startServer() {
       const {method, url, headers} = request.raw.req;
       const context = {method, url, headers};
 
-      const apiResponse = await getApiResponse(context);
+      const {body, statusCode} = await wildcardApi.getApiResponse(context);
 
-      const resp = h.response(apiResponse.body);
-      resp.code(apiResponse.statusCode);
+      const resp = h.response(body);
+      resp.code(statusCode);
       return resp;
-    },
+    }
   });
 
   await server.register(Inert);
@@ -32,12 +30,12 @@ async function startServer() {
     path: '/{param*}',
     handler: {
       directory: {
-        path: 'client/dist',
+        path: browserDist,
       }
     }
   });
 
   await server.start();
 
-  console.log('Server is running. Go to http://localhost:3000')
+  return server.stop;
 }
