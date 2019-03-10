@@ -1,4 +1,7 @@
-module.exports = [interceptSuccessfullResponse, interceptError];
+module.exports = [
+  interceptSuccessfullResponse,
+//interceptError,
+];
 
 async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
   wildcardApi.endpoints.hello = function(name) { return 'hi '+name };
@@ -13,14 +16,12 @@ async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
     return 'hey alice';
   };
 
-  /*
   await browserEval(async () => {
-    const ret = await endpoints.hello('john');
+    const ret = await window.endpoints.hello('john');
     assert(ret==='hey alice');
   });
 
   assert(called===1);
-  */
 };
 
 async function interceptError(wildcardApi, {browserEval}) {
@@ -37,7 +38,7 @@ async function interceptError(wildcardApi, {browserEval}) {
 
   await browserEval(async () => {
     try {
-    const ret = await endpoints.hello();
+    const ret = await window.endpoints.hello();
     } catch(_) {}
     /*
     assert(ret==='custom error handling');
