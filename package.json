@@ -13,6 +13,7 @@
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
     "babel-polyfill": "^6.26.0",
+    "glob": "^7.1.3",
     "hapi": "^18.1.0",
     "inert": "^5.1.2",
     "parcel-bundler": "^1.12.0",

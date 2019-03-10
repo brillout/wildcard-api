@@ -3,7 +3,7 @@ const Inert = require('inert');
 
 module.exports = startServer;
 
-async function startServer(browserDist, wildcardApi) {
+async function startServer(browserDist, wildcardApiHolder) {
   const server = Hapi.Server({
     port: 3000,
     debug: {request: ['internal']},
@@ -16,7 +16,7 @@ async function startServer(browserDist, wildcardApi) {
       const {method, url, headers} = request.raw.req;
       const context = {method, url, headers};
 
-      const {body, statusCode} = await wildcardApi.getApiResponse(context);
+      const {body, statusCode} = await wildcardApiHolder.wildcardApi.getApiResponse(context);
 
       const resp = h.response(body);
       resp.code(statusCode);
@@ -37,5 +37,5 @@ async function startServer(browserDist, wildcardApi) {
 
   await server.start();
 
-  return server.stop;
+  return server;
 }

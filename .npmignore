@@ -5,6 +5,7 @@ package-lock.json
 
 dist/
 example/
+test/
 *.template.md
 docs/**/*.md
 yarn.lock

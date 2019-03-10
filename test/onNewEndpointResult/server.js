@@ -1,19 +1,33 @@
 process.on('unhandledRejection', err => {throw err});
 
-const wildcardApi = require('../../').WildcardApi();
+const assert = require('reassert');
+global.assert = assert;
+const {WildcardApi} = require('../../');
 const puppeteer = require('puppeteer');
+const glob = require('glob');
+const tests = glob
 
-
-wildcardApi.endpoints.hello = function() { return 'world' };
 
 const startServer = require('../startServer');
 
 const Bundler = require('parcel-bundler');
-const bundler = new Bundler(__dirname + '/index.html');
+const bundler = new Bundler(__dirname + '/index.html', {watch: false, logLevel: 2});
 
 (async () => {
   await bundler.bundle();
-  const stop = await startServer(__dirname+'/dist/', wildcardApi);
+
+  const wildcardApiHolder = {};
+
+  const testFiles = glob.sync( './tests/*.js' );
+  testFiles.forEach(function(file) {
+    const tests = require(file);
+    tests.forEach(async testFn => {
+      wildcardApiHolder.wildcardApi = WildcardApi();
+      await testFn(WildcardApi, {browserEval});
+    });
+  });
+
+  const server = await startServer(__dirname+'/dist/', wildcardApiHolder);
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -45,16 +59,15 @@ const bundler = new Bundler(__dirname + '/index.html');
     console.error(222);
     console.error(333);
     console.error(35);
-    assert(res==='world1', 'euiqwhe','a','b');
+    assert(res==='world', 'euiqwhe','a','b');
     return res;
   });
   console.log('Dimensions:', dimensions);
 //*/
 
-
   console.log('fin');
 
   await browser.close();
 
-//await stop();
+  await server.stop();
 })();
