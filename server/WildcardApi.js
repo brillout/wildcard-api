@@ -219,6 +219,10 @@ function WildcardApi(options={}) {
     );
 
     if( options.onNewEndpointResult ){
+      assert_plain_function(
+        options.onNewEndpointResult,
+        "`onNewEndpointResult`"
+      );
       endpointResult = (
         await options.onNewEndpointResult.call(
           contextProxy,
@@ -291,14 +295,6 @@ function endpointIsValid(endpoint) {
     return isCallable(endpoint) && !isArrowFunction(endpoint);
 }
 
-function isCallable(thing) {
-  return thing instanceof Function || typeof thing === "function";
-}
-
-function getEndpointsObject() {
-  return new Proxy({}, {set: validateEndpoint});
-}
-
 function validateEndpoint(obj, prop, value) {
   const endpointsObject = obj;
   const endpoint = value;
@@ -310,11 +306,9 @@ function validateEndpoint(obj, prop, value) {
     "But `endpoints['"+endpointName+"']` is "+((endpoint&&endpoint.constructor)?'a ':'')+"`"+(endpoint&&endpoint.constructor)+"`",
   );
 
-  assert.usage(
-    !isArrowFunction(endpoint),
-    "The endpoint `"+endpointName+"` is defined with an arrow function.",
-    "Endpoints are not allowed to be defined with arrow functions (`() => {}`).",
-    "Use a plain function (`function(){}`) instead.",
+  assert_plain_function(
+    endpoint,
+    "The endpoint `"+endpointName+"`",
   );
 
   assert.internal(endpointIsValid);
@@ -322,6 +316,18 @@ function validateEndpoint(obj, prop, value) {
   obj[prop] = value;
 
   return true;
+}
+
+function assert_plain_function(fn, errPrefix) {
+  assert.usage(
+    !isArrowFunction(fn),
+    errPrefix+" is defined as an arrow function.",
+    "You cannot use an arrow function (`() => {}`), use a plain function (`function(){}`) instead.",
+  );
+}
+
+function isCallable(thing) {
+  return thing instanceof Function || typeof thing === "function";
 }
 
 function isArrowFunction(fn) {
@@ -403,6 +409,10 @@ ${note.split('\n').join('<br/>\n')}
 </small>
 `
   );
+}
+
+function getEndpointsObject() {
+  return new Proxy({}, {set: validateEndpoint});
 }
 
 function getContextProxy({context, endpointName, isDirectCall}) {
