@@ -3,7 +3,7 @@ const Inert = require('inert');
 
 module.exports = startServer;
 
-async function startServer(browserDist, wildcardApiHolder) {
+async function startServer(wildcardApiHolder) {
   const server = Hapi.Server({
     port: 3000,
     debug: {request: ['internal']},
@@ -30,7 +30,7 @@ async function startServer(browserDist, wildcardApiHolder) {
     path: '/{param*}',
     handler: {
       directory: {
-        path: browserDist,
+        path: __dirname+'/browser/dist/',
       }
     }
   });
