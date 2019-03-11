@@ -1,6 +1,6 @@
 module.exports = [
   interceptSuccessfullResponse,
-//interceptError,
+  interceptError,
 ];
 
 async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {

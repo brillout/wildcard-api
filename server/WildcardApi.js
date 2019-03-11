@@ -19,56 +19,68 @@ function WildcardApi(options={}) {
       __directCall,
     },
   );
+
   return options;
 
   async function getApiResponse(requestContext) {
     assert_context(requestContext);
+    const {method, url} = requestContext;
 
-    const {method} = requestContext;
-    if( ! ['GET', 'POST'].includes(method) ) return null;
+    if( ! ['GET', 'POST'].includes(method) ) {
+      return null;
+    }
+    if( !isBase({url}) && !url.startsWith(getUrlBase()) ){
+      return null;
+    }
 
-    const {url} = requestContext;
+    const contextProxy = await getContextProxy(requestContext);
+    assert.internal(contextProxy.body);
+    assert.internal(contextProxy.statusCode);
+    assert.internal(contextProxy.type);
 
-    if( showListOfEndpoints({url, method}) ) {
+    if( isHumanReadableMode({url}) ){
+      const humanReadableBody = getHumanReadableBody(contextProxy);
+      contextProxy.body = humanReadableBody;
+      contextProxy.type = 'text/html';
+      contextProxy.statusCode = 200;
+    }
+
+    return contextProxy;
+  }
+
+  function getHumanReadableBody(contextProxy) {
+    const {endpointError} = contextProxy;
+    if( endpointError ) {
+      return getHtml_body(contextProxy);
+    } else {
+      return getHtml_error(endpointError);
+    }
+  }
+
+  async function getContextProxy(context) {
+    if( isBase({url}) && isDev({url}) && isHumanReadableMode({method}) ){
+      // TODO: also return contextProxy here
       return {
         statusCode: 200,
+        type: 'text/html',
         body: getListOfEndpoints(),
       };
     }
 
-    if( ! url.startsWith(getUrlBase()) ) {
-      return null;
+    const {isInvalidUrl, invalidReason, endpointArgs} = parseApiUrl({url});
+    assert.internal([true, false].includes(isInvalidUrl));
+    assert.internal(invalidReason!==undefined);
+    if( isInvalidUrl ) {
+      assert.internal(invalidReason);
+      // TODO: also return contextProxy here
+      return {
+        statusCode: 400,
+        type: 'text/plain',
+        body: invalidReason,
+      };
     }
 
-    const resultObject = await getResultObject({url, context: requestContext});
-    const {contextProxy} = resultObject;
-
-    assert.internal(['GET', 'POST'].includes(method));
-
-    if( method==='GET' ) {
-      contextProxy.statusCode = contextProxy.statusCode || 200;
-      contextProxy.body = contextProxy.body || (
-        resultObject.err ? (
-          getHtml_error(resultObject)
-        ) : (
-          getHtml_body(resultObject)
-        )
-      );
-    }
-
-    if( method==='POST' ) {
-      contextProxy.statusCode = contextProxy.statusCode || (resultObject.err ? 400 : 200);
-      const stringify = options.stringify || defaultSerializer.stringify;
-      contextProxy.body = contextProxy.body || (
-        resultObject.err ? (
-          stringify({usageError: resultObject.err})
-        ) : (
-          resultObject.body
-        )
-      );
-    }
-
-    return contextProxy;
+    return getResultObject({url, context, endpointArgs});
   }
 
   async function wildcardPlug(requestContext) {
@@ -84,18 +96,26 @@ function WildcardApi(options={}) {
       'Endpoint '+endpointName+" doesn't exist.",
     );
 
-    const endpointResult = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
+    const {endpointResult, endpointError} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
 
-    return endpointResult;
+    if( endpointError ) {
+      throw endpointError;
+    } else {
+      return endpointResult;
+    }
   }
 
-  async function getResultObject({url, context}) {
+  function parseApiUrl({url}) {
     const urlArgs = url.slice(getUrlBase().length);
 
     const urlParts = urlArgs.split('/');
     if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
-      return {err: 'Malformatted API URL `'+url+'`'};
+      return {
+        isInvalidUrl: true,
+        invalidReason: 'Malformatted API URL `'+url+'`',
+      };
     }
+
     const endpointName = urlParts[0];
 
     const endpointArgsString = urlParts[1] && decodeURIComponent(urlParts[1]);
@@ -105,45 +125,60 @@ function WildcardApi(options={}) {
       try {
         endpointArgs = parse(endpointArgsString);
       } catch(err_) {
-        return {err: [
-          'Malformatted API URL `'+url+'`.',
-          "API URL arguments (i.e. endpoint arguments) don't seem to be a JSON.",
-          'API URL arguments: `'+endpointArgsString+'`',
-        ].join('\n')};
+        return {
+          isInvalidUrl: true,
+          invalidReason: (
+            [
+              'Malformatted API URL `'+url+'`.',
+              "API URL arguments (i.e. endpoint arguments) don't seem to be a JSON.",
+              'API URL arguments: `'+endpointArgsString+'`',
+            ].join('\n')
+          ),
+        };
       }
     }
     endpointArgs = endpointArgs || [];
 
     if( endpointArgs.constructor!==Array ) {
       return {
-        err: [
-          'Malformatted API URL `'+url+'`.',
-          'API URL arguments (i.e. endpoint arguments) should be an array.',
-          "Instead we got `"+endpointArgs.constructor+"`.",
-          'API URL arguments: `'+endpointArgsString+'`',
-        ].join('\n')
+        isInvalidUrl: true,
+        invalidReason: (
+          [
+            'Malformatted API URL `'+url+'`.',
+            'API URL arguments (i.e. endpoint arguments) should be an array.',
+            "Instead we got `"+endpointArgs.constructor+"`.",
+            'API URL arguments: `'+endpointArgsString+'`',
+          ].join('\n')
+        ),
       };
     }
 
     if( ! endpointExists(endpointName) ) {
       return {
-        err: 'Endpoint '+endpointName+" doesn't exist.",
-        statusCode: 404,
+        isInvalidUrl: true,
+        invalidReason: 'Endpoint '+endpointName+" doesn't exist.",
       };
     }
+
+    return {
+      isInvalidUrl: false,
+      invalidReason: null,
+      endpointArgs,
+    };
+  }
+
+  async function getResultObject({url, context, endpointArgs}) {
 
     const couldNotHandle = {
       err: 'Endpoint could not handle request.',
     };
 
-    let ret;
-    try {
-      ret = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
-    } catch(err_) {
-      console.error(err_);
-      return couldNotHandle;
+    const {endpointResult, endpointError, contextProxy} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
+
+    assert.internal(endpointResult===undefined || endpointError===undefined);
+    if( endpointError ) {
+      throw endpointError;
     }
-    const {endpointResult, contextProxy} = ret;
 
     const valueToStringify = endpointResult===undefined ? null : endpointResult;
     const stringify = options.stringify || defaultSerializer.stringify;
@@ -164,6 +199,7 @@ function WildcardApi(options={}) {
       return couldNotHandle;
     }
     assert.internal(body.constructor===String);
+
     return {body, endpointResult, contextProxy};
   }
 
@@ -209,14 +245,19 @@ function WildcardApi(options={}) {
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    const contextProxy = getContextProxy({context, endpointName, isDirectCall});
+    const contextProxy = createContextProxy({context, endpointName, isDirectCall});
 
-    let endpointResult = (
-      await endpoint.apply(
+    let endpointResult;
+    let endpointError;
+
+    try {
+      endpointResult = await endpoint.apply(
         contextProxy,
         endpointArgs,
       )
-    );
+    } catch(err) {
+      endpointError = err;
+    }
 
     if( options.onNewEndpointResult ){
       assert_plain_function(
@@ -235,20 +276,14 @@ function WildcardApi(options={}) {
       );
     }
 
-    return {endpointResult, contextProxy};
+    return {endpointResult, contextProxy, endpointError};
   }
   function endpointExists(endpointName) {
     const endpoint = endpointsObject[endpointName];
     return !!endpoint;
   }
 
-  function showListOfEndpoints({url, method}) {
-    if( ! isDev() ) {
-      return false;
-    }
-    if( method!=='GET') {
-      return false;
-    }
+  function isBase({url}) {
     const urlBase = getUrlBase();
     if( url===urlBase ) {
       return true;
@@ -259,7 +294,6 @@ function WildcardApi(options={}) {
     return false;
   }
   function getListOfEndpoints() {
-    assert.internal(isDev());
     const htmlBody = `
 Endpoints:
 <ul>
@@ -353,24 +387,57 @@ function isArrowFunction(fn) {
   }
 }
 
-function isDev() {
-  return [undefined, 'development'].includes(process.env.NODE_ENV);
+function isHumanReadableMode({method}) {
+  if( method==='GET' ){
+    return true;
+  } else {
+    return false;
+  }
 }
 
-function getHtml_body(resultObject) {
-  assert.internal('endpointResult' in resultObject, resultObject);
+function isDev({url}) {
+  const {hostname} = new URL(url);
+  if( hostname==='localhost' ){
+    return true;
+  }
+  if( [undefined, 'development'].includes(process.env.NODE_ENV) ){
+    return true;
+  }
+  return false;
+}
+
+function getHtml_body({endpointResult, type, body}) {
+  const text = (
+    type==='text/json' ? (
+      JSON.stringify(
+        (
+          (endpointResult && endpointResult instanceof Object) ? (
+            endpointResult
+          ) : (
+            JSON.parse(body)
+          )
+        ),
+        null, 2
+      )
+    ) : (
+      body
+    )
+  );
+
   return getHtmlWrapper(
 `<pre>
-${JSON.stringify(resultObject.endpointResult, null, 2)}
+${text}
 </pre>
 `
   );
 }
 
-function getHtml_error(resultObject) {
+function getHtml_error(endpointError) {
   return getHtmlWrapper(
 `<h1>Error</h1>
-${resultObject.err}
+<pre>
+${endpointError}
+</pre>
 `
   );
 }
@@ -415,7 +482,7 @@ function getEndpointsObject() {
   return new Proxy({}, {set: validateEndpoint});
 }
 
-function getContextProxy({context, endpointName, isDirectCall}) {
+function createContextProxy({context, endpointName, isDirectCall}) {
   const contextCopy = {...context};
   const contextProxy = new Proxy(contextCopy, {get});
   return contextProxy;
@@ -433,6 +500,7 @@ function getContextProxy({context, endpointName, isDirectCall}) {
     }
   }
 }
+
 function getPropString(prop) {
   return (
     /^[a-zA-Z0-9_]+$/.test(prop) ?
