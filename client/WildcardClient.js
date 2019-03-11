@@ -49,9 +49,13 @@ function WildcardClient({
     } else {
       assert.internal(!context);
       const url = getUrl({endpointName, endpointArgs, serverRootUrl});
-      const responseText = await makeHttpRequest({url});
-      const responseObject = parse(responseText);
-      return responseObject;
+      const {contentType, body} = await makeHttpRequest({url});
+      // TODO use mime type instead
+      if( contentType.includes('application/json') ){
+        return parse(body);
+      } else {
+        return body;
+      }
     }
   }
 

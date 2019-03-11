@@ -10,6 +10,8 @@ const launchBrowser = require('./browser/launchBrowser');
 
 const startServer = require('./startServer');
 
+const {symbolSuccess} = require('@brillout/cli-theme');
+
 (async () => {
   await bundle();
 
@@ -22,7 +24,7 @@ const startServer = require('./startServer');
     const wildcardApi = WildcardApi();
     Object.assign(wildcardApiHolder, {wildcardApi});
     await test(wildcardApi, {browserEval});
-    console.log('Success '+test.name);
+    console.log(symbolSuccess+test.name);
   }
 
   await browser.close();

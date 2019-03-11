@@ -33,7 +33,7 @@ function WildcardApi(options={}) {
       return null;
     }
 
-    const contextProxy = await getContextProxy(requestContext);
+    const contextProxy = await getContextProxy({url, method, context: requestContext});
     assert.internal(contextProxy.body);
     assert.internal(contextProxy.statusCode);
     assert.internal(contextProxy.type);
@@ -57,7 +57,7 @@ function WildcardApi(options={}) {
     }
   }
 
-  async function getContextProxy(context) {
+  async function getContextProxy({url, method, context}) {
     if( isBase({url}) && isDev({url}) && isHumanReadableMode({method}) ){
       // TODO: also return contextProxy here
       return {
@@ -67,7 +67,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const {isInvalidUrl, invalidReason, endpointArgs} = parseApiUrl({url});
+    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseApiUrl({url});
     assert.internal([true, false].includes(isInvalidUrl));
     assert.internal(invalidReason!==undefined);
     if( isInvalidUrl ) {
@@ -80,7 +80,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    return getResultObject({url, context, endpointArgs});
+    return getResultObject({url, context, endpointName, endpointArgs});
   }
 
   async function wildcardPlug(requestContext) {
@@ -163,22 +163,22 @@ function WildcardApi(options={}) {
     return {
       isInvalidUrl: false,
       invalidReason: null,
+      endpointName,
       endpointArgs,
     };
   }
 
-  async function getResultObject({url, context, endpointArgs}) {
+  async function getResultObject({url, context, endpointName, endpointArgs}) {
 
-    const ret = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
-    const {endpointResult, endpointError, contextProxy} = ret;
-    let {endpointError} = ret;
+    const contextProxy = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
+    const {endpointResult} = contextProxy;
+    let {endpointError} = contextProxy;
 
     let body;
     if( !endpointError ) {
       // TODO be able to stringify undefined instead of null
       const valueToStringify = endpointResult===undefined ? null : endpointResult;
       const stringify = options.stringify || defaultSerializer.stringify;
-      let body;
       try {
         body = stringify(valueToStringify);
       } catch(err_) {
@@ -187,6 +187,7 @@ function WildcardApi(options={}) {
         console.log('Returned value');
         console.log(valueToStringify);
         console.log('\n');
+        assert.internal(err_);
         endpointError = err_;
         assert.warning(
           false,
@@ -201,7 +202,7 @@ function WildcardApi(options={}) {
         body: 'Endpoint could not handle request.',
         statusCode: 400,
         type: 'text/plain',
-        ...ret,
+        ...contextProxy,
       };
     } else {
       assert.internal(body.constructor===String);
@@ -209,11 +210,9 @@ function WildcardApi(options={}) {
         body,
         statusCode: 200,
         type: 'application/json',
-        ...ret,
+        ...contextProxy,
       };
     }
-
-    return {body, endpointResult, contextProxy};
   }
 
   function assert_context(context) {
@@ -272,24 +271,32 @@ function WildcardApi(options={}) {
       endpointError = err;
     }
 
+    // TODO - Do I really want this?
+    Object.assign(
+      contextProxy,
+      {
+        endpointName,
+        endpointArgs,
+        endpointError,
+        endpointResult,
+      }
+    );
+
     if( options.onNewEndpointResult ){
       assert_plain_function(
         options.onNewEndpointResult,
         "`onNewEndpointResult`"
       );
-      endpointResult = (
+      contextProxy.endpointResult = (
         await options.onNewEndpointResult.call(
+          // TODO - Do I really want this?
           contextProxy,
-          {
-            endpointName,
-            endpointArgs,
-            endpointResult,
-          },
+          contextProxy,
         )
       );
     }
 
-    return {endpointResult, contextProxy, endpointError};
+    return contextProxy;
   }
   function endpointExists(endpointName) {
     const endpoint = endpointsObject[endpointName];
@@ -523,6 +530,7 @@ function createContextProxy({context, endpointName, isDirectCall}) {
     const oldVal = contextCopy[prop];
  // contextCopy.__wildcard_originalValues[prop] = oldVal;
     contextCopy[prop] = newVal;
+    return true;
   }
   function get(_, prop) {
     assert_context('get', prop);

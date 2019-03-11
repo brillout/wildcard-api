@@ -18,7 +18,10 @@ async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
 
   await browserEval(async () => {
     const ret = await window.endpoints.hello('john');
-    assert(ret==='hey alice');
+    assert(
+      ret==='hey alice',
+      {ret},
+    );
   });
 
   assert(called===1);
@@ -28,22 +31,23 @@ async function interceptError(wildcardApi, {browserEval}) {
   wildcardApi.endpoints.hello = function(name) { throw new Error('Errolus'); };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult}) {
+  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError}) {
     ++called;
-    assert(endpointResult.constructor===Error);
-    assert(endpointResult.message==='Errolus');
+    assert(endpointResult===undefined);
+    assert(endpointError.constructor===Error);
+    assert(endpointError.message==='Errolus');
     this.statusCode = 401;
+    this.type = 'text/plain';
     this.body = 'custom error handling';
   };
 
   await browserEval(async () => {
-    try {
     const ret = await window.endpoints.hello();
-    } catch(_) {}
-    /*
-    assert(ret==='custom error handling');
-    */
+    assert(
+      ret==='custom error handling',
+      {ret},
+    );
   });
 
-//assert(called===1);
+  assert(called===1);
 };

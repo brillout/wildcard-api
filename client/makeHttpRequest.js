@@ -13,9 +13,14 @@ async function makeHttpRequest({url, ...args}) {
   );
 
   const response = await makeRequest(runFetchRequest);
+  const body = await response.text();
+  const contentType = response.headers.get('content-type');
 
-  const responseText = await response.text();
-  return responseText;
+  return {
+    // TODO return mime type instead
+    contentType,
+    body,
+  };
 }
 
 function makeRequest(runFetchRequest) {

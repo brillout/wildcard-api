@@ -16,10 +16,11 @@ async function startServer(wildcardApiHolder) {
       const {method, url, headers} = request.raw.req;
       const context = {method, url, headers};
 
-      const {body, statusCode} = await wildcardApiHolder.wildcardApi.getApiResponse(context);
+      const {body, statusCode, type} = await wildcardApiHolder.wildcardApi.getApiResponse(context);
 
       const resp = h.response(body);
       resp.code(statusCode);
+      resp.type(type);
       return resp;
     }
   });
