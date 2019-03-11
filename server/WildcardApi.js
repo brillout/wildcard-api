@@ -169,36 +169,49 @@ function WildcardApi(options={}) {
 
   async function getResultObject({url, context, endpointArgs}) {
 
-    const couldNotHandle = {
-      err: 'Endpoint could not handle request.',
-    };
+    const ret = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
+    const {endpointResult, endpointError, contextProxy} = ret;
+    let {endpointError} = ret;
 
-    const {endpointResult, endpointError, contextProxy} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
-
-    assert.internal(endpointResult===undefined || endpointError===undefined);
-    if( endpointError ) {
-      throw endpointError;
-    }
-
-    const valueToStringify = endpointResult===undefined ? null : endpointResult;
-    const stringify = options.stringify || defaultSerializer.stringify;
     let body;
-    try {
-      body = stringify(valueToStringify);
-    } catch(err_) {
-      console.error(err_);
-      console.log('\n');
-      console.log('Returned value');
-      console.log(valueToStringify);
-      console.log('\n');
-      assert.warning(
-        false,
-        "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
-        "The returned value in question and the serialization error are printed above.",
-      );
-      return couldNotHandle;
+    if( !endpointError ) {
+      // TODO be able to stringify undefined instead of null
+      const valueToStringify = endpointResult===undefined ? null : endpointResult;
+      const stringify = options.stringify || defaultSerializer.stringify;
+      let body;
+      try {
+        body = stringify(valueToStringify);
+      } catch(err_) {
+        console.error(err_);
+        console.log('\n');
+        console.log('Returned value');
+        console.log(valueToStringify);
+        console.log('\n');
+        endpointError = err_;
+        assert.warning(
+          false,
+          "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
+          "The returned value in question and the serialization error are printed above.",
+        );
+      }
     }
-    assert.internal(body.constructor===String);
+
+    if( endpointError ) {
+      return {
+        body: 'Endpoint could not handle request.',
+        statusCode: 400,
+        type: 'text/plain',
+        ...ret,
+      };
+    } else {
+      assert.internal(body.constructor===String);
+      return {
+        body,
+        statusCode: 200,
+        type: 'application/json',
+        ...ret,
+      };
+    }
 
     return {body, endpointResult, contextProxy};
   }
@@ -406,9 +419,10 @@ function isDev({url}) {
   return false;
 }
 
+// TODO - improve this
 function getHtml_body({endpointResult, type, body, statusCode}) {
   const text = (
-    type==='text/json' ? (
+    type==='application/json' ? (
       JSON.stringify(
         (
           (endpointResult && endpointResult instanceof Object) ? (
@@ -425,21 +439,29 @@ function getHtml_body({endpointResult, type, body, statusCode}) {
   );
 
   return getHtmlWrapper(
-`<pre>
+`<h1>API Response</h1>
+<pre>
 ${text}
 </pre>
+<br/>
+<br/>
+Status code: <b>${statusCode}</b>
 `
   );
 }
 
-function getHtml_error({endpointError, statusCode, body) {
+// TODO - improve this
+function getHtml_error({endpointError, statusCode, body}) {
   return getHtmlWrapper(
 `<h1>Error</h1>
 <h3>Response Body</h3>
-$body{}
-<h3>Response Status Code</h3>
+${body}
+<br/>
+<br/>
+Status code: <b>${statusCode}</b>
+<br/>
+<br/>
 <h3>Original Error</h3>
-${body}`
 <pre>
 ${endpointError}
 </pre>
@@ -490,7 +512,8 @@ function getEndpointsObject() {
 function createContextProxy({context, endpointName, isDirectCall}) {
   const contextCopy = {
     ...context,
-    __wildcard_originalValues: {},
+ // TODO - print both original overriden body and new overriding body when showing result in human readable format
+ // __wildcard_originalValues: {},
   };
   const contextProxy = new Proxy(contextCopy, {get, set});
   return contextProxy;
@@ -498,7 +521,7 @@ function createContextProxy({context, endpointName, isDirectCall}) {
   function set(_, prop, newVal) {
     assert_context('set', prop);
     const oldVal = contextCopy[prop];
-    contextCopy.__wildcard_originalValues[prop] = oldVal;
+ // contextCopy.__wildcard_originalValues[prop] = oldVal;
     contextCopy[prop] = newVal;
   }
   function get(_, prop) {
