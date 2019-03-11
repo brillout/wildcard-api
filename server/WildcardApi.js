@@ -53,7 +53,7 @@ function WildcardApi(options={}) {
     if( endpointError ) {
       return getHtml_body(contextProxy);
     } else {
-      return getHtml_error(endpointError);
+      return getHtml_error(contextProxy);
     }
   }
 
@@ -406,7 +406,7 @@ function isDev({url}) {
   return false;
 }
 
-function getHtml_body({endpointResult, type, body}) {
+function getHtml_body({endpointResult, type, body, statusCode}) {
   const text = (
     type==='text/json' ? (
       JSON.stringify(
@@ -432,9 +432,14 @@ ${text}
   );
 }
 
-function getHtml_error(endpointError) {
+function getHtml_error({endpointError, statusCode, body) {
   return getHtmlWrapper(
 `<h1>Error</h1>
+<h3>Response Body</h3>
+$body{}
+<h3>Response Status Code</h3>
+<h3>Original Error</h3>
+${body}`
 <pre>
 ${endpointError}
 </pre>
@@ -483,11 +488,25 @@ function getEndpointsObject() {
 }
 
 function createContextProxy({context, endpointName, isDirectCall}) {
-  const contextCopy = {...context};
-  const contextProxy = new Proxy(contextCopy, {get});
+  const contextCopy = {
+    ...context,
+    __wildcard_originalValues: {},
+  };
+  const contextProxy = new Proxy(contextCopy, {get, set});
   return contextProxy;
 
+  function set(_, prop, newVal) {
+    assert_context('set', prop);
+    const oldVal = contextCopy[prop];
+    contextCopy.__wildcard_originalValues[prop] = oldVal;
+    contextCopy[prop] = newVal;
+  }
   function get(_, prop) {
+    assert_context('get', prop);
+    return contextCopy[prop];
+  }
+
+  function assert_context(opName, prop) {
     if( !context ) {
       assert.internal(isDirectCall===true);
       assert.usage(false,
@@ -495,8 +514,6 @@ function createContextProxy({context, endpointName, isDirectCall}) {
         "Context is missing while running the Wildcard client on Node.js.",
         "Make sure to add the request context with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestContext)`.",
       );
-    } else {
-      return contextCopy[prop];
     }
   }
 }
