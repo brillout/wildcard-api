@@ -22,6 +22,7 @@ async function startServer() {
 
       const resp = h.response(apiResponse.body);
       resp.code(apiResponse.statusCode);
+      resp.type(apiResponse.type);
       return resp;
     },
   });

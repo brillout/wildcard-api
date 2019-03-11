@@ -12,6 +12,7 @@ app.all('/wildcard/*' , (req, res, next) => {
   getApiResponse(context)
   .then(apiResponse => {
     res.status(apiResponse.statusCode);
+    res.type(apiResponse.type);
     res.send(apiResponse.body);
     next();
   })
