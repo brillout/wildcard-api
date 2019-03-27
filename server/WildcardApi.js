@@ -198,20 +198,18 @@ function WildcardApi(options={}) {
     }
 
     if( endpointError ) {
-      return {
-        body: 'Endpoint could not handle request.',
-        statusCode: 400,
-        type: 'text/plain',
-        ...contextProxy,
-      };
+      const ret = {...contextProxy};
+      ret.body = ret.body || 'Endpoint could not handle request.';
+      ret.statusCode = ret.statusCode || 400;
+      ret.type = ret.type || 'text/plain';
+      return ret;
     } else {
       assert.internal(body.constructor===String);
-      return {
-        body,
-        statusCode: 200,
-        type: 'application/json',
-        ...contextProxy,
-      };
+      const ret = {...contextProxy};
+      ret.body = ret.body || body;
+      ret.statusCode = ret.statusCode || 200;
+      ret.type = ret.type || 'application/json';
+      return ret;
     }
   }
 
