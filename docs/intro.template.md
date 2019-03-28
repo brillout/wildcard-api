@@ -97,8 +97,9 @@ We compare further in the FAQ.
    const app = express();
 
    app.all('/wildcard/*' , async (req, res, next) => {
-     const {body, statusCode} = await getApiResponse(req);
+     const {body, statusCode, type} = await getApiResponse(req);
      res.status(statusCode);
+     res.type(type);
      res.send(body);
      next();
    });
@@ -119,9 +120,10 @@ We compare further in the FAQ.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
-       const {body, statusCode} = await getApiResponse(request.raw.req);
+       const {body, statusCode, type} = await getApiResponse(request.raw.req);
        const resp = h.response(body);
        resp.code(statusCode);
+       resp.type(type);
        return resp;
      }
    });
@@ -143,8 +145,9 @@ We compare further in the FAQ.
    const router = new Router();
 
    router.all('/wildcard/*', async (ctx, next) => {
-     const {body, statusCode} = await getApiResponse(ctx);
+     const {body, statusCode, type} = await getApiResponse(ctx);
      ctx.status = apiResponse.statusCode;
+     ctx.type = type;
      ctx.body = apiResponse.body;
    });
 
@@ -160,7 +163,7 @@ We compare further in the FAQ.
    Wildcard can be used with any server framework.
    Just make sure to reply HTTP requests made to `/wildcard/*`
    with an HTTP response with the HTTP body and status code returned by
-   `const {body, statusCode} = await getApiResponse({method, url, headers});`
+   `const {body, statusCode, type} = await getApiResponse({method, url, headers});`
    where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
    </details>
 
@@ -564,6 +567,7 @@ app.all('/wildcard/*' , async(req, res, next) => {
   const apiResponse = await getApiResponse(context);
 
   res.status(apiResponse.statusCode);
+  res.type(apiResponse.type);
   res.send(apiResponse.body);
 
   next();

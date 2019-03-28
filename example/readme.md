@@ -208,6 +208,7 @@ app.all('/wildcard/*' , (req, res, next) => {
   getApiResponse(context)
   .then(apiResponse => {
     res.status(apiResponse.statusCode);
+    res.type(apiResponse.type);
     res.send(apiResponse.body);
     next();
   })
@@ -254,8 +255,9 @@ async function startServer() {
 
       const resp = h.response(apiResponse.body);
       resp.code(apiResponse.statusCode);
+      resp.type(apiResponse.type);
       return resp;
-    }
+    },
   });
 
   await server.register(Inert);
@@ -301,12 +303,13 @@ router.all('/wildcard/*', async (ctx, next) => {
   const apiResponse = await getApiResponse(context);
 
   ctx.status = apiResponse.statusCode;
+  ctx.type = apiResponse.type;
   ctx.body = apiResponse.body;
 });
 
 app.use(router.routes());
 
-app.use(Static('client/dist'));
+app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 

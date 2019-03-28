@@ -7,12 +7,13 @@ async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
   wildcardApi.endpoints.hello = function(name) { return 'hi '+name };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult}) {
+  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError}) {
     ++called;
     assert(endpointName==='hello');
     assert(endpointArgs[0]==='john');
     assert(endpointArgs.length===1);
     assert(endpointResult==='hi john');
+    assert(!endpointError);
     return 'hey alice';
   };
 
