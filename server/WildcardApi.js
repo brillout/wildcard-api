@@ -22,10 +22,11 @@ function WildcardApi(options={}) {
 
   return options;
 
-  async function getApiResponse(requestContext) {
-    assert_context(requestContext);
-    const {method, url} = requestContext;
+  async function getApiResponse(reqObject) {
+    assert_reqObject(reqObject);
+    const {method, url} = reqObject;
 
+    // URL is not a Wildcard URL
     if( ! ['GET', 'POST'].includes(method) ) {
       return null;
     }
@@ -33,33 +34,8 @@ function WildcardApi(options={}) {
       return null;
     }
 
-    const contextProxy = await getContextProxy({url, method, context: requestContext});
-    assert.internal(contextProxy.body);
-    assert.internal(contextProxy.statusCode);
-    assert.internal(contextProxy.type);
-
-    if( isHumanReadableMode({url}) ){
-      const humanReadableBody = getHumanReadableBody(contextProxy);
-      contextProxy.body = humanReadableBody;
-      contextProxy.type = 'text/html';
-      contextProxy.statusCode = 200;
-    }
-
-    return contextProxy;
-  }
-
-  function getHumanReadableBody(contextProxy) {
-    const {endpointError} = contextProxy;
-    if( endpointError ) {
-      return getHtml_body(contextProxy);
-    } else {
-      return getHtml_error(contextProxy);
-    }
-  }
-
-  async function getContextProxy({url, method, context}) {
+    // URL is the wildard root `/wildcard`
     if( isBase({url}) && isDev({url}) && isHumanReadableMode({method}) ){
-      // TODO: also return contextProxy here
       return {
         statusCode: 200,
         type: 'text/html',
@@ -68,11 +44,12 @@ function WildcardApi(options={}) {
     }
 
     const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseApiUrl({url});
+
+    // URL is invalid
     assert.internal([true, false].includes(isInvalidUrl));
     assert.internal(invalidReason!==undefined);
     if( isInvalidUrl ) {
       assert.internal(invalidReason);
-      // TODO: also return contextProxy here
       return {
         statusCode: 400,
         type: 'text/plain',
@@ -80,14 +57,30 @@ function WildcardApi(options={}) {
       };
     }
 
-    return getResultObject({url, context, endpointName, endpointArgs});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall: false});
+    compute_response_object({resultObject, method});
+
+    const {respObject} = resultObject;
+    assert.internal(respObject.body.constructor===String);
+    assert.internal(respObject.statusCode);
+    assert.internal(respObject.type);
+    return respObject;
   }
 
-  async function wildcardPlug(requestContext) {
-    return getApiResponse(requestContext);
+  function getHumanReadableBody(resultObject) {
+    const {endpointError} = resultObject;
+    if( endpointError ) {
+      return getHtml_body(resultObject);
+    } else {
+      return getHtml_error(resultObject);
+    }
   }
 
-  async function __directCall({endpointName, endpointArgs, context}) {
+  async function wildcardPlug(reqObject) {
+    return getApiResponse(reqObject);
+  }
+
+  async function __directCall({endpointName, endpointArgs, reqObject}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
 
@@ -96,7 +89,9 @@ function WildcardApi(options={}) {
       'Endpoint '+endpointName+" doesn't exist.",
     );
 
-    const {endpointResult, endpointError} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall: true});
+
+    const {endpointResult, endpointError} = resultObject;
 
     if( endpointError ) {
       throw endpointError;
@@ -168,11 +163,9 @@ function WildcardApi(options={}) {
     };
   }
 
-  async function getResultObject({url, context, endpointName, endpointArgs}) {
-
-    const contextProxy = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
-    const {endpointResult} = contextProxy;
-    let {endpointError} = contextProxy;
+  function compute_response_object({resultObject, method}) {
+    const {endpointResult, respObject} = resultObject;
+    let {endpointError} = resultObject;
 
     let body;
     if( !endpointError ) {
@@ -198,55 +191,54 @@ function WildcardApi(options={}) {
     }
 
     if( endpointError ) {
-      const ret = {...contextProxy};
-      ret.body = ret.body || 'Endpoint could not handle request.';
-      ret.statusCode = ret.statusCode || 400;
-      ret.type = ret.type || 'text/plain';
-      return ret;
+      respObject.body = respObject.body || 'Endpoint could not handle request.';
+      respObject.statusCode = respObject.statusCode || 400;
+      respObject.type = respObject.type || 'text/plain';
     } else {
       assert.internal(body.constructor===String);
-      const ret = {...contextProxy};
-      ret.body = ret.body || body;
-      ret.statusCode = ret.statusCode || 200;
-      ret.type = ret.type || 'application/json';
-      return ret;
+      respObject.body = respObject.body || body;
+      respObject.statusCode = respObject.statusCode || 200;
+      respObject.type = respObject.type || 'application/json';
+    }
+
+    if( isHumanReadableMode({method}) ){
+      const humanReadableBody = getHumanReadableBody(resultObject);
+      respObject.body = humanReadableBody;
+      respObject.type = 'text/html';
+      respObject.statusCode = 200;
     }
   }
 
-  function assert_context(context) {
-    const {url, method, headers} = context;
+  function assert_reqObject(reqObject) {
+    const {url, method, headers} = reqObject;
 
     const correctUsage = [
       "Usage:",
       "",
-      "  `const apiResponse = await getApiResponse({method, url, ...context});`",
+      "  `const apiResponse = await getApiResponse({method, url, ...req});`",
       "",
       "where",
       "  - `method` is the HTTP method of the request",
       "  - `url` is the HTTP URI of the request",
-      "  - `context` are optional additional context information such as logged-in user, HTTP headers, etc.",
+      "  - `req` are optional additional request information such as logged-in user, HTTP headers, etc.",
     ];
     assert.usage(
       url,
-      "Context is missing `url`.",
+      "Request object is missing `url`.",
       "(`url=="+url+"`)",
       "",
       ...correctUsage
     );
     assert.usage(
       method,
-      "Context is missing `method`.",
+      "Request object is missing `method`.",
       "(`method=="+method+"`)",
       "",
       ...correctUsage,
     );
-    assert.warning(
-      headers,
-      "Context is missing `headers`."
-    );
   }
 
-  async function runEndpoint({endpointName, endpointArgs, context, isDirectCall}) {
+  async function runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
     assert.internal([true, false].includes(isDirectCall));
@@ -255,46 +247,59 @@ function WildcardApi(options={}) {
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    const contextProxy = createContextProxy({context, endpointName, isDirectCall});
+    const reqObject_proxy = create_reqObject_proxy({reqObject, endpointName, isDirectCall});
 
     let endpointResult;
     let endpointError;
 
     try {
       endpointResult = await endpoint.apply(
-        contextProxy,
+        reqObject_proxy,
         endpointArgs,
-      )
+      );
     } catch(err) {
       endpointError = err;
     }
 
-    // TODO - Do I really want this?
-    Object.assign(
-      contextProxy,
-      {
-        endpointName,
-        endpointArgs,
-        endpointError,
-        endpointResult,
-      }
-    );
+    const resultObject = {
+      endpointName,
+      endpointArgs,
+      endpointError,
+      endpointResult,
+      overwriteResult: val => {
+        resultObject.endpointResult = val;
+      },
+      respObject: {},
+      overwriteResponse: respObject__overwritten => {
+        assert.usage(
+          respObject__overwritten instanceof Object,
+          "Wrong argument `resp` when calling `overwriteResponse(resp)`.",
+          "`resp` needs to be an object. (I.e. `resp instanceof Object`.)",
+        );
+        resultObject.respObject = respObject__overwritten;
+      },
+    };
 
     if( options.onNewEndpointResult ){
       assert_plain_function(
         options.onNewEndpointResult,
         "`onNewEndpointResult`"
       );
-      contextProxy.endpointResult = (
+      const retVal = (
         await options.onNewEndpointResult.call(
-          // TODO - Do I really want this?
-          contextProxy,
-          contextProxy,
+          null,
+          resultObject,
         )
+      );
+      assert.usage(
+        retVal===undefined,
+        "The `onNewEndpointResult` function should always return `undefined`.",
+        "Instead it returned `"+retVal+"`.",
+        "If you want to overwrite the endpoint result then use the `overwriteResult` function instead."
       );
     }
 
-    return contextProxy;
+    return resultObject;
   }
   function endpointExists(endpointName) {
     const endpoint = endpointsObject[endpointName];
@@ -406,6 +411,7 @@ function isArrowFunction(fn) {
 }
 
 function isHumanReadableMode({method}) {
+  assert.internal(method);
   if( method==='GET' ){
     return true;
   } else {
@@ -425,7 +431,9 @@ function isDev({url}) {
 }
 
 // TODO - improve this
-function getHtml_body({endpointResult, type, body, statusCode}) {
+function getHtml_body(resultObject) {
+  const {endpointResult, respObject: {type, body, statusCode}} = resultObject;
+
   const text = (
     type==='application/json' ? (
       JSON.stringify(
@@ -456,8 +464,9 @@ Status code: <b>${statusCode}</b>
 }
 
 // TODO - improve this
-function getHtml_error({endpointError, statusCode, body}) {
-  return getHtmlWrapper(
+function getHtml_error(resultObject) {
+ const {endpointError, respObject: {statusCode, body}} = resultObject;
+ return getHtmlWrapper(
 `<h1>Error</h1>
 <h3>Response Body</h3>
 ${body}
@@ -514,34 +523,27 @@ function getEndpointsObject() {
   return new Proxy({}, {set: validateEndpoint});
 }
 
-function createContextProxy({context, endpointName, isDirectCall}) {
-  const contextCopy = {
-    ...context,
- // TODO - print both original overriden body and new overriding body when showing result in human readable format
- // __wildcard_originalValues: {},
-  };
-  const contextProxy = new Proxy(contextCopy, {get, set});
-  return contextProxy;
+function create_reqObject_proxy({reqObject, endpointName, isDirectCall}) {
+  const reqObject_proxy = new Proxy(reqObject||{}, {get, set});
+  return reqObject;
 
   function set(_, prop, newVal) {
-    assert_context('set', prop);
-    const oldVal = contextCopy[prop];
- // contextCopy.__wildcard_originalValues[prop] = oldVal;
-    contextCopy[prop] = newVal;
+    reqObject[prop] = newVal;
     return true;
   }
   function get(_, prop) {
-    assert_context('get', prop);
-    return contextCopy[prop];
+    assert_reqObject_prop(prop);
+    assert.internal(reqObject);
+    return reqObject[prop];
   }
 
-  function assert_context(opName, prop) {
-    if( !context ) {
+  function assert_reqObject_prop(prop) {
+    if( !reqObject ) {
       assert.internal(isDirectCall===true);
       assert.usage(false,
-        "Cannot get context `this"+getPropString(prop)+"`.",
-        "Context is missing while running the Wildcard client on Node.js.",
-        "Make sure to add the request context with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestContext)`.",
+        "Cannot get `this"+getPropString(prop)+"`.",
+        "While running the Wildcard client on Node.js.",
+        "Make sure to add the request object with `bind`: `endpoints"+getPropString(endpointName)+".bind(req)`.",
       );
     }
   }

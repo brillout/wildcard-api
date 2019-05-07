@@ -7,14 +7,14 @@ async function interceptSuccessfullResponse({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { return 'hi '+name };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError}) {
+  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResult}) {
     ++called;
     assert(endpointName==='hello');
     assert(endpointArgs[0]==='john');
     assert(endpointArgs.length===1);
     assert(endpointResult==='hi john');
     assert(!endpointError);
-    return 'hey alice';
+    overwriteResult('hey alice');
   };
 
   await browserEval(async () => {
@@ -36,14 +36,16 @@ async function interceptError({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { throw new Error('Errolus'); };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError}) {
+  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResponse}) {
     ++called;
     assert(endpointResult===undefined);
     assert(endpointError.constructor===Error);
     assert(endpointError.message==='Errolus');
-    this.statusCode = 401;
-    this.type = 'text/plain';
-    this.body = 'custom error handling';
+    overwriteResponse({
+      statusCode: 401,
+      type: 'text/plain',
+      body: 'custom error handling',
+    });
   };
 
   await browserEval(async () => {
