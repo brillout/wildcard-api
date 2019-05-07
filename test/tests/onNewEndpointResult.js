@@ -3,7 +3,7 @@ module.exports = [
   interceptError,
 ];
 
-async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
+async function interceptSuccessfullResponse({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { return 'hi '+name };
 
   let called = 0;
@@ -28,7 +28,7 @@ async function interceptSuccessfullResponse(wildcardApi, {browserEval}) {
   assert(called===1);
 };
 
-async function interceptError(wildcardApi, {browserEval}) {
+async function interceptError({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { throw new Error('Errolus'); };
 
   let called = 0;

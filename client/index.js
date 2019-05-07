@@ -1,4 +1,4 @@
-const {WildcardClient} = require('./WildcardClient');
+const WildcardClient = require('./WildcardClient');
 const {parse, stringify} = require('./serializer');
 const makeHttpRequest = require('./makeHttpRequest');
 

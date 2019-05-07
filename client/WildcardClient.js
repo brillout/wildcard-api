@@ -2,7 +2,7 @@ const assert = require('reassert');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
-module.exports = {WildcardClient};
+module.exports = WildcardClient;
 
 function WildcardClient({
   makeHttpRequest,

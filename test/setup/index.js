@@ -3,7 +3,10 @@ process.on('unhandledRejection', err => {throw err});
 const assert = require('reassert');
 global.assert = assert;
 
-const {WildcardApi} = require('../../');
+const WildcardApi = require('../../server/WildcardApi');
+const WildcardClient = require('../../client/WildcardClient');
+const {parse, stringify} = require('../../client/serializer');
+const makeHttpRequest = require('../../client/makeHttpRequest');
 
 const bundle = require('./browser/bundle');
 const launchBrowser = require('./browser/launchBrowser');
@@ -22,8 +25,13 @@ const {symbolSuccess} = require('@brillout/cli-theme');
 
   for(let test of getTests()) {
     const wildcardApi = WildcardApi();
+
     Object.assign(wildcardApiHolder, {wildcardApi});
-    await test(wildcardApi, {browserEval});
+
+    const wildcardClient = new WildcardClient({wildcardApi, makeHttpRequest, stringify, parse});
+
+    await test({wildcardApi, wildcardClient, browserEval});
+
     console.log(symbolSuccess+test.name);
   }
 
