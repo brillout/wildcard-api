@@ -13,7 +13,7 @@ const launchBrowser = require('./browser/launchBrowser');
 
 const startServer = require('./startServer');
 
-const {symbolSuccess} = require('@brillout/cli-theme');
+const {symbolSuccess, symbolError} = require('@brillout/cli-theme');
 
 (async () => {
   await bundle();
@@ -23,16 +23,23 @@ const {symbolSuccess} = require('@brillout/cli-theme');
 
   const {browserEval, browser} = await launchBrowser();
 
-  for(let test of getTests()) {
+  for(let {test, file} of getTests()) {
     const wildcardApi = WildcardApi();
 
     Object.assign(wildcardApiHolder, {wildcardApi});
 
     const wildcardClient = new WildcardClient({wildcardApi, makeHttpRequest, stringify, parse});
 
-    await test({wildcardApi, wildcardClient, browserEval});
+    const testName = test.name+' ('+file+')';
 
-    console.log(symbolSuccess+test.name);
+    try {
+      await test({wildcardApi, wildcardClient, browserEval});
+    } catch(err) {
+      console.log(symbolError+'Failed test: '+testName);
+      throw err;
+    }
+
+    console.log(symbolSuccess+testName);
   }
 
   await browser.close();
@@ -42,12 +49,16 @@ const {symbolSuccess} = require('@brillout/cli-theme');
 
 function getTests() {
   const glob = require('glob');
+  const path = require('path');
 
-  const testFiles = glob.sync(__dirname+'/../tests/*.js');
+  const projectRoot = __dirname+'/..';
+
+  const testFiles = glob.sync(projectRoot+'/tests/*.js');
   const tests = [];
-  testFiles.forEach(file => {
-    require(file).forEach(test => {
-      tests.push(test)
+  testFiles.forEach(filePath => {
+    require(filePath).forEach(test => {
+      const file = path.relative(projectRoot, filePath);
+      tests.push({test, file})
     });
   });
 

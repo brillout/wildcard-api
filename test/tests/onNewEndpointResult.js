@@ -20,6 +20,10 @@ async function interceptSuccessfullResponse({wildcardApi, browserEval}) {
   await browserEval(async () => {
     const ret = await window.endpoints.hello('john');
     assert(
+      ret!=='hi john',
+      "Interception didn't work",
+    );
+    assert(
       ret==='hey alice',
       {ret},
     );

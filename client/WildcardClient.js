@@ -27,10 +27,12 @@ function WildcardClient({
 
   const isCalledByProxy = Symbol();
 
-  return {
+  Object.assign(this, {
     fetchEndpoint,
     endpoints: getEndpointsProxy(),
-  };
+  });
+
+  return this;
 
   async function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
