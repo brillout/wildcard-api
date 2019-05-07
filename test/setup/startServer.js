@@ -6,7 +6,7 @@ module.exports = startServer;
 async function startServer(wildcardApiHolder) {
   const server = Hapi.Server({
     port: 3000,
-    debug: {request: ['internal']},
+ // debug: {request: ['internal']},
   });
 
   server.route({
