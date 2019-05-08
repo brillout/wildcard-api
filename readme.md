@@ -616,7 +616,7 @@ Otherwise the Wildcard client makes an HTTP request like when run in the browser
 
 Yes.
 
-Note that if an endpoint function needs request informations, such as the HTTP headers to get the logged in user:
+Note that if an endpoint function needs request informations, such as:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
@@ -652,17 +652,17 @@ function isNodejs() {
 }
 ~~~
 
-That way `whoAmI` always has access to `req.headers.cookies` over `this`:
+That way `whoAmI` always has access to request object `req` over `this`:
 when run in the browswer,
-`this` originates from `getApiResponse`,
+`this`/`req` originates from `getApiResponse`,
 and when run in Node.js,
-`this` originates from our `bind` call above.
+`this`/`req` originates from our `bind` call above.
 
 (When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
 But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
-That's why you need to use `bind()` to provide the request object while doing SSR.)
+That's why you need to use `bind()` to provide the request object.)
 
-If your endpoint functions don't need the request object (that is they don't read `this`),
+If your endpoint functions don't need any request information,
 then you don't need to `bind()` the request object.
 
 > You can scaffold an app with SSR + Wildcard by using
