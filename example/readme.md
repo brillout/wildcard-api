@@ -155,7 +155,7 @@ const {getLoggedUser} = require('../auth');
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
 endpoints.getLandingPageData = async function () {
-  // `this` holds contextual information such as HTTP headers
+  // `this` holds request information such as HTTP headers
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 
@@ -201,11 +201,10 @@ require('./api/endpoints');
 const app = express();
 
 app.all('/wildcard/*' , (req, res, next) => {
-  // Our `context` object is made available to endpoint functions over `this`.
-  // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
-  const {method, url, headers} = req;
-  const context = {method, url, headers};
-  getApiResponse(context)
+  // Our request object `req` is available to endpoint functions over `this`.
+  // That is `this===req`. For example:
+  // `endpoints.getUser = function() { return getLoggedUser(this.headers.cookies) }`.
+  getApiResponse(req)
   .then(apiResponse => {
     res.status(apiResponse.statusCode);
     res.type(apiResponse.type);
@@ -248,11 +247,7 @@ async function startServer() {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      const {method, url, headers} = request.raw.req;
-      const context = {method, url, headers};
-
-      const apiResponse = await getApiResponse(context);
-
+      const apiResponse = await getApiResponse(request.raw.req);
       const resp = h.response(apiResponse.body);
       resp.code(apiResponse.statusCode);
       resp.type(apiResponse.type);
@@ -297,11 +292,7 @@ const app = new Koa();
 const router = new Router();
 
 router.all('/wildcard/*', async (ctx, next) => {
-  const {method, url, headers} = ctx;
-  const context = {method, url, headers};
-
-  const apiResponse = await getApiResponse(context);
-
+  const apiResponse = await getApiResponse(ctx);
   ctx.status = apiResponse.statusCode;
   ctx.type = apiResponse.type;
   ctx.body = apiResponse.body;

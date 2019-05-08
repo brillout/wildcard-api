@@ -6,7 +6,7 @@ const {getLoggedUser} = require('../auth');
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
 endpoints.getLandingPageData = async function () {
-  // `this` holds contextual information such as HTTP headers
+  // `this` holds request information such as HTTP headers
   const user = await getLoggedUser(this.headers.cookie);
   if( ! user ) return {userIsNotLoggedIn: true};
 

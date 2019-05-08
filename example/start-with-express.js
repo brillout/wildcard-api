@@ -5,11 +5,10 @@ require('./api/endpoints');
 const app = express();
 
 app.all('/wildcard/*' , (req, res, next) => {
-  // Our `context` object is made available to endpoint functions over `this`.
-  // E.g. `endpoints.getUser = function() { return getLoggedUser(this.headers) }`.
-  const {method, url, headers} = req;
-  const context = {method, url, headers};
-  getApiResponse(context)
+  // Our request object `req` is available to endpoint functions over `this`.
+  // That is `this===req`. For example:
+  // `endpoints.getUser = function() { return getLoggedUser(this.headers.cookies) }`.
+  getApiResponse(req)
   .then(apiResponse => {
     res.status(apiResponse.statusCode);
     res.type(apiResponse.type);
