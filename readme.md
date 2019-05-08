@@ -625,7 +625,7 @@ Otherwise the Wildcard client makes an HTTP request
 
 Yes.
 
-Note that if an endpoint function needs request information, such as:
+But if an endpoint function needs request information, such as:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
