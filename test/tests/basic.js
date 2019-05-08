@@ -1,9 +1,9 @@
 module.exports = [
-  basic,
-  basicContext,
+  mostBasicUseCase,
+  requestObjectIsAvailbe,
 ];
 
-async function basic({wildcardApi, browserEval}) {
+async function mostBasicUseCase({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = async function(name) {
     return 'Dear '+name;
   };
@@ -17,7 +17,7 @@ async function basic({wildcardApi, browserEval}) {
   });
 };
 
-async function basicContext({wildcardApi, browserEval}) {
+async function requestObjectIsAvailbe({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = async function(name) {
     assert(this.headers.host.startsWith('localhost'));
     assert(this.headers['user-agent'].includes('HeadlessChrome'));

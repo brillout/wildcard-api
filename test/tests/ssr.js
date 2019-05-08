@@ -1,24 +1,24 @@
 module.exports = [
-  ssrWithContext,
-  ssrWithoutContext,
+  ssr,
+  ssrWithRequestObject,
 ];
 
-async function ssrWithContext({wildcardApi, wildcardClient}) {
+async function ssr({wildcardApi, wildcardClient}) {
   const headers = [];
   wildcardApi.endpoints.hello = async function(name) {
     assert(this.headers===headers);
-    return 'hi '+name;
+    return 'heyy '+name;
   };
 
   const endpointResult = await wildcardClient.endpoints.hello.bind({headers})('Paul');
-  assert(endpointResult==='hi Paul');
+  assert(endpointResult==='heyy Paul');
 };
 
-async function ssrWithoutContext({wildcardApi, wildcardClient}) {
+async function ssrWithRequestObject({wildcardApi, wildcardClient}) {
   wildcardApi.endpoints.hello = async function(name) {
-    return 'hi '+name;
+    return 'yo '+name;
   };
 
   const endpointResult = await wildcardClient.endpoints.hello('Paul');
-  assert(endpointResult==='hi Paul');
+  assert(endpointResult==='yo Paul');
 };
