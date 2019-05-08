@@ -35,7 +35,7 @@ function WildcardApi(options={}) {
     }
 
     // URL is the wildard root `/wildcard`
-    if( isBase({url}) && isDev({url}) && isHumanReadableMode({method}) ){
+    if( isBase({url}) && isDev() && isHumanReadableMode({method}) ){
       return {
         statusCode: 200,
         type: 'text/html',
@@ -60,6 +60,10 @@ function WildcardApi(options={}) {
     const resultObject = await runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall: false});
     compute_response_object({resultObject, method});
 
+    if( resultObject.endpointError ) {
+      console.error(resultObject.endpointError);
+    }
+
     const {respObject} = resultObject;
     assert.internal(respObject.body.constructor===String);
     assert.internal(respObject.statusCode);
@@ -70,9 +74,9 @@ function WildcardApi(options={}) {
   function getHumanReadableBody(resultObject) {
     const {endpointError} = resultObject;
     if( endpointError ) {
-      return getHtml_body(resultObject);
-    } else {
       return getHtml_error(resultObject);
+    } else {
+      return getHtml_body(resultObject);
     }
   }
 
@@ -311,7 +315,7 @@ function WildcardApi(options={}) {
     if( url===urlBase ) {
       return true;
     }
-    if( url===urlBase.slice(0, -1) && urlBase.endsWith('/') ) {
+    if( urlBase.endsWith('/') && url===urlBase.slice(0, -1) ) {
       return true;
     }
     return false;
@@ -333,7 +337,7 @@ ${
     return getHtmlWrapper(
       htmlBody,
       [
-        "This page only exists in development.",
+        "This page exists only in development.",
         "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
       ].join('\n')
     );
@@ -419,11 +423,7 @@ function isHumanReadableMode({method}) {
   }
 }
 
-function isDev({url}) {
-  const {hostname} = new URL(url);
-  if( hostname==='localhost' ){
-    return true;
-  }
+function isDev() {
   if( [undefined, 'development'].includes(process.env.NODE_ENV) ){
     return true;
   }
@@ -463,24 +463,32 @@ Status code: <b>${statusCode}</b>
   );
 }
 
-// TODO - improve this
 function getHtml_error(resultObject) {
- const {endpointError, respObject: {statusCode, body}} = resultObject;
- return getHtmlWrapper(
+  const {endpointError, respObject: {statusCode, body}} = resultObject;
+  let html__error = (
 `<h1>Error</h1>
 <h3>Response Body</h3>
 ${body}
 <br/>
 <br/>
-Status code: <b>${statusCode}</b>
-<br/>
+Status code: <b>${statusCode}</b>`
+  );
+
+  if( isDev() ) {
+    html__error += (
+`<br/>
 <br/>
 <h3>Original Error</h3>
 <pre>
-${endpointError}
+${endpointError && endpointError.stack || endpointError}
 </pre>
-`
-  );
+<small>
+(The call stack is shown only in development. That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)
+</small>`
+    );
+  }
+
+  return getHtmlWrapper(html__error);
 }
 
 function getHtmlWrapper(htmlBody, note) {
@@ -500,21 +508,17 @@ function getHtmlWrapper(htmlBody, note) {
     border-radius: 3px;
     background: #f5f5f5;
   }
+  small {
+    color: #777;
+  }
 </style>
 ${htmlBody}
-${getHtmlNote(note)}
-</body></html>
-`
-  );
-}
-
-function getHtmlNote(note) {
-  return (
-`<br/>
 <br/>
-<small style="color: #777">
+<br/>
+<small>
 ${note.split('\n').join('<br/>\n')}
 </small>
+</body></html>
 `
   );
 }
