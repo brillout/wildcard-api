@@ -473,16 +473,22 @@ such as HTTP headers.
 For example, when using Express, you can pass express's `req` object:
 
 ~~~js
- async (req, res, next) => {
-   // We pass `req` to `getApiResponse`
-   const apiResponse = await getApiResponse(req);
-   // ...
- });
+const {getApiResponse} = require('wildcard-api');
+
+async (req, res, next) => {
+  // We pass `req` to `getApiResponse` to make it available to our
+  // endpoint functions
+  const apiResponse = await getApiResponse(req);
+  // ...
+});
 ~~~
 
 Your endpoint functions will then be able to access the HTTP headers:
 
 ~~~js
+const {endpoints} = require('wildcard-api');
+const getUserFromSessionCookie = require('./path/to/your/session/logic');
+
 endpoints.getLoggedUserInfo = async function() {
   // Since `this===req`, `req.headers` is available as `this.headers`
   const user = await getUserFromSessionCookie(this.headers.cookie);
@@ -493,9 +499,11 @@ endpoints.getLoggedUserInfo = async function() {
 Or when using Express with [Passport](https://github.com/jaredhanson/passport):
 
 ~~~js
+const {endpoints} = require('wildcard-api');
+
 endpoints.getLoggedUserInfo = async function() {
-  // When using Passport, `req.user` holds the logged-in user.
-  // And since `this===req`, `req.user` is available as `this.user`.
+  // When using Passport, `req.user` holds information about the logged-in user.
+  // Since `this===req`, `req.user` is available as `this.user`.
   return this.user;
 };
 ~~~
@@ -529,18 +537,18 @@ endpoints.updateTodoText = async function(todoId, newText) {
   // The `updateTodoText` function is essentially public; `todoId` can
   // hold any value and doesn't have to be a todo's id.
   if( !todo ) {
-    // Abort if `todoId` doesn't match a todo's id.
+    // Abort if no todo could be found with id `todoId`.
     return;
   }
 
-  // This if-block ensures the following: if the logged user is not the
-  // todo's author, then it cannot change the todo's text.
+  // This if-block ensures that the logged-in user is authorized
+  // to change a todo only if he is the todo's author.
   if( todo.authorId !== user.id ) {
     // Abort if the user is not the todo's author
     return;
   }
 
-  // The logged user is the todo's author and can we update
+  // The logged-in user is the todo's author and can we update
   // the todo's text
   await db.query(
     "UPDATE todos SET text = :newText WHERE id = :todoId;",
@@ -603,10 +611,11 @@ require('handli')`;
 
 Yes.
 
-If the Wildcard client and the Wildcard server run in the same Node.js process
-then, instead of doing an HTTP request, the endpoint function is directly called.
+If the Wildcard client and the Wildcard server run in the same Node.js process,
+then the endpoint function is directly called (instead of doing an HTTP request).
 
-Otherwise the Wildcard client makes an HTTP request like when run in the browser.
+Otherwise the Wildcard client makes an HTTP request
+(like when run in the browser).
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -616,10 +625,10 @@ Otherwise the Wildcard client makes an HTTP request like when run in the browser
 
 Yes.
 
-Note that if an endpoint function needs request informations, such as:
+Note that if an endpoint function needs request information, such as:
 
 ~~~js
-const {endpoints} = require('wildcard-api/client');
+const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 
 endpoints.whoAmI = async function() {
@@ -634,13 +643,13 @@ Then you need to provide the request object while doing SSR:
 ~~~js
 const {endpoints} = require('wildcard-api/client');
 
-// `req` should be the request object provided by your server framework.
-module.exports = async (req) => {
+// `req` should be the HTTP request object. (Provided by your server framework.)
+module.exports = async req => {
   let {whoAmI} = endpoints;
 
   if( isNodejs() ) {
-    // We can use `Function.prototype.bind()` to make the
-    // request object `req` available while doing SSR
+    // We use `Function.prototype.bind()` to make the
+    // request object `req` available while doing SSR.
     whoAmI = whoAmI.bind(req);
   }
 
@@ -648,11 +657,11 @@ module.exports = async (req) => {
 };
 
 function isNodejs() {
-  return type window === "undefined";
+  return typeof window === "undefined";
 }
 ~~~
 
-That way `whoAmI` always has access to request object `req` over `this`:
+That way `whoAmI` always has access to the request object `req` over `this`:
 when run in the browswer,
 `this`/`req` originates from `getApiResponse`,
 and when run in Node.js,
@@ -660,12 +669,12 @@ and when run in Node.js,
 
 (When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
 But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
-That's why you need to use `bind()` to provide the request object.)
+That's why you need to `bind()` the request object.)
 
 If your endpoint functions don't need any request information,
 then you don't need to `bind()` the request object.
 
-> You can scaffold an app with SSR + Wildcard by using
+> You can scaffold an app that has SSR + Wildcard by using
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
 
 
