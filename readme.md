@@ -463,17 +463,18 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 ### What about authentication? Where are the HTTP headers?
 
-The object `context you pass to `getApiResponse(context)`
-is available to your endpoint functions as `this`.
+Any object `anObject` you pass to `getApiResponse(anObject)`
+is made available to your endpoint functions as `this`.
+(I.e. `this===anObject`.)
 That way,
-you can pass request information to your endpoint functions,
+you can pass any request information to your endpoint functions,
 such as HTTP headers.
 
-For example, when using Express, you can pass the `req` object:
+For example, when using Express, you can pass express's `req` object:
 
 ~~~js
  async (req, res, next) => {
-   // We use `req` as context
+   // We pass `req` to `getApiResponse`
    const apiResponse = await getApiResponse(req);
    // ...
  });
@@ -614,63 +615,57 @@ Otherwise the Wildcard client makes an HTTP request like when run in the browser
 ### Does it work with SSR?
 
 Yes.
-But you have to provide the request context when running the Wildcard client on the server-side.
 
-You can use `Function.prototype.bind()` to do so:
+Note that if an endpoint function accesses the request object over `this`, such as:
+
+~~~js
+const {endpoints} = require('wildcard-api/client');
+const getLoggedUser = require('./path/to/your/auth/code');
+
+endpoints.whoAmI = async function() {
+  // This endpoint requires the HTTP headers
+  const user = await getLoggedUser(this.headers.cookie);
+  return 'You are '+user.name;
+};
+~~~
+
+Then you need to provide the request object when call the Wildcard Client in Node.js:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
 
-async function getInitialProps({isNodejs, request: {headers}={}}) {
-  let {getLandingPageData} = endpoints;
+(async () => {
 
-  // When calling `getLandingPageData` on the server, we have to
-  // preserve the request context.
-  if( isNodejs ) {
-    // E.g. we pass on the HTTP headers of the original HTTP request:
-    const context = {headers};
-    getLandingPageData = getLandingPageData.bind(context);
+  let {whoAmI} = endpoints;
+
+  if( isNodejs() ) {
+    // We can use `Function.prototype.bind()` to make `req` available when doing SSR
+    whoAmI = whoAmI.bind(req);
   }
 
-  const landingPageData = await getLandingPageData();
-  return landingPageData;
+  const userName = await whoAmI();
+})();
+
+function isNodejs() {
+  return type window === "undefined";
 }
 ~~~
 
-The endpoint `getLandingPageData` then always has access to `headers`:
+That way `whoAmI` has always access to `req.headers.cookies` over `this`:
+when run in the browswer, `this` originates from `getApiResponse`,
+and when run in Node.js,
+`this` originates from our `bind` call above.
 
-~~~js
-const {endpoints} = require('wildcard');
-const getLoggedUser = require('./path/to/your/auth/code');
+(When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
+But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
+That's why you need to use `bind()` to provide the request object while doing SSR.)
 
-endpoints.getLandingPageData = async function(){
-  const user = await getLoggedUser(this.headers);
-  // ...
-};
-~~~
+If your endpoint functions don't need the request object (that is they don't read `this`),
+then you don't need to `bind()` the request object.
 
-When the Wildcard client runs in Node.js,
-the context `this` originates from our `bind` call above.
-And when the Wildcard client runs in the browswer, `this` originates from `getApiResponse`:
+> You can scaffold an app with SSR + Wildcard by using
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
 
-~~~js
-const express = require('express');
-const {getApiResponse} = require('wildcard-api');
-
-const app = express();
-
-app.all('/wildcard/*' , async(req, res, next) => {
-  const {url, method, headers} = req;
-  const context = {url, method, headers};
-  const apiResponse = await getApiResponse(context);
-
-  res.status(apiResponse.statusCode);
-  res.type(apiResponse.type);
-  res.send(apiResponse.body);
-
-  next();
-});
-~~~
 
 <b><sub><a href="#faq">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
