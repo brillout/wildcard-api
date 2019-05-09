@@ -1,4 +1,85 @@
-!INLINE ./header.md --hide-source-path
+<!---
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+-->
+<p align="center">
+  <a href="/../../#readme">
+    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+  </a>
+</p>
 &nbsp;
 
 # How does it work?
@@ -20,3 +101,81 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
 
 5. [Browser]
    The received HTTP response is deserialized and the promise of your original `endpoints.endpointName` call is resolved.
+
+<!---
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Edit `/docs/how-does-it-work.template.md` instead.
+
+
+
+
+
+
+-->
