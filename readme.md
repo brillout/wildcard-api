@@ -85,6 +85,23 @@
 
 JavaScript library to create an API between your Node.js server and your browser frontend.
 
+#### Contents
+
+ - [What is Wildcard?](#what-is-wildcard)
+ - Usage
+   - [Installation & Setup](#installation--setup)
+   - [Authentication](#authentication)
+   - [Authorization](#authorization)
+   - [Network Errors](#network-errors)
+   - [SSR](#ssr)
+   - [`onEndpointCall`](#onEndpointCall)
+ - [More](#more)
+
+<br/>
+
+
+### What is Wildcard?
+
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
 
@@ -170,35 +187,22 @@ you want to quickly ship/evolve your product,
 then Wildcard offers a very simple way.
 (Wildcard is actually used by many startups.)
 
-#### Contents
 
- - Usage
-   - [Installation & Setup](#installation--setup)
-   - [Authentication](#authentication)
-   - [Authorization](#authorization)
-   - [Network Errors](#network-errors)
-   - [SSR](#ssr)
-   - [`onEndpointCall`](#onEndpointCall)
- - [Going Deep](#going-deep)
 
+<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<br/>
 <br/>
 
 
 
 ### Installation & Setup
 
-1. Install Wildcard
-
-   ~~~js
-   $ npm install wildcard-api
-   ~~~
-
-   And add Wildcard to your Node.js server.
+1. Add Wildcard to your Node.js server.
 
    With Express:
    ~~~js
    const express = require('express');
-   const {getApiResponse} = require('wildcard-api');
+   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = express();
 
@@ -274,7 +278,7 @@ then Wildcard offers a very simple way.
 
 2. Define functions
    in Node.js on
-   `require('wildcard-api').endpoints`.
+   `require('wildcard-api').endpoints` in Node.js.
 
    ~~~js
    // Node.js
@@ -293,13 +297,13 @@ then Wildcard offers a very simple way.
    };
    ~~~
 
-   You can now "call" your enpdoint functions in the browser
+3. You can now "call" your enpdoint functions in the browser
    at `require('wildcard-api/client').endpoints`.
 
    ~~~js
    // Browser
 
-   import {endpoints} from 'wildcard-api/client';
+   import {endpoints} from 'wildcard-api/client'; // npm install wildcard-api
 
    (async () => {
      const data = await endpoints.myFirstEndpoint();
@@ -522,20 +526,20 @@ TODO
 
 
 
-### Going Deep
+### More
 
 This section collects further information about Wildcard.
 
- - [How does it work](how-does-it-work.md)
+ - [How does it work](/docs/how-does-it-work.md)
    Explains how Wildcard works.
 
- - [Conceptual FAQ](/docs/conceputal-faq.md)
+ - [Conceptual FAQ](/docs/conceptual-faq.md)
    High level discussion about Wildcard, RPC-like APIs, GraphQL, and REST.
 
  - [Custom VS Generic](/docs/custom-vs-generic.md)
    Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
-   (Or both!)
-   In general the rule of thumb for deciding which one to use is simple:
+   (Or both.)
+   In general, the rule of thumb for deciding which one to use is simple:
    if third parties need to access your data,
    then implement a generic API,
    otherwise implement a custom API.

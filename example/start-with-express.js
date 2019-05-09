@@ -1,6 +1,6 @@
 const express = require('express');
 const {getApiResponse} = require('wildcard-api');
-require('./api/endpoints');
+//require('./api/endpoints');
 
 const app = express();
 

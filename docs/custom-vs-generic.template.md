@@ -20,8 +20,9 @@ Comparison of custom APIs with generic APIs.
   a [REST level >=1](https://martinfowler.com/articles/richardsonMaturityModel.html#level1) API.
 
 > TL;DR
->  - We recommend a generic API if your API development needs to be decoupled from frontend development.
->  - Otherwise we recommend using a custom API tightly developed with your frontend.
+>  - Implement a generic API (GraphQL/REST) if you need third parties to access your data.
+>  - Implement a generic API if your API development needs to be decoupled from your frontend development.
+>  - Otherwise implement a custom API (Wildcard) tightly developed with your frontend.
 >  - You can start with a custom API then progressively replace it with a generic API.
 
 #### Contents
