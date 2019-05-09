@@ -1,8 +1,8 @@
 !MENU_ORDER 2
 !INLINE ./header.md --hide-source-path
-!MENU
 !MENU_TITLE Custom vs Generic
 &nbsp;
+
 
 # Custom vs Generic
 

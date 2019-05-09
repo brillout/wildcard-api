@@ -8,7 +8,7 @@ const app = new Koa();
 
 const router = new Router();
 
-router.all('/wildcard/*', async (ctx, next) => {
+router.all('/wildcard/*', async ctx => {
   const apiResponse = await getApiResponse(ctx);
   ctx.status = apiResponse.statusCode;
   ctx.type = apiResponse.type;

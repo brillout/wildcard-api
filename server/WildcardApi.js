@@ -285,10 +285,6 @@ function WildcardApi(options={}) {
     };
 
     if( options.onNewEndpointResult ){
-      assert_plain_function(
-        options.onNewEndpointResult,
-        "`onNewEndpointResult`"
-      );
       const retVal = (
         await options.onNewEndpointResult.call(
           null,
