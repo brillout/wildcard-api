@@ -80,8 +80,8 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
-<p align='center'><a href="/../../#readme">Intro</a> &nbsp; | &nbsp; <a href="/docs/custom-vs-generic.md#readme"><b>Custom vs Generic</b></a> &nbsp; | &nbsp; <a href="/example/#readme">Example</a></p>
 &nbsp;
+
 
 # Custom vs Generic
 

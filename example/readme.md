@@ -200,7 +200,7 @@ require('./api/endpoints');
 
 const app = express();
 
-app.all('/wildcard/*' , (req, res, next) => {
+app.all('/wildcard/*' , (req, res) => {
   // Our request object `req` is available to endpoint functions over `this`.
   // That is `this===req`. For example:
   // `endpoints.getUser = function() { return getLoggedUser(this.headers.cookies) }`.
@@ -209,9 +209,7 @@ app.all('/wildcard/*' , (req, res, next) => {
     res.status(apiResponse.statusCode);
     res.type(apiResponse.type);
     res.send(apiResponse.body);
-    next();
   })
-  .catch(next);
 });
 
 // Serve our frontend
@@ -291,7 +289,7 @@ const app = new Koa();
 
 const router = new Router();
 
-router.all('/wildcard/*', async (ctx, next) => {
+router.all('/wildcard/*', async ctx => {
   const apiResponse = await getApiResponse(ctx);
   ctx.status = apiResponse.statusCode;
   ctx.type = apiResponse.type;
