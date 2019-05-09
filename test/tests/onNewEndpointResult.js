@@ -7,7 +7,7 @@ async function interceptSuccessfullResponse({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { return 'hi '+name };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResult}) {
+  wildcardApi.onEndpointCall = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResult}) {
     ++called;
     assert(endpointName==='hello');
     assert(endpointArgs[0]==='john');
@@ -36,7 +36,7 @@ async function interceptError({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = function(name) { throw new Error('Errolus'); };
 
   let called = 0;
-  wildcardApi.onNewEndpointResult = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResponse}) {
+  wildcardApi.onEndpointCall = function({endpointName, endpointArgs, endpointResult, endpointError, overwriteResponse}) {
     ++called;
     assert(endpointResult===undefined);
     assert(endpointError.constructor===Error);

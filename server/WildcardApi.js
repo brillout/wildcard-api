@@ -307,16 +307,16 @@ function WildcardApi(options={}) {
       },
     };
 
-    if( options.onNewEndpointResult ){
+    if( options.onEndpointCall ){
       const retVal = (
-        await options.onNewEndpointResult.call(
+        await options.onEndpointCall.call(
           null,
           resultObject,
         )
       );
       assert.usage(
         retVal===undefined,
-        "The `onNewEndpointResult` function should always return `undefined`.",
+        "The `onEndpointCall` function should always return `undefined`.",
         "Instead it returned `"+retVal+"`.",
         "If you want to overwrite the endpoint result then use the `overwriteResult` function instead."
       );
