@@ -84,7 +84,7 @@
 
 # How does it work?
 
-When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the following happens:
+When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the following happens:
 
 1. [Browser]
    The arguments are serialized to `'["some",{"arg":"val"}]'`
@@ -100,7 +100,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
    the resolved value is serialized and sent to the browser in an HTTP response.
 
 5. [Browser]
-   The received HTTP response is deserialized and the promise of your original `endpoints.endpointName` call is resolved.
+   The received HTTP response is deserialized and the promise of the original `endpoints.endpointName` call is resolved.
 
 <!---
 
