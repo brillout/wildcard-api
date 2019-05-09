@@ -51,7 +51,7 @@ function WildcardApi(options={}) {
     if( isInvalidUrl ) {
       assert.internal(invalidReason);
       return {
-        statusCode: 400,
+        statusCode: 404,
         type: 'text/plain',
         body: invalidReason,
       };
@@ -153,9 +153,32 @@ function WildcardApi(options={}) {
     }
 
     if( ! endpointExists(endpointName) ) {
+      const endpointNames = getEndpointNames();
+
+      const noEndpoints = endpointNames.length===0;
+
+      const invalidReason = (
+        noEndpoints ? (
+          "You didn't define any endpoint.\n" +
+          "Did you load your endpoint definitions `require('./path/to/your/endpoint-functions.js')`?"
+        ) : (
+          'Endpoint '+endpointName+" doesn't exist." + (
+            !isDev() ? '' : (
+              '\n\nEndpoints: ' +
+              getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
+              '\n\n(The list of endpoints is only shown in development.)'
+            )
+          )
+        )
+      );
+
+      if( noEndpoints ) {
+        console.error(invalidReason);
+      }
+
       return {
         isInvalidUrl: true,
-        invalidReason: 'Endpoint '+endpointName+" doesn't exist.",
+        invalidReason,
       };
     }
 
@@ -316,12 +339,15 @@ function WildcardApi(options={}) {
     }
     return false;
   }
+  function getEndpointNames() {
+    return Object.keys(endpointsObject);
+  };
   function getListOfEndpoints() {
     const htmlBody = `
 Endpoints:
 <ul>
 ${
-  Object.keys(endpointsObject)
+  getEndpointNames()
   .map(endpointName => {
     const endpointURL = getUrlBase()+endpointName;
     return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
