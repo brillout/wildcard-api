@@ -1,6 +1,6 @@
 {
   "name": "wildcard-api",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "main": "./server",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
