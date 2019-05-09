@@ -96,25 +96,30 @@ then Wildcard offers a very simple way.
 
  - Usage
    - [Installation & Setup](#installation--setup)
-   - [Permission](#permission)
+   - [Authentication](#authentication)
+   - [Authorization](#authorization)
+   - [Network Errors](#network-errors)
    - [SSR](#ssr)
- - [Going Deeper](#going-deeper)
+ - [Going Deep](#going-deep)
 
 <br/>
 
-## Installation & Setup
 
 
+### Installation & Setup
 
+1. Install Wildcard
 
-1. Install
+   ~~~js
+   $ npm install wildcard-api
+   ~~~
 
-2. Add Wildcard to your Node.js server.
+   And add Wildcard to your Node.js server.
 
    With Express:
    ~~~js
    const express = require('express');
-   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const {getApiResponse} = require('wildcard-api');
 
    const app = express();
 
@@ -226,8 +231,217 @@ then Wildcard offers a very simple way.
 > If you want to play around with Wildcard, you can use
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
-!INLINE ./snippets/intro-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md --hide-source-path
 
+
+
+### Authentication
+
+Any object `anObject` you pass to `getApiResponse(anObject)`
+is made available to your endpoint functions as `this`.
+(I.e. `this===anObject`.)
+That way,
+you can pass any request information to your endpoint functions,
+such as HTTP headers.
+
+For example, when using Express, you can pass express's `req` object:
+
+~~~js
+const {getApiResponse} = require('wildcard-api');
+
+async (req, res, next) => {
+  // We pass `req` to `getApiResponse` to make it available to our
+  // endpoint functions
+  const apiResponse = await getApiResponse(req);
+  // ...
+});
+~~~
+
+Your endpoint functions will then be able to access the HTTP headers:
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const getUserFromSessionCookie = require('./path/to/your/session/logic');
+
+endpoints.getLoggedUserInfo = async function() {
+  // Since `this===req`, `req.headers` is available as `this.headers`
+  const user = await getUserFromSessionCookie(this.headers.cookie);
+  return user;
+};
+~~~
+
+Or when using Express with [Passport](https://github.com/jaredhanson/passport):
+
+~~~js
+const {endpoints} = require('wildcard-api');
+
+endpoints.getLoggedUserInfo = async function() {
+  // When using Passport, `req.user` holds information about the logged-in user.
+  // Since `this===req`, `req.user` is available as `this.user`.
+  return this.user;
+};
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+
+
+### Authorization
+
+Permissions are defined by code. For example:
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const getLoggedUser = require('./path/to/your/auth/code');
+const db = require('./path/to/your/db/handler');
+
+endpoints.updateTodoText = async function(todoId, newText) {
+  if( !user ) {
+    // Not logged in user are not authorized to change a to-do item.
+    // We abort.
+    return;
+  }
+
+  const todo = await db.getTodo(todoId);
+
+  if( !todo ) {
+    // `todoId` didn't match any todo.
+    // We abort.
+  }
+
+  if( todo.authorId !== user.id ) {
+    // Only the author of the to-do item is allowed to modify it.
+    // We abort.
+    return;
+  }
+
+  // The user is authorized.
+  // We commit the new to-do text.
+  await db.updateTodoText(todoId, newText);
+};
+~~~
+
+See the full todo list app example for further permission examples.
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+
+
+### Network Errors
+
+Wildcard uses the Fetch API
+and doesn't catch any error thrown by `fetch()`,
+allowing you to handle network errors as you wish.
+
+You can also use [Handli](https://github.com/brillout/handli):
+
+~~~js
+import 'handli';
+/* Or:
+require('handli')`;
+*/
+
+// That's it: Handli automatically installs itslef with Wildcard.
+// Wildcard will now use Handli for network errors.
+~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+
+
+### SSR
+
+The Wildcard client is universal and works on both the browser and Node.js.
+
+SSR works out of the box.
+
+But with one exception:
+if your endpoint functions need request information,
+then you'll need to `bind()` the request object.
+
+Most notably when you have authentication/authorization, then you'll need to `bind()`.
+
+For example:
+
+~~~js
+// Node.js
+
+const {endpoints} = require('wildcard-api');
+const getLoggedUser = require('./path/to/your/auth/code');
+
+endpoints.whoAmI = async function() {
+  // This endpoint requires the HTTP headers
+  const user = await getLoggedUser(this.headers.cookie);
+  return 'You are '+user.name;
+};
+~~~
+
+The `whoAmI` endpoint always
+(when the Wildcard client runs in the browser as well as when the Wildcard client runs in Node.js)
+needs the HTTP headers.
+
+We need to provide that request information while doing SSR:
+
+~~~js
+// Browser + Node.js
+
+const {endpoints} = require('wildcard-api/client');
+
+// `req` should be the HTTP request object. (Provided by your server framework.)
+module.exports = async req => {
+  let {whoAmI} = endpoints;
+
+  if( isNodejs() ) {
+    // We use `Function.prototype.bind()` to pass the
+    // request object `req` to our endpoint `whoAmI`.
+    whoAmI = whoAmI.bind(req);
+  }
+
+  const userName = await whoAmI();
+};
+
+function isNodejs() {
+  return typeof window === "undefined";
+}
+~~~
+
+That way, `whoAmI` always has access to the request object `req`:
+when run in the browswer,
+`req` originates from `getApiResponse`,
+and when run in Node.js,
+`req` originates from our `bind` call above.
+Our endpoint function can now always as `this`.
+The request object `req` is then always available to `whoAmI` as `this`.
+
+(When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
+But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
+That's why you need to `bind()` the request object.)
+
+> You can scaffold an app that has SSR + Wildcard by using
+> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+
+!INLINE ./snippets/section-footer.md --hide-source-path
+
+
+
+### Going Deep
+
+This readme covers 95% of the use cases.
+But a mature tool also covers the 5% edge cases.
+
+This section collects further information about Wildcard.
+
+ - [How does it work](how)
+   Explains how Wildcard works.
+
+ - [Conceptual FAQ]()
+   Theoritical
+
+ - [Use Cases]()
+   The rule of thumb is simple:.
+   But there are some edge cases where things get tricker
+
+!INLINE ./snippets/section-footer.md --hide-source-path
 
 
 
@@ -245,7 +459,6 @@ then Wildcard offers a very simple way.
 - [What about authentication? Where are the HTTP headers?](#what-about-authentication-where-are-the-http-headers)
 - [What about permission?](#what-about-permission)
 - [How does it work?](#how-does-it-work)
-- [What happens upon network errors?](#what-happens-upon-network-errors)
 - [Does the Wildcard client work in Node.js?](#does-the-wildcard-client-work-in-nodejs)
 - [Does it work with SSR?](#does-it-work-with-ssr)
 
@@ -395,55 +608,6 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
-### What about authentication? Where are the HTTP headers?
-
-Any object `anObject` you pass to `getApiResponse(anObject)`
-is made available to your endpoint functions as `this`.
-(I.e. `this===anObject`.)
-That way,
-you can pass any request information to your endpoint functions,
-such as HTTP headers.
-
-For example, when using Express, you can pass express's `req` object:
-
-~~~js
-const {getApiResponse} = require('wildcard-api');
-
-async (req, res, next) => {
-  // We pass `req` to `getApiResponse` to make it available to our
-  // endpoint functions
-  const apiResponse = await getApiResponse(req);
-  // ...
-});
-~~~
-
-Your endpoint functions will then be able to access the HTTP headers:
-
-~~~js
-const {endpoints} = require('wildcard-api');
-const getUserFromSessionCookie = require('./path/to/your/session/logic');
-
-endpoints.getLoggedUserInfo = async function() {
-  // Since `this===req`, `req.headers` is available as `this.headers`
-  const user = await getUserFromSessionCookie(this.headers.cookie);
-  return user;
-};
-~~~
-
-Or when using Express with [Passport](https://github.com/jaredhanson/passport):
-
-~~~js
-const {endpoints} = require('wildcard-api');
-
-endpoints.getLoggedUserInfo = async function() {
-  // When using Passport, `req.user` holds information about the logged-in user.
-  // Since `this===req`, `req.user` is available as `this.user`.
-  return this.user;
-};
-~~~
-
-!INLINE ./snippets/faq-section-footer.md --hide-source-path
-
 ### What about permission?
 
 Permission is specifided by code.
@@ -513,26 +677,6 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser the 
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
 
-### What happens upon network errors?
-
-Wildcard uses the Fetch API
-and doesn't catch errors thrown by `fetch()`,
-allowing you to handle network errors as you wish.
-
-You can also load
-[Handli](https://github.com/brillout/handli)...
-
-~~~js
-import 'handli';
-/* Or:
-require('handli')`;
-*/
-~~~
-
-...and Wildcard will automatically use Handli to handle network errors.
-
-!INLINE ./snippets/faq-section-footer.md --hide-source-path
-
 ### Does the Wildcard client work in Node.js?
 
 Yes.
@@ -544,68 +688,6 @@ Otherwise the Wildcard client makes an HTTP request
 (like when run in the browser).
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
-
-### Does it work with SSR?
-
-Yes.
-
-But if one of your endpoint functions needs request information, for example:
-
-~~~js
-// Node.js
-
-const {endpoints} = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
-
-endpoints.whoAmI = async function() {
-  // This endpoint requires the HTTP headers
-  const user = await getLoggedUser(this.headers.cookie);
-  return 'You are '+user.name;
-};
-~~~
-
-Then you need to provide that request information while doing SSR:
-
-~~~js
-// Browser + Node.js
-
-const {endpoints} = require('wildcard-api/client');
-
-// `req` should be the HTTP request object. (Provided by your server framework.)
-module.exports = async req => {
-  let {whoAmI} = endpoints;
-
-  if( isNodejs() ) {
-    // We use `Function.prototype.bind()` to make the
-    // request object `req` available to our endpoint function `whoAmI`.
-    whoAmI = whoAmI.bind(req);
-  }
-
-  const userName = await whoAmI();
-};
-
-function isNodejs() {
-  return typeof window === "undefined";
-}
-~~~
-
-That way, `whoAmI` always has access to the request object `req`:
-when run in the browswer,
-`req` originates from `getApiResponse`,
-and when run in Node.js,
-`req` originates from our `bind` call above.
-Our endpoint function can now always as `this`.
-The request object `req` is then always available to `whoAmI` as `this`.
-
-(When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
-But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
-That's why you need to `bind()` the request object.)
-
-If your endpoint functions don't need any request information,
-then you don't need to `bind()` the request object.
-
-> You can scaffold an app that has SSR + Wildcard by using
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
 
 
 !INLINE ./snippets/faq-section-footer.md --hide-source-path
