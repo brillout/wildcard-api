@@ -1,85 +1,4 @@
-<!---
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
--->
-<p align="center">
-  <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
-  </a>
-</p>
+!INLINE ./header.md --hide-source-path
 &nbsp;
 
 
@@ -107,9 +26,7 @@ an API that fulfills the data requirements of your clients and your clients only
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
+!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
 
 
 
@@ -163,9 +80,7 @@ Unfortunately,
 GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
+!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
 
 
 
@@ -184,9 +99,7 @@ then don't use Wildcard.
 But beaware that it's less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
+!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
 
 
 
@@ -248,87 +161,7 @@ But sadly,
 their success is casting a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
+!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
 
 
 
-
-<!---
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
-
-
-
-
-
-
-    WARNING, READ THIS.
-    This is a computed file. Do not edit.
-    Edit `/docs/conceptual-faq.template.md` instead.
-
-
-
-
-
-
--->

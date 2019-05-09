@@ -2,7 +2,6 @@
 !MENU_LINK /example/
 !OUTPUT ../example/readme.md
 !INLINE ./header.md --hide-source-path
-!MENU
 
 A (simplistic) todo app built with:
  - React

@@ -556,7 +556,7 @@ require('wildcard-api').onEndpointCall = ({
     overwriteResponse({
       statusCode: 500,
       type: 'text/html',
-      body: "<html><body><b>There was an internal error. We have been notified. Try again.</b><body><html/>",
+      body: "<html><body><b>There was an internal error. We have been notified.</b><body><html/>",
     });
   }
 };
