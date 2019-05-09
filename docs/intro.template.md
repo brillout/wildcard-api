@@ -323,7 +323,7 @@ endpoints.updateTodoText = async function(todoId, newText) {
 };
 ~~~
 
-See the full todo list app example for further permission examples.
+See the [to-do list app example](/example/) for further permission examples.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
@@ -428,7 +428,51 @@ That's why you need to `bind()` the request object.)
 
 ### `onEndpointCall`
 
-TODO
+The `require('wildcard-api').onEndpointCall` hook allows you to intercept and listen to all endpoint calls.
+
+To do things such as logging or error handling:
+
+~~~js
+require('wildcard-api').onEndpointCall = ({
+  // The HTTP request object
+  req,
+
+  // The name of the endpoint that has been called
+  endpointName,
+
+  // The arguments passed to the endpoint
+  endpointArgs,
+
+  // The error thrown by the endpoint function, if any
+  endpointError,
+
+  // The value returned by the endpoint function
+  endpointResult,
+
+  // Overwrite the value returned by the endpoint function
+  overwriteResult,
+
+  // Overwrite the HTTP response of the endpoint
+  overwriteResponse,
+}) => {
+  // For example, logging:
+  console.log('New call to '+endpointName+' from User Agent '+req.headers['user-agent']);
+
+  // Another example:
+  overwriteResult({message: 'this is an overwriting message'});
+
+  // Or if you want to custom handle server errors:
+  if( endpointError ) {
+    overwriteResponse({
+      statusCode: 500,
+      type: 'text/html',
+      body: "<html><body><b>There was an internal error. We have been notified. Try again.</b><body><html/>",
+    });
+  }
+};
+~~~
+
+See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more examples.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
@@ -439,12 +483,15 @@ TODO
 This section collects further information about Wildcard.
 
  - [How does it work](/docs/how-does-it-work.md)
+   <br/>
    Explains how Wildcard works.
 
  - [Conceptual FAQ](/docs/conceptual-faq.md)
+   <br/>
    High level discussion about Wildcard, RPC-like APIs, GraphQL, and REST.
 
  - [Custom VS Generic](/docs/custom-vs-generic.md)
+   <br/>
    Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
    (Or both.)
    In general, the rule of thumb for deciding which one to use is simple:
@@ -452,6 +499,10 @@ This section collects further information about Wildcard.
    then implement a generic API,
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
+
+ - [To-do List Example](/example/)
+   <br/>
+   An example of a to-do list app implemented with Wildcard.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 

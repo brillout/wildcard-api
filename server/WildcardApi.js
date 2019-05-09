@@ -289,6 +289,7 @@ function WildcardApi(options={}) {
     }
 
     const resultObject = {
+      req: reqObject,
       endpointName,
       endpointArgs,
       endpointError,
