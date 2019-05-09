@@ -28,13 +28,15 @@ import {endpoints} from 'wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Alice');
-  console.log(message); // Prints `Hi Alice`
+  const {message} = await endpoints.hello('Daenerys');
+  console.log(message); // Prints `Hi Daenerys`
 })();
 ~~~
 
 That's all Wildcard does:
-it makes functions defined on the server "callable" in the browser.
+it makes functions,
+that are defined on the server,
+"callable" in the browser.
 Nothing more, nothing less.
 
 How you retrieve/mutate data is up to you;
@@ -67,27 +69,47 @@ endpoints.createTodo = async function(text) {
 
 ###### Wildcard VS REST/GraphQL
 
-REST and GraphQL are tools to create a *generic API*:
-an API that can fulfill a broad range of data requirements.
-A generic API allows all kinds of third-party clients to be built on top of your data.
+**REST** and **GraphQL** are tools to create a **_generic API_**:
+your data can be retrieved and mutated in all kinds of ways.
+The more data is retrievable/mutable, the better.
+So that third parties can build all kinds of apps on top of your data.
 
-Wildcard is a tool to create a *custom API*:
-an API that only fulfills the data requirements of your clients.
-A custom API is meant to be consumed by your clients
-and your clients only.
+**Wildcard** is a tool to create a **_custom API_**:
+your data is retrieved and mutated by you and you only.
+For example when your data is accessed only from your React/Vue frontend.
 
-We compare further in the FAQ.
+So:
+if you want to expose your data to the world,
+then use REST/GraphQL,
+but if you merely want to access your data from your browser frontend,
+then use Wildcard.
+
+Wildcard is vastly simpler than REST/GraphQL:
+all you need to know is written in this readme.
+
+If you are a startup and
+you want to quickly ship/evolve your product,
+then Wildcard offers a very simple way.
+(Wildcard is actually used by many startups.)
 
 #### Contents
 
- - [Usage](#usage)
- - [FAQ](#faq)
+ - Usage
+   - [Installation & Setup](#installation--setup)
+   - [Permission](#permission)
+   - [SSR](#ssr)
+ - [Going Deeper](#going-deeper)
 
 <br/>
 
-## Usage
+## Installation & Setup
 
-1. Add Wildcard to your Node.js server.
+
+
+
+1. Install
+
+2. Add Wildcard to your Node.js server.
 
    With Express:
    ~~~js
@@ -201,7 +223,7 @@ We compare further in the FAQ.
    })();
    ~~~
 
-> If you want to poke around with Wildcard, you can use
+> If you want to play around with Wildcard, you can use
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
 !INLINE ./snippets/intro-section-footer.md --hide-source-path
@@ -527,9 +549,11 @@ Otherwise the Wildcard client makes an HTTP request
 
 Yes.
 
-But if an endpoint function needs request information, such as:
+But if one of your endpoint functions needs request information, for example:
 
 ~~~js
+// Node.js
+
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 
@@ -540,9 +564,11 @@ endpoints.whoAmI = async function() {
 };
 ~~~
 
-Then you need to provide the request object while doing SSR:
+Then you need to provide that request information while doing SSR:
 
 ~~~js
+// Browser + Node.js
+
 const {endpoints} = require('wildcard-api/client');
 
 // `req` should be the HTTP request object. (Provided by your server framework.)
@@ -551,7 +577,7 @@ module.exports = async req => {
 
   if( isNodejs() ) {
     // We use `Function.prototype.bind()` to make the
-    // request object `req` available while doing SSR.
+    // request object `req` available to our endpoint function `whoAmI`.
     whoAmI = whoAmI.bind(req);
   }
 
@@ -563,11 +589,13 @@ function isNodejs() {
 }
 ~~~
 
-That way `whoAmI` always has access to the request object `req` over `this`:
+That way, `whoAmI` always has access to the request object `req`:
 when run in the browswer,
-`this`/`req` originates from `getApiResponse`,
+`req` originates from `getApiResponse`,
 and when run in Node.js,
-`this`/`req` originates from our `bind` call above.
+`req` originates from our `bind` call above.
+Our endpoint function can now always as `this`.
+The request object `req` is then always available to `whoAmI` as `this`.
 
 (When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
 But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
