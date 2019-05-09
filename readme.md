@@ -574,15 +574,15 @@ See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more exampl
 
 This section collects further information about Wildcard.
 
- - [How does it work](/docs/how-does-it-work.md)
+ - [How does it work](/docs/how-does-it-work.md#readme)
    <br/>
    Explains how Wildcard works.
 
- - [Conceptual FAQ](/docs/conceptual-faq.md)
+ - [Conceptual FAQ](/docs/conceptual-faq.md#readme)
    <br/>
    High level discussion about Wildcard, RPC-like APIs, GraphQL, and REST.
 
- - [Custom VS Generic](/docs/custom-vs-generic.md)
+ - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
    <br/>
    Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
    (Or both.)
@@ -592,7 +592,7 @@ This section collects further information about Wildcard.
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
 
- - [To-do List Example](/example/)
+ - [To-do List Example](/example#readme)
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
