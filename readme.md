@@ -162,7 +162,7 @@ endpoints.createTodo = async function(text) {
 };
 ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -192,7 +192,7 @@ you want to quickly ship/evolve your product,
 then we believe that Wildcard is the way go.
 (Wildcard is actually already used by couple of startups.)
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -316,7 +316,7 @@ then we believe that Wildcard is the way go.
 > If you want to play around with Wildcard, you can use
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -363,7 +363,7 @@ is made available to your endpoint functions as `this`.
 That way,
 you can make whatever you want available to your endpoint functions.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -406,7 +406,7 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 See the [to-do list app example](/example/) for further permission examples.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -430,7 +430,7 @@ require('handli')`;
 // Wildcard will now use Handli for network errors.
 ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -444,7 +444,7 @@ If you don't need Authentication, then SSR works out of the box.
 
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -501,7 +501,7 @@ wildcardApi.onEndpointCall = ({
 
 See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more examples.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 
@@ -537,7 +537,7 @@ This section collects further information about Wildcard.
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
 

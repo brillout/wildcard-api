@@ -1,3 +1,3 @@
-!INLINE ./top-link.md #contents --hide-source-path
+!INLINE ./top-link.md #readme --hide-source-path
 <br/>
 <br/>
