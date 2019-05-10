@@ -107,7 +107,7 @@ all you need to know is written in this readme.
 If you are a startup and
 you want to quickly ship/evolve your product,
 then Wildcard offers a very simple way.
-(Wildcard is actually used by many startups.)
+(Wildcard is actually used by couple of startups.)
 
 
 
