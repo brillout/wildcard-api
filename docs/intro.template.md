@@ -3,13 +3,12 @@
 !OUTPUT ../readme.md
 !INLINE ./header.md --hide-source-path
 
+<p align="center">Easy API for Node.js <-> Browser</p>
+
 <br/>
 
-JavaScript library to create an API between your Node.js server and your browser frontend.
-
-#### Contents
-
  - [What is Wildcard?](#what-is-wildcard)
+ - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
  - Usage
    - [Installation & Setup](#installation--setup)
    - [Authentication](#authentication)
@@ -17,12 +16,13 @@ JavaScript library to create an API between your Node.js server and your browser
    - [Network Errors](#network-errors)
    - [SSR](#ssr)
    - [`onEndpointCall`](#onEndpointCall)
- - [More](#more)
+ - [More Resources](#more-resources)
 
 <br/>
 
-
 ### What is Wildcard?
+
+Wildcard is a JavaScript library to create an API between your Node.js server and your browser frontend.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -84,16 +84,20 @@ endpoints.createTodo = async function(text) {
 };
 ~~~
 
-###### Wildcard VS REST/GraphQL
+!INLINE ./snippets/section-footer.md --hide-source-path
 
-**REST** and **GraphQL** are tools to create a **_generic API_**:
+
+
+### Wildcard VS REST/GraphQL
+
+*REST and GraphQL are tools to create a _generic API_**:
 your data can be retrieved and mutated in all kinds of ways.
 The more data is retrievable/mutable, the better.
 So that third parties can build all kinds of apps on top of your data.
 
-**Wildcard** is a tool to create a **_custom API_**:
+**Wildcard is a tool to create a _custom API_**:
 your data is retrieved and mutated by you and you only.
-For example when your data is accessed only from your React/Vue frontend.
+For example if your data is only accessed from your React/Vue frontend.
 
 So:
 if you want to expose your data to the world,
@@ -108,8 +112,6 @@ If you are a startup and
 you want to quickly ship/evolve your product,
 then Wildcard offers a very simple way.
 (Wildcard is actually used by couple of startups.)
-
-
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
@@ -239,27 +241,27 @@ then Wildcard offers a very simple way.
 
 ### Authentication
 
-Any object `anObject` you pass to `getApiResponse(anObject)`
-is made available to your endpoint functions as `this`.
-(I.e. `this===anObject`.)
-That way,
-you can pass any request information to your endpoint functions,
-such as HTTP headers.
+To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
 
-For example, when using Express, you can pass express's `req` object:
+For that you pass the request object `req` to `getApiResponse(req)`:
+This request object `req` is provided by your server framework (express/koa/hapi)
+and holds information about the HTTP request such as the HTTP headers.
 
-~~~js
-const {getApiResponse} = require('wildcard-api');
+For example with Express:
 
-async (req, res) => {
-  // We pass `req` to `getApiResponse` to make it available to our
-  // endpoint functions
-  const apiResponse = await getApiResponse(req);
-  // ...
-});
+ ~~~js
+ app.all('/wildcard/*' , async (req, res) => {
+   // We pass `req` to getApiResponse
+   const {body, statusCode, type} = await getApiResponse(req);
+   res.status(statusCode);
+   res.type(type);
+   res.send(body);
+ });
 ~~~
 
-Your endpoint functions will then be able to access the HTTP headers:
+Wildcard then makes `req` available to your endpoint function as `this`.
+
+For example:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
@@ -272,17 +274,11 @@ endpoints.getLoggedUserInfo = async function() {
 };
 ~~~
 
-Or when using Express with [Passport](https://github.com/jaredhanson/passport):
-
-~~~js
-const {endpoints} = require('wildcard-api');
-
-endpoints.getLoggedUserInfo = async function() {
-  // When using Passport, `req.user` holds information about the logged-in user.
-  // Since `this===req`, `req.user` is available as `this.user`.
-  return this.user;
-};
-~~~
+In general, any object `anObject` you pass to `getApiResponse(anObject)`
+is made available to your endpoint functions as `this`.
+(I.e. `this===anObject`.)
+That way,
+you can make whatever you want available to your endpoint functions.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
@@ -433,7 +429,9 @@ The `require('wildcard-api').onEndpointCall` hook allows you to intercept and li
 To do things such as logging or error handling:
 
 ~~~js
-require('wildcard-api').onEndpointCall = ({
+const wildcardApi = require('wildcard-api');
+
+wildcardApi.onEndpointCall = ({
   // The HTTP request object
   req,
 
@@ -478,7 +476,7 @@ See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more exampl
 
 
 
-### More
+### More Resources
 
 This section collects further information about Wildcard.
 
