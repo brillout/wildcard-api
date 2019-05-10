@@ -97,12 +97,12 @@ So that third parties can build all kinds of apps on top of your data.
 
 **Wildcard is a tool to create a _custom API_**:
 your data is retrieved/mutated by you and you only.
-For example if your data is only accessed from your React/Vue/Angular frontend.
+For example if your data is only retrieved/mutated by your React/Vue/Angular frontend.
 
 If you want third parties to be able to retrive/mutate your data,
 use REST/GraphQL.
 But,
-if all you want to do is to access your data from your React/Vue/Angular frontend,
+if all you want to do is to retrieve/mutate your data from your React/Vue/Angular frontend,
 then Wildcard offers an alternative
 that is vastly simpler:
 all you need to know to use Wildcard is written in this readme.
@@ -350,72 +350,9 @@ require('handli')`;
 
 The Wildcard client is universal and works on both the browser and Node.js.
 
-SSR works out of the box.
+If you don't need Authentication, then SSR works out of the box.
 
-But with one exception:
-if your endpoint functions need request information,
-then you'll need to `bind()` the request object.
-
-Most notably when you have authentication/authorization, then you'll need to `bind()`.
-
-For example:
-
-~~~js
-// Node.js
-
-const {endpoints} = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
-
-endpoints.whoAmI = async function() {
-  // This endpoint requires the HTTP headers
-  const user = await getLoggedUser(this.headers.cookie);
-  return 'You are '+user.name;
-};
-~~~
-
-The `whoAmI` endpoint always
-(when the Wildcard client runs in the browser as well as when the Wildcard client runs in Node.js)
-needs the HTTP headers.
-
-We need to provide that request information while doing SSR:
-
-~~~js
-// Browser + Node.js
-
-const {endpoints} = require('wildcard-api/client');
-
-// `req` should be the HTTP request object. (Provided by your server framework.)
-module.exports = async req => {
-  let {whoAmI} = endpoints;
-
-  if( isNodejs() ) {
-    // We use `Function.prototype.bind()` to pass the
-    // request object `req` to our endpoint `whoAmI`.
-    whoAmI = whoAmI.bind(req);
-  }
-
-  const userName = await whoAmI();
-};
-
-function isNodejs() {
-  return typeof window === "undefined";
-}
-~~~
-
-That way, `whoAmI` always has access to the request object `req`:
-when run in the browswer,
-`req` originates from `getApiResponse`,
-and when run in Node.js,
-`req` originates from our `bind` call above.
-Our endpoint function can now always as `this`.
-The request object `req` is then always available to `whoAmI` as `this`.
-
-(When used in the browser, the Wildcard client makes an HTTP request to your server which calls `getApiResponse`.
-But when used in Node.js, the Wildcard client directly calls your endpoint function, without doing any HTTP request.
-That's why you need to `bind()` the request object.)
-
-> You can scaffold an app that has SSR + Wildcard by using
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
+If you need Authentication, then read [SSR & Authentication](/doc/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
@@ -425,7 +362,8 @@ That's why you need to `bind()` the request object.)
 
 The `require('wildcard-api').onEndpointCall` hook allows you to intercept and listen to all endpoint calls.
 
-To do things such as logging or error handling:
+This gives you full control.
+To do things such as logging or custom error handling:
 
 ~~~js
 const wildcardApi = require('wildcard-api');
@@ -455,7 +393,7 @@ wildcardApi.onEndpointCall = ({
   // For example, logging:
   console.log('New call to '+endpointName+' from User Agent '+req.headers['user-agent']);
 
-  // Another example:
+  // If you want to overwrite the endpoint result:
   overwriteResult({message: 'this is an overwriting message'});
 
   // Or if you want to custom handle server errors:
@@ -478,6 +416,10 @@ See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more exampl
 ### More Resources
 
 This section collects further information about Wildcard.
+
+ - [SSR & Authentication](/doc/ssr-auth.md#readme)
+   <br/>
+   How to use Wildcard with SSR and Authentication.
 
  - [How does it work](/docs/how-does-it-work.md#readme)
    <br/>
