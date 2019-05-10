@@ -523,6 +523,10 @@ This section collects further information about Wildcard.
    <br/>
    High level discussion about Wildcard, RPC-like APIs, GraphQL, and REST.
 
+ - [To-do List Example](/example#readme)
+   <br/>
+   An example of a to-do list app implemented with Wildcard.
+
  - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
    <br/>
    Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
@@ -532,10 +536,6 @@ This section collects further information about Wildcard.
    then implement a generic API,
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
-
- - [To-do List Example](/example#readme)
-   <br/>
-   An example of a to-do list app implemented with Wildcard.
 
 <b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
