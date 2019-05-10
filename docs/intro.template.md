@@ -57,12 +57,12 @@ that are defined on the server,
 Nothing more, nothing less.
 
 How you retrieve/mutate data is up to you;
-you can use any NoSQL/SQL/ORM query:
+you can use any SQL/NoSQL/ORM query:
 
 ~~~js
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
-const Todo = require('./path/to/your/data/models/Todo');
+const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodo = async function(text) {
   const user = await getLoggedUser(this.headers); // We explain `this.headers` later
@@ -90,28 +90,27 @@ endpoints.createTodo = async function(text) {
 
 ### Wildcard VS REST/GraphQL
 
-*REST and GraphQL are tools to create a _generic API_**:
-your data can be retrieved and mutated in all kinds of ways.
+**REST and GraphQL are tools to create a _generic API_**:
+your data can be retrieved/mutated in all kinds of ways.
 The more data is retrievable/mutable, the better.
 So that third parties can build all kinds of apps on top of your data.
 
 **Wildcard is a tool to create a _custom API_**:
-your data is retrieved and mutated by you and you only.
-For example if your data is only accessed from your React/Vue frontend.
+your data is retrieved/mutated by you and you only.
+For example if your data is only accessed from your React/Vue/Angular frontend.
 
-So:
-if you want to expose your data to the world,
-then use REST/GraphQL,
-but if you merely want to access your data from your browser frontend,
-then use Wildcard.
-
-Wildcard is vastly simpler than REST/GraphQL:
-all you need to know is written in this readme.
+If you want third parties to be able to retrive/mutate your data,
+use REST/GraphQL.
+But,
+if all you want to do is to access your data from your React/Vue/Angular frontend,
+then Wildcard offers an alternative
+that is vastly simpler:
+all you need to know to use Wildcard is written in this readme.
 
 If you are a startup and
 you want to quickly ship/evolve your product,
-then Wildcard offers a very simple way.
-(Wildcard is actually used by couple of startups.)
+then we believe that Wildcard is the way go.
+(Wildcard is actually already used by couple of startups.)
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
