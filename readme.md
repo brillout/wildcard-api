@@ -442,7 +442,7 @@ The Wildcard client is universal and works on both the browser and Node.js.
 
 If you don't need Authentication, then SSR works out of the box.
 
-If you need Authentication, then read [SSR & Authentication](/doc/ssr-auth.md#readme).
+If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 <b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -511,7 +511,7 @@ See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more exampl
 
 This section collects further information about Wildcard.
 
- - [SSR & Authentication](/doc/ssr-auth.md#readme)
+ - [SSR & Authentication](/docs/ssr-auth.md#readme)
    <br/>
    How to use Wildcard with SSR and Authentication.
 
