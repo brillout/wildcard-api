@@ -81,6 +81,10 @@
   </a>
 </p>
 
+<p align="center">Easy API for Node.js <-> Browser</p>
+
+<br/>
+
 A (simplistic) todo app built with:
  - React
  - Wildcard API

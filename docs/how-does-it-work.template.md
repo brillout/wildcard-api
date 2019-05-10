@@ -1,7 +1,7 @@
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-# How does it work?
+# How does it work
 
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the following happens:
 

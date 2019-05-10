@@ -80,9 +80,11 @@
     <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
+
+<p align="center">Easy API for Node.js <-> Browser</p>
 &nbsp;
 
-# How does it work?
+# How does it work
 
 When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the following happens:
 

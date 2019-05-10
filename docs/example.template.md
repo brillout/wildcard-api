@@ -3,6 +3,8 @@
 !OUTPUT ../example/readme.md
 !INLINE ./header.md --hide-source-path
 
+<br/>
+
 A (simplistic) todo app built with:
  - React
  - Wildcard API

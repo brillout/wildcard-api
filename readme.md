@@ -85,7 +85,7 @@
 
 <br/>
 
- - [What is Wildcard?](#what-is-wildcard)
+ - [What is Wildcard](#what-is-wildcard)
  - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
  - Usage
    - [Installation & Setup](#installation--setup)
@@ -98,7 +98,7 @@
 
 <br/>
 
-### What is Wildcard?
+### What is Wildcard
 
 Wildcard is a JavaScript library to create an API between your Node.js server and your browser frontend.
 
@@ -177,7 +177,7 @@ So that third parties can build all kinds of apps on top of your data.
 
 **Wildcard is a tool to create a _custom API_**:
 your data is retrieved/mutated by you and you only.
-For example if your data is only retrieved/mutated by your React/Vue/Angular frontend.
+For example when your data is only retrieved/mutated by your React/Vue/Angular frontend.
 
 If you want third parties to be able to retrive/mutate your data,
 use REST/GraphQL.
@@ -185,11 +185,11 @@ But,
 if all you want to do is to retrieve/mutate your data from your React/Vue/Angular frontend,
 then Wildcard offers an alternative
 that is vastly simpler:
-all you need to know to use Wildcard is written in this readme.
+all you need to know is written in this readme.
 
 If you are a startup and
 you want to quickly ship/evolve your product,
-then we believe that Wildcard is the way go.
+then we believe that Wildcard to be the way go.
 (Wildcard is actually already used by couple of startups.)
 
 <b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
@@ -281,7 +281,7 @@ then we believe that Wildcard is the way go.
 
 2. Define functions
    in Node.js on
-   `require('wildcard-api').endpoints` in Node.js.
+   `require('wildcard-api').endpoints`.
 
    ~~~js
    // Node.js
