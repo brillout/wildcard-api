@@ -31,7 +31,7 @@ const {endpoints} = require('wildcard-api');
 
 // We define a `hello` function on the server
 endpoints.hello = function(name) {
-  return {message: 'Hi '+name};
+  return {message: 'Welcome '+name};
 };
 ~~~
 
@@ -43,7 +43,7 @@ import {endpoints} from 'wildcard-api/client';
 (async () => {
   // Wildcard makes our `hello` function available in the browser
   const {message} = await endpoints.hello('Daenerys');
-  console.log(message); // Prints `Hi Daenerys`
+  console.log(message); // Prints `Welcome Daenerys`
 })();
 ~~~
 
@@ -93,15 +93,15 @@ All you have to do is to create JavaScript functions
 and all you need to know is written in this little Readme.
 
 If you need third parties to be able to retrieve/mutate your data
-then REST and GraphQL are better suited tools.
-REST and GraphQL have a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
+then REST and GraphQL are better suited.
+A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
 
 But,
-for quickly evolving an application,
-REST/GraphQL's rigid structure gets in a way and is a handicap.
+for quickly evolving your application,
+the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
 Wildcard,
 on the other hand,
-is structureless
+is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
