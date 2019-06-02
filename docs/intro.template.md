@@ -316,7 +316,13 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
-### Network Errors
+### Error Handling
+
+We differentiate between two types of errors:
+ - Networks errors
+ - Server erros
+
+###### Networks errors
 
 Wildcard uses the Fetch API
 and doesn't catch any error thrown by `fetch()`,
@@ -330,9 +336,13 @@ import 'handli';
 require('handli')`;
 */
 
-// That's it: Handli automatically installs itslef with Wildcard.
-// Wildcard will now use Handli for network errors.
+// That's it: Handli automatically installs itslef.
+// All networks errors are now handled by Handli.
 ~~~
+
+###### Server errors
+
+If your endpoint function throw an error then Wildcard will return a `400 Bad Request` HTTP response. Upon server errors (Note that in development), q
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
