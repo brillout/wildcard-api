@@ -4,4 +4,4 @@
   </a>
 </p>
 
-<p align="center">Easy API for Node.js <-> Browser</p>
+<p align="center">Function as an API</p>

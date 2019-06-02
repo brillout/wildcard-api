@@ -8,19 +8,18 @@
  - [What is Wildcard](#what-is-wildcard)
  - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
  - Usage
-   - [Installation & Setup](#installation--setup)
+   - [Getting Started](#getting-started)
    - [Authentication](#authentication)
-   - [Authorization](#authorization)
-   - [Network Errors](#network-errors)
+   - [Permissions](#permissions)
+   - [Error Handling](#error-handling)
    - [SSR](#ssr)
-   - [`onEndpointCall`](#onEndpointCall)
  - [More Resources](#more-resources)
 
 <br/>
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between your Node.js server and your browser frontend.
+Wildcard is a JavaScript library to create an API between your Node.js server and the browser.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -88,33 +87,28 @@ endpoints.createTodo = async function(text) {
 
 ### Wildcard VS REST/GraphQL
 
-**REST and GraphQL are tools to create a _generic API_**:
-your data can be retrieved/mutated in all kinds of ways.
-The more data is retrievable/mutable, the better.
-So that third parties can build all kinds of apps on top of your data.
+If all you need is to retrieve/mutate data from you frontend,
+then Wildcard offers a very easy way.
+All you have to do is to create JavaScript functions
+and all you need to know is written in this little Readme.
 
-**Wildcard is a tool to create a _custom API_**:
-your data is retrieved/mutated by you and you only.
-For example when your data is only retrieved/mutated by your React/Vue/Angular frontend.
+If you need third parties to be able to retrieve/mutate your data
+then REST and GraphQL are better suited tools.
+REST and GraphQL have a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
 
-If you want third parties to be able to retrive/mutate your data,
-use REST/GraphQL.
 But,
-if all you want to do is to retrieve/mutate your data from your React/Vue/Angular frontend,
-then Wildcard offers an alternative
-that is vastly simpler:
-all you need to know is written in this readme.
-
-If you are a startup and
-you want to quickly ship/evolve your product,
-then we believe that Wildcard to be the way go.
-(Wildcard is actually already used by couple of startups.)
+for quickly evolving an application,
+REST/GraphQL's rigid structure gets in a way and is a handicap.
+Wildcard,
+on the other hand,
+is structureless
+which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
 
 
-### Installation & Setup
+### Getting Started
 
 1. Add Wildcard to your Node.js server.
 
@@ -281,7 +275,7 @@ you can make whatever you want available to your endpoint functions.
 
 
 
-### Authorization
+### Permissions
 
 Permissions are defined by code. For example:
 
@@ -351,61 +345,6 @@ The Wildcard client is universal and works on both the browser and Node.js.
 If you don't need Authentication, then SSR works out of the box.
 
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
-
-
-### `onEndpointCall`
-
-The `require('wildcard-api').onEndpointCall` hook allows you to intercept and listen to all endpoint calls.
-
-This gives you full control.
-To do things such as logging or custom error handling:
-
-~~~js
-const wildcardApi = require('wildcard-api');
-
-wildcardApi.onEndpointCall = ({
-  // The HTTP request object
-  req,
-
-  // The name of the endpoint that has been called
-  endpointName,
-
-  // The arguments passed to the endpoint
-  endpointArgs,
-
-  // The error thrown by the endpoint function, if any
-  endpointError,
-
-  // The value returned by the endpoint function
-  endpointResult,
-
-  // Overwrite the value returned by the endpoint function
-  overwriteResult,
-
-  // Overwrite the HTTP response of the endpoint
-  overwriteResponse,
-}) => {
-  // For example, logging:
-  console.log('New call to '+endpointName+' from User Agent '+req.headers['user-agent']);
-
-  // If you want to overwrite the endpoint result:
-  overwriteResult({message: 'this is an overwriting message'});
-
-  // Or if you want to custom handle server errors:
-  if( endpointError ) {
-    overwriteResponse({
-      statusCode: 500,
-      type: 'text/html',
-      body: "<html><body><b>There was an internal error. We have been notified.</b><body><html/>",
-    });
-  }
-};
-~~~
-
-See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more examples.
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
