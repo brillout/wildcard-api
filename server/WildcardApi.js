@@ -1,5 +1,6 @@
 const assert = require('reassert');
 const defaultSerializer = require('json-s');
+const chalk = require('chalk');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -62,6 +63,10 @@ function WildcardApi(options={}) {
 
     if( resultObject.endpointError ) {
       console.error(resultObject.endpointError);
+      console.error('');
+      console.error(chalk.red('Error thrown by endpoint function `'+endpointName+'`.'))+
+      console.error('Error is printed above.');
+      console.error('Your endpoint function `'+endpointName+'` should not throw errors. This error should only because of a bug.');
     }
 
     const {respObject} = resultObject;
@@ -153,33 +158,30 @@ function WildcardApi(options={}) {
     }
 
     if( ! endpointExists(endpointName) ) {
-      const endpointNames = getEndpointNames();
-
-      const noEndpoints = endpointNames.length===0;
-
-      const invalidReason = (
-        noEndpoints ? (
-          "You didn't define any endpoint.\n" +
-          "Did you load your endpoint definitions `require('./path/to/your/endpoint-functions.js')`?"
-        ) : (
-          'Endpoint '+endpointName+" doesn't exist." + (
-            !isDev() ? '' : (
-              '\n\nEndpoints: ' +
-              getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
-              '\n\n(The list of endpoints is only shown in development.)'
-            )
-          )
-        )
-      );
-
-      if( noEndpoints ) {
+      if( noEndpointsDefined() ) {
         console.error(invalidReason);
+        return {
+          isInvalidUrl: true,
+          invalidReason: (
+            "You didn't define any endpoint.\n" +
+            "Did you load your endpoint definitions `require('./path/to/your/endpoint-functions.js')`?"
+          ),
+        };
+      } else {
+        return {
+          isInvalidUrl: true,
+          invalidReason: (
+            'Endpoint '+endpointName+" doesn't exist." + (
+              !isDev() ? '' : (
+                '\n\nEndpoints: ' +
+                getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
+                "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded `require('./path/to/file/defining-"+endpointName+".js')`.)"+
+                '\n\n(The list of endpoints is only shown in development.)'
+              )
+            )
+          ),
+        };
       }
-
-      return {
-        isInvalidUrl: true,
-        invalidReason,
-      };
     }
 
     return {
@@ -219,7 +221,7 @@ function WildcardApi(options={}) {
 
     if( endpointError ) {
       respObject.body = respObject.body || 'Endpoint could not handle request.';
-      respObject.statusCode = respObject.statusCode || 400;
+      respObject.statusCode = respObject.statusCode || 500;
       respObject.type = respObject.type || 'text/plain';
     } else {
       assert.internal(body.constructor===String);
@@ -342,7 +344,10 @@ function WildcardApi(options={}) {
   }
   function getEndpointNames() {
     return Object.keys(endpointsObject);
-  };
+  }
+  function noEndpointsDefined() {
+    return getEndpointNames()===0;
+  }
   function getListOfEndpoints() {
     const htmlBody = `
 Endpoints:
