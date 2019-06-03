@@ -389,7 +389,15 @@ const {endpoints} = require('wildcard-api/client');
 export default updateText;
 
 async function updateText({todoId, text}) {
-  await endpoints.updateTodoText();
+  let ret;
+  try {
+    ret = await endpoints.updateTodoText();
+  } catch(err) {
+    alert("Couldn't connect to the server");
+  }
+  if( ret==='Internal Server Error' ){
+    alert('Something went wrong, sorry... Please try again.');
+  }
 }
 ~~~
 
