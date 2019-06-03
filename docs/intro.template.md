@@ -318,34 +318,47 @@ See the [to-do list app example](/example/) for further permission examples.
 
 ### Error Handling
 
-We differentiate between different types of errors:
- - Networks errors
- - Server errors
- - Validation errors
+In a nutshell, this is what you need to know to handle errors:
+- On the server, your endpoint functions should not throw errors.
+  If one of your endpoint function throws an error, then it should be because of a bug.
+- In the browser, when you call an endpoint function `const ret = await endpoint.myEndpoint()`, there are 3 possible outcomes:
+  - `ret` is the value returned by your `myEndpoint` function.
+  - `ret` is equal to `Internal Server Error`. This happens when your endpoint `myEndpoint` throws an Error.
+  - The Wildcard client throws an Error. This happens when there is a network error
 
-###### Networks errors
-
-Wildcard uses the Fetch API
-and doesn't catch any error thrown by `fetch()`,
-allowing you to handle network errors as you wish.
-
-You can also use [Handli](https://github.com/brillout/handli):
+For example:
 
 ~~~js
-import 'handli';
-/* Or:
-require('handli')`;
-*/
+const {endpoints} = require('wildcard-api/client');
 
-// That's it: Handli automatically installs itslef.
-// All networks errors are now handled by Handli.
+async function() {
+  let ret;
+  try {
+    ret = await endpoints.myEndpoint();
+  } catch(err){
+    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+    return {success: false};
+  }
+  if( ret==='Internal Server Error' ){
+    alert('Something went wrong, sorry... Please try again.');
+    return {success: false};
+  }
+  return {success: true};
+}
 ~~~
+
+We now go into more details
+and for that
+we differentiate between 3 types of errors:
+ - Server errors
+ - Validation errors
+ - Networks errors
 
 ###### Server errors
 
-Your endpoint functions should not throw errors.
-If one of your endpoint function does throw an error, then it should only because of a bug.
-If a library is throwing an expected error, then catch it (and return an object instead).
+Your endpoint functions should not throw expected errors.
+If one of your endpoint function does throw an error, then it should an unexpected error, in other words, a bug.
+Your endpoint functions should catch expected errors (such as validation errors) and return a value instead such as `{validationError: 'Passowrd should be at least 8 characters long.'}`.
 
 ~~~js
 const {endpoints} = require('wildcard-api');
@@ -378,10 +391,9 @@ endpoints.updateTodoText = async function({todoId, text}) {
 ~~~
 
 If your endpoint function has a bug and throws an error,
-then Wildcard returns a `500 Internal Server Error` HTTP response.
-(Since this is the correct HTTP Status Code which is important for tools such as Handli.)
+then Wildcard replies a `500 Internal Server Error` HTTP response.
 
-You can then catch this error on the client side:
+You can then catch this error in the browser:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
@@ -389,32 +401,21 @@ const {endpoints} = require('wildcard-api/client');
 export default updateText;
 
 async function updateText({todoId, text}) {
-  let ret;
-  try {
-    ret = await endpoints.updateTodoText();
-  } catch(err) {
-    alert("Couldn't connect to the server");
-  }
+  const ret = await endpoints.updateTodoText();
   if( ret==='Internal Server Error' ){
     alert('Something went wrong, sorry... Please try again.');
   }
+  /* ... */
 }
 ~~~
 
-Wildcard abstrac
-semantically correct error code
-Which is the right status code.
-There are ways to change that status code but we recommend against doing so.
-Wildcard is about abstracting away HTTP status codes.
-We want you to write JavaScript functions on the server as if they would be defined on the same JavaScript process.
-That said, if you really need to change the HTTP status code then 
-
 ###### Validation errors
 
-If your endpoint function throw an error then Wildcard will return a `400 Bad Request` HTTP response. Upon server errors (Note that in development), q
-
-Validation errors. But Wildcard is about abstracting away 
-With Wildcard, the idiomatic way to do validation is to return an object:
+Your endpoint functions should not throw expected errors.
+Instead of throwing an expection,
+return an object such as
+`{isValid: false, validationErrorMessage: 'Password should have at least 8 characters', validationCode: 'PASSWORD_TOO_SHORT'}`.
+As mentioned in the previou
 
 ~~~js
 const {endpoints} = require('wildcard-api');
@@ -442,12 +443,45 @@ endpoints.submitForm = async function({name, address, phoneNumber}) {
 };
 ~~~
 
-The 
-For validation errors we 
-
-In general, 
-
 !INLINE ./snippets/section-footer.md --hide-source-path
+
+###### Networks errors
+
+When calling a endpoint in the browser and the browser cannot connect to the server,
+an exception is thrown:
+
+~~~js
+// Browser
+
+
+try {
+  await 
+}
+    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+
+~~~
+
+Conve
+This is also the only situation 
+
+
+Wildcard uses the Fetch API
+and doesn't catch any error thrown by `fetch()`.
+
+
+You can also use [Handli](https://github.com/brillout/handli):
+
+~~~js
+import 'handli';
+/* Or:
+require('handli')`;
+*/
+
+// That's it: Handli automatically installs itslef.
+// All networks errors are now handled by Handli.
+~~~
+
+
 
 
 
