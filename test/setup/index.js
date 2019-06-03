@@ -18,11 +18,12 @@ const {symbolSuccess, symbolError} = require('@brillout/cli-theme');
 (async () => {
   await bundle();
 
+  const log_suppressor = new LogSupressor();
+
   const wildcardApiHolder = {};
   const server = await startServer(wildcardApiHolder);
 
   const {browserEval, browser} = await launchBrowser();
-
   for(let {test, file} of getTests()) {
     const wildcardApi = WildcardApi();
 
@@ -32,12 +33,16 @@ const {symbolSuccess, symbolError} = require('@brillout/cli-theme');
 
     const testName = test.name+' ('+file+')';
 
+    log_suppressor.enable();
     try {
       await test({wildcardApi, wildcardClient, browserEval});
     } catch(err) {
+      log_suppressor.flush();
+      log_suppressor.disable();
       console.log(symbolError+'Failed test: '+testName);
       throw err;
     }
+    log_suppressor.disable();
 
     console.log(symbolSuccess+testName);
   }
@@ -63,4 +68,31 @@ function getTests() {
   });
 
   return tests;
+}
+
+function LogSupressor() {
+  let stdout__calls;
+  let stderr__calls;
+
+  let stdout__original;
+  let stderr__original;
+
+  return {enable, disable, flush};
+
+  function enable() {
+    stdout__original = process.stdout.write;
+    stderr__original = process.stderr.write;
+    stdout__calls = [];
+    stderr__calls = [];
+    process.stdout.write = (...args) => {stdout__calls.push(args)};
+    process.stderr.write = (...args) => {stderr__calls.push(args)};
+  }
+  function disable() {
+    process.stdout.write = stdout__original;
+    process.stderr.write = stderr__original;
+  }
+  function flush() {
+    stdout__calls.forEach(args => stdout__original.apply(process.stdout, args));
+    stderr__calls.forEach(args => stderr__original.apply(process.stderr, args));
+  }
 }

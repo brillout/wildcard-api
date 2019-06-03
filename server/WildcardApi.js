@@ -62,11 +62,13 @@ function WildcardApi(options={}) {
     compute_response_object({resultObject, method});
 
     if( resultObject.endpointError ) {
+      console.error('');
       console.error(resultObject.endpointError);
       console.error('');
-      console.error(chalk.red('Error thrown by endpoint function `'+endpointName+'`.'))+
+      console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
       console.error('Error is printed above.');
-      console.error('Your endpoint function `'+endpointName+'` should not throw errors. This error should only because of a bug.');
+      console.error("Your endpoint function `"+endpointName+"` should not throw errors. This error should be a bug. Read Wildcard's \"Error Handling\" Readme section for more infos.");
+      console.error('');
     }
 
     const {respObject} = resultObject;
@@ -220,7 +222,7 @@ function WildcardApi(options={}) {
     }
 
     if( endpointError ) {
-      respObject.body = respObject.body || 'Endpoint could not handle request.';
+      respObject.body = respObject.body || 'Internal Server Error';
       respObject.statusCode = respObject.statusCode || 500;
       respObject.type = respObject.type || 'text/plain';
     } else {
@@ -587,4 +589,8 @@ function getPropString(prop) {
       '.'+prop :
       "['"+prop+"']"
   );
+}
+
+function colorizeError(text) {
+  return chalk.bold.red(text);
 }
