@@ -318,9 +318,10 @@ See the [to-do list app example](/example/) for further permission examples.
 
 ### Error Handling
 
-We differentiate between two types of errors:
+We differentiate between different types of errors:
  - Networks errors
- - Server erros
+ - Server errors
+ - Validation errors
 
 ###### Networks errors
 
@@ -342,7 +343,101 @@ require('handli')`;
 
 ###### Server errors
 
+Your endpoint functions should not throw errors.
+If one of your endpoint function does throw an error, then it should only because of a bug.
+If a library is throwing an expected error, then catch it (and return an object instead).
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const getLoggedUser = require('./path/to/your/auth/code');
+const Todo = require('./path/to/your/data/model/Todo');
+
+endpoints.updateTodoText = async function({todoId, text}) {
+
+  const todo = Todo.get({id: todoId});
+
+  const user = await getLoggedUser(this.headers);
+
+  if( todo.author.id !== user.id ){
+    // Do not throw an exception.
+    // Don't do the following:
+    //  throw Error("Unauthorized: Only the author of the todo is allowed to change a todo");
+
+    // Return an object instead.
+    // For example:
+    return {
+      notAuthorized: true,
+      message: "Only the author of the todo is allowed to change a todo",
+    };
+  }
+
+  todo.update({text});
+
+  return {success: 1};
+};
+~~~
+
+If your endpoint function has a bug and throws an error,
+then Wildcard returns a `500 Internal Server Error` HTTP response.
+(Since this is the correct HTTP Status Code which is important for tools such as Handli.)
+
+You can then catch this error on the client side:
+
+~~~js
+const {endpoints} = require('wildcard-api/client');
+
+export default updateText;
+
+async function updateText({todoId, text}) {
+  await endpoints.updateTodoText();
+}
+~~~
+
+Wildcard abstrac
+semantically correct error code
+Which is the right status code.
+There are ways to change that status code but we recommend against doing so.
+Wildcard is about abstracting away HTTP status codes.
+We want you to write JavaScript functions on the server as if they would be defined on the same JavaScript process.
+That said, if you really need to change the HTTP status code then 
+
+###### Validation errors
+
 If your endpoint function throw an error then Wildcard will return a `400 Bad Request` HTTP response. Upon server errors (Note that in development), q
+
+Validation errors. But Wildcard is about abstracting away 
+With Wildcard, the idiomatic way to do validation is to return an object:
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const isValidAddress = require('./path/to/isValidAddress');
+const isValidPhoneNumber = require('./path/to/isValidPhoneNumber');
+
+endpoints.submitForm = async function({name, address, phoneNumber}) {
+  const validationErrors = {};
+
+  if( !isValidAddress(address) ){
+    validationErrors[address] = "We couldn't find "+address+". Please enter a valid address.";
+  };
+  if( !isValidPhoneNumber(phoneNumber) ){
+    validationErrors[phoneNumber] = 'The phone number must be of the format +1 XXX XXX XXX.';
+  }
+
+  if( validationErrors.length===0 ) {
+    await db.saveNewVisitor({name, address, phoneNumber});
+    result.success = 1;
+  } else {
+    result.validationErrors = validationErrors;
+  }
+
+  return result;
+};
+~~~
+
+The 
+For validation errors we 
+
+In general, 
 
 !INLINE ./snippets/section-footer.md --hide-source-path
 
