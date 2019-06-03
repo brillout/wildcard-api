@@ -9,6 +9,7 @@
     "reassert": "^1.1.16"
   },
   "scripts": {
+    "clean": "git clean -Xdf",
     "docs": "mdocs",
     "test": "node test/"
   },
