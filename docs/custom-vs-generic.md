@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
 
@@ -140,7 +140,7 @@ A custom API works only when developed hand-in-hand with the frontend.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -196,7 +196,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -231,7 +231,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -282,7 +282,7 @@ Combining a generic API with a custom API can be a successfull strategy.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>

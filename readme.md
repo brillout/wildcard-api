@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
 
@@ -164,7 +164,7 @@ endpoints.createTodo = async function(text) {
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -196,7 +196,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -327,7 +327,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -382,7 +382,7 @@ you can make whatever you want available to your endpoint functions.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -433,7 +433,7 @@ See the [to-do list app example](/example/) for further permission examples.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -520,7 +520,7 @@ require('handli')`;
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -543,7 +543,7 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -588,7 +588,7 @@ This section collects further information about Wildcard.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>

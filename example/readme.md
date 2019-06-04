@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
 
@@ -111,7 +111,7 @@ Run the following npm scripts to build and serve the example:
 0. Get the code.
 
    ~~~shell
-   $ git clone git@github.com:brillout/wildcard-api
+   $ git clone git@github.com:reframejs/wildcard-api
    $ cd example/
    ~~~
 
@@ -136,7 +136,7 @@ Run the following npm scripts to build and serve the example:
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -194,7 +194,7 @@ endpoints.getCompletedPageData = async function () {
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -325,7 +325,7 @@ console.log('Server is running. Go to http://localhost:3000')
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -381,7 +381,7 @@ async function getTodo(todoId) {
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -459,7 +459,7 @@ function Todo({todo, updateTodo}) {
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>

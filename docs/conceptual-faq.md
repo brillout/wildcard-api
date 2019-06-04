@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="https://github.com/brillout/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
   </a>
 </p>
 
@@ -112,7 +112,7 @@ then Wildcard offers a simple alternative.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -175,7 +175,7 @@ Let's remember.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -203,7 +203,7 @@ But beaware that it's less trivial than you might think.
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -274,7 +274,7 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 <br/>
 
-[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
 if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
