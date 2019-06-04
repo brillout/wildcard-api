@@ -15,7 +15,7 @@ async function mostBasicUseCase({wildcardApi, browserEval}) {
       {ret},
     );
   });
-};
+}
 
 async function requestObjectIsAvailbe({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = async function(name) {
@@ -31,4 +31,4 @@ async function requestObjectIsAvailbe({wildcardApi, browserEval}) {
       {ret},
     );
   });
-};
+}

@@ -8,7 +8,14 @@ async function launchBrowser() {
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
   await page.goto('http://localhost:3000');
-  const browserEval = page.evaluate.bind(page);
 
-  return {browser, browserEval};
+  return {
+    browser,
+    browserEval,
+  };
+
+  async function browserEval(fn, {offlineMode=false}={}) {
+    await page.setOfflineMode(offlineMode);
+    return page.evaluate(fn);
+  }
 }
