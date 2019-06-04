@@ -13,6 +13,7 @@
    - [Permissions](#permissions)
    - [Error Handling](#error-handling)
    - [SSR](#ssr)
+   - [Customization](#customization)
  - [More Resources](#more-resources)
 
 <br/>
@@ -334,7 +335,7 @@ const {endpoints} = require('wildcard-api/client');
 async function() {
   let ret;
   try {
-    ret = await endpoints.myEndpoint();
+    data = await endpoints.getData();
   } catch(err){
     alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
     return {success: false};
@@ -343,7 +344,7 @@ async function() {
     alert('Something went wrong, sorry... Please try again.');
     return {success: false};
   }
-  return {success: true};
+  return {success: true, data};
 }
 ~~~
 
@@ -448,16 +449,19 @@ endpoints.submitForm = async function({name, address, phoneNumber}) {
 ###### Networks errors
 
 When calling a endpoint in the browser and the browser cannot connect to the server,
-an exception is thrown:
+an exception is thrown.
+This happens when the server is down, the user is offline / the network connection is flaky.
 
 ~~~js
 // Browser
 
+import {endpoints} from 'wildcard-api/client';
 
 try {
   await 
+}catch(err) {
+  alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
 }
-    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
 
 ~~~
 
@@ -494,6 +498,7 @@ If you don't need Authentication, then SSR works out of the box.
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md --hide-source-path
+
 
 
 
