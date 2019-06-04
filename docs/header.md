@@ -4,4 +4,4 @@
   </a>
 </p>
 
-<p align="center">Function as an API</p>
+<p align="center">Function as an API.</p>

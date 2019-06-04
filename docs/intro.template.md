@@ -322,29 +322,28 @@ See the [to-do list app example](/example/) for further permission examples.
 
 ### Error Handling
 
-In a nutshell, this is what you need to know to handle errors:
+This is what you need to know to handle errors:
 - On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
 - In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
 
-Upon validation errors, your endpoint functions should not throw an exception.
-It should return a value instead.
+Upon validation error, your endpoint function should not throw an exception.
 (A validation error is an expected error and not a bug.)
 For example:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
-const isStrongPassword = require('./path/to/isStrongPassword');
+const isStrongPassword = require('./path/to/isStrongPassword.js');
 
 endpoints.createAccount = async function({email, password}) {
   /* Don't do the following:
   if( !isStrongPassword(password) ){
-    throw new Error("Password is not too weak.");
+    throw new Error("Password is too weak.");
   }
   */
 
   // Do this instead:
   if( !isStrongPassword(password) ){
-    return {validationError: "Password is not too weak."};
+    return {validationError: "Password is too weak."};
   }
 
   /* ... */
@@ -365,6 +364,7 @@ async function() {
   } catch(err_) {
     err = err_;
   }
+
   if( err.isServerError ){
     // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
     alert('Something went wrong. Sorry... Please try again.');
@@ -372,14 +372,15 @@ async function() {
   }
   if( err.isNetworkError ){
     // This is when the browser couldn't connect to the server.
-    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+    alert("We couldn't connect to the server. Either the server is down or you're offline. Try again.");
     return {success: false};
   }
+
   return {success: true, data};
 }
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will handle errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will handle all errors for you:
 
 ~~~js
 import 'handli';
