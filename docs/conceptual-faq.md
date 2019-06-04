@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Function as an API</p>
+<p align="center">Function as an API.</p>
 &nbsp;
 
 
@@ -109,7 +109,13 @@ an API that fulfills the data requirements of your clients and your clients only
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -165,7 +171,13 @@ Unfortunately,
 GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -186,7 +198,13 @@ then don't use Wildcard.
 But beaware that it's less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -250,7 +268,13 @@ But sadly,
 their success is casting a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
-<b><sub><a href="#conceptual-faq">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 

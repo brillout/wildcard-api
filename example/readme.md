@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Function as an API</p>
+<p align="center">Function as an API.</p>
 
 <br/>
 
@@ -133,8 +133,13 @@ Run the following npm scripts to build and serve the example:
    $ npm run server
    ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -185,8 +190,13 @@ endpoints.getCompletedPageData = async function () {
 };
 ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -310,8 +320,13 @@ console.log('Server is running. Go to http://localhost:3000')
 </details>
 
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -360,8 +375,13 @@ async function getTodo(todoId) {
 }
 ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -432,8 +452,13 @@ function Todo({todo, updateTodo}) {
 }
 ~~~
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 

@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Function as an API</p>
+<p align="center">Function as an API.</p>
 &nbsp;
 
 
@@ -137,8 +137,13 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 
 A custom API works only when developed hand-in-hand with the frontend.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -187,8 +192,13 @@ A custom API works only when developed hand-in-hand with the frontend.
   the API can be tightly developed with the frontend,
   and a custom API / Wildcard can be used.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -216,8 +226,13 @@ A custom API works only when developed hand-in-hand with the frontend.
   An alternative is to set up a custom API that is maintained by the frontend team,
   see the "API server" section above.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -261,8 +276,13 @@ Combining a generic API with a custom API can be a successfull strategy.
   while your clients use
   a custom API that fulfills a broader range of data requirements.
 
-<b><sub><a href="#contents">&#8679; TOP  &#8679;</a></sub></b>
+
 <br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 

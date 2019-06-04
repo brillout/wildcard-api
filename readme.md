@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Function as an API</p>
+<p align="center">Function as an API.</p>
 
 <br/>
 
@@ -161,7 +161,13 @@ endpoints.createTodo = async function(text) {
 };
 ~~~
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -186,7 +192,13 @@ on the other hand,
 is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -310,7 +322,13 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 > If you want to play around with Wildcard, you can use
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -358,7 +376,13 @@ is made available to your endpoint functions as `this`.
 That way,
 you can make whatever you want available to your endpoint functions.
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -402,7 +426,13 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 See the [to-do list app example](/example/) for further permission examples.
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -412,29 +442,28 @@ See the [to-do list app example](/example/) for further permission examples.
 
 ### Error Handling
 
-In a nutshell, this is what you need to know to handle errors:
+This is what you need to know to handle errors:
 - On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
 - In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
 
-Upon validation errors, your endpoint functions should not throw an exception.
-It should return a value instead.
+Upon validation error, your endpoint function should not throw an exception.
 (A validation error is an expected error and not a bug.)
 For example:
 
 ~~~js
 const {endpoints} = require('wildcard-api');
-const isStrongPassword = require('./path/to/isStrongPassword');
+const isStrongPassword = require('./path/to/isStrongPassword.js');
 
 endpoints.createAccount = async function({email, password}) {
   /* Don't do the following:
   if( !isStrongPassword(password) ){
-    throw new Error("Password is not too weak.");
+    throw new Error("Password is too weak.");
   }
   */
 
   // Do this instead:
   if( !isStrongPassword(password) ){
-    return {validationError: "Password is not too weak."};
+    return {validationError: "Password is too weak."};
   }
 
   /* ... */
@@ -455,6 +484,7 @@ async function() {
   } catch(err_) {
     err = err_;
   }
+
   if( err.isServerError ){
     // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
     alert('Something went wrong. Sorry... Please try again.');
@@ -462,14 +492,15 @@ async function() {
   }
   if( err.isNetworkError ){
     // This is when the browser couldn't connect to the server.
-    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+    alert("We couldn't connect to the server. Either the server is down or you're offline. Try again.");
     return {success: false};
   }
+
   return {success: true, data};
 }
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will handle errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will handle all errors for you:
 
 ~~~js
 import 'handli';
@@ -481,7 +512,13 @@ require('handli')`;
 // All errors are now handled by Handli.
 ~~~
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -497,7 +534,13 @@ If you don't need Authentication, then SSR works out of the box.
 
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
@@ -535,7 +578,13 @@ This section collects further information about Wildcard.
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
 
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
+
+<br/>
+
+If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+
+<b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
+
 <br/>
 <br/>
 
