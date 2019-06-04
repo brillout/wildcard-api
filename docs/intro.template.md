@@ -13,14 +13,13 @@
    - [Permissions](#permissions)
    - [Error Handling](#error-handling)
    - [SSR](#ssr)
-   - [Customization](#customization)
  - [More Resources](#more-resources)
 
 <br/>
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between your Node.js server and the browser.
+Wildcard is a JavaScript library to create an API for your Node.js server to be consumed by the browser.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -231,6 +230,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 
 
+
 ### Authentication
 
 To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
@@ -276,6 +276,7 @@ you can make whatever you want available to your endpoint functions.
 
 
 
+
 ### Permissions
 
 Permissions are defined by code. For example:
@@ -317,163 +318,68 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
+
+
 ### Error Handling
 
 In a nutshell, this is what you need to know to handle errors:
-- On the server, your endpoint functions should not throw errors.
-  If one of your endpoint function throws an error, then it should be because of a bug.
-- In the browser, when you call an endpoint function `const ret = await endpoint.myEndpoint()`, there are 3 possible outcomes:
-  - `ret` is the value returned by your `myEndpoint` function.
-  - `ret` is equal to `Internal Server Error`. This happens when your endpoint `myEndpoint` throws an Error.
-  - The Wildcard client throws an Error. This happens when there is a network error
+- On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
+- In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
 
+Upon validation errors, your endpoint functions should not throw an exception.
+It should return a value instead.
+(A validation error is an expected error and not a bug.)
 For example:
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const isStrongPassword = require('./path/to/isStrongPassword');
+
+endpoints.createAccount = async function({email, password}) {
+  /* Don't do the following:
+  if( !isStrongPassword(password) ){
+    throw new Error("Password is not too weak.");
+  }
+  */
+
+  // Do this instead:
+  if( !isStrongPassword(password) ){
+    return {validationError: "Password is not too weak."};
+  }
+
+  /* ... */
+};
+~~~
+
+With `isServerError` and `isNetworkError` you can handle errors as you wish.
+Like that:
 
 ~~~js
 const {endpoints} = require('wildcard-api/client');
 
 async function() {
-  let ret;
+  let data;
+  let err;
   try {
     data = await endpoints.getData();
-  } catch(err){
-    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+  } catch(err_) {
+    err = err_;
+  }
+  if( err.isServerError ){
+    // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
+    alert('Something went wrong. Sorry... Please try again.');
     return {success: false};
   }
-  if( ret==='Internal Server Error' ){
-    alert('Something went wrong, sorry... Please try again.');
+  if( err.isNetworkError ){
+    // This is when the browser couldn't connect to the server.
+    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
     return {success: false};
   }
   return {success: true, data};
 }
 ~~~
 
-We now go into more details
-and for that
-we differentiate between 3 types of errors:
- - Server errors
- - Validation errors
- - Networks errors
-
-###### Server errors
-
-Your endpoint functions should not throw expected errors.
-If one of your endpoint function does throw an error, then it should an unexpected error, in other words, a bug.
-Your endpoint functions should catch expected errors (such as validation errors) and return a value instead such as `{validationError: 'Passowrd should be at least 8 characters long.'}`.
-
-~~~js
-const {endpoints} = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
-const Todo = require('./path/to/your/data/model/Todo');
-
-endpoints.updateTodoText = async function({todoId, text}) {
-
-  const todo = Todo.get({id: todoId});
-
-  const user = await getLoggedUser(this.headers);
-
-  if( todo.author.id !== user.id ){
-    // Do not throw an exception.
-    // Don't do the following:
-    //  throw Error("Unauthorized: Only the author of the todo is allowed to change a todo");
-
-    // Return an object instead.
-    // For example:
-    return {
-      notAuthorized: true,
-      message: "Only the author of the todo is allowed to change a todo",
-    };
-  }
-
-  todo.update({text});
-
-  return {success: 1};
-};
-~~~
-
-If your endpoint function has a bug and throws an error,
-then Wildcard replies a `500 Internal Server Error` HTTP response.
-
-You can then catch this error in the browser:
-
-~~~js
-const {endpoints} = require('wildcard-api/client');
-
-export default updateText;
-
-async function updateText({todoId, text}) {
-  const ret = await endpoints.updateTodoText();
-  if( ret==='Internal Server Error' ){
-    alert('Something went wrong, sorry... Please try again.');
-  }
-  /* ... */
-}
-~~~
-
-###### Validation errors
-
-Your endpoint functions should not throw expected errors.
-Instead of throwing an expection,
-return an object such as
-`{isValid: false, validationErrorMessage: 'Password should have at least 8 characters', validationCode: 'PASSWORD_TOO_SHORT'}`.
-As mentioned in the previou
-
-~~~js
-const {endpoints} = require('wildcard-api');
-const isValidAddress = require('./path/to/isValidAddress');
-const isValidPhoneNumber = require('./path/to/isValidPhoneNumber');
-
-endpoints.submitForm = async function({name, address, phoneNumber}) {
-  const validationErrors = {};
-
-  if( !isValidAddress(address) ){
-    validationErrors[address] = "We couldn't find "+address+". Please enter a valid address.";
-  };
-  if( !isValidPhoneNumber(phoneNumber) ){
-    validationErrors[phoneNumber] = 'The phone number must be of the format +1 XXX XXX XXX.';
-  }
-
-  if( validationErrors.length===0 ) {
-    await db.saveNewVisitor({name, address, phoneNumber});
-    result.success = 1;
-  } else {
-    result.validationErrors = validationErrors;
-  }
-
-  return result;
-};
-~~~
-
-!INLINE ./snippets/section-footer.md --hide-source-path
-
-###### Networks errors
-
-When calling a endpoint in the browser and the browser cannot connect to the server,
-an exception is thrown.
-This happens when the server is down, the user is offline / the network connection is flaky.
-
-~~~js
-// Browser
-
-import {endpoints} from 'wildcard-api/client';
-
-try {
-  await 
-}catch(err) {
-  alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
-}
-
-~~~
-
-Conve
-This is also the only situation 
-
-
-Wildcard uses the Fetch API
-and doesn't catch any error thrown by `fetch()`.
-
-
-You can also use [Handli](https://github.com/brillout/handli):
+You can also use [Handli](https://github.com/brillout/handli) which will handle errors for you:
 
 ~~~js
 import 'handli';
@@ -482,8 +388,10 @@ require('handli')`;
 */
 
 // That's it: Handli automatically installs itslef.
-// All networks errors are now handled by Handli.
+// All errors are now handled by Handli.
 ~~~
+
+!INLINE ./snippets/section-footer.md --hide-source-path
 
 
 
@@ -498,6 +406,7 @@ If you don't need Authentication, then SSR works out of the box.
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md --hide-source-path
+
 
 
 

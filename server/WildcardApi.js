@@ -177,7 +177,7 @@ function WildcardApi(options={}) {
               !isDev() ? '' : (
                 '\n\nEndpoints: ' +
                 getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
-                "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded `require('./path/to/file/defining-"+endpointName+".js')`.)"+
+                "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)"+
                 '\n\n(The list of endpoints is only shown in development.)'
               )
             )
