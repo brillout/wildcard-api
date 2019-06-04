@@ -15,14 +15,13 @@ async function bugHandling({wildcardApi, browserEval}) {
     try {
       ret = await window.endpoints.testEndpointBug();
     } catch(err) {
-      errorThrown = true;
-      console.log(err);
       assert(err.isServerError===true);
+      assert(err.isNetworkError===false);
+      assert(err.response.statusCode===500);
+      assert(err.response.value==='Internal Server Error');
+      errorThrown = true;
     }
-    console.log(ret);
-    console.log(errorThrown);
     assert(errorThrown);
-  //assert(ret==='Internal Server Error', {ret});
   });
 }
 
@@ -37,6 +36,9 @@ async function networkHandling({wildcardApi, browserEval}) {
       try {
         await window.endpoints.testEndpointBug();
       } catch(err) {
+        assert(err.isNetworkError===true);
+        assert(err.isServerError===null);
+        assert(err.response===null);
         errorThrown = true;
       }
       assert(errorThrown===true);

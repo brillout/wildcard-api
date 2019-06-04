@@ -54,6 +54,10 @@ async function interceptError({wildcardApi, browserEval}) {
     try {
       ret = await window.endpoints.hello();
     } catch(err) {
+      assert(err.isServerError===false);
+      assert(err.isNetworkError===false);
+      assert(err.response.statusCode===401);
+      assert(err.response.value==='custom error handling');
       errorThrown = true;
     }
     assert(errorThrown===true);

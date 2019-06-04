@@ -18,22 +18,32 @@ async function makeHttpRequest({url, parse, ...args}) {
   );
 
   let response;
+  let isNetworkError = false;
+  let isServerError = null;
   try {
     response = await makeRequest();
   } catch(err) {
-    throw (
-      new Error({
-        networkError: true,
-        err,
-      })
+    isNetworkError = true;
+    Object.assign(
+      err,
+      {
+        isNetworkError,
+        isServerError,
+        response: null,
+      },
     );
+    assert.internal(err.isNetworkError===true);
+    throw err;
   }
   const body = await response.text();
   const contentType = response.headers.get('content-type');
   const isOk = response.ok;
   assert.internal([true, false].includes(isOk));
+  const statusCode = response.status;
+  assert.internal(statusCode.construtor===Number);
+  isServerError = 500<=statusCode && statusCode<=599;
 
-  const ret = (
+  const value = (
     // TODO use mime type instead
     contentType.includes('application/json') ? (
       parse(body)
@@ -43,14 +53,24 @@ async function makeHttpRequest({url, parse, ...args}) {
   );
 
   if( !isOk ) {
-    throw (
-      new Error({
-        isServerError: true,
-      })
+    const err = new Error();
+    Object.assign(
+      err,
+      {
+        iSNetworkError,
+        isServerError,
+        response: {
+          body,
+          value,
+          statusCode,
+        },
+      },
     );
+    assert.internal(err.isServerError===true);
+    throw err;
   }
 
-  return ret;
+  return value;
 }
 
 function addHandli(fetch_) {
