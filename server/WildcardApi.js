@@ -1,4 +1,4 @@
-const assert = require('reassert');
+const assert = require('@brillout/reassert');
 const defaultSerializer = require('json-s');
 const chalk = require('chalk');
 

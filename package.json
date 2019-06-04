@@ -4,9 +4,9 @@
   "main": "./server",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
+    "@brillout/reassert": "^0.1.0",
     "chalk": "^2.4.2",
-    "json-s": "^0.1.0",
-    "reassert": "^1.1.16"
+    "json-s": "^0.1.0"
   },
   "scripts": {
     "clean": "git clean -Xdf",

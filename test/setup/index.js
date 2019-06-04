@@ -1,6 +1,6 @@
 process.on('unhandledRejection', err => {throw err});
 
-const assert = require('reassert');
+const assert = require('@brillout/reassert');
 global.assert = assert;
 
 const WildcardApi = require('../../server/WildcardApi');

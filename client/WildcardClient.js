@@ -1,4 +1,4 @@
-const assert = require('reassert');
+const assert = require('@brillout/reassert');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
