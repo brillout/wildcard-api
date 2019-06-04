@@ -11,14 +11,13 @@ async function bugHandling({wildcardApi, browserEval}) {
 
   await browserEval(async () => {
     let err = null;
-    let ret;
     try {
-      ret = await window.endpoints.testEndpointBug();
+      await window.endpoints.testEndpointBug();
     } catch(err_) {
       err = err_;
     }
-		assert('isNetworkError' in err, 'Problem passing error object', {errMessage: err.message, errKey: Object.keys(err)});
     assert(err);
+    assert('isNetworkError' in err, 'Internal error in Wildcard client', {errMessage: err.message});
     assert(err.isServerError===true);
     assert(err.isNetworkError===false);
     assert(err.response.statusCode===500);
@@ -33,16 +32,17 @@ async function networkHandling({wildcardApi, browserEval}) {
 
   await browserEval(
     async () => {
-      let errorThrown = false;
+      let err = null;
       try {
         await window.endpoints.testEndpointBug();
-      } catch(err) {
-        assert(err.isNetworkError===true);
-        assert(err.isServerError===null);
-        assert(err.response===null);
-        errorThrown = true;
+      } catch(err_) {
+        err = err_;
       }
-      assert(errorThrown===true);
+      assert(err);
+		  assert('isNetworkError' in err, 'Internal error in Wildcard client', {errMessage: err.message});
+      assert(err.isNetworkError===true);
+      assert(err.isServerError===null);
+      assert(err.response===null);
     },
     {offlineMode: true},
   );

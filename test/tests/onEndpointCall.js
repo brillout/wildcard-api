@@ -49,25 +49,18 @@ async function interceptError({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    let errorThrown = false;
-    let ret;
+    let err = null;
     try {
-      ret = await window.endpoints.hello();
-    } catch(err) {
-      assert('isNetworkError' in err, 'Problem passing error object', {errMessage: err.message, errKey: Object.keys(err)});
-      assert(err.isServerError===false);
-      assert(err.isNetworkError===false);
-      assert(err.response.statusCode===401);
-      assert(err.response.value==='custom error handling');
-      errorThrown = true;
+      await window.endpoints.hello();
+    } catch(err_) {
+      err = err_;
     }
-    assert(errorThrown===true);
-    /*
-    assert(
-      ret==='custom error handling',
-      {ret},
-    );
-    */
+    assert(err);
+    assert('isNetworkError' in err, 'Internal error in Wildcard client', {errMessage: err.message});
+    assert(err.isServerError===false);
+    assert(err.isNetworkError===false);
+    assert(err.response.statusCode===401);
+    assert(err.response.value==='custom error handling');
   });
 
   assert(called===1);
