@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Function as an API.</p>
+<p align="center">Functions as an API.</p>
 
 <br/>
 
@@ -164,7 +164,8 @@ endpoints.createTodo = async function(text) {
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -195,7 +196,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -325,7 +327,8 @@ If you want to ask questions, request features, or you just want to talk to us, 
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -379,7 +382,8 @@ you can make whatever you want available to your endpoint functions.
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -429,7 +433,8 @@ See the [to-do list app example](/example/) for further permission examples.
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -515,7 +520,8 @@ require('handli')`;
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -537,7 +543,8 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -581,7 +588,8 @@ This section collects further information about Wildcard.
 
 <br/>
 
-If you want to ask questions, request features, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).
+[Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
+if you want to ask questions, request features, or if you just want to talk to us.
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
