@@ -7,6 +7,18 @@ async function launchBrowser() {
 
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
+
+	/*
+	page.on("pageerror", function(err) {
+			const theTempValue = err.toString();
+			console.log("Page error: " + theTempValue);
+	});
+	page.on("error", function (err) {
+			const theTempValue = err.toString();
+			console.log("Error: " + theTempValue);
+	});
+	*/
+
   await page.goto('http://localhost:3000');
 
   return {

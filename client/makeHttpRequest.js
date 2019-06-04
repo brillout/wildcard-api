@@ -20,10 +20,15 @@ async function makeHttpRequest({url, parse, ...args}) {
   let response;
   let isNetworkError = false;
   let isServerError = null;
+  let networkError;
   try {
     response = await makeRequest();
   } catch(err) {
     isNetworkError = true;
+    networkError = err;
+  }
+  if( isNetworkError ){
+    const err = networkError;
     Object.assign(
       err,
       {
@@ -40,7 +45,7 @@ async function makeHttpRequest({url, parse, ...args}) {
   const isOk = response.ok;
   assert.internal([true, false].includes(isOk));
   const statusCode = response.status;
-  assert.internal(statusCode.construtor===Number);
+  assert.internal(statusCode.constructor===Number);
   isServerError = 500<=statusCode && statusCode<=599;
 
   const value = (
@@ -57,7 +62,7 @@ async function makeHttpRequest({url, parse, ...args}) {
     Object.assign(
       err,
       {
-        iSNetworkError,
+        isNetworkError,
         isServerError,
         response: {
           body,
@@ -66,7 +71,7 @@ async function makeHttpRequest({url, parse, ...args}) {
         },
       },
     );
-    assert.internal(err.isServerError===true);
+    assert.internal(err.isNetworkError===false);
     throw err;
   }
 

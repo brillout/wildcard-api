@@ -54,6 +54,7 @@ async function interceptError({wildcardApi, browserEval}) {
     try {
       ret = await window.endpoints.hello();
     } catch(err) {
+      assert('isNetworkError' in err, 'Problem passing error object', {errMessage: err.message, errKey: Object.keys(err)});
       assert(err.isServerError===false);
       assert(err.isNetworkError===false);
       assert(err.response.statusCode===401);

@@ -10,18 +10,19 @@ async function bugHandling({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    let errorThrown = false;
+    let err = null;
     let ret;
     try {
       ret = await window.endpoints.testEndpointBug();
-    } catch(err) {
-      assert(err.isServerError===true);
-      assert(err.isNetworkError===false);
-      assert(err.response.statusCode===500);
-      assert(err.response.value==='Internal Server Error');
-      errorThrown = true;
+    } catch(err_) {
+      err = err_;
     }
-    assert(errorThrown);
+		assert('isNetworkError' in err, 'Problem passing error object', {errMessage: err.message, errKey: Object.keys(err)});
+    assert(err);
+    assert(err.isServerError===true);
+    assert(err.isNetworkError===false);
+    assert(err.response.statusCode===500);
+    assert(err.response.value==='Internal Server Error');
   });
 }
 

@@ -13,7 +13,13 @@ const launchBrowser = require('./browser/launchBrowser');
 
 const startServer = require('./startServer');
 
-const {symbolSuccess, symbolError} = require('@brillout/cli-theme');
+const {symbolSuccess, symbolError, colorError} = require('@brillout/cli-theme');
+
+/*
+const DEBUG = true;
+/*/
+const DEBUG = false;
+//*/
 
 (async () => {
   await bundle();
@@ -33,16 +39,16 @@ const {symbolSuccess, symbolError} = require('@brillout/cli-theme');
 
     const testName = test.name+' ('+file+')';
 
-    log_suppressor.enable();
+    !DEBUG && log_suppressor.enable();
     try {
       await test({wildcardApi, wildcardClient, browserEval});
     } catch(err) {
-      log_suppressor.flush();
-      log_suppressor.disable();
-      console.log(symbolError+'Failed test: '+testName);
+      !DEBUG && log_suppressor.flush();
+      !DEBUG && log_suppressor.disable();
+      console.log(colorError(symbolError+'Failed test: '+testName));
       throw err;
     }
-    log_suppressor.disable();
+    !DEBUG && log_suppressor.disable();
 
     console.log(symbolSuccess+testName);
   }
