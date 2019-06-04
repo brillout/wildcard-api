@@ -81,26 +81,25 @@
   </a>
 </p>
 
-<p align="center">Easy API for Node.js <-> Browser</p>
+<p align="center">Function as an API</p>
 
 <br/>
 
  - [What is Wildcard](#what-is-wildcard)
  - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
  - Usage
-   - [Installation & Setup](#installation--setup)
+   - [Getting Started](#getting-started)
    - [Authentication](#authentication)
-   - [Authorization](#authorization)
-   - [Network Errors](#network-errors)
+   - [Permissions](#permissions)
+   - [Error Handling](#error-handling)
    - [SSR](#ssr)
-   - [`onEndpointCall`](#onEndpointCall)
  - [More Resources](#more-resources)
 
 <br/>
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between your Node.js server and your browser frontend.
+Wildcard is a JavaScript library to create an API for your Node.js server to be consumed by the browser.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -112,7 +111,7 @@ const {endpoints} = require('wildcard-api');
 
 // We define a `hello` function on the server
 endpoints.hello = function(name) {
-  return {message: 'Hi '+name};
+  return {message: 'Welcome '+name};
 };
 ~~~
 
@@ -124,7 +123,7 @@ import {endpoints} from 'wildcard-api/client';
 (async () => {
   // Wildcard makes our `hello` function available in the browser
   const {message} = await endpoints.hello('Daenerys');
-  console.log(message); // Prints `Hi Daenerys`
+  console.log(message); // Prints `Welcome Daenerys`
 })();
 ~~~
 
@@ -170,27 +169,22 @@ endpoints.createTodo = async function(text) {
 
 ### Wildcard VS REST/GraphQL
 
-**REST and GraphQL are tools to create a _generic API_**:
-your data can be retrieved/mutated in all kinds of ways.
-The more data is retrievable/mutable, the better.
-So that third parties can build all kinds of apps on top of your data.
+If all you need is to retrieve/mutate data from you frontend,
+then Wildcard offers a very easy way.
+All you have to do is to create JavaScript functions
+and all you need to know is written in this little Readme.
 
-**Wildcard is a tool to create a _custom API_**:
-your data is retrieved/mutated by you and you only.
-For example when your data is only retrieved/mutated by your React/Vue/Angular frontend.
+If you need third parties to be able to retrieve/mutate your data
+then REST and GraphQL are better suited.
+A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
 
-If you want third parties to be able to retrive/mutate your data,
-use REST/GraphQL.
 But,
-if all you want to do is to retrieve/mutate your data from your React/Vue/Angular frontend,
-then Wildcard offers an alternative
-that is vastly simpler:
-all you need to know is written in this readme.
-
-If you are a startup and
-you want to quickly ship/evolve your product,
-then we believe that Wildcard to be the way go.
-(Wildcard is actually already used by couple of startups.)
+for quickly evolving your application,
+the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
+Wildcard,
+on the other hand,
+is schemaless and structureless
+which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 <b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
@@ -198,7 +192,7 @@ then we believe that Wildcard to be the way go.
 
 
 
-### Installation & Setup
+### Getting Started
 
 1. Add Wildcard to your Node.js server.
 
@@ -322,6 +316,7 @@ then we believe that Wildcard to be the way go.
 
 
 
+
 ### Authentication
 
 To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
@@ -369,7 +364,8 @@ you can make whatever you want available to your endpoint functions.
 
 
 
-### Authorization
+
+### Permissions
 
 Permissions are defined by code. For example:
 
@@ -412,13 +408,68 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
-### Network Errors
 
-Wildcard uses the Fetch API
-and doesn't catch any error thrown by `fetch()`,
-allowing you to handle network errors as you wish.
 
-You can also use [Handli](https://github.com/brillout/handli):
+### Error Handling
+
+In a nutshell, this is what you need to know to handle errors:
+- On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
+- In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
+
+Upon validation errors, your endpoint functions should not throw an exception.
+It should return a value instead.
+(A validation error is an expected error and not a bug.)
+For example:
+
+~~~js
+const {endpoints} = require('wildcard-api');
+const isStrongPassword = require('./path/to/isStrongPassword');
+
+endpoints.createAccount = async function({email, password}) {
+  /* Don't do the following:
+  if( !isStrongPassword(password) ){
+    throw new Error("Password is not too weak.");
+  }
+  */
+
+  // Do this instead:
+  if( !isStrongPassword(password) ){
+    return {validationError: "Password is not too weak."};
+  }
+
+  /* ... */
+};
+~~~
+
+With `isServerError` and `isNetworkError` you can handle errors as you wish.
+Like that:
+
+~~~js
+const {endpoints} = require('wildcard-api/client');
+
+async function() {
+  let data;
+  let err;
+  try {
+    data = await endpoints.getData();
+  } catch(err_) {
+    err = err_;
+  }
+  if( err.isServerError ){
+    // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
+    alert('Something went wrong. Sorry... Please try again.');
+    return {success: false};
+  }
+  if( err.isNetworkError ){
+    // This is when the browser couldn't connect to the server.
+    alert("We couldn't connect to the server. Either the server is down or you are offline. Please try again.");
+    return {success: false};
+  }
+  return {success: true, data};
+}
+~~~
+
+You can also use [Handli](https://github.com/brillout/handli) which will handle errors for you:
 
 ~~~js
 import 'handli';
@@ -426,13 +477,15 @@ import 'handli';
 require('handli')`;
 */
 
-// That's it: Handli automatically installs itslef with Wildcard.
-// Wildcard will now use Handli for network errors.
+// That's it: Handli automatically installs itslef.
+// All errors are now handled by Handli.
 ~~~
 
 <b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
 <br/>
 <br/>
+
+
 
 
 
@@ -449,61 +502,6 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 <br/>
 
 
-
-### `onEndpointCall`
-
-The `require('wildcard-api').onEndpointCall` hook allows you to intercept and listen to all endpoint calls.
-
-This gives you full control.
-To do things such as logging or custom error handling:
-
-~~~js
-const wildcardApi = require('wildcard-api');
-
-wildcardApi.onEndpointCall = ({
-  // The HTTP request object
-  req,
-
-  // The name of the endpoint that has been called
-  endpointName,
-
-  // The arguments passed to the endpoint
-  endpointArgs,
-
-  // The error thrown by the endpoint function, if any
-  endpointError,
-
-  // The value returned by the endpoint function
-  endpointResult,
-
-  // Overwrite the value returned by the endpoint function
-  overwriteResult,
-
-  // Overwrite the HTTP response of the endpoint
-  overwriteResponse,
-}) => {
-  // For example, logging:
-  console.log('New call to '+endpointName+' from User Agent '+req.headers['user-agent']);
-
-  // If you want to overwrite the endpoint result:
-  overwriteResult({message: 'this is an overwriting message'});
-
-  // Or if you want to custom handle server errors:
-  if( endpointError ) {
-    overwriteResponse({
-      statusCode: 500,
-      type: 'text/html',
-      body: "<html><body><b>There was an internal error. We have been notified.</b><body><html/>",
-    });
-  }
-};
-~~~
-
-See [test/tests/onEndpointCall.js](test/tests/onEndpointCall.js) for more examples.
-
-<b><sub><a href="#readme">&#8679; TOP  &#8679;</a></sub></b>
-<br/>
-<br/>
 
 
 
