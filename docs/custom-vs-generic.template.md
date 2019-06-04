@@ -56,7 +56,7 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 
 A custom API works only when developed hand-in-hand with the frontend.
 
-!INLINE ./snippets/comparison-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 
 
@@ -103,7 +103,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   the API can be tightly developed with the frontend,
   and a custom API / Wildcard can be used.
 
-!INLINE ./snippets/comparison-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 
 
@@ -129,7 +129,7 @@ A custom API works only when developed hand-in-hand with the frontend.
   An alternative is to set up a custom API that is maintained by the frontend team,
   see the "API server" section above.
 
-!INLINE ./snippets/comparison-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 
 
@@ -171,4 +171,4 @@ Combining a generic API with a custom API can be a successfull strategy.
   while your clients use
   a custom API that fulfills a broader range of data requirements.
 
-!INLINE ./snippets/comparison-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path

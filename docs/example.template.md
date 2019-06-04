@@ -53,7 +53,7 @@ Run the following npm scripts to build and serve the example:
    $ npm run server
    ~~~
 
-!INLINE ./snippets/example-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 
 ## Code Highlights
@@ -68,7 +68,7 @@ This section highlights the interesting parts of the example.
 !INLINE ../example/api/view-endpoints
 ~~~
 
-!INLINE ./snippets/example-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 ### Server Integration
 
@@ -99,7 +99,7 @@ With Koa
 </details>
 
 
-!INLINE ./snippets/example-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 ### Mutation Endpoints
 
@@ -109,7 +109,7 @@ With Koa
 !INLINE ../example/api/mutation-endpoints
 ~~~
 
-!INLINE ./snippets/example-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 ### React Frontend
 
@@ -126,4 +126,4 @@ and to update a todo.
 !INLINE ../example/client/Todo
 ~~~
 
-!INLINE ./snippets/example-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #contents --hide-source-path

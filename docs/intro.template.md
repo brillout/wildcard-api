@@ -81,7 +81,7 @@ endpoints.createTodo = async function(text) {
 };
 ~~~
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -104,7 +104,7 @@ on the other hand,
 is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -226,7 +226,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 > If you want to play around with Wildcard, you can use
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -272,7 +272,7 @@ is made available to your endpoint functions as `this`.
 That way,
 you can make whatever you want available to your endpoint functions.
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -314,7 +314,7 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 See the [to-do list app example](/example/) for further permission examples.
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -392,7 +392,7 @@ require('handli')`;
 // All errors are now handled by Handli.
 ~~~
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -406,7 +406,7 @@ If you don't need Authentication, then SSR works out of the box.
 
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -442,7 +442,7 @@ This section collects further information about Wildcard.
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
 
-!INLINE ./snippets/section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 

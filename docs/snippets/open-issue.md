@@ -1,1 +1,0 @@
-If you want to ask questions, request a feature, or you just want to talk to us, then please do! [Open an ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G).

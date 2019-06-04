@@ -26,7 +26,7 @@ an API that fulfills the data requirements of your clients and your clients only
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
-!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
@@ -80,7 +80,7 @@ Unfortunately,
 GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
-!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
@@ -99,7 +99,7 @@ then don't use Wildcard.
 But beaware that it's less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
-!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
@@ -161,7 +161,7 @@ But sadly,
 their success is casting a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
-!INLINE ./snippets/conceptual-faq-section-footer.md --hide-source-path
+!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
