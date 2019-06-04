@@ -10,8 +10,19 @@ async function bugHandling({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.testEndpointBug();
-    assert(ret==='Internal Server Error', {ret});
+    let errorThrown = false;
+    let ret;
+    try {
+      ret = await window.endpoints.testEndpointBug();
+    } catch(err) {
+      errorThrown = true;
+      console.log(err);
+      assert(err.isServerError===true);
+    }
+    console.log(ret);
+    console.log(errorThrown);
+    assert(errorThrown);
+  //assert(ret==='Internal Server Error', {ret});
   });
 }
 

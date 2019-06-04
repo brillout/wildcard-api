@@ -49,11 +49,20 @@ async function interceptError({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.hello();
+    let errorThrown = false;
+    let ret;
+    try {
+      ret = await window.endpoints.hello();
+    } catch(err) {
+      errorThrown = true;
+    }
+    assert(errorThrown===true);
+    /*
     assert(
       ret==='custom error handling',
       {ret},
     );
+    */
   });
 
   assert(called===1);

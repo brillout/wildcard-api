@@ -34,7 +34,7 @@ function WildcardClient({
 
   return this;
 
-  async function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
+  function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
     endpointArgs = endpointArgs || [];
 
@@ -51,13 +51,7 @@ function WildcardClient({
     } else {
       assert.internal(!reqObject);
       const url = getUrl({endpointName, endpointArgs, serverRootUrl});
-      const {contentType, body} = await makeHttpRequest({url});
-      // TODO use mime type instead
-      if( contentType.includes('application/json') ){
-        return parse(body);
-      } else {
-        return body;
-      }
+      return makeHttpRequest({url, parse});
     }
   }
 
@@ -148,6 +142,7 @@ function WildcardClient({
     assert.internal(!endpointArgsStr || endpointArgsStr.startsWith('/'));
     const url = serverRootUrl+apiUrlBase+endpointName+endpointArgsStr;
 
+ // assert.internal(!makeHttpRequest.isUsingBrowserBuiltIn);
     const urlRootIsMissing = !serverRootUrl && makeHttpRequest.isUsingBrowserBuiltIn && !makeHttpRequest.isUsingBrowserBuiltIn();
     if( urlRootIsMissing ) {
       assert.internal(isNodejs());
