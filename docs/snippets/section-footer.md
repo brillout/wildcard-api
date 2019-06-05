@@ -2,8 +2,10 @@
 <br/>
 
 <sub>
-[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a> or
+if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
+<br/>
 </sub>
 
 <b><sub><a href="!ARGUMENT-1">&#8679; TOP &#8679;</a></sub></b>

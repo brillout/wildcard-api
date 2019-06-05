@@ -75,11 +75,13 @@
 
 
 -->
-<p align="center">
-  <a href="/../../#readme">
-    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
-  </a>
-</p>
+<h1>
+  <p align="center">
+    <a href="/../../#readme">
+      <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+    </a>
+  </p>
+</h1>
 
 <p align="center">Functions as an API.</p>
 &nbsp;
@@ -113,8 +115,10 @@ then Wildcard offers a simple alternative.
 <br/>
 
 <sub>
-[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a> or
+if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
+<br/>
 </sub>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -178,8 +182,10 @@ Let's remember.
 <br/>
 
 <sub>
-[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a> or
+if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
+<br/>
 </sub>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -208,8 +214,10 @@ But beaware that it's less trivial than you might think.
 <br/>
 
 <sub>
-[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a> or
+if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
+<br/>
 </sub>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -281,8 +289,10 @@ even though RPC is (and always was) a great way of communicating between two rem
 <br/>
 
 <sub>
-[Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a> or
+if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
+<br/>
 </sub>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
