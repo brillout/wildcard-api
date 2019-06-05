@@ -112,14 +112,11 @@ then Wildcard offers a simple alternative.
 
 <br/>
 
-<sub>
+<sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-</sub>
-
-<br/>
-<br/>
+</sup>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -181,14 +178,11 @@ Let's remember.
 
 <br/>
 
-<sub>
+<sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-</sub>
-
-<br/>
-<br/>
+</sup>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -215,14 +209,11 @@ But beaware that it's less trivial than you might think.
 
 <br/>
 
-<sub>
+<sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-</sub>
-
-<br/>
-<br/>
+</sup>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -292,14 +283,11 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 <br/>
 
-<sub>
+<sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-</sub>
-
-<br/>
-<br/>
+</sup>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
