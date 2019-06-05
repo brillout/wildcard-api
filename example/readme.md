@@ -143,6 +143,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -205,6 +206,7 @@ endpoints.getCompletedPageData = async function () {
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -342,6 +344,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -402,6 +405,7 @@ async function getTodo(todoId) {
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -485,6 +489,7 @@ function Todo({todo, updateTodo}) {
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>

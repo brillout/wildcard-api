@@ -171,6 +171,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -207,6 +208,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -344,6 +346,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -404,6 +407,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -459,6 +463,7 @@ See the [to-do list app example](/example/) for further permission examples.
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -552,6 +557,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -579,6 +585,7 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
@@ -629,6 +636,7 @@ This section collects further information about Wildcard.
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>

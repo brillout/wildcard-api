@@ -119,6 +119,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -187,6 +188,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -219,6 +221,7 @@ But beaware that it's less trivial than you might think.
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
@@ -295,6 +298,7 @@ even though RPC is (and always was) a great way of communicating between two rem
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>

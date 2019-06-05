@@ -147,6 +147,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -208,6 +209,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 </sub>
 
 <br/>
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -247,6 +249,7 @@ if you want to ask questions, request features, or if you just want to talk to u
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
@@ -303,6 +306,7 @@ Combining a generic API with a custom API can be a successfull strategy.
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
 </sub>
 
+<br/>
 <br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
