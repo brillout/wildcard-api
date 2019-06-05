@@ -136,8 +136,10 @@ Run the following npm scripts to build and serve the example:
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -194,8 +196,10 @@ endpoints.getCompletedPageData = async function () {
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -325,8 +329,10 @@ console.log('Server is running. Go to http://localhost:3000')
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -381,8 +387,10 @@ async function getTodo(todoId) {
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -459,8 +467,10 @@ function Todo({todo, updateTodo}) {
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 

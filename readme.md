@@ -99,7 +99,7 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API for your Node.js server to be consumed by the browser.
+Wildcard is a JavaScript library to create an **API** for your **Node.js** server that is consumed by the **browser**.
 
 With Wildcard,
 creating an API is as easy as creating JavaScript functions:
@@ -164,8 +164,10 @@ endpoints.createTodo = async function(text) {
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -196,8 +198,10 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -327,8 +331,10 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -382,8 +388,10 @@ you can make whatever you want available to your endpoint functions.
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -433,8 +441,10 @@ See the [to-do list app example](/example/) for further permission examples.
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -520,8 +530,10 @@ require('handli')`;
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -543,8 +555,10 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -588,8 +602,10 @@ This section collects further information about Wildcard.
 
 <br/>
 
+<sub>
 [Open a ticket](https://github.com/reframejs/wildcard-api/issues/new) or [chat with us](https://discord.gg/kqXf65G)
-if you want to ask questions, request features, or if you just want to talk to us.
+if you want to ask questions, request features, or if you just want to talk to us. (We love to talk to our users :-).)
+</sub>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
