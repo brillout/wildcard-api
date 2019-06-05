@@ -120,10 +120,8 @@ then Wildcard offers a simple alternative.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -200,10 +198,8 @@ Let's remember.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -245,10 +241,8 @@ But beaware that it's less trivial than you might think.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -333,10 +327,8 @@ even though RPC is (and always was) a great way of communicating between two rem
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>

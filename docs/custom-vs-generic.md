@@ -148,10 +148,8 @@ A custom API works only when developed hand-in-hand with the frontend.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -221,10 +219,8 @@ We want to talk with you!
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -273,10 +269,8 @@ We want to talk with you!
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -341,10 +335,8 @@ Combining a generic API with a custom API can be a successfull strategy.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>

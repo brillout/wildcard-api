@@ -144,10 +144,8 @@ Run the following npm scripts to build and serve the example:
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -219,10 +217,8 @@ endpoints.getCompletedPageData = async function () {
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -367,10 +363,8 @@ console.log('Server is running. Go to http://localhost:3000')
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -440,10 +434,8 @@ async function getTodo(todoId) {
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -535,10 +527,8 @@ function Todo({todo, updateTodo}) {
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>

@@ -172,10 +172,8 @@ endpoints.createTodo = async function(text) {
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -221,10 +219,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -369,10 +365,8 @@ We want to talk with you!
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -441,10 +435,8 @@ you can make whatever you want available to your endpoint functions.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -509,10 +501,8 @@ See the [to-do list app example](/example/) for further permission examples.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -613,10 +603,8 @@ require('handli')`;
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -653,10 +641,8 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
@@ -715,10 +701,8 @@ This section collects further information about Wildcard.
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>

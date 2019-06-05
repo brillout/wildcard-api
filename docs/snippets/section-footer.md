@@ -9,10 +9,8 @@
 if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
-<br/>
-
 <sup>
-We want to talk with you!
+We want to talk with you :-).
 </sup>
 
 <br/>
