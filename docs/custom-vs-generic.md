@@ -140,15 +140,15 @@ A custom API works only when developed hand-in-hand with the frontend.
 
 <br/>
 
-<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
-</p>
 
-<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+<sup>
+<a href="#contents">&#8679; TOP &#8679;</a>
+</sup>
 
 <br/>
 <br/>
@@ -201,15 +201,15 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
-<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
-</p>
 
-<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+<sup>
+<a href="#contents">&#8679; TOP &#8679;</a>
+</sup>
 
 <br/>
 <br/>
@@ -241,15 +241,15 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
-<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
-</p>
 
-<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+<sup>
+<a href="#contents">&#8679; TOP &#8679;</a>
+</sup>
 
 <br/>
 <br/>
@@ -297,15 +297,15 @@ Combining a generic API with a custom API can be a successfull strategy.
 
 <br/>
 
-<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
-</p>
 
-<b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
+<sup>
+<a href="#contents">&#8679; TOP &#8679;</a>
+</sup>
 
 <br/>
 <br/>
