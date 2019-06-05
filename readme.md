@@ -170,8 +170,10 @@ endpoints.createTodo = async function(text) {
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -207,8 +209,10 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -343,8 +347,10 @@ if you want to ask questions, request features, or if you just want to talk to u
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -403,8 +409,10 @@ you can make whatever you want available to your endpoint functions.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -459,8 +467,10 @@ See the [to-do list app example](/example/) for further permission examples.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -551,8 +561,10 @@ require('handli')`;
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -579,8 +591,10 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -629,8 +643,10 @@ This section collects further information about Wildcard.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#readme">&#8679; TOP &#8679;</a>
+<a href="#readme"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>

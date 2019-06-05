@@ -7,8 +7,10 @@
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="!ARGUMENT-1">&#8679; TOP &#8679;</a>
+<a href="!ARGUMENT-1"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>

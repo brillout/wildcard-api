@@ -118,8 +118,10 @@ then Wildcard offers a simple alternative.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#conceptual-faq">&#8679; TOP &#8679;</a>
+<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -186,8 +188,10 @@ Let's remember.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#conceptual-faq">&#8679; TOP &#8679;</a>
+<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -219,8 +223,10 @@ But beaware that it's less trivial than you might think.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#conceptual-faq">&#8679; TOP &#8679;</a>
+<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -295,8 +301,10 @@ even though RPC is (and always was) a great way of communicating between two rem
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#conceptual-faq">&#8679; TOP &#8679;</a>
+<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>

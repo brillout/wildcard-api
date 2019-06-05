@@ -142,8 +142,10 @@ Run the following npm scripts to build and serve the example:
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -205,8 +207,10 @@ endpoints.getCompletedPageData = async function () {
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -341,8 +345,10 @@ console.log('Server is running. Go to http://localhost:3000')
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -402,8 +408,10 @@ async function getTodo(todoId) {
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -485,8 +493,10 @@ function Todo({todo, updateTodo}) {
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>

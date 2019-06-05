@@ -146,8 +146,10 @@ A custom API works only when developed hand-in-hand with the frontend.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -207,8 +209,10 @@ if you want to ask questions, request features, or if you just want to talk to u
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -247,8 +251,10 @@ if you want to ask questions, request features, or if you just want to talk to u
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
@@ -303,8 +309,10 @@ Combining a generic API with a custom API can be a successfull strategy.
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
 
+<br/>
+
 <sup>
-<a href="#contents">&#8679; TOP &#8679;</a>
+<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
 </sup>
 
 <br/>
