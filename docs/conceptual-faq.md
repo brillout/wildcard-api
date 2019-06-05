@@ -112,17 +112,27 @@ then Wildcard offers a simple alternative.
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -182,17 +192,27 @@ Let's remember.
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -217,17 +237,27 @@ But beaware that it's less trivial than you might think.
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -295,17 +325,27 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>

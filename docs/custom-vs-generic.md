@@ -140,17 +140,27 @@ A custom API works only when developed hand-in-hand with the frontend.
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#contents"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -203,17 +213,27 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#contents"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -245,17 +265,27 @@ if you want to ask questions, request features, or if you just want to talk to u
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#contents"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
@@ -303,17 +333,27 @@ Combining a generic API with a custom API can be a successfull strategy.
 
 <br/>
 
+<p align="center">
+
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
+if you want to ask questions, request features, or if you just want to talk to us.
 </sup>
 
 <br/>
 
 <sup>
-<a href="#contents"><b>&#8679;</b> TOP <b>&#8679;</b></a>
+We want to talk with you!
 </sup>
+
+<br/>
+
+<sup>
+<a href="#contents"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
 
 <br/>
 <br/>
