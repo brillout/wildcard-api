@@ -134,8 +134,6 @@ Run the following npm scripts to build and serve the example:
    ~~~
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -194,8 +192,6 @@ endpoints.getCompletedPageData = async function () {
 };
 ~~~
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -329,8 +325,6 @@ console.log('Server is running. Go to http://localhost:3000')
 
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -387,8 +381,6 @@ async function getTodo(todoId) {
 }
 ~~~
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -468,8 +460,6 @@ function Todo({todo, updateTodo}) {
 }
 ~~~
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or

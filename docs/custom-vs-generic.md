@@ -138,8 +138,6 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 A custom API works only when developed hand-in-hand with the frontend.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -197,8 +195,6 @@ if you want to ask questions, request features, or if you just want to talk to u
   and a custom API / Wildcard can be used.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -234,8 +230,6 @@ if you want to ask questions, request features, or if you just want to talk to u
   An alternative is to set up a custom API that is maintained by the frontend team,
   see the "API server" section above.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -288,8 +282,6 @@ Combining a generic API with a custom API can be a successfull strategy.
   while your clients use
   a custom API that fulfills a broader range of data requirements.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or

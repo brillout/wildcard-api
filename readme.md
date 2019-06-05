@@ -162,8 +162,6 @@ endpoints.createTodo = async function(text) {
 ~~~
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -196,8 +194,6 @@ on the other hand,
 is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -331,8 +327,6 @@ if you want to ask questions, request features, or if you just want to talk to u
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -389,8 +383,6 @@ That way,
 you can make whatever you want available to your endpoint functions.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -442,8 +434,6 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
 See the [to-do list app example](/example/) for further permission examples.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -533,8 +523,6 @@ require('handli')`;
 ~~~
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -558,8 +546,6 @@ If you don't need Authentication, then SSR works out of the box.
 
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -606,8 +592,6 @@ This section collects further information about Wildcard.
    otherwise implement a custom API.
    But in some cases it's not that easy and this document goes into more depth.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or

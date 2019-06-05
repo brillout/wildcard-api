@@ -110,8 +110,6 @@ If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -176,8 +174,6 @@ GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
 
-<br/>
-
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
@@ -206,8 +202,6 @@ then don't use Wildcard.
 But beaware that it's less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
@@ -280,8 +274,6 @@ But sadly,
 their success is casting a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
-
-<br/>
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
