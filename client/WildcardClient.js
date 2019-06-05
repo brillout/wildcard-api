@@ -209,11 +209,11 @@ function WildcardClient({
     function set(){
       assert.usage(
         false,
-        "You cannot add/modify endpoint functions on the client.",
-        "Instead, define your endpoint functions on the server:",
+        "You cannot add/modify endpoint functions with the client module `wildcard-api/client`.",
+        "Instead, define your endpoint functions with the `wildcard-api` module:",
         "    const {endpoints} = require('wildcard-api');",
         "    endpoints.newEndpoint = function(){return 'hello'};",
-        "Note that `endpoints` is loaded from `require('wildcard-api')` and not `require('wildcard-api/client')`.",
+        "Note that you need to load `endpoints` from `require('wildcard-api')` and not `require('wildcard-api/client')`.",
       );
     }
   }

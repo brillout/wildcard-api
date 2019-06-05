@@ -4,7 +4,12 @@ const chalk = require('chalk');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
-assert.usage(isNodejs(), "The server-side module should be loaded in Node.js and not in the browser.");
+assert.usage(
+  isNodejs(),
+  "You are loading the module `wildcard-api` in the browser.",
+  "The module `wildcard-api` is meant for your Node.js server. Load `wildcard-api/client` instead.",
+  "That is: `import {endpoints} from 'wildcard-api/client'",
+);
 
 module.exports = WildcardApi;
 

@@ -57,6 +57,8 @@ How you retrieve/mutate data is up to you;
 you can use any SQL/NoSQL/ORM query:
 
 ~~~js
+// Node.js server
+
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/model/Todo');
@@ -256,6 +258,8 @@ Wildcard then makes `req` available to your endpoint function as `this`.
 For example:
 
 ~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const getUserFromSessionCookie = require('./path/to/your/session/logic');
 
@@ -282,6 +286,8 @@ you can make whatever you want available to your endpoint functions.
 Permissions are defined by code. For example:
 
 ~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('./path/to/your/db/handler');
@@ -323,14 +329,19 @@ See the [to-do list app example](/example/) for further permission examples.
 ### Error Handling
 
 This is what you need to know to handle errors:
-- On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
-- In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
+- On the server, your endpoint functions should catch expected errors and shouldn't catch unexpected errors (aka bugs).
+- In the browser, calling an endpoint throws an error if the user is offline or if the endpoint function throws an uncaught error (that is, there is a bug).
+
+cannot connect to the server or  endpoint didn't work. This happens when  when your endpoint function 
+`err` with `err.isServerError===true` if the endpoint function throws an uncaught error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
 
 Upon validation error, your endpoint function should not throw an exception.
 (A validation error is an expected error and not a bug.)
 For example:
 
 ~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const isStrongPassword = require('./path/to/isStrongPassword.js');
 
@@ -350,11 +361,81 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-With `isServerError` and `isNetworkError` you can handle errors as you wish.
-Like that:
+If you use a library that throws expected errors, then catch them:
 
 ~~~js
-const {endpoints} = require('wildcard-api/client');
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+const validatePasswordStrength = require('./path/to/validatePasswordStrength.js');
+
+endpoints.createAccount = async function({email, password}) {
+  // `validatePasswordStrength` is expected to throw an error if `password` is too weak.
+  // You should always catch such expected errors.
+  let err;
+  try {
+    validatePasswordStrength(password);
+  } catch(err_) {
+    err = err_
+  }
+
+  if( err ) {
+    return {validationError: "Password is too weak."};
+  }
+
+  /* ... */
+};
+~~~
+
+You shouldn't catch unexpected errors (aka bugs):
+
+~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+
+endpoints.brokenHello = function() {
+  // There is a bug in `hi` and an error will be thrown.
+  // You shouldn't catch the error.
+  return hi();
+};
+
+function brokenFunction() {
+  // There is a typo here: It should be `return` and not `retrn`
+  retrn 'Hey there';
+}
+~~~
+
+Not catching the bug allows you to handle the bug in the browser:
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
+
+(async () => {
+  let message;
+  let err;
+  try {
+    message = await endpoints.brokenHello();
+  } catch(err_) {
+    err = err_;
+  }
+
+  if( err ){
+    alert("Oops... That didn't work.");
+  } else {
+    alert('The message is: '+message);
+  }
+})();
+~~~
+
+And, with `isServerError` and `isNetworkError`, you can handle errors with more precision:
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
 
 async function() {
   let data;
@@ -366,23 +447,32 @@ async function() {
   }
 
   if( err.isServerError ){
-    // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
-    alert('Something went wrong. Sorry... Please try again.');
+    // This is when the `getData` endpoint function throws an uncaught error.
+    alert(
+      'Something went wrong on our side. We have been notified and we are working on a fix.' +
+      'Sorry... Please try again.'
+    );
     return {success: false};
   }
   if( err.isNetworkError ){
     // This is when the browser couldn't connect to the server.
-    alert("We couldn't connect to the server. Either the server is down or you're offline. Try again.");
-    return {success: false};
+    // In other words, when the server is down or when the browser is offline.
+    alert("We couldn't perform your request. Please try again.");
   }
 
-  return {success: true, data};
+  if( err ) {
+    return {success: false};
+  } else {
+    return {success: true, data};
+  }
 }
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will handle all errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will automatically handle all errors for you:
 
 ~~~js
+// Browser
+
 import 'handli';
 /* Or:
 require('handli')`;
@@ -400,7 +490,7 @@ require('handli')`;
 
 ### SSR
 
-The Wildcard client is universal and works on both the browser and Node.js.
+The Wildcard client is isomorphic/universal and works in both the browser and Node.js.
 
 If you don't need Authentication, then SSR works out of the box.
 
@@ -420,7 +510,7 @@ This section collects further information about Wildcard.
    <br/>
    How to use Wildcard with SSR and Authentication.
 
- - [How does it work](/docs/how-does-it-work.md#readme)
+ - [How it work](/docs/how-it-work.md#readme)
    <br/>
    Explains how Wildcard works.
 
@@ -434,7 +524,7 @@ This section collects further information about Wildcard.
 
  - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
    <br/>
-   Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
+   Goes into depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
    (Or both.)
    In general, the rule of thumb for deciding which one to use is simple:
    if third parties need to access your data,
