@@ -162,11 +162,15 @@ endpoints.createTodo = async function(text) {
 ~~~
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -195,11 +199,15 @@ is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -327,11 +335,15 @@ if you want to ask questions, request features, or if you just want to talk to u
 > [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -383,11 +395,15 @@ That way,
 you can make whatever you want available to your endpoint functions.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -435,11 +451,15 @@ endpoints.updateTodoText = async function(todoId, newText) {
 See the [to-do list app example](/example/) for further permission examples.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -523,11 +543,15 @@ require('handli')`;
 ~~~
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -547,11 +571,15 @@ If you don't need Authentication, then SSR works out of the box.
 If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 
@@ -593,11 +621,15 @@ This section collects further information about Wildcard.
    But in some cases it's not that easy and this document goes into more depth.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#readme">&#8679; TOP &#8679;</a></sub></b>
 

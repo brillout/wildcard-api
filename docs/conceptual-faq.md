@@ -110,11 +110,15 @@ If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -174,11 +178,15 @@ GraphQL's hype makes us forget how great custom APIs are.
 Let's remember.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -203,11 +211,15 @@ But beaware that it's less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 
@@ -275,11 +287,15 @@ their success is casting a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#conceptual-faq">&#8679; TOP &#8679;</a></sub></b>
 

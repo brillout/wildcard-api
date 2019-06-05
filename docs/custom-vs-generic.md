@@ -138,11 +138,15 @@ then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, te
 A custom API works only when developed hand-in-hand with the frontend.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -195,11 +199,15 @@ if you want to ask questions, request features, or if you just want to talk to u
   and a custom API / Wildcard can be used.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -231,11 +239,15 @@ if you want to ask questions, request features, or if you just want to talk to u
   see the "API server" section above.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -283,11 +295,15 @@ Combining a generic API with a custom API can be a successfull strategy.
   a custom API that fulfills a broader range of data requirements.
 
 
+<br/>
+
+<p>
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We want to talk with you!
 </sup>
+</p>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
