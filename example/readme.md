@@ -75,13 +75,11 @@
 
 
 -->
-<h1>
-  <p align="center">
-    <a href="/../../#readme">
-      <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
-    </a>
-  </p>
-</h1>
+<p align="center">
+  <a href="/../../#readme">
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=80 alt="Wildcard API"/>
+  </a>
+</p>
 
 <p align="center">Functions as an API.</p>
 
@@ -142,8 +140,9 @@ Run the following npm scripts to build and serve the example:
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-<br/>
 </sub>
+
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -204,8 +203,9 @@ endpoints.getCompletedPageData = async function () {
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-<br/>
 </sub>
+
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -339,8 +339,9 @@ console.log('Server is running. Go to http://localhost:3000')
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-<br/>
 </sub>
+
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -399,8 +400,9 @@ async function getTodo(todoId) {
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-<br/>
 </sub>
+
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
@@ -481,8 +483,9 @@ function Todo({todo, updateTodo}) {
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
 if you want to ask questions, request features, or if you just want to talk to us. We love to talk to our users :-).
-<br/>
 </sub>
+
+<br/>
 
 <b><sub><a href="#contents">&#8679; TOP &#8679;</a></sub></b>
 
