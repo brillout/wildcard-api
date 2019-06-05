@@ -141,11 +141,11 @@ Run the following npm scripts to build and serve the example:
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>
@@ -214,11 +214,11 @@ endpoints.getCompletedPageData = async function () {
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>
@@ -360,11 +360,11 @@ console.log('Server is running. Go to http://localhost:3000')
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>
@@ -431,11 +431,11 @@ async function getTodo(todoId) {
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>
@@ -524,11 +524,11 @@ function Todo({todo, updateTodo}) {
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>

@@ -6,11 +6,11 @@
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
 <a href="https://discord.gg/kqXf65G">chat with us</a> or
-if you want to ask questions, request features, or if you just want to talk to us.
+if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We want to talk with you :-).
+We like talking with our users :-).
 </sup>
 
 <br/>
