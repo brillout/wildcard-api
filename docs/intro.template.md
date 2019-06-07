@@ -324,7 +324,129 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
+### Error Handling
 
+Calling an endpoint throws an error when:
+ - The browser cannot connect to the server. (The user is offline or your server is down.)
+ - The endpoint function throws an uncaught error
+
+An uncaught error is considered a bug:
+
+~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+
+endpoints.brokenHello = function() {
+  // There is a bug in `hi` and an uncaught error will be thrown.
+  return hi();
+};
+
+function brokenFunction() {
+  // Typo: `retrn` instead of `return`
+  retrn 'Hey there';
+}
+~~~
+
+
+If you use a library that throws expected errors, then catch them:
+
+~~~js
+~~~
+
+In general, validation should be down like this:
+
+~~~js
+
+~~~
+
+
+The error thrown when caling an enpdoint has two attributes `isNetworkError` and `isServerError`:
+
+~~~js
+~~~
+
+
+
+
+
+
+Calling an endpoint throws an error when the endpoint returned value couldn't be retrieved.
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
+
+(async () => {
+  let err;
+  try {
+    await endpoints.hello();
+  } catch(err_) {
+    err = err_;
+  }
+  if( err ){
+    alert('Something went wrong');
+  }
+})();
+~~~
+
+This happens when
+the browser couldn't connect to the server (the user is offline or your server is down)
+
+This can also happen if an error is thrown and not caught while calling the endpoint function.
+
+~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+
+endpoints.hello = function() {
+  throw new Error();
+};
+~~~
+
+your endpoint throwns
+
+or when the endpoint function throws an uncaught exception.
+
+When the browser is offline:
+ - An uncaught exception has been thrown while calling the endpoint function.
+ the endpoint function throws an uncaught exception.
+
+More precisely, there are 2 situations
+When trying to call an endpoint 
+
+If your endpoint function throws an error:
+
+~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+
+endpoints.hello = function() {
+  throw new Error();
+};
+~~~
+
+and you try to call the endpoint in the browser, the following happens:
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
+import assert from 'assert';
+
+(async () => {
+  try {
+    await endpoints.hello();
+  } catch(err_) {
+    err = err_;
+  }
+  assert(err);
+  assert(err.isServerError===true);
+})();
+~~~
 
 ### Error Handling
 
@@ -390,20 +512,6 @@ endpoints.createAccount = async function({email, password}) {
 You shouldn't catch unexpected errors (aka bugs):
 
 ~~~js
-// Node.js server
-
-const {endpoints} = require('wildcard-api');
-
-endpoints.brokenHello = function() {
-  // There is a bug in `hi` and an error will be thrown.
-  // You shouldn't catch the error.
-  return hi();
-};
-
-function brokenFunction() {
-  // There is a typo here: It should be `return` and not `retrn`
-  retrn 'Hey there';
-}
 ~~~
 
 Not catching the bug allows you to handle the bug in the browser:
