@@ -199,11 +199,11 @@ All you have to do is to create JavaScript functions
 and all you need to know is written in this little Readme.
 
 If you need third parties to be able to retrieve/mutate your data
-then REST and GraphQL are better suited.
+then REST or GraphQL is better suited.
 A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
 
 But,
-for quickly evolving your application,
+for quickly evolving applications,
 the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
 Wildcard
 is schemaless and structureless
