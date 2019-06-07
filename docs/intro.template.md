@@ -355,10 +355,10 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-In general, Wildcard treats an uncaught error thrown by your endpoint function as a bug
-in your code. You should always catch errors that are expected.
-
-In particular, validation should always be hanlded by returning a value:
+Wildcard treats any uncaught error as a bug in your code.
+You should always catch errors that are expected,
+and in particular,
+validation should always be hanlded by returning a value:
 
 ~~~js
 // Node.js server
@@ -382,7 +382,7 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-With `isServerError` and `isNetworkError` you can handle errors more precisely:
+You can handle errors more precisely using `isServerError` and `isNetworkError`:
 
 ~~~js
 // Browser
@@ -425,7 +425,7 @@ You can also use [Handli](https://github.com/brillout/handli) which will automat
 ~~~js
 // Browser
 
-import 'handli';
+import 'handli'; // npm install handli
 // That's it: Handli automatically installs itslef.
 // All errors are now handled by Handli.
 ~~~
