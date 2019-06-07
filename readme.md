@@ -137,6 +137,8 @@ How you retrieve/mutate data is up to you;
 you can use any SQL/NoSQL/ORM query:
 
 ~~~js
+// Node.js server
+
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/model/Todo');
@@ -173,7 +175,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -220,7 +222,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -366,7 +368,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -408,6 +410,8 @@ Wildcard then makes `req` available to your endpoint function as `this`.
 For example:
 
 ~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const getUserFromSessionCookie = require('./path/to/your/session/logic');
 
@@ -436,7 +440,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -458,6 +462,8 @@ We like talking with our users :-).
 Permissions are defined by code. For example:
 
 ~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('./path/to/your/db/handler');
@@ -502,7 +508,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -522,26 +528,53 @@ We like talking with our users :-).
 
 ### Error Handling
 
-This is what you need to know to handle errors:
-- On the server, your endpoint functions should not throw errors. And if one of your endpoint function does throw an error, then it should be a bug.
-- In the browser, calling an endpoint will throw an error `err` with `err.isServerError===true` if the endpoint function throws an error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
+Calling an endpoint throws an error when:
+ - The browser cannot connect to the server. (The user is offline or your server is down.)
+ - The endpoint function throws an error and the error is not caught.
 
-Upon validation error, your endpoint function should not throw an exception.
-(A validation error is an expected error and not a bug.)
-For example:
+If you use a library that is expected to throws errors, then catch them:
 
 ~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+const validatePasswordStrength = require('./path/to/validatePasswordStrength.js');
+
+endpoints.createAccount = async function({email, password}) {
+  // `validatePasswordStrength` throws an error if `password` is too weak.
+  let err;
+  try {
+    validatePasswordStrength(password);
+  } catch(err_) {
+    err = err_
+  }
+  if( err ) {
+    return {validationError: "Password is too weak."};
+  }
+
+  /* ... */
+};
+~~~
+
+Wildcard treats uncaught errors thrown by endpoint functions as a bug
+in your code.
+
+Validation should always be hanlded by returning a value:
+
+~~~js
+// Node.js server
+
 const {endpoints} = require('wildcard-api');
 const isStrongPassword = require('./path/to/isStrongPassword.js');
 
 endpoints.createAccount = async function({email, password}) {
-  /* Don't do the following:
+  /* Don't throw an error
   if( !isStrongPassword(password) ){
     throw new Error("Password is too weak.");
   }
   */
 
-  // Do this instead:
+  // Return a value instead
   if( !isStrongPassword(password) ){
     return {validationError: "Password is too weak."};
   }
@@ -550,11 +583,12 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-With `isServerError` and `isNetworkError` you can handle errors as you wish.
-Like that:
+With `isServerError` and `isNetworkError` you can handle errors more precisely:
 
 ~~~js
-const {endpoints} = require('wildcard-api/client');
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
 
 async function() {
   let data;
@@ -566,23 +600,31 @@ async function() {
   }
 
   if( err.isServerError ){
-    // This is when the `getData` endpoint function throws an error. (In other words there is a bug.)
-    alert('Something went wrong. Sorry... Please try again.');
-    return {success: false};
+    // `getData` endpoint function has thrown an uncaught error.
+    alert(
+      'Something went wrong on our side. We have been notified and we are working on a fix.' +
+      'Sorry... Please try again later.'
+    );
   }
   if( err.isNetworkError ){
     // This is when the browser couldn't connect to the server.
-    alert("We couldn't connect to the server. Either the server is down or you're offline. Try again.");
-    return {success: false};
+    // In other words, when the server is down or when the browser is offline.
+    alert("We couldn't perform your request. Please try again.");
   }
 
-  return {success: true, data};
+  if( err ) {
+    return {success: false};
+  } else {
+    return {success: true, data};
+  }
 }
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will handle all errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will automatically handle all errors for you:
 
 ~~~js
+// Browser
+
 import 'handli';
 /* Or:
 require('handli')`;
@@ -604,7 +646,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -624,7 +666,7 @@ We like talking with our users :-).
 
 ### SSR
 
-The Wildcard client is universal and works on both the browser and Node.js.
+The Wildcard client is isomorphic/universal and works in both the browser and Node.js.
 
 If you don't need Authentication, then SSR works out of the box.
 
@@ -642,7 +684,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
@@ -668,7 +710,7 @@ This section collects further information about Wildcard.
    <br/>
    How to use Wildcard with SSR and Authentication.
 
- - [How does it work](/docs/how-does-it-work.md#readme)
+ - [How it work](/docs/how-it-work.md#readme)
    <br/>
    Explains how Wildcard works.
 
@@ -682,7 +724,7 @@ This section collects further information about Wildcard.
 
  - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
    <br/>
-   Goes into more depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
+   Goes into depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
    (Or both.)
    In general, the rule of thumb for deciding which one to use is simple:
    if third parties need to access your data,
@@ -702,7 +744,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users :-).
+We like talking with our users!
 </sup>
 
 <br/>
