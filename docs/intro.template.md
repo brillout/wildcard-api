@@ -324,166 +324,15 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
+
+
 ### Error Handling
 
 Calling an endpoint throws an error when:
  - The browser cannot connect to the server. (The user is offline or your server is down.)
- - The endpoint function throws an uncaught error
+ - The endpoint function throws an error and the error is not caught.
 
-An uncaught error is considered a bug:
-
-~~~js
-// Node.js server
-
-const {endpoints} = require('wildcard-api');
-
-endpoints.brokenHello = function() {
-  // There is a bug in `hi` and an uncaught error will be thrown.
-  return hi();
-};
-
-function brokenFunction() {
-  // Typo: `retrn` instead of `return`
-  retrn 'Hey there';
-}
-~~~
-
-
-If you use a library that throws expected errors, then catch them:
-
-~~~js
-~~~
-
-In general, validation should be down like this:
-
-~~~js
-
-~~~
-
-
-The error thrown when caling an enpdoint has two attributes `isNetworkError` and `isServerError`:
-
-~~~js
-~~~
-
-
-
-
-
-
-Calling an endpoint throws an error when the endpoint returned value couldn't be retrieved.
-
-~~~js
-// Browser
-
-import {endpoints} from 'wildcard-api/client';
-
-(async () => {
-  let err;
-  try {
-    await endpoints.hello();
-  } catch(err_) {
-    err = err_;
-  }
-  if( err ){
-    alert('Something went wrong');
-  }
-})();
-~~~
-
-This happens when
-the browser couldn't connect to the server (the user is offline or your server is down)
-
-This can also happen if an error is thrown and not caught while calling the endpoint function.
-
-~~~js
-// Node.js server
-
-const {endpoints} = require('wildcard-api');
-
-endpoints.hello = function() {
-  throw new Error();
-};
-~~~
-
-your endpoint throwns
-
-or when the endpoint function throws an uncaught exception.
-
-When the browser is offline:
- - An uncaught exception has been thrown while calling the endpoint function.
- the endpoint function throws an uncaught exception.
-
-More precisely, there are 2 situations
-When trying to call an endpoint 
-
-If your endpoint function throws an error:
-
-~~~js
-// Node.js server
-
-const {endpoints} = require('wildcard-api');
-
-endpoints.hello = function() {
-  throw new Error();
-};
-~~~
-
-and you try to call the endpoint in the browser, the following happens:
-
-~~~js
-// Browser
-
-import {endpoints} from 'wildcard-api/client';
-import assert from 'assert';
-
-(async () => {
-  try {
-    await endpoints.hello();
-  } catch(err_) {
-    err = err_;
-  }
-  assert(err);
-  assert(err.isServerError===true);
-})();
-~~~
-
-### Error Handling
-
-This is what you need to know to handle errors:
-- On the server, your endpoint functions should catch expected errors and shouldn't catch unexpected errors (aka bugs).
-- In the browser, calling an endpoint throws an error if the user is offline or if the endpoint function throws an uncaught error (that is, there is a bug).
-
-cannot connect to the server or  endpoint didn't work. This happens when  when your endpoint function 
-`err` with `err.isServerError===true` if the endpoint function throws an uncaught error (in other words there is a bug), and will throw an error with `err.isNetworkError===true` if the browser couldn't connect to the server.
-
-Upon validation error, your endpoint function should not throw an exception.
-(A validation error is an expected error and not a bug.)
-For example:
-
-~~~js
-// Node.js server
-
-const {endpoints} = require('wildcard-api');
-const isStrongPassword = require('./path/to/isStrongPassword.js');
-
-endpoints.createAccount = async function({email, password}) {
-  /* Don't do the following:
-  if( !isStrongPassword(password) ){
-    throw new Error("Password is too weak.");
-  }
-  */
-
-  // Do this instead:
-  if( !isStrongPassword(password) ){
-    return {validationError: "Password is too weak."};
-  }
-
-  /* ... */
-};
-~~~
-
-If you use a library that throws expected errors, then catch them:
+If you use a library that is expected to throws errors, then catch them:
 
 ~~~js
 // Node.js server
@@ -492,15 +341,13 @@ const {endpoints} = require('wildcard-api');
 const validatePasswordStrength = require('./path/to/validatePasswordStrength.js');
 
 endpoints.createAccount = async function({email, password}) {
-  // `validatePasswordStrength` is expected to throw an error if `password` is too weak.
-  // You should always catch such expected errors.
+  // `validatePasswordStrength` throws an error if `password` is too weak.
   let err;
   try {
     validatePasswordStrength(password);
   } catch(err_) {
     err = err_
   }
-
   if( err ) {
     return {validationError: "Password is too weak."};
   }
@@ -509,36 +356,34 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-You shouldn't catch unexpected errors (aka bugs):
+Wildcard treats uncaught errors thrown by endpoint functions as a bug
+in your code.
+
+Validation should always be hanlded by returning a value:
 
 ~~~js
-~~~
+// Node.js server
 
-Not catching the bug allows you to handle the bug in the browser:
+const {endpoints} = require('wildcard-api');
+const isStrongPassword = require('./path/to/isStrongPassword.js');
 
-~~~js
-// Browser
+endpoints.createAccount = async function({email, password}) {
+  /* Don't throw an error
+  if( !isStrongPassword(password) ){
+    throw new Error("Password is too weak.");
+  }
+  */
 
-import {endpoints} from 'wildcard-api/client';
-
-(async () => {
-  let message;
-  let err;
-  try {
-    message = await endpoints.brokenHello();
-  } catch(err_) {
-    err = err_;
+  // Return a value instead
+  if( !isStrongPassword(password) ){
+    return {validationError: "Password is too weak."};
   }
 
-  if( err ){
-    alert("Oops... That didn't work.");
-  } else {
-    alert('The message is: '+message);
-  }
-})();
+  /* ... */
+};
 ~~~
 
-And, with `isServerError` and `isNetworkError`, you can handle errors with more precision:
+With `isServerError` and `isNetworkError` you can handle errors more precisely:
 
 ~~~js
 // Browser
@@ -555,12 +400,11 @@ async function() {
   }
 
   if( err.isServerError ){
-    // This is when the `getData` endpoint function throws an uncaught error.
+    // `getData` endpoint function has thrown an uncaught error.
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
-      'Sorry... Please try again.'
+      'Sorry... Please try again later.'
     );
-    return {success: false};
   }
   if( err.isNetworkError ){
     // This is when the browser couldn't connect to the server.
