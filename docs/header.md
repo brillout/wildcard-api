@@ -4,4 +4,4 @@
   </a>
 </p>
 
-<p align="center">Functions as an API.</p>
+<p align="center">Use JavaScript Functions as API.</p>
