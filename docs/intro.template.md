@@ -101,8 +101,7 @@ A RESTful/GraphQL API has a schema and a rigid structure which is a good thing f
 But,
 for quickly evolving your application,
 the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
-Wildcard,
-on the other hand,
+Wildcard
 is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
@@ -330,7 +329,7 @@ See the [to-do list app example](/example/) for further permission examples.
 
 Calling an endpoint throws an error when:
  - The browser cannot connect to the server. (The user is offline or your server is down.)
- - The endpoint function throws an error and the error is not caught.
+ - The endpoint function throws an uncaught error.
 
 If you use a library that is expected to throws errors, then catch them:
 
@@ -356,10 +355,10 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-Wildcard treats uncaught errors thrown by endpoint functions as a bug
-in your code.
+In general, Wildcard treats an uncaught error thrown by your endpoint function as a bug
+in your code. You should always catch errors that are expected.
 
-Validation should always be hanlded by returning a value:
+In particular, validation should always be hanlded by returning a value:
 
 ~~~js
 // Node.js server
@@ -400,15 +399,16 @@ async function() {
   }
 
   if( err.isServerError ){
-    // `getData` endpoint function has thrown an uncaught error.
+    // The `getData` endpoint function has thrown an uncaught error.
+    // There is a bug in our server code.
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
     );
   }
   if( err.isNetworkError ){
-    // This is when the browser couldn't connect to the server.
-    // In other words, when the server is down or when the browser is offline.
+    // The browser couldn't connect to the server.
+    // The user is offline or the server is down.
     alert("We couldn't perform your request. Please try again.");
   }
 
@@ -426,10 +426,6 @@ You can also use [Handli](https://github.com/brillout/handli) which will automat
 // Browser
 
 import 'handli';
-/* Or:
-require('handli')`;
-*/
-
 // That's it: Handli automatically installs itslef.
 // All errors are now handled by Handli.
 ~~~
