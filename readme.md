@@ -102,7 +102,7 @@
 Wildcard is a JavaScript library to create an **API** for your **Node.js** server that is consumed by the **browser**.
 
 With Wildcard,
-creating an API is as easy as creating JavaScript functions:
+creating an API is as easy as creating a JavaScript function:
 
 ~~~js
 // Node.js server
