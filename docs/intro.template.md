@@ -337,43 +337,44 @@ If you use a library that is expected to throws errors, then catch them:
 // Node.js server
 
 const {endpoints} = require('wildcard-api');
-const validatePasswordStrength = require('./path/to/validatePasswordStrength.js');
+const validatePhoneNumber = require('some-phone-number-validatation-library');
 
-endpoints.createAccount = async function({email, password}) {
-  // `validatePasswordStrength` throws an error if `password` is too weak.
+endpoints.createAccount = async function({email, phoneNumber}) {
+  // `validatePhoneNumber` throws an error if `phoneNumber` is not a phone number.
   let err;
   try {
-    validatePasswordStrength(password);
+    validatePhoneNumber(phoneNumber);
   } catch(err_) {
     err = err_
   }
   if( err ) {
-    return {validationError: "Password is too weak."};
+    return {validationError: {phoneNumber: "Please enter a valid phone number."}};
   }
 
   /* ... */
 };
 ~~~
 
-Wildcard treats any uncaught error as a bug in your code.
-You should always catch errors that are expected,
-and in particular,
-validation should always be hanlded by returning a value:
+You should always catch expected errors.
+
+Wildcard regards any uncaught error as a bug in your code.
+
+Don't throw an error upon validation failure:
 
 ~~~js
 // Node.js server
 
 const {endpoints} = require('wildcard-api');
-const isStrongPassword = require('./path/to/isStrongPassword.js');
+const isStrongPassword = require('./path/to/isStrongPassword');
 
 endpoints.createAccount = async function({email, password}) {
-  /* Don't throw an error
+  /* Don't do this:
   if( !isStrongPassword(password) ){
     throw new Error("Password is too weak.");
   }
   */
 
-  // Return a value instead
+  // Instead, return a value:
   if( !isStrongPassword(password) ){
     return {validationError: "Password is too weak."};
   }
@@ -382,7 +383,7 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-You can handle errors more precisely using `isServerError` and `isNetworkError`:
+You can handle errors more precisely by using `isServerError` and `isNetworkError`:
 
 ~~~js
 // Browser
@@ -399,8 +400,8 @@ async function() {
   }
 
   if( err.isServerError ){
-    // The `getData` endpoint function has thrown an uncaught error.
-    // There is a bug in our server code.
+    // The endpoint function throwed an uncaught error.
+    // There is a bug in the server code.
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
