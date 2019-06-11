@@ -95,7 +95,7 @@ All you have to do is to create JavaScript functions
 and all you need to know is written in this little Readme.
 
 If you need third parties to be able to retrieve/mutate your data
-then REST or GraphQL is better suited.
+then REST or GraphQL are better suited.
 A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
 
 But,
