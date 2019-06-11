@@ -170,7 +170,7 @@ endpoints.createTodo = async function(text) {
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -216,7 +216,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -362,7 +362,7 @@ We like talking with our users!
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -434,7 +434,7 @@ you can make whatever you want available to your endpoint functions.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -502,7 +502,7 @@ See the [to-do list app example](/example/) for further permission examples.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -638,7 +638,7 @@ import 'handli'; // npm install handli
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -676,7 +676,7 @@ If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#r
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -736,7 +736,7 @@ This section collects further information about Wildcard.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 

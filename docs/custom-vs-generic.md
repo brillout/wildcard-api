@@ -144,7 +144,7 @@ A custom API works only when developed hand-in-hand with the frontend.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -215,7 +215,7 @@ We like talking with our users!
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -265,7 +265,7 @@ We like talking with our users!
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -331,7 +331,7 @@ Combining a generic API with a custom API can be a successfull strategy.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 

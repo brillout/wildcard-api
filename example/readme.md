@@ -140,7 +140,7 @@ Run the following npm scripts to build and serve the example:
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -213,7 +213,7 @@ endpoints.getCompletedPageData = async function () {
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -359,7 +359,7 @@ console.log('Server is running. Go to http://localhost:3000')
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -430,7 +430,7 @@ async function getTodo(todoId) {
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -523,7 +523,7 @@ function Todo({todo, updateTodo}) {
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 

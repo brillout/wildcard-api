@@ -116,7 +116,7 @@ then Wildcard offers a simple alternative.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -194,7 +194,7 @@ Let's remember.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -237,7 +237,7 @@ But beaware that it's less trivial than you might think.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
@@ -323,7 +323,7 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
 if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
