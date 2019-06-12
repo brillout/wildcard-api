@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -86,7 +86,7 @@
 <br/>
 
  - [What is Wildcard](#what-is-wildcard)
- - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
+ - [Wildcard VS GraphQL/REST](#wildcard-vs-graphqlrest)
  - Usage
    - [Getting Started](#getting-started)
    - [Authentication](#authentication)
@@ -191,7 +191,7 @@ We like talking with our users!
 
 
 
-### Wildcard VS REST/GraphQL
+### Wildcard VS GraphQL/REST
 
 If all you need is to retrieve/mutate data from you frontend,
 then Wildcard offers a very easy way.
@@ -767,7 +767,7 @@ We like talking with our users!
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -782,7 +782,7 @@ We like talking with our users!
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -797,7 +797,7 @@ We like talking with our users!
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -812,7 +812,7 @@ We like talking with our users!
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 
@@ -827,7 +827,7 @@ We like talking with our users!
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/intro.template.md` instead.
+    Edit `/docs/readme.template.md` instead.
 
 
 

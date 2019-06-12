@@ -6,7 +6,7 @@
 <br/>
 
  - [What is Wildcard](#what-is-wildcard)
- - [Wildcard VS REST/GraphQL](#wildcard-vs-restgraphql)
+ - [Wildcard VS GraphQL/REST](#wildcard-vs-graphqlrest)
  - Usage
    - [Getting Started](#getting-started)
    - [Authentication](#authentication)
@@ -87,7 +87,7 @@ endpoints.createTodo = async function(text) {
 
 
 
-### Wildcard VS REST/GraphQL
+### Wildcard VS GraphQL/REST
 
 If all you need is to retrieve/mutate data from you frontend,
 then Wildcard offers a very easy way.
