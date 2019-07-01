@@ -99,7 +99,7 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an **API** for your **Node.js** server that is consumed by the **browser**.
+Wildcard is a JavaScript library to create an **API** between your **Node.js** server and the **browser**.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
@@ -122,8 +122,8 @@ import {endpoints} from 'wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Daenerys');
-  console.log(message); // Prints `Welcome Daenerys`
+  const {message} = await endpoints.hello('Alice');
+  console.log(message); // Prints `Welcome Alice`
 })();
 ~~~
 
@@ -143,7 +143,7 @@ const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/model/Todo');
 
-endpoints.createTodo = async function(text) {
+endpoints.createTodoItem = async function(text) {
   const user = await getLoggedUser(this.headers); // We explain `this.headers` later
 
   // Abort if the user is not logged in
@@ -175,7 +175,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -193,17 +193,16 @@ We like talking with our users!
 
 ### Wildcard VS GraphQL/REST
 
-If all you need is to retrieve/mutate data from you frontend,
+If all you need is to retrieve/mutate data from within your frontend code,
 then Wildcard offers a very easy way.
 All you have to do is to create JavaScript functions
 and all you need to know is written in this little Readme.
 
-If you need third parties to be able to retrieve/mutate your data
-then REST or GraphQL are better suited.
-A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties that need a stable and long-term contract with your API.
+If third parties retrieve/mutate your data
+then REST and GraphQL are better suited.
+A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties who need a stable and long-term contract with your API.
 
-But,
-for quickly evolving applications,
+For quickly evolving applications,
 the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
 Wildcard
 is schemaless and structureless
@@ -221,7 +220,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -312,15 +311,42 @@ We like talking with our users!
    </summary>
 
    Wildcard can be used with any server framework.
-   Just make sure to reply HTTP requests made to `/wildcard/*`
-   with an HTTP response with the HTTP body and status code returned by
-   `const {body, statusCode, type} = await getApiResponse({method, url, headers});`
-   where `method`, `url`, and `headers` are the HTTP request method, URL, and headers.
+   All you have to do is to reply all HTTP requests made to `/wildcard/*`
+   with the HTTP body, the HTTP status code, and the response type returned by `getApiResponse`:
+   ~~~js
+   // This is a generic pseudo code for how to integrate Wildcard with any server framework.
+
+   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const {addRouteHandler, HttpResponse} = require('your-favorite-server-framework');
+
+   // Add a new route `/wildcard/*` to your server
+   addRouteHandler(
+     '/wildcard/*',
+     async ({req}) => {
+       // We assume your server framework to provide a request object with all the information we need.
+
+       // We get the HTTP request method (`GET`, `POST`, etc.).
+       const {method} = req;
+       // We get the HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`).
+       const {url} = req;
+       // We get the HTTP headers.
+       const {header} = req;
+
+       // We get the HTTP reponse body, HTTP status code, and the content type of the HTTP response body.
+       const {body, statusCode, type} = await getApiResponse({method, url, headers});
+
+       // We assume your server framework to provide a way to create an HTTP response
+       // upon `body`, `statusCode`, and `type`.
+       const response = new HttpResponse({body, statusCode, type});
+
+       return response;
+     }
+   );
+   ~~~
    </details>
 
 2. Define functions
-   in Node.js on
-   `require('wildcard-api').endpoints`.
+   in Node.js.
 
    ~~~js
    // Node.js
@@ -339,8 +365,7 @@ We like talking with our users!
    };
    ~~~
 
-3. You can now "call" your enpdoint functions in the browser
-   at `require('wildcard-api/client').endpoints`.
+3. You can now "call" your enpdoint functions in the browser.
 
    ~~~js
    // Browser
@@ -351,9 +376,6 @@ We like talking with our users!
      const data = await endpoints.myFirstEndpoint();
    })();
    ~~~
-
-> If you want to play around with Wildcard, you can use
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme) to scaffold an app that has a Wildcard API.
 
 
 <br/>
@@ -367,7 +389,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -439,7 +461,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -507,7 +529,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -555,11 +577,9 @@ endpoints.createAccount = async function({email, phoneNumber}) {
 };
 ~~~
 
-You should always catch expected errors.
+You should always catch expected errors: Wildcard regards any uncaught error as a bug in your code.
 
-Wildcard regards any uncaught error as a bug in your code.
-
-Don't throw an error upon validation failure:
+In particular, don't throw an error upon validation failure:
 
 ~~~js
 // Node.js server
@@ -574,7 +594,7 @@ endpoints.createAccount = async function({email, password}) {
   }
   */
 
-  // Instead, return a value:
+  // Instead, return a JavaScript value, e.g. a JavaScript object:
   if( !isStrongPassword(password) ){
     return {validationError: "Password is too weak."};
   }
@@ -583,7 +603,7 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-You can handle errors more precisely by using `isServerError` and `isNetworkError`:
+You can use `isServerError` and `isNetworkError` to handle errors more precisely:
 
 ~~~js
 // Browser
@@ -600,8 +620,7 @@ async function() {
   }
 
   if( err.isServerError ){
-    // The endpoint function throwed an uncaught error.
-    // There is a bug in the server code.
+    // Your endpoint function throwed an uncaught error: there is a bug in your server code.
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
@@ -609,7 +628,7 @@ async function() {
   }
   if( err.isNetworkError ){
     // The browser couldn't connect to the server.
-    // The user is offline or the server is down.
+    // The user is offline or your server is down.
     alert("We couldn't perform your request. Please try again.");
   }
 
@@ -621,14 +640,14 @@ async function() {
 }
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will automatically handle all errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will automatically handle errors for you:
 
 ~~~js
 // Browser
 
 import 'handli'; // npm install handli
 // That's it: Handli automatically installs itslef.
-// All errors are now handled by Handli.
+// Errors are now handled by Handli.
 ~~~
 
 
@@ -643,7 +662,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -663,7 +682,7 @@ We like talking with our users!
 
 ### SSR
 
-The Wildcard client is isomorphic/universal and works in both the browser and Node.js.
+The Wildcard client is isomorphic (aka universal) and works in both the browser and Node.js.
 
 If you don't need Authentication, then SSR works out of the box.
 
@@ -681,7 +700,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -741,7 +760,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We like talking with our users!
+We enjoy talking with our users.
 </sup>
 
 <br/>
