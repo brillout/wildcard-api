@@ -248,9 +248,9 @@ We enjoy talking with our users.
    const app = express();
 
    app.all('/wildcard/*' , async (req, res) => {
-     const {body, statusCode, type} = await getApiResponse(req);
+     const {body, statusCode, contentType} = await getApiResponse(req);
      res.status(statusCode);
-     res.type(type);
+     res.type(contentType);
      res.send(body);
    });
    ~~~
@@ -270,10 +270,10 @@ We enjoy talking with our users.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
-       const {body, statusCode, type} = await getApiResponse(request.raw.req);
+       const {body, statusCode, contentType} = await getApiResponse(request.raw.req);
        const resp = h.response(body);
        resp.code(statusCode);
-       resp.type(type);
+       resp.type(contentType);
        return resp;
      }
    });
@@ -295,9 +295,9 @@ We enjoy talking with our users.
    const router = new Router();
 
    router.all('/wildcard/*', async ctx => {
-     const {body, statusCode, type} = await getApiResponse(ctx);
+     const {body, statusCode, contentType} = await getApiResponse(ctx);
      ctx.status = apiResponse.statusCode;
-     ctx.type = type;
+     ctx.type = contentType;
      ctx.body = apiResponse.body;
    });
 
@@ -312,7 +312,7 @@ We enjoy talking with our users.
 
    Wildcard can be used with any server framework.
    All you have to do is to reply all HTTP requests made to `/wildcard/*`
-   with the HTTP body, the HTTP status code, and the response type returned by `getApiResponse`:
+   with the HTTP body, the HTTP status code, and the content type returned by `getApiResponse`:
    ~~~js
    // This is a generic pseudo code for how to integrate Wildcard with any server framework.
 
@@ -332,12 +332,12 @@ We enjoy talking with our users.
        // We get the HTTP headers.
        const {header} = req;
 
-       // We get the HTTP reponse body, HTTP status code, and the content type of the HTTP response body.
-       const {body, statusCode, type} = await getApiResponse({method, url, headers});
+       // We get the HTTP response body, HTTP status code, and the content type of the HTTP response body.
+       const {body, statusCode, contentType} = await getApiResponse({method, url, headers});
 
        // We assume your server framework to provide a way to create an HTTP response
-       // upon `body`, `statusCode`, and `type`.
-       const response = new HttpResponse({body, statusCode, type});
+       // upon `body`, `statusCode`, and `contentType`.
+       const response = new HttpResponse({body, statusCode, contentType});
 
        return response;
      }
@@ -419,9 +419,9 @@ For example with Express:
  ~~~js
  app.all('/wildcard/*' , async (req, res) => {
    // We pass `req` to getApiResponse
-   const {body, statusCode, type} = await getApiResponse(req);
+   const {body, statusCode, contentType} = await getApiResponse(req);
    res.status(statusCode);
-   res.type(type);
+   res.type(contentType);
    res.send(body);
  });
 ~~~

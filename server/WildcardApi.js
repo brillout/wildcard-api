@@ -44,7 +44,7 @@ function WildcardApi(options={}) {
     if( isBase({url}) && isDev() && isHumanReadableMode({method}) ){
       return {
         statusCode: 200,
-        type: 'text/html',
+        contentType: 'text/html',
         body: getListOfEndpoints(),
       };
     }
@@ -58,7 +58,7 @@ function WildcardApi(options={}) {
       assert.internal(invalidReason);
       return {
         statusCode: 404,
-        type: 'text/plain',
+        contentType: 'text/plain',
         body: invalidReason,
       };
     }
@@ -79,7 +79,7 @@ function WildcardApi(options={}) {
     const {respObject} = resultObject;
     assert.internal(respObject.body.constructor===String);
     assert.internal(respObject.statusCode);
-    assert.internal(respObject.type);
+    assert.internal(respObject.contentType);
     return respObject;
   }
 
@@ -229,18 +229,18 @@ function WildcardApi(options={}) {
     if( endpointError ) {
       respObject.body = respObject.body || 'Internal Server Error';
       respObject.statusCode = respObject.statusCode || 500;
-      respObject.type = respObject.type || 'text/plain';
+      respObject.contentType = respObject.contentType || 'text/plain';
     } else {
       assert.internal(body.constructor===String);
       respObject.body = respObject.body || body;
       respObject.statusCode = respObject.statusCode || 200;
-      respObject.type = respObject.type || 'application/json';
+      respObject.contentType = respObject.contentType || 'application/json';
     }
 
     if( isHumanReadableMode({method}) ){
       const humanReadableBody = getHumanReadableBody(resultObject);
       respObject.body = humanReadableBody;
-      respObject.type = 'text/html';
+      respObject.contentType = 'text/html';
       respObject.statusCode = 200;
     }
   }
@@ -467,10 +467,10 @@ function isDev() {
 
 // TODO - improve this
 function getHtml_body(resultObject) {
-  const {endpointResult, respObject: {type, body, statusCode}} = resultObject;
+  const {endpointResult, respObject: {contentType, body, statusCode}} = resultObject;
 
   const text = (
-    type==='application/json' ? (
+    contentType==='application/json' ? (
       JSON.stringify(
         (
           (endpointResult && endpointResult instanceof Object) ? (

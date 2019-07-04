@@ -40,7 +40,7 @@ wildcardApi.onEndpointCall = ({
   if( endpointError ) {
     overwriteResponse({
       statusCode: 500,
-      type: 'text/html',
+      contentType: 'text/html',
       body: "<html><body><b>There was an internal error. We have been notified.</b><body><html/>",
     });
   }

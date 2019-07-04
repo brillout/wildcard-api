@@ -43,7 +43,7 @@ async function interceptError({wildcardApi, browserEval}) {
     assert(endpointError.message==='Errolus');
     overwriteResponse({
       statusCode: 401,
-      type: 'text/plain',
+      contentType: 'text/plain',
       body: 'custom error handling',
     });
   };

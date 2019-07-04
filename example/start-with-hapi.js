@@ -18,7 +18,7 @@ async function startServer() {
       const apiResponse = await getApiResponse(request.raw.req);
       const resp = h.response(apiResponse.body);
       resp.code(apiResponse.statusCode);
-      resp.type(apiResponse.type);
+      resp.type(apiResponse.contentType);
       return resp;
     },
   });
@@ -30,6 +30,7 @@ async function startServer() {
     handler: {
       directory: {
         path: 'client/dist',
+        defaultExtension: 'html',
       }
     }
   });

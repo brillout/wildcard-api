@@ -11,7 +11,7 @@ const router = new Router();
 router.all('/wildcard/*', async ctx => {
   const apiResponse = await getApiResponse(ctx);
   ctx.status = apiResponse.statusCode;
-  ctx.type = apiResponse.type;
+  ctx.type = apiResponse.contentType;
   ctx.body = apiResponse.body;
 });
 
