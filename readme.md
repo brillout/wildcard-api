@@ -198,7 +198,7 @@ then Wildcard offers a very easy way.
 All you have to do is to create JavaScript functions
 and all you need to know is written in this little Readme.
 
-If third parties retrieve/mutate your data
+If third parties need to be able to retrieve/mutate your data
 then REST and GraphQL are better suited.
 A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties who need a stable and long-term contract with your API.
 
