@@ -26,8 +26,25 @@ async function launchBrowser() {
     browserEval,
   };
 
-  async function browserEval(fn, {offlineMode=false}={}) {
+  async function browserEval(fn, {offlineMode=false, args}={}) {
     await page.setOfflineMode(offlineMode);
-    return page.evaluate(fn);
+    let ret;
+    try {
+      ret = await page.evaluate(fn, args);
+    } catch(err) {
+      /*
+      // Non-helpful error "Evaluation failed: [object Object]" is a bug:
+      // - https://github.com/GoogleChrome/puppeteer/issues/4651
+      console.log('bef');
+      console.log(Object.getOwnPropertyNames(err));
+      console.log(err);
+      console.log(err.stack);
+      console.log(err.message);
+      console.log(2321);
+      process.exit();
+      */
+      throw err;
+    }
+    return ret;
   }
 }
