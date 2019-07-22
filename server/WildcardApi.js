@@ -1,6 +1,7 @@
 const assert = require('@brillout/reassert');
 const defaultSerializer = require('json-s');
 const chalk = require('chalk');
+const docsUrl = require('../package.json').repository;
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -30,7 +31,7 @@ function WildcardApi(options={}) {
 
   async function getApiResponse(reqObject) {
     assert_reqObject(reqObject);
-    const {method, url} = reqObject;
+    const {method, url, body} = reqObject;
 
     // URL is not a Wildcard URL
     if( ! ['GET', 'POST'].includes(method) ) {
@@ -49,7 +50,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseApiUrl({url});
+    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({url, body});
 
     // URL is invalid
     assert.internal([true, false].includes(isInvalidUrl));
@@ -72,7 +73,7 @@ function WildcardApi(options={}) {
       console.error('');
       console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
       console.error('Error is printed above.');
-      console.error("Your endpoint function `"+endpointName+"` should not throw errors. This error should be a bug. Read Wildcard's \"Error Handling\" Readme section for more infos.");
+      // console.error("Your endpoint function `"+endpointName+"` should not throw errors. This error should be a bug. Read the \"Error Handling\" section of Wildcard's GitHub Readme for more infos.");
       console.error('');
     }
 
@@ -116,10 +117,8 @@ function WildcardApi(options={}) {
     }
   }
 
-  function parseApiUrl({url}) {
-    const urlArgs = url.slice(getUrlBase().length);
-
-    const urlParts = urlArgs.split('/');
+  function parseRequest({url, body}) {
+    const urlParts = parseUrl(url);
     if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
       return {
         isInvalidUrl: true,
@@ -127,28 +126,8 @@ function WildcardApi(options={}) {
       };
     }
 
-    const endpointName = urlParts[0];
-
-    const endpointArgsString = urlParts[1] && decodeURIComponent(urlParts[1]);
-    let endpointArgs;
-    if( endpointArgsString ) {
-      const parse = options.parse || defaultSerializer.parse;
-      try {
-        endpointArgs = parse(endpointArgsString);
-      } catch(err_) {
-        return {
-          isInvalidUrl: true,
-          invalidReason: (
-            [
-              'Malformatted API URL `'+url+'`.',
-              "API URL arguments (i.e. endpoint arguments) don't seem to be a JSON.",
-              'API URL arguments: `'+endpointArgsString+'`',
-            ].join('\n')
-          ),
-        };
-      }
-    }
-    endpointArgs = endpointArgs || [];
+    const endpointName = getEndpointName({url});
+    const endpointArgs = getEndpointArgs({url, body});
 
     if( endpointArgs.constructor!==Array ) {
       return {
@@ -199,6 +178,54 @@ function WildcardApi(options={}) {
     };
   }
 
+  function getEndpointName({url}){
+    const urlParts = parseUrl(url);
+    const endpointName = urlParts[0];
+    return endpointName;
+  }
+
+  function getEndpointArgs({url, body}){
+    const urlParts = parseUrl(url);
+    const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
+    assert.internal(
+      !(urlArgs && body),
+      {url, body},
+      "Found arguments in both the URL and the HTTP body"
+    );
+    let endpointArgsString = body || urlArgs;
+    let endpointArgs;
+    if( endpointArgsString ){
+      const parse = options.parse || defaultSerializer.parse;
+      try {
+        endpointArgs = parse(endpointArgsString);
+      } catch(err_) {
+        return {
+          isInvalidUrl: true,
+          invalidReason: (
+            [
+              "JSON Parse Error:",
+              err_.message,
+              "Argument string:",
+              endpointArgsString,
+              "Couldn't JSON parse the argument string.",
+              "Is the argument string a valid JSON?",
+            ].join('\n')
+          ),
+        };
+      }
+    }
+    endpointArgs = endpointArgs || [];
+    return endpointArgs;
+  }
+
+  function parseUrl(url){
+    const urlPath = url.slice(getUrlBase().length);
+
+    const urlParts = urlPath.split('/');
+
+    return urlParts;
+  }
+
   function compute_response_object({resultObject, method}) {
     const {endpointResult, respObject} = resultObject;
     let {endpointError} = resultObject;
@@ -246,17 +273,18 @@ function WildcardApi(options={}) {
   }
 
   function assert_reqObject(reqObject) {
-    const {url, method, headers} = reqObject;
+    const {url, method, body, headers} = reqObject;
 
     const correctUsage = [
       "Usage:",
       "",
-      "  `const apiResponse = await getApiResponse({method, url, ...req});`",
+      "  `const apiResponse = await getApiResponse({method, url, body, ...req});`",
       "",
       "where",
       "  - `method` is the HTTP method of the request",
       "  - `url` is the HTTP URI of the request",
-      "  - `req` are optional additional request information such as logged-in user, HTTP headers, etc.",
+      "  - `body` is the HTTP body of the request",
+      "  - `req` are optional additional request information such as HTTP headers.",
     ];
     assert.usage(
       url,
@@ -268,10 +296,26 @@ function WildcardApi(options={}) {
     assert.usage(
       method,
       "Request object is missing `method`.",
-      "(`method=="+method+"`)",
+      "(`method==="+method+"`)",
       "",
       ...correctUsage,
     );
+    /*
+    assert.usage(
+      body in reqObject,
+      "Request object is missing `body`.",
+      "(`body==="+body+"`)",
+      "",
+      ...correctUsage,
+    );
+    assert.usage(
+      !body || body.constructor===String,
+      "Request `body` should be a string.",
+      "(`body.constructor==="+body.constructor+"`)",
+      "",
+      ...correctUsage,
+    );
+    */
   }
 
   async function runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall}) {

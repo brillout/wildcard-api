@@ -47,12 +47,33 @@ function WildcardClient({
 
     if( runDirectlyWithoutHTTP ) {
       assert.internal(isNodejs());
-      return wildcardApiFound.__directCall({endpointName, endpointArgs, reqObject});
+      return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, reqObject});
     } else {
       assert.internal(!reqObject);
-      const url = getUrl({endpointName, endpointArgs, serverRootUrl});
-      return makeHttpRequest({url, parse});
+      return callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl});
     }
+  }
+
+  function callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, reqObject}) {
+    return wildcardApiFound.__directCall({endpointName, endpointArgs, reqObject});
+  }
+
+  function callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl}) {
+    let url = getEndpointUrl({endpointName, endpointArgs, serverRootUrl});
+    let body = undefined;
+
+    // Add arguments
+    let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
+    if( endpointArgsStr ){
+      // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
+      if( endpointArgsStr.length >= 1000 ){
+        body = endpointArgsStr;
+      } else {
+        url += '/'+encodeURIComponent(endpointArgsStr);
+      }
+    }
+
+    return makeHttpRequest({url, parse, body});
   }
 
   // TODO-eventually improve error messages
@@ -118,7 +139,7 @@ function WildcardClient({
     }
   }
 
-  function getUrl({endpointName, endpointArgs, serverRootUrl}) {
+  function getEndpointUrl({endpointName, endpointArgs, serverRootUrl}) {
     serverRootUrl = serverRootUrl || '';
     if( serverRootUrl.endsWith('/') ) {
       serverRootUrl = serverRootUrl.slice(0, -1);
@@ -134,13 +155,9 @@ function WildcardClient({
       apiUrlBase = '/'+apiUrlBase;
     }
 
-    let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
-    endpointArgsStr = endpointArgsStr ? ('/'+encodeURIComponent(endpointArgsStr)) : '';
-
     assert.internal(apiUrlBase.startsWith('/') && apiUrlBase.endsWith('/'));
     assert.internal(!serverRootUrl.startsWith('/'));
-    assert.internal(!endpointArgsStr || endpointArgsStr.startsWith('/'));
-    const url = serverRootUrl+apiUrlBase+endpointName+endpointArgsStr;
+    const url = serverRootUrl+apiUrlBase+endpointName;
 
  // assert.internal(!makeHttpRequest.isUsingBrowserBuiltIn);
     const urlRootIsMissing = !serverRootUrl && makeHttpRequest.isUsingBrowserBuiltIn && !makeHttpRequest.isUsingBrowserBuiltIn();

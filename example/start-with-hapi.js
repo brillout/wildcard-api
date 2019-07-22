@@ -1,5 +1,5 @@
 const Hapi = require('hapi');
-const Inert = require('inert');
+const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 

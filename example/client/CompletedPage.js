@@ -1,3 +1,4 @@
+import './common';
 import React from 'react';
 import {endpoints} from 'wildcard-api/client';
 import renderPage from './renderPage';
