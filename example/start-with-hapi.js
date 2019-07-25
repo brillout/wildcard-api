@@ -1,6 +1,7 @@
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');
+const wildcardApi = require('wildcard-api/hapi');
 require('./api/endpoints');
 
 startServer();
@@ -11,17 +12,21 @@ async function startServer() {
     debug: {request: ['internal']},
   });
 
+  //*
   server.route({
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      const apiResponse = await getApiResponse(request.raw.req);
+      const apiResponse = await getApiResponse(request);
       const resp = h.response(apiResponse.body);
       resp.code(apiResponse.statusCode);
       resp.type(apiResponse.contentType);
       return resp;
     },
   });
+  /*/
+  await server.register(wildcardApi);
+  //*/
 
   await server.register(Inert);
   server.route({

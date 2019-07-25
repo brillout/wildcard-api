@@ -142,7 +142,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
-       const {body, statusCode, contentType} = await getApiResponse(request.raw.req);
+       const {body, statusCode, contentType} = await getApiResponse(request);
        const resp = h.response(body);
        resp.code(statusCode);
        resp.type(contentType);
@@ -195,17 +195,19 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    addRouteHandler(
      '/wildcard/*',
      async ({req}) => {
-       // We assume your server framework to provide a request object with all the information we need.
+       // We assume your server framework to provide a request object with information about the request.
 
        // We get the HTTP request method (`GET`, `POST`, etc.).
        const {method} = req;
        // We get the HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`).
        const {url} = req;
-       // We get the HTTP headers.
-       const {header} = req;
+       // We get the HTTP request headers.
+       const {headers} = req;
+       // We get the HTTP request body.
+       const {body} = req;
 
        // We get the HTTP response body, HTTP status code, and the content type of the HTTP response body.
-       const {body, statusCode, contentType} = await getApiResponse({method, url, headers});
+       const {body, statusCode, contentType} = await getApiResponse({method, url, headers, body});
 
        // We assume your server framework to provide a way to create an HTTP response
        // upon `body`, `statusCode`, and `contentType`.
@@ -259,8 +261,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
 
 For that you pass the request object `req` to `getApiResponse(req)`:
-This request object `req` is provided by your server framework (express/koa/hapi)
-and holds information about the HTTP request such as the HTTP headers.
+This request object `req` is provided by your server framework (Express/Koa/Hapi)
+and holds information about the HTTP request such as the HTTP request headers.
 
 For example with Express:
 

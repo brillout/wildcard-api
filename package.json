@@ -1,10 +1,12 @@
 {
   "name": "wildcard-api",
   "version": "0.4.0",
-  "main": "./server",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
     "@brillout/reassert": "^0.1.0",
+    "@universal-adapter/express": "^0.3.0",
+    "@universal-adapter/hapi": "^0.3.0",
+    "@universal-adapter/koa": "^0.3.0",
     "chalk": "^2.4.2",
     "json-s": "^0.1.0"
   },

@@ -113,7 +113,7 @@ When the client runs in the browser,
 `headers` originates from `getApiResponse`,
 and,
 when run in Node.js,
-`req` originates from our `bind` call above.
+`headers` originates from our `bind` call above.
 
 If you wonder why Wildcard works that way:
 when the Wildcard client is used in the browser,

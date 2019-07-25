@@ -13,7 +13,7 @@ async function startServer(wildcardApiHolder) {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      const {body, statusCode, contentType} = await wildcardApiHolder.wildcardApi.getApiResponse(request.raw.req);
+      const {body, statusCode, contentType} = await wildcardApiHolder.wildcardApi.getApiResponse(request);
       const resp = h.response(body);
       resp.code(statusCode);
       resp.type(contentType);
