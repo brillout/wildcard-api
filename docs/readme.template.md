@@ -120,10 +120,18 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const app = express();
 
    app.all('/wildcard/*' , async (req, res) => {
-     const {body, statusCode, contentType} = await getApiResponse(req);
-     res.status(statusCode);
-     res.type(contentType);
-     res.send(body);
+     const requestProps = {
+       url: req.url,
+       method: req.method,
+       body: req.body,
+       // All requestProps are available to your endpoint functions as `this`.
+       // For example, if you want to access the HTTP request headers in your endpoint functions:
+       //    requestProps.headers = req.headers;
+     };
+     const responseProps = await getApiResponse(requestProps);
+     res.status(responseProps.statusCode);
+     res.type(responseProps.contentType);
+     res.send(responseProps.body);
    });
    ~~~
 
@@ -142,11 +150,19 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
-       const {body, statusCode, contentType} = await getApiResponse(request);
-       const resp = h.response(body);
-       resp.code(statusCode);
-       resp.type(contentType);
-       return resp;
+       const requestProps = {
+         url: request.raw.req.url,
+         method: request.raw.req.method,
+         body: request.payload,
+         // All requestProps are available to your endpoint functions as `this`.
+         // For example, if you want to access the HTTP request headers in your endpoint functions:
+         //    requestProps.headers = request.raw.req.headers;
+       };
+       const responseProps = await getApiResponse(requestProps);
+       const response = h.response(responseProps.body);
+       response.code(responseProps.statusCode);
+       response.type(responseProps.contentType);
+       return response;
      }
    });
    ~~~
@@ -167,10 +183,18 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const router = new Router();
 
    router.all('/wildcard/*', async ctx => {
-     const {body, statusCode, contentType} = await getApiResponse(ctx);
-     ctx.status = apiResponse.statusCode;
-     ctx.type = contentType;
-     ctx.body = apiResponse.body;
+     const requestProps = {
+       url: ctx.url,
+       method: ctx.method,
+       body: ctx.body,
+       // All requestProps are available to your endpoint functions as `this`.
+       // For example, if you want to access the HTTP request headers in your endpoint functions:
+       //    requestProps.headers = ctx.headers;
+     };
+     const responseProps = await getApiResponse(requestProps);
+     ctx.status = responseProps.statusCode;
+     ctx.body = responseProps.body;
+     ctx.type = responseProps.contentType;
    });
 
    app.use(router.routes());
@@ -184,32 +208,36 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
    Wildcard can be used with any server framework.
    All you have to do is to reply all HTTP requests made to `/wildcard/*`
-   with the HTTP body, the HTTP status code, and the content type returned by `getApiResponse`:
+   with `getApiResponse`:
    ~~~js
-   // This is a generic pseudo code for how to integrate Wildcard with any server framework.
+   // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
-   const {addRouteHandler, HttpResponse} = require('your-favorite-server-framework');
+
+   const {addRoute, HttpResponse} = require('your-favorite-server-framework');
 
    // Add a new route `/wildcard/*` to your server
-   addRouteHandler(
+   addRoute(
      '/wildcard/*',
      async ({req}) => {
-       // We assume your server framework to provide a request object with information about the request.
+       // We assume that your server framework provides an object holding
+       // information about the request. We denote this object `req`.
 
-       // We get the HTTP request method (`GET`, `POST`, etc.).
-       const {method} = req;
-       // We get the HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`).
-       const {url} = req;
-       // We get the HTTP request headers.
-       const {headers} = req;
-       // We get the HTTP request body.
-       const {body} = req;
+       const requestProps = {
+         url: req.url, // The HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`)
+         method: req.method, // The HTTP request method (`GET`, `POST`, etc.)
+         body: req.body, // The HTTP request body
 
-       // We get the HTTP response body, HTTP status code, and the content type of the HTTP response body.
-       const {body, statusCode, contentType} = await getApiResponse({method, url, headers, body});
+         // All requestProps are available to your endpoint functions as `this`.
+         // For example, if you want to access the HTTP request headers in your endpoint functions:
+         //    requestProps.headers = req.headers;
+       };
 
-       // We assume your server framework to provide a way to create an HTTP response
+       // We get the HTTP response body, HTTP status code, and the body's content type.
+       const responseProps = await getApiResponse({method, url, headers, body});
+       const {body, statusCode, contentType} = responseProps;
+
+       // We assume that server framework provides a way to create an HTTP response
        // upon `body`, `statusCode`, and `contentType`.
        const response = new HttpResponse({body, statusCode, contentType});
 
