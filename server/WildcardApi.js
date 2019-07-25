@@ -273,49 +273,44 @@ function WildcardApi(options={}) {
   }
 
   function assert_reqObject(reqObject) {
-    const {url, method, body, headers} = reqObject;
+    const {url, method, body} = reqObject;
 
     const correctUsage = [
+      "",
       "Usage:",
       "",
       "  `const apiResponse = await getApiResponse({method, url, body, ...req});`",
       "",
       "where",
       "  - `method` is the HTTP method of the request",
-      "  - `url` is the HTTP URI of the request",
+      "  - `url` is the HTTP URL of the request",
       "  - `body` is the HTTP body of the request",
       "  - `req` are optional additional request information such as HTTP headers.",
-    ];
+    ].join('\n');
     assert.usage(
       url,
-      "Request object is missing `url`.",
+      "`url` is missing.",
       "(`url=="+url+"`)",
-      "",
       ...correctUsage
     );
     assert.usage(
       method,
-      "Request object is missing `method`.",
+      "`method` is missing.",
       "(`method==="+method+"`)",
-      "",
       ...correctUsage,
     );
-    /*
     assert.usage(
       body in reqObject,
-      "Request object is missing `body`.",
-      "(`body==="+body+"`)",
-      "",
+      "You should provide the HTTP request body.",
+      "`body` can be `null` or `undefined` but make sure to define it on the `requestProps`, i.e. make sure that `'body' in requestProps`.",
       ...correctUsage,
     );
     assert.usage(
       !body || body.constructor===String,
-      "Request `body` should be a string.",
-      "(`body.constructor==="+body.constructor+"`)",
-      "",
+      "`body` should be a string.",
+      "(`body.constructor==="+(body && body.constructor)+"`)",
       ...correctUsage,
     );
-    */
   }
 
   async function runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall}) {
