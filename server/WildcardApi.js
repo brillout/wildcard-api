@@ -2,7 +2,6 @@ const assert = require('@brillout/reassert');
 const defaultSerializer = require('json-s');
 const chalk = require('chalk');
 const docsUrl = require('../package.json').repository;
-const getRequestProps = require('@universal-adapter/server/getRequestProps');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -31,12 +30,8 @@ function WildcardApi(options={}) {
   return options;
 
   async function getApiResponse(reqObject) {
-    const requestProps = getRequestProps(reqObject);
-    assert_requestProps(requestProps);
-    const {method, urlProps: {pathname}, body} = requestProps;
-    assert.internal(method.constructor===String);
-    assert.internal(pathname.startsWith('/'));
-    assert.internal(body===null || body.constructor===String);
+    assert_reqObject(reqObject);
+    const {method, url, body} = reqObject;
 
     // URL is not a Wildcard URL
     if( ! ['GET', 'POST'].includes(method) ) {
@@ -277,26 +272,50 @@ function WildcardApi(options={}) {
     }
   }
 
-  function assert_requestProps(requestProps) {
+  function assert_reqObject(reqObject) {
+    const {url, method, body, headers} = reqObject;
+
+    const correctUsage = [
+      "Usage:",
+      "",
+      "  `const apiResponse = await getApiResponse({method, url, body, ...req});`",
+      "",
+      "where",
+      "  - `method` is the HTTP method of the request",
+      "  - `url` is the HTTP URI of the request",
+      "  - `body` is the HTTP body of the request",
+      "  - `req` are optional additional request information such as HTTP headers.",
+    ];
     assert.usage(
-      requestProps,
-      colorizeError("Wrong `getApiResponse` usage."),
-      [
-        "Usage:",
-        "",
-        "  `const apiResponse = await getApiResponse(requestInformation);`",
-        "",
-        "Where:",
-        "  - `requestInformation` is the Express `req` object, or",
-        "  - `requestInformation` is the Koa `ctx` object, or",
-        "  - `requestInformation` is the Hapi `request` object, or",
-        "  - `const {method, url, body, ...req} = requestInformation` where:",
-        "     - `method` is the HTTP method of the request",
-        "     - `url` is the HTTP URI of the request",
-        "     - `body` is the HTTP body of the request",
-        "     - `req` are optional additional request information such as HTTP headers.",
-      ].join('\n')
+      url,
+      "Request object is missing `url`.",
+      "(`url=="+url+"`)",
+      "",
+      ...correctUsage
     );
+    assert.usage(
+      method,
+      "Request object is missing `method`.",
+      "(`method==="+method+"`)",
+      "",
+      ...correctUsage,
+    );
+    /*
+    assert.usage(
+      body in reqObject,
+      "Request object is missing `body`.",
+      "(`body==="+body+"`)",
+      "",
+      ...correctUsage,
+    );
+    assert.usage(
+      !body || body.constructor===String,
+      "Request `body` should be a string.",
+      "(`body.constructor==="+body.constructor+"`)",
+      "",
+      ...correctUsage,
+    );
+    */
   }
 
   async function runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall}) {
