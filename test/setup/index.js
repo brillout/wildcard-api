@@ -31,7 +31,7 @@ const DEBUG = false;
 
   const {browserEval, browser} = await launchBrowser();
   for(let {test, file} of getTests()) {
-    const wildcardApi = WildcardApi();
+    const wildcardApi = new WildcardApi();
 
     Object.assign(wildcardApiHolder, {wildcardApi});
 

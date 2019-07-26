@@ -145,13 +145,13 @@ function WildcardApi(options={}) {
 
     if( ! endpointExists(endpointName) ) {
       if( noEndpointsDefined() ) {
-        console.error(invalidReason);
+        const invalidReason__part1 = "You didn't define any endpoint.";
+        const invalidReason__part2 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
+        console.error(colorizeError(invalidReason__part1));
+        console.error(invalidReason__part2);
         return {
           isInvalidUrl: true,
-          invalidReason: (
-            "You didn't define any endpoint.\n" +
-            "Did you load your endpoint definitions `require('./path/to/your/endpoint-functions.js')`?"
-          ),
+          invalidReason: invalidReason__part1 + '\n' + invalidReason__part2,
         };
       } else {
         return {
@@ -392,7 +392,7 @@ function WildcardApi(options={}) {
     return Object.keys(endpointsObject);
   }
   function noEndpointsDefined() {
-    return getEndpointNames()===0;
+    return getEndpointNames().length===0;
   }
   function getListOfEndpoints() {
     const htmlBody = `
