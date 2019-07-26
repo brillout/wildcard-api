@@ -1,6 +1,6 @@
 module.exports = [
   ssr,
-  ssrWithRequestObject,
+  ssrWithoutRequestProps,
 ];
 
 async function ssr({wildcardApi, wildcardClient}) {
@@ -14,7 +14,7 @@ async function ssr({wildcardApi, wildcardClient}) {
   assert(endpointResult==='heyy Paul');
 };
 
-async function ssrWithRequestObject({wildcardApi, wildcardClient}) {
+async function ssrWithoutRequestProps({wildcardApi, wildcardClient}) {
   wildcardApi.endpoints.hello = async function(name) {
     return 'yo '+name;
   };

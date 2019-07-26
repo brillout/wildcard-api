@@ -2,6 +2,7 @@ const assert = require('@brillout/reassert');
 const defaultSerializer = require('json-s');
 const chalk = require('chalk');
 const docsUrl = require('../package.json').repository;
+const getUrlProps = require('@brillout/url-props');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -22,27 +23,26 @@ function WildcardApi(options={}) {
     {
       endpoints: endpointsObject,
       getApiResponse,
-      wildcardPlug,
       __directCall,
     },
   );
 
   return options;
 
-  async function getApiResponse(reqObject) {
-    assert_reqObject(reqObject);
-    const {method, url, body} = reqObject;
+  async function getApiResponse(requestProps) {
+    const reqInfos = getReqInfos(requestProps);
+    const {method, pathname, body} = reqInfos;
 
     // URL is not a Wildcard URL
     if( ! ['GET', 'POST'].includes(method) ) {
       return null;
     }
-    if( !isBase({url}) && !url.startsWith(getUrlBase()) ){
+    if( !isPathanameBase({pathname}) && !pathname.startsWith(getPathnameBase()) ){
       return null;
     }
 
-    // URL is the wildard root `/wildcard`
-    if( isBase({url}) && isDev() && isHumanReadableMode({method}) ){
+    // `pathname` is the base pathname `/wildcard`
+    if( isPathanameBase({pathname}) && isDev() && isHumanReadableMode({method}) ){
       return {
         statusCode: 200,
         contentType: 'text/html',
@@ -50,7 +50,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({url, body});
+    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({pathname, body});
 
     // URL is invalid
     assert.internal([true, false].includes(isInvalidUrl));
@@ -64,7 +64,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const resultObject = await runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall: false});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall: false});
     compute_response_object({resultObject, method});
 
     if( resultObject.endpointError ) {
@@ -93,11 +93,7 @@ function WildcardApi(options={}) {
     }
   }
 
-  async function wildcardPlug(reqObject) {
-    return getApiResponse(reqObject);
-  }
-
-  async function __directCall({endpointName, endpointArgs, reqObject}) {
+  async function __directCall({endpointName, endpointArgs, requestProps}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
 
@@ -106,7 +102,7 @@ function WildcardApi(options={}) {
       'Endpoint '+endpointName+" doesn't exist.",
     );
 
-    const resultObject = await runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall: true});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall: true});
 
     const {endpointResult, endpointError} = resultObject;
 
@@ -117,24 +113,24 @@ function WildcardApi(options={}) {
     }
   }
 
-  function parseRequest({url, body}) {
-    const urlParts = parseUrl(url);
+  function parseRequest({pathname, body}) {
+    const urlParts = parsePathname(pathname);
     if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
       return {
         isInvalidUrl: true,
-        invalidReason: 'Malformatted API URL `'+url+'`',
+        invalidReason: 'Malformatted API URL `'+pathname+'`',
       };
     }
 
-    const endpointName = getEndpointName({url});
-    const endpointArgs = getEndpointArgs({url, body});
+    const endpointName = getEndpointName({pathname});
+    const endpointArgs = getEndpointArgs({pathname, body});
 
     if( endpointArgs.constructor!==Array ) {
       return {
         isInvalidUrl: true,
         invalidReason: (
           [
-            'Malformatted API URL `'+url+'`.',
+            'Malformatted API URL `'+pathname+'`.',
             'API URL arguments (i.e. endpoint arguments) should be an array.',
             "Instead we got `"+endpointArgs.constructor+"`.",
             'API URL arguments: `'+endpointArgsString+'`',
@@ -178,18 +174,18 @@ function WildcardApi(options={}) {
     };
   }
 
-  function getEndpointName({url}){
-    const urlParts = parseUrl(url);
+  function getEndpointName({pathname}){
+    const urlParts = parsePathname(pathname);
     const endpointName = urlParts[0];
     return endpointName;
   }
 
-  function getEndpointArgs({url, body}){
-    const urlParts = parseUrl(url);
+  function getEndpointArgs({pathname, body}){
+    const urlParts = parsePathname(pathname);
     const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
     assert.internal(
       !(urlArgs && body),
-      {url, body},
+      {pathname, body},
       "Found arguments in both the URL and the HTTP body"
     );
     let endpointArgsString = body || urlArgs;
@@ -218,10 +214,11 @@ function WildcardApi(options={}) {
     return endpointArgs;
   }
 
-  function parseUrl(url){
-    const urlPath = url.slice(getUrlBase().length);
+  function parsePathname(pathname){
+    const pathnameBase = getPathnameBase();
 
-    const urlParts = urlPath.split('/');
+    assert.internal(pathname.startsWith(pathnameBase));
+    const urlParts = pathname.slice(pathnameBase.length).split('/');
 
     return urlParts;
   }
@@ -272,9 +269,7 @@ function WildcardApi(options={}) {
     }
   }
 
-  function assert_reqObject(reqObject) {
-    const {url, method, body} = reqObject;
-
+  function getReqInfos(requestProps) {
     const correctUsage = [
       "",
       "Usage:",
@@ -287,33 +282,42 @@ function WildcardApi(options={}) {
       "  - `body` is the HTTP body of the request",
       "  - `req` are optional additional request information such as HTTP headers.",
     ].join('\n');
+
     assert.usage(
-      url,
+      requestProps.url,
       "`url` is missing.",
-      "(`url=="+url+"`)",
+      "(`url=="+requestProps.url+"`)",
       correctUsage
     );
+    const {pathname} = getUrlProps(requestProps.url);
+    assert.internal(pathname.startsWith('/'));
+
     assert.usage(
-      method,
+      requestProps.method,
       "`method` is missing.",
-      "(`method==="+method+"`)",
+      "(`method==="+requestProps.method+"`)",
       correctUsage,
     );
+    const method = requestProps.method.toUpperCase();
+
     assert.usage(
-      'body' in reqObject,
+      'body' in requestProps,
       "You should provide the HTTP request body.",
       "`body` can be `null` or `undefined` but make sure to define it on the `requestProps`, i.e. make sure that `'body' in requestProps`.",
       correctUsage,
     );
+    const {body} = requestProps;
     assert.usage(
       !body || body.constructor===String,
       "`body` should be a string.",
       "(`body.constructor==="+(body && body.constructor)+"`)",
       correctUsage,
     );
+
+    return {method, pathname, body};
   }
 
-  async function runEndpoint({endpointName, endpointArgs, reqObject, isDirectCall}) {
+  async function runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
     assert.internal([true, false].includes(isDirectCall));
@@ -322,22 +326,23 @@ function WildcardApi(options={}) {
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    const reqObject_proxy = create_reqObject_proxy({reqObject, endpointName, isDirectCall});
+    const requestProps_proxy = create_requestProps_proxy({requestProps, endpointName, isDirectCall});
 
     let endpointResult;
     let endpointError;
 
     try {
       endpointResult = await endpoint.apply(
-        reqObject_proxy,
+        requestProps_proxy,
         endpointArgs,
       );
     } catch(err) {
       endpointError = err;
     }
 
+    // TODO - remove onEndpointCall
     const resultObject = {
-      req: reqObject,
+      req: requestProps,
       endpointName,
       endpointArgs,
       endpointError,
@@ -378,12 +383,12 @@ function WildcardApi(options={}) {
     return !!endpoint;
   }
 
-  function isBase({url}) {
-    const urlBase = getUrlBase();
-    if( url===urlBase ) {
+  function isPathanameBase({pathname}) {
+    const urlBase = getPathnameBase();
+    if( pathname===urlBase ) {
       return true;
     }
-    if( urlBase.endsWith('/') && url===urlBase.slice(0, -1) ) {
+    if( urlBase.endsWith('/') && pathname===urlBase.slice(0, -1) ) {
       return true;
     }
     return false;
@@ -401,7 +406,7 @@ Endpoints:
 ${
   getEndpointNames()
   .map(endpointName => {
-    const endpointURL = getUrlBase()+endpointName;
+    const endpointURL = getPathnameBase()+endpointName;
     return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
   })
   .join('\n')
@@ -417,7 +422,7 @@ ${
     );
   }
 
-  function getUrlBase() {
+  function getPathnameBase() {
     return options.apiUrlBase || DEFAULT_API_URL_BASE;
   }
 }
@@ -601,29 +606,24 @@ function getEndpointsObject() {
   return new Proxy({}, {set: validateEndpoint});
 }
 
-function create_reqObject_proxy({reqObject, endpointName, isDirectCall}) {
-  const reqObject_proxy = new Proxy(reqObject||{}, {get, set});
-  return reqObject;
+function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
+  const requestProps_proxy = new Proxy(requestProps||{}, {get, set});
+  return requestProps_proxy;
 
   function set(_, prop, newVal) {
-    reqObject[prop] = newVal;
+    requestProps[prop] = newVal;
     return true;
   }
   function get(_, prop) {
-    assert_reqObject_prop(prop);
-    assert.internal(reqObject);
-    return reqObject[prop];
-  }
-
-  function assert_reqObject_prop(prop) {
-    if( !reqObject ) {
+    if( !requestProps ) {
       assert.internal(isDirectCall===true);
       assert.usage(false,
-        "Cannot get `this"+getPropString(prop)+"`.",
-        "While running the Wildcard client on Node.js.",
-        "Make sure to add the request object with `bind`: `endpoints"+getPropString(endpointName)+".bind(req)`.",
+        "Cannot get `this"+getPropString(prop)+"` while running the Wildcard client in Node.js.",
+        "Make sure to add the `requestProps` with `bind`: `endpoints"+getPropString(endpointName)+".bind(requestProps)`.",
       );
     }
+    assert.internal(requestProps);
+    return requestProps[prop];
   }
 }
 

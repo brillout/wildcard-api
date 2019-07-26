@@ -16,8 +16,8 @@ async function startServer() {
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
       const requestProps = {
-        url: request.raw.req.url,
-        method: request.raw.req.method,
+        url: request.url,
+        method: request.method,
         body: request.payload,
         // For example, to access the HTTP request headers in your endpoint functions:
         headers: request.headers,

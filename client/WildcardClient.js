@@ -38,7 +38,7 @@ function WildcardClient({
     wildcardApiArgs = wildcardApiArgs || {};
     endpointArgs = endpointArgs || [];
 
-    const {req: reqObject, serverRootUrl} = wildcardApiArgs;
+    const {requestProps, serverRootUrl} = wildcardApiArgs;
 
     const wildcardApiFound = wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
     const runDirectlyWithoutHTTP = !!wildcardApiFound;
@@ -47,15 +47,15 @@ function WildcardClient({
 
     if( runDirectlyWithoutHTTP ) {
       assert.internal(isNodejs());
-      return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, reqObject});
+      return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps});
     } else {
-      assert.internal(!reqObject);
+      assert.internal(!requestProps);
       return callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl});
     }
   }
 
-  function callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, reqObject}) {
-    return wildcardApiFound.__directCall({endpointName, endpointArgs, reqObject});
+  function callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps}) {
+    return wildcardApiFound.__directCall({endpointName, endpointArgs, requestProps});
   }
 
   function callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl}) {
@@ -84,7 +84,7 @@ function WildcardClient({
       endpointArgs.constructor===Array,
       restArgs.length===0,
       wildcardApiArgs.constructor===Object &&
-      Object.keys(wildcardApiArgs).every(arg => ['req', 'serverRootUrl', isCalledByProxy].includes(arg))
+      Object.keys(wildcardApiArgs).every(arg => ['requestProps', 'serverRootUrl', isCalledByProxy].includes(arg))
     );
 
     if( wildcardApiArgs[isCalledByProxy] ) {
@@ -94,12 +94,12 @@ function WildcardClient({
         fetchEndpoint__validArgs,
         "Usage:"+
         "",
-        "  `fetchEndpoint(endpointName, endpointArgs, {req, serverRootUrl})`",
+        "  `fetchEndpoint(endpointName, endpointArgs, {requestProps, serverRootUrl})`",
         "",
         "    Where:",
         "      - `endpointName` is the name of the endpoint (required string)",
         "      - `endpointArgs` is the argument list of the endpoint (optional array)",
-        "      - `req` is the HTTP request object (optional object)",
+        "      - `requestProps` is the HTTP request object (optional object)",
         "      - `serverRootUrl` is the URL root of the server (optional string)",
         "",
         "    Examples:",
@@ -108,7 +108,7 @@ function WildcardClient({
       );
     }
 
-    const {req} = wildcardApiArgs;
+    const {requestProps} = wildcardApiArgs;
     if( runDirectlyWithoutHTTP ) {
       const errorIntro = [
         "You are trying to run an endpoint directly.",
@@ -128,13 +128,13 @@ function WildcardClient({
       );
     } else {
       assert.usage(
-        Object.keys(req||{}).length===0,
+        Object.keys(requestProps||{}).length===0,
         "Wrong SSR usage.",
         "You are:",
-        "  - Fetching an API endpoint over HTTP",
-        "  - Providing a request object",
-        "But you should provide a request object only while doing server-side rendering.",
-        "(Providing a request object is obsolete on the browser-side since the HTTP request would override your request object.)",
+        "  - Using the Wildcard client on the browser-side",
+        "  - Providing `requestProps`",
+        "But you should provide `requestProps` only while doing server-side rendering.",
+        "(Providing `requestProps` doesn't make sense on browser-side.)",
       );
     }
   }
@@ -218,8 +218,8 @@ function WildcardClient({
           typeof window !== "undefined" && this===window ||
           typeof global !== "undefined" && this===global
         );
-        const req = noBind ? undefined : this;
-        return fetchEndpoint(prop, endpointArgs, {req, [isCalledByProxy]: true});
+        const requestProps = noBind ? undefined : this;
+        return fetchEndpoint(prop, endpointArgs, {requestProps, [isCalledByProxy]: true});
       };
     }
 
