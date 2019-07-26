@@ -10,8 +10,8 @@ app.all('/wildcard/*' , async (req, res) => {
     method: req.method,
     body: req.body,
     // All requestProps are available to your endpoint functions as `this`.
-    // For example, if you want to access the HTTP request headers in your endpoint functions:
-    //    requestProps.headers = req.headers;
+    // For example, to access the HTTP request headers in your endpoint functions:
+    headers: req.headers,
   };
   const responseProps = await getApiResponse(requestProps);
   res.status(responseProps.statusCode);

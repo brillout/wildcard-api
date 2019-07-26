@@ -19,6 +19,8 @@ async function startServer() {
         url: request.raw.req.url,
         method: request.raw.req.method,
         body: request.payload,
+        // For example, to access the HTTP request headers in your endpoint functions:
+        headers: request.headers,
       };
       const responseProps = await getApiResponse(requestProps);
       const response = h.response(responseProps.body);

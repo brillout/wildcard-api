@@ -1,5 +1,6 @@
 const Hapi = require('hapi');
 const Inert = require('inert');
+const {getApiResponse} = require('../../');
 
 module.exports = startServer;
 

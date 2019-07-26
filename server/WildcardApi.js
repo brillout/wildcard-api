@@ -291,25 +291,25 @@ function WildcardApi(options={}) {
       url,
       "`url` is missing.",
       "(`url=="+url+"`)",
-      ...correctUsage
+      correctUsage
     );
     assert.usage(
       method,
       "`method` is missing.",
       "(`method==="+method+"`)",
-      ...correctUsage,
+      correctUsage,
     );
     assert.usage(
-      body in reqObject,
+      'body' in reqObject,
       "You should provide the HTTP request body.",
       "`body` can be `null` or `undefined` but make sure to define it on the `requestProps`, i.e. make sure that `'body' in requestProps`.",
-      ...correctUsage,
+      correctUsage,
     );
     assert.usage(
       !body || body.constructor===String,
       "`body` should be a string.",
       "(`body.constructor==="+(body && body.constructor)+"`)",
-      ...correctUsage,
+      correctUsage,
     );
   }
 
