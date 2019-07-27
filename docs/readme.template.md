@@ -237,7 +237,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
        };
 
        // We get the HTTP response body, HTTP status code, and the body's content type.
-       const responseProps = await getApiResponse({method, url, headers, body});
+       const responseProps = await getApiResponse(requestProps);
        const {body, statusCode, contentType} = responseProps;
 
        // We assume that server framework provides a way to create an HTTP response
@@ -288,27 +288,28 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 ### Authentication
 
-To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
+For authentication,
+you typically need an HTTP header such as `Authorization: Bearer AbCdEf123456`, or a cookie that holds the user's session ID.
 
-For that you pass the request object `req` to `getApiResponse(req)`:
-This request object `req` is provided by your server framework (Express/Koa/Hapi)
-and holds information about the HTTP request such as the HTTP request headers.
-
-For example with Express:
+You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
 
  ~~~js
  app.all('/wildcard/*' , async (req, res) => {
-   // We pass `req` to getApiResponse
-   const {body, statusCode, contentType} = await getApiResponse(req);
-   res.status(statusCode);
-   res.type(contentType);
-   res.send(body);
+   const requestProps = {
+     url: req.url,
+     method: req.method,
+     body: req.body,
+     // We pass the `headers` object
+     headers: req.headers,
+   };
+   const responseProps = await getApiResponse(requestProps);
+   res.status(responseProps.statusCode);
+   res.type(responseProps.contentType);
+   res.send(responseProps.body);
  });
 ~~~
 
-Wildcard then makes `req` available to your endpoint function as `this`.
-
-For example:
+Wildcard makes `requestProps` available to your endpoint function as `this`:
 
 ~~~js
 // Node.js
@@ -317,17 +318,11 @@ const {endpoints} = require('wildcard-api');
 const getUserFromSessionCookie = require('./path/to/your/session/logic');
 
 endpoints.getLoggedUserInfo = async function() {
-  // Since `this===req`, `req.headers` is available as `this.headers`
+  // Since `this===requestProps`, `requestProps.headers` is available as `requestProps.headers`
   const user = await getUserFromSessionCookie(this.headers.cookie);
   return user;
 };
 ~~~
-
-In general, any object `anObject` you pass to `getApiResponse(anObject)`
-is made available to your endpoint functions as `this`.
-(I.e. `this===anObject`.)
-That way,
-you can make whatever you want available to your endpoint functions.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
