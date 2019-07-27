@@ -81,7 +81,7 @@
   </a>
 </p>
 
-<p align="center">Use JavaScript Functions as API.</p>
+<p align="center">JavaScript Functions as API.</p>
 &nbsp;
 
 
