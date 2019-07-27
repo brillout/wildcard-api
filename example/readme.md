@@ -145,7 +145,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We enjoy talking with our users.
+We enjoy talking with our users!
 </sup>
 
 <br/>
@@ -218,7 +218,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We enjoy talking with our users.
+We enjoy talking with our users!
 </sup>
 
 <br/>
@@ -411,7 +411,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We enjoy talking with our users.
+We enjoy talking with our users!
 </sup>
 
 <br/>
@@ -482,7 +482,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We enjoy talking with our users.
+We enjoy talking with our users!
 </sup>
 
 <br/>
@@ -576,7 +576,7 @@ if you have questions, feature requests, or if you just want to talk to us.
 </sup>
 
 <sup>
-We enjoy talking with our users.
+We enjoy talking with our users!
 </sup>
 
 <br/>
