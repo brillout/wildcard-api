@@ -18,8 +18,6 @@ app.all('/wildcard/*' , async (req, res) => {
     url: req.url,
     method: req.method,
     body: req.body,
-    // All requestProps are available to your endpoint functions as `this`.
-    // For example, to access the HTTP request headers in your endpoint functions:
     headers: req.headers,
   };
 

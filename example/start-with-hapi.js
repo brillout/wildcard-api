@@ -26,7 +26,6 @@ async function startServer() {
         url: request.url,
         method: request.method,
         body: request.payload,
-        // For example, to access the HTTP request headers in your endpoint functions:
         headers: request.headers,
       };
 

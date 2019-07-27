@@ -118,6 +118,7 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = express();
+   app.use(express.json()); // Make sure to parse the HTTP request body
 
    app.all('/wildcard/*' , async (req, res) => {
      const requestProps = {
@@ -125,8 +126,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
        method: req.method,
        body: req.body,
        // All requestProps are available to your endpoint functions as `this`.
-       // For example, if you want to access the HTTP request headers in your endpoint functions:
-       //    requestProps.headers = req.headers;
+       // For example, to access the HTTP request headers in your endpoint functions:
+       headers: req.headers,
      };
      const responseProps = await getApiResponse(requestProps);
      res.status(responseProps.statusCode);
@@ -151,12 +152,12 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
        const requestProps = {
-         url: request.raw.req.url,
-         method: request.raw.req.method,
+         url: request.url,
+         method: request.method,
          body: request.payload,
          // All requestProps are available to your endpoint functions as `this`.
-         // For example, if you want to access the HTTP request headers in your endpoint functions:
-         //    requestProps.headers = request.raw.req.headers;
+         // For example, to access the HTTP request headers in your endpoint functions:
+         headers: request.headers,
        };
        const responseProps = await getApiResponse(requestProps);
        const response = h.response(responseProps.body);
@@ -176,9 +177,11 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    ~~~js
    const Koa = require('koa');
    const Router = require('koa-router');
+   const bodyParser = require('koa-bodyparser');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = new Koa();
+   app.use(bodyParser()); // Make sure to parse the HTTP request body
 
    const router = new Router();
 
@@ -186,10 +189,10 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
      const requestProps = {
        url: ctx.url,
        method: ctx.method,
-       body: ctx.body,
+       body: ctx.request.body,
        // All requestProps are available to your endpoint functions as `this`.
-       // For example, if you want to access the HTTP request headers in your endpoint functions:
-       //    requestProps.headers = ctx.headers;
+       // For example, to access the HTTP request headers in your endpoint functions:
+       headers: ctx.request.headers,
      };
      const responseProps = await getApiResponse(requestProps);
      ctx.status = responseProps.statusCode;
@@ -229,8 +232,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
          body: req.body, // The HTTP request body
 
          // All requestProps are available to your endpoint functions as `this`.
-         // For example, if you want to access the HTTP request headers in your endpoint functions:
-         //    requestProps.headers = req.headers;
+         // For example, to access the HTTP request headers in your endpoint functions:
+         headers: req.headers,
        };
 
        // We get the HTTP response body, HTTP status code, and the body's content type.

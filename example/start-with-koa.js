@@ -24,8 +24,6 @@ router.all('/wildcard/*', async ctx => {
     url: ctx.url,
     method: ctx.method,
     body: ctx.request.body,
-    // All requestProps are available to your endpoint functions as `this`.
-    // For example, to access the HTTP request headers in your endpoint functions:
     headers: ctx.request.headers,
   };
 
