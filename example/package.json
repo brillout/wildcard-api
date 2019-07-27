@@ -5,7 +5,7 @@
     "server": "node ./start-with-express.js",
     "build": "cd client && parcel build *.html",
     "setup": "npm run install-yarn && npm run install-deps",
-    "install-yarn": "npm install --only=dev --no-save",
+    "install-yarn": "npm install --only=dev --no-save yarn",
     "install-deps": "(cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
   },
   "dependencies": {
