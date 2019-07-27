@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -169,7 +169,7 @@ This section highlights the interesting parts of the example.
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
-// /example/api/view-endpoints
+// ../example/api/view-endpoints
 
 const {endpoints} = require('wildcard-api');
 const db = require('../db');
@@ -237,24 +237,36 @@ We enjoy talking with our users.
 With Express:
 
 ~~~js
-// /example/start-with-express
+// ../example/start-with-express
 
+const assert = require('@brillout/reassert');
 const express = require('express');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
 const app = express();
 
-app.all('/wildcard/*' , (req, res) => {
-  // Our request object `req` is available to endpoint functions over `this`.
-  // That is `this===req`. For example:
-  // `endpoints.getUser = function() { return getLoggedUser(this.headers.cookies) }`.
-  getApiResponse(req)
-  .then(apiResponse => {
-    res.status(apiResponse.statusCode);
-    res.type(apiResponse.contentType);
-    res.send(apiResponse.body);
-  })
+app.use(express.json());
+
+app.all('/wildcard/*' , async (req, res) => {
+  assert.internal(req.url);
+  assert.internal(req.method);
+  assert.internal('body' in req);
+  assert.internal(req.method!=='POST' || req.body.constructor===Array);
+  assert.internal(req.headers.constructor===Object);
+
+  const requestProps = {
+    url: req.url,
+    method: req.method,
+    body: req.body,
+    headers: req.headers,
+  };
+
+  const responseProps = await getApiResponse(requestProps);
+
+  res.status(responseProps.statusCode);
+  res.type(responseProps.contentType);
+  res.send(responseProps.body);
 });
 
 // Serve our frontend
@@ -271,10 +283,11 @@ With Hapi
 </summary>
 
 ~~~js
-// /example/start-with-hapi
+// ../example/start-with-hapi
 
+const assert = require('@brillout/reassert');
 const Hapi = require('hapi');
-const Inert = require('inert');
+const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
 
@@ -290,11 +303,25 @@ async function startServer() {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
-      const apiResponse = await getApiResponse(request.raw.req);
-      const resp = h.response(apiResponse.body);
-      resp.code(apiResponse.statusCode);
-      resp.type(apiResponse.contentType);
-      return resp;
+      assert.internal(request.url);
+      assert.internal(request.method);
+      assert.internal('payload' in request);
+      assert.internal(request.method!=='POST' || request.payload.constructor===Array);
+      assert.internal(request.headers.constructor===Object);
+
+      const requestProps = {
+        url: request.url,
+        method: request.method,
+        body: request.payload,
+        headers: request.headers,
+      };
+
+      const responseProps = await getApiResponse(requestProps);
+
+      const response = h.response(responseProps.body);
+      response.code(responseProps.statusCode);
+      response.type(responseProps.contentType);
+      return response;
     },
   });
 
@@ -323,23 +350,42 @@ With Koa
 </summary>
 
 ~~~js
-// /example/start-with-koa
+// ../example/start-with-koa
 
+const assert = require('@brillout/reassert');
 const Koa = require('koa');
 const Router = require('koa-router');
 const Static = require('koa-static');
 const {getApiResponse} = require('wildcard-api');
+const bodyParser = require('koa-bodyparser');
+
 require('./api/endpoints');
 
 const app = new Koa();
 
+app.use(bodyParser());
+
 const router = new Router();
 
 router.all('/wildcard/*', async ctx => {
-  const apiResponse = await getApiResponse(ctx);
-  ctx.status = apiResponse.statusCode;
-  ctx.type = apiResponse.contentType;
-  ctx.body = apiResponse.body;
+  assert.internal(ctx.url);
+  assert.internal(ctx.method);
+  assert.internal('body' in ctx.request);
+  assert.internal(ctx.method!=='POST' || ctx.request.body.constructor===Array);
+  assert.internal(ctx.request.headers.constructor===Object);
+
+  const requestProps = {
+    url: ctx.url,
+    method: ctx.method,
+    body: ctx.request.body,
+    headers: ctx.request.headers,
+  };
+
+  const responseProps = await getApiResponse(requestProps);
+
+  ctx.status = responseProps.statusCode;
+  ctx.body = responseProps.body;
+  ctx.type = responseProps.contentType;
 });
 
 app.use(router.routes());
@@ -384,7 +430,7 @@ We enjoy talking with our users.
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
-// /example/api/mutation-endpoints
+// ../example/api/mutation-endpoints
 
 const {endpoints} = require('wildcard-api');
 const db = require('../db');
@@ -458,8 +504,9 @@ the user todos,
 and to update a todo.
 
 ~~~js
-// /example/client/LandingPage
+// ../example/client/LandingPage
 
+import './common';
 import React from 'react';
 import {endpoints} from 'wildcard-api/client';
 import renderPage from './renderPage';
@@ -494,7 +541,7 @@ function LandingPage() {
 ~~~
 
 ~~~js
-// /example/client/Todo
+// ../example/client/Todo
 
 import React from 'react';
 import {endpoints} from 'wildcard-api/client';
@@ -552,7 +599,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -567,7 +614,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -582,7 +629,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -597,7 +644,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -612,7 +659,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/example.template.md` instead.
+    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 

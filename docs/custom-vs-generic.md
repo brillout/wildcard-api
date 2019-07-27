@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -359,7 +359,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -374,7 +374,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -389,7 +389,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -404,7 +404,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -419,7 +419,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/custom-vs-generic.template.md` instead.
+    Instead, edit `/docs/custom-vs-generic.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 

@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -246,12 +246,21 @@ We enjoy talking with our users.
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = express();
+   app.use(express.json()); // Make sure to parse the HTTP request body
 
    app.all('/wildcard/*' , async (req, res) => {
-     const {body, statusCode, contentType} = await getApiResponse(req);
-     res.status(statusCode);
-     res.type(contentType);
-     res.send(body);
+     const requestProps = {
+       url: req.url,
+       method: req.method,
+       body: req.body,
+       // All requestProps are available to your endpoint functions as `this`.
+       // For example, to access the HTTP request headers in your endpoint functions:
+       headers: req.headers,
+     };
+     const responseProps = await getApiResponse(requestProps);
+     res.status(responseProps.statusCode);
+     res.type(responseProps.contentType);
+     res.send(responseProps.body);
    });
    ~~~
 
@@ -270,11 +279,19 @@ We enjoy talking with our users.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
-       const {body, statusCode, contentType} = await getApiResponse(request.raw.req);
-       const resp = h.response(body);
-       resp.code(statusCode);
-       resp.type(contentType);
-       return resp;
+       const requestProps = {
+         url: request.url,
+         method: request.method,
+         body: request.payload,
+         // All requestProps are available to your endpoint functions as `this`.
+         // For example, to access the HTTP request headers in your endpoint functions:
+         headers: request.headers,
+       };
+       const responseProps = await getApiResponse(requestProps);
+       const response = h.response(responseProps.body);
+       response.code(responseProps.statusCode);
+       response.type(responseProps.contentType);
+       return response;
      }
    });
    ~~~
@@ -288,17 +305,27 @@ We enjoy talking with our users.
    ~~~js
    const Koa = require('koa');
    const Router = require('koa-router');
+   const bodyParser = require('koa-bodyparser');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = new Koa();
+   app.use(bodyParser()); // Make sure to parse the HTTP request body
 
    const router = new Router();
 
    router.all('/wildcard/*', async ctx => {
-     const {body, statusCode, contentType} = await getApiResponse(ctx);
-     ctx.status = apiResponse.statusCode;
-     ctx.type = contentType;
-     ctx.body = apiResponse.body;
+     const requestProps = {
+       url: ctx.url,
+       method: ctx.method,
+       body: ctx.request.body,
+       // All requestProps are available to your endpoint functions as `this`.
+       // For example, to access the HTTP request headers in your endpoint functions:
+       headers: ctx.request.headers,
+     };
+     const responseProps = await getApiResponse(requestProps);
+     ctx.status = responseProps.statusCode;
+     ctx.body = responseProps.body;
+     ctx.type = responseProps.contentType;
    });
 
    app.use(router.routes());
@@ -312,30 +339,36 @@ We enjoy talking with our users.
 
    Wildcard can be used with any server framework.
    All you have to do is to reply all HTTP requests made to `/wildcard/*`
-   with the HTTP body, the HTTP status code, and the content type returned by `getApiResponse`:
+   with `getApiResponse`:
    ~~~js
-   // This is a generic pseudo code for how to integrate Wildcard with any server framework.
+   // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
-   const {addRouteHandler, HttpResponse} = require('your-favorite-server-framework');
+
+   const {addRoute, HttpResponse} = require('your-favorite-server-framework');
 
    // Add a new route `/wildcard/*` to your server
-   addRouteHandler(
+   addRoute(
      '/wildcard/*',
      async ({req}) => {
-       // We assume your server framework to provide a request object with all the information we need.
+       // We assume that your server framework provides an object holding
+       // information about the request. We denote this object `req`.
 
-       // We get the HTTP request method (`GET`, `POST`, etc.).
-       const {method} = req;
-       // We get the HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`).
-       const {url} = req;
-       // We get the HTTP headers.
-       const {header} = req;
+       const requestProps = {
+         url: req.url, // The HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`)
+         method: req.method, // The HTTP request method (`GET`, `POST`, etc.)
+         body: req.body, // The HTTP request body
 
-       // We get the HTTP response body, HTTP status code, and the content type of the HTTP response body.
-       const {body, statusCode, contentType} = await getApiResponse({method, url, headers});
+         // All requestProps are available to your endpoint functions as `this`.
+         // For example, to access the HTTP request headers in your endpoint functions:
+         headers: req.headers,
+       };
 
-       // We assume your server framework to provide a way to create an HTTP response
+       // We get the HTTP response body, HTTP status code, and the body's content type.
+       const responseProps = await getApiResponse({method, url, headers, body});
+       const {body, statusCode, contentType} = responseProps;
+
+       // We assume that server framework provides a way to create an HTTP response
        // upon `body`, `statusCode`, and `contentType`.
        const response = new HttpResponse({body, statusCode, contentType});
 
@@ -411,8 +444,8 @@ We enjoy talking with our users.
 To do authentication you need the HTTP headers such as the `Authorization: Bearer AbCdEf123456` Header or a cookie holding the user's session ID.
 
 For that you pass the request object `req` to `getApiResponse(req)`:
-This request object `req` is provided by your server framework (express/koa/hapi)
-and holds information about the HTTP request such as the HTTP headers.
+This request object `req` is provided by your server framework (Express/Koa/Hapi)
+and holds information about the HTTP request such as the HTTP request headers.
 
 For example with Express:
 
@@ -786,7 +819,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -801,7 +834,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -816,7 +849,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -831,7 +864,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -846,7 +879,7 @@ We enjoy talking with our users.
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 

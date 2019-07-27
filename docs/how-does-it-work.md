@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -113,7 +113,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -128,7 +128,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -143,7 +143,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -158,7 +158,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -173,7 +173,7 @@ When calling `endpoints.endpointName('some', {arg: 'val'});` in the browser, the
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/how-does-it-work.template.md` instead.
+    Instead, edit `/docs/how-does-it-work.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 

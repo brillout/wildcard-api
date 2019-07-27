@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -196,7 +196,7 @@ When the client runs in the browser,
 `headers` originates from `getApiResponse`,
 and,
 when run in Node.js,
-`req` originates from our `bind` call above.
+`headers` originates from our `bind` call above.
 
 If you wonder why Wildcard works that way:
 when the Wildcard client is used in the browser,
@@ -216,7 +216,7 @@ There is no way for Wildcard to get the HTTP headers and that's why you need to 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -231,7 +231,7 @@ There is no way for Wildcard to get the HTTP headers and that's why you need to 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -246,7 +246,7 @@ There is no way for Wildcard to get the HTTP headers and that's why you need to 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -261,7 +261,7 @@ There is no way for Wildcard to get the HTTP headers and that's why you need to 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -276,7 +276,7 @@ There is no way for Wildcard to get the HTTP headers and that's why you need to 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/ssr-auth.template.md` instead.
+    Instead, edit `/docs/ssr-auth.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
