@@ -25,7 +25,7 @@ With Wildcard,
 creating an API is as easy as creating a JavaScript function:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const {endpoints} = require('wildcard-api');
 
@@ -57,7 +57,7 @@ How you retrieve/mutate data is up to you;
 you can use any SQL/NoSQL/ORM query:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
@@ -250,8 +250,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    ~~~
    </details>
 
-2. Define functions
-   in Node.js.
+2. Define an endpoint function
+   in Node.js:
 
    ~~~js
    // Node.js
@@ -261,16 +261,15 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const getData = require('./path/to/your/data/retrieval/code');
 
    endpoints.myFirstEndpoint = async function () {
-     // `this` is the object you pass to `getApiResponse`.
-     // In the Express code above we passed `req`. Thus we can
-     // access `req.headers.cookie` over `this.headers.cookie`.
+     // `this` is the `requestProps` you pass to `getApiResponse`.
+     // We passed `requestProps.headers`, thus we can access the headers over `this.headers.cookie`.
      const user = await getLoggedUser(this.headers.cookie);
      const data = await getData(user);
      return data;
    };
    ~~~
 
-3. You can now "call" your enpdoint functions in the browser.
+3. You can now "call" your enpdoint functions in the browser:
 
    ~~~js
    // Browser
@@ -312,7 +311,7 @@ Wildcard then makes `req` available to your endpoint function as `this`.
 For example:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const {endpoints} = require('wildcard-api');
 const getUserFromSessionCookie = require('./path/to/your/session/logic');
@@ -340,7 +339,7 @@ you can make whatever you want available to your endpoint functions.
 Permissions are defined by code. For example:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
@@ -389,7 +388,7 @@ Calling an endpoint throws an error when:
 If you use a library that is expected to throws errors, then catch them:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const {endpoints} = require('wildcard-api');
 const validatePhoneNumber = require('some-phone-number-validatation-library');
@@ -415,7 +414,7 @@ You should always catch expected errors: Wildcard regards any uncaught error as 
 In particular, don't throw an error upon validation failure:
 
 ~~~js
-// Node.js server
+// Node.js
 
 const {endpoints} = require('wildcard-api');
 const isStrongPassword = require('./path/to/isStrongPassword');
