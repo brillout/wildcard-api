@@ -445,20 +445,20 @@ you typically need an HTTP header such as `Authorization: Bearer AbCdEf123456`, 
 
 You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
 
- ~~~js
- app.all('/wildcard/*' , async (req, res) => {
-   const requestProps = {
-     url: req.url,
-     method: req.method,
-     body: req.body,
-     // We pass the `headers` object
-     headers: req.headers,
-   };
-   const responseProps = await getApiResponse(requestProps);
-   res.status(responseProps.statusCode);
-   res.type(responseProps.contentType);
-   res.send(responseProps.body);
- });
+~~~js
+app.all('/wildcard/*' , async (req, res) => {
+  const requestProps = {
+    url: req.url,
+    method: req.method,
+    body: req.body,
+    // We pass the `headers` object
+    headers: req.headers,
+  };
+  const responseProps = await getApiResponse(requestProps);
+  res.status(responseProps.statusCode);
+  res.type(responseProps.contentType);
+  res.send(responseProps.body);
+});
 ~~~
 
 Wildcard makes `requestProps` available to your endpoint function as `this`:

@@ -18,7 +18,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "parcel": "^1.10.3",
+    "parcel": "^1.12.3",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "sqlite3": "^4.0.3",
