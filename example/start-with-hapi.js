@@ -1,3 +1,4 @@
+const assert = require('@brillout/reassert');
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');
@@ -15,6 +16,12 @@ async function startServer() {
     method: '*',
     path: '/wildcard/{param*}',
     handler: async (request, h) => {
+      assert.internal(request.url);
+      assert.internal(request.method);
+      assert.internal('payload' in request);
+      assert.internal(request.method!=='POST' || request.payload.constructor===Array);
+      assert.internal(request.headers.constructor===Object);
+
       const requestProps = {
         url: request.url,
         method: request.method,
@@ -22,7 +29,9 @@ async function startServer() {
         // For example, to access the HTTP request headers in your endpoint functions:
         headers: request.headers,
       };
+
       const responseProps = await getApiResponse(requestProps);
+
       const response = h.response(responseProps.body);
       response.code(responseProps.statusCode);
       response.type(responseProps.contentType);

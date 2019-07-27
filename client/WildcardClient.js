@@ -60,7 +60,7 @@ function WildcardClient({
 
   function callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl}) {
     let url = getEndpointUrl({endpointName, endpointArgs, serverRootUrl});
-    let body = undefined;
+    let body = stringify([]);
 
     // Add arguments
     let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});

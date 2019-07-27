@@ -50,7 +50,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({pathname, body});
+    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({method, pathname, body});
 
     // URL is invalid
     assert.internal([true, false].includes(isInvalidUrl));
@@ -113,7 +113,7 @@ function WildcardApi(options={}) {
     }
   }
 
-  function parseRequest({pathname, body}) {
+  function parseRequest({method, pathname, body}) {
     const urlParts = parsePathname(pathname);
     if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
       return {
@@ -123,7 +123,7 @@ function WildcardApi(options={}) {
     }
 
     const endpointName = getEndpointName({pathname});
-    const endpointArgs = getEndpointArgs({pathname, body});
+    const endpointArgs = getEndpointArgs({method, pathname, body});
 
     if( endpointArgs.constructor!==Array ) {
       return {
@@ -180,15 +180,14 @@ function WildcardApi(options={}) {
     return endpointName;
   }
 
-  function getEndpointArgs({pathname, body}){
+  function getEndpointArgs({method, pathname, body}){
     const urlParts = parsePathname(pathname);
     const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
-    assert.internal(
-      !(urlArgs && body),
-      {pathname, body},
-      "Found arguments in both the URL and the HTTP body"
-    );
-    let endpointArgsString = body || urlArgs;
+    assert.internal(['GET', 'POST'].includes(method));
+    assert.internal(!(method==='GET' && body));
+    assert.internal(!(method==='POST' && !body));
+    assert.internal(!body || [Array, String].includes(body.constructor));
+    let endpointArgsString = urlArgs || JSON.stringify(body);
     let endpointArgs;
     if( endpointArgsString ){
       const parse = options.parse || defaultSerializer.parse;
@@ -271,7 +270,6 @@ function WildcardApi(options={}) {
 
   function getReqInfos(requestProps) {
     const correctUsage = [
-      "",
       "Usage:",
       "",
       "  `const apiResponse = await getApiResponse({method, url, body, ...req});`",
@@ -281,37 +279,56 @@ function WildcardApi(options={}) {
       "  - `url` is the HTTP URL of the request",
       "  - `body` is the HTTP body of the request",
       "  - `req` are optional additional request information such as HTTP headers.",
+      "",
     ].join('\n');
 
     assert.usage(
       requestProps.url,
-      "`url` is missing.",
+      correctUsage,
+      colorizeError("`url` is missing."),
       "(`url=="+requestProps.url+"`)",
-      correctUsage
+      '',
     );
     const {pathname} = getUrlProps(requestProps.url);
     assert.internal(pathname.startsWith('/'));
 
     assert.usage(
       requestProps.method,
-      "`method` is missing.",
-      "(`method==="+requestProps.method+"`)",
       correctUsage,
+      colorizeError("`method` is missing."),
+      "(`method==="+requestProps.method+"`)",
+      '',
     );
     const method = requestProps.method.toUpperCase();
 
+    const bodyUsageInfo = [
+      "If you are using Express: Make sure to parse the body. For Express v4.16 and above: `app.use(express.json())`.",
+      "If you are using Hapi: No plugin is required and the body is available at `request.payload`.",
+      "If you are using Koa: Make sure to parse the body, for example: `app.use(require('koa-bodyparser')())`.",
+    ].join('\n');
+    const {body} = requestProps;
+    const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
+    assert.usage(
+      !(method==='POST' && !body),
+      correctUsage,
+      colorizeError(bodyErrMsg),
+      bodyUsageInfo,
+      '',
+    );
     assert.usage(
       'body' in requestProps,
-      "You should provide the HTTP request body.",
-      "`body` can be `null` or `undefined` but make sure to define it on the `requestProps`, i.e. make sure that `'body' in requestProps`.",
       correctUsage,
+      colorizeError(bodyErrMsg),
+      "Note that `requestProps.body` can be `null` or `undefined` but make sure to define it on the `requestProps`, e.g. `requestProps.body = null;`, i.e. make sure that `'body' in requestProps`.",
+      '',
     );
-    const {body} = requestProps;
     assert.usage(
-      !body || body.constructor===String,
-      "`body` should be a string.",
-      "(`body.constructor==="+(body && body.constructor)+"`)",
+      !body || [Array, String].includes(body.constructor),
       correctUsage,
+      colorizeError("Unexpected `body` type: `body` should be a string or an array."),
+      "(`body.constructor==="+(body && body.constructor)+"`)",
+      bodyUsageInfo,
+      '',
     );
 
     return {method, pathname, body};

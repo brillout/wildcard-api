@@ -11,7 +11,11 @@ async function makeHttpRequest({url, parse, ...args}) {
         {
           method: 'POST',
           credentials: 'same-origin',
-          ...args
+          ...args,
+          headers:{
+            'Content-Type': 'application/json',
+            ...(args||{}).headers,
+          },
         },
       )
     )
