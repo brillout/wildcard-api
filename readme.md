@@ -355,7 +355,7 @@ We enjoy talking with our users!
        // information about the request. We denote this object `req`.
 
        const requestProps = {
-         url: req.url, // The HTTP request pathname (e.g. `/wildcard/myEndpoint/["some",{"arg":"val"}]`)
+         url: req.url, // The HTTP request url (or pathname)
          method: req.method, // The HTTP request method (`GET`, `POST`, etc.)
          body: req.body, // The HTTP request body
 
