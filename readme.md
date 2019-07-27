@@ -470,7 +470,7 @@ const {endpoints} = require('wildcard-api');
 const getUserFromSessionCookie = require('./path/to/your/session/logic');
 
 endpoints.getLoggedUserInfo = async function() {
-  // Since `this===requestProps`, `requestProps.headers` is available as `requestProps.headers`
+  // Since `this===requestProps`, `requestProps.headers` is available as `this.headers`.
   const user = await getUserFromSessionCookie(this.headers.cookie);
   return user;
 };
@@ -507,7 +507,7 @@ We enjoy talking with our users!
 
 ### Permissions
 
-Permissions are defined by code. For example:
+Permission is defined by code. For example:
 
 ~~~js
 // Node.js
@@ -517,8 +517,9 @@ const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('./path/to/your/db/handler');
 
 endpoints.updateTodoText = async function(todoId, newText) {
+  // Only logged in users are allowed to change a to-do item.
   if( !user ) {
-    // Not logged in user are not authorized to change a to-do item.
+    // The user is not logged in.
     // We abort.
     return;
   }
@@ -604,7 +605,7 @@ endpoints.createAccount = async function({email, phoneNumber}) {
 };
 ~~~
 
-You should always catch expected errors: Wildcard regards any uncaught error as a bug in your code.
+You should always catch expected errors: Wildcard treats any uncaught error as a bug in your code.
 
 In particular, don't throw an error upon validation failure:
 
@@ -767,13 +768,14 @@ This section collects further information about Wildcard.
 
  - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
    <br/>
-   Goes into depth of whether you should implement a generic API (REST/GraphQL) or a custom API (Wildcard).
-   (Or both.)
+   Goes into depth of whether you should implement a generic API (REST/GraphQL),
+   or a custom API (Wildcard),
+   or both.
    In general, the rule of thumb for deciding which one to use is simple:
    if third parties need to access your data,
    then implement a generic API,
    otherwise implement a custom API.
-   But in some cases it's not that easy and this document goes into more depth.
+   But in certain cases it's not that easy and this document goes into more depth.
 
 
 <br/>

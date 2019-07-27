@@ -144,7 +144,8 @@ const {endpoints} = require('wildcard-api/client');
 (async () => {
   // Because we are on the browser, the Wildcard client makes an HTTP request.
 
-  // We don't have to do anything, since `whoAmI` has access to `getApiResponse`'s `requestProps.headers`:
+  // We don't have to do anything, since `whoAmI` has access
+  // to `getApiResponse`'s `requestProps.headers`:
   const userName = await endpoints.whoAmI();
 
   console.log('Welcome to Wildcard, '+userName);

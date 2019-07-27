@@ -91,10 +91,6 @@ A (simplistic) todo app built with:
  - Node.js
  - SQLite
 
-> You can also play around with Wildcard by using
-> [Reframe's react-sql starter](https://github.com/reframejs/reframe/tree/master/plugins/create/starters/react-sql#readme)
-> which includes a Wildcard API.
-
 #### Contents
 
 - [Run the Example](#run-the-example)
