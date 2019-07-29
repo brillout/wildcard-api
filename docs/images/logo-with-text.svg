@@ -1,36 +1,38 @@
-<svg viewBox="0 0 700 120" xmlns="http://www.w3.org/2000/svg">
-<g transform="scale(.68) translate(40 3)">
-<ellipse cx="86.99" cy="86" rx="86" ry="86" fill="#4a4a4a"/>
-<ellipse cx="86.99" cy="86" rx="68" ry="68" fill="#5A676F"/>
-<path d="m38.173 86.179h97.732m-21.852-40.72l-54.032 81.441m0.32102-81.649l53.394 81.857" stroke="#01B9A7" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
-</g>
-<g
-   transform="matrix(1.2,0,0,0.8,-36,-12.838659)"
-   id="g3385"
-   style="font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959">
+<svg viewBox="0 0 979.92932 225.20002" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.3020418,0,0,1.3020418,-0.38526785,0.68230193)">
+    <circle
+       style="fill:#4a4a4a"
+       r="86"
+       cx="86.989998"
+       cy="86"
+    />
+    <circle
+       style="fill:#5a676f"
+       r="68"
+       cx="86.989998"
+       cy="86"
+    />
+    <path
+       style="stroke:#01b9a7;stroke-width:20;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:connector-curvature="0"
+       d="m 38.173,86.179 97.732,0 M 114.053,45.459 60.021,126.9 m 0.32102,-81.649 53.394,81.857"
+    />
+  </g>
   <text
-     x="174"
-     y="108"
-     font-size="100"
-     id="text3387"
-     style="font-size:100px">Wildcard</text>
-</g>
-<g
-   transform="matrix(1.2,0,0,0.8,-30.281345,10.450888)"
-   id="g3385-1"
-   style="font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959">
+     style="font-size:149.45640564px;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
+     y="150.8927"
+     x="195.62929"
+     transform="scale(1.2247449,0.81649657)">Wildcard</text>
   <text
-     x="173.22635"
-     y="119.40566"
+     style="font-size:53.75038147px;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
      font-size="100"
-     id="text3387-7"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30.61862183px;line-height:125%;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;-inkscape-font-specification:'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+     y="194.1241"
+     x="245.65952"
+     transform="scale(1.0381072,0.96329166)"
      sodipodi:linespacing="125%">
     <tspan
        sodipodi:role="line"
-       id="tspan3415"
-       x="173.22635"
-       y="119.40566">JavaScript Functions as API</tspan>
+       x="245.65952"
+       y="194.1241">JavaScript Functions as API</tspan>
   </text>
-</g>
 </svg>
