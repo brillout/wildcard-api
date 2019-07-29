@@ -1,4 +1,4 @@
-<svg viewBox="0 0 979.92932 225.20002" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 916.92932 225.20002" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1.3020418,0,0,1.3020418,-0.38526785,0.68230193)">
     <circle
        style="fill:#4a4a4a"
@@ -19,20 +19,23 @@
     />
   </g>
   <text
-     style="font-size:149.45640564px;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
-     y="150.8927"
-     x="195.62929"
-     transform="scale(1.2247449,0.81649657)">Wildcard</text>
+     style="font-size:123.80697632px;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
+     y="149.76115"
+     x="207.47691"
+     transform="scale(1.2619468,0.79242643)"
+     id="text3490">Wildcard</text>
   <text
-     style="font-size:53.75038147px;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
+     style="font-size:45.72327423px;line-height:125%;font-family:'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;fill:#595959"
      font-size="100"
-     y="194.1241"
-     x="245.65952"
+     y="184.63112"
+     x="266.51093"
      transform="scale(1.0381072,0.96329166)"
-     sodipodi:linespacing="125%">
+     sodipodi:linespacing="125%"
+     id="text3492">
     <tspan
        sodipodi:role="line"
-       x="245.65952"
-       y="194.1241">JavaScript Functions as API</tspan>
+       x="266.51093"
+       y="184.63112"
+       id="tspan3494">JavaScript Functions as API</tspan>
   </text>
 </svg>
