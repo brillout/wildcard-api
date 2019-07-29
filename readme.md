@@ -81,8 +81,6 @@
   </a>
 </p>
 
-<p align="center">JavaScript Functions as API.</p>
-
 <br/>
 
  - [What is Wildcard](#what-is-wildcard)

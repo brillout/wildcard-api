@@ -81,8 +81,6 @@
   </a>
 </p>
 
-<p align="center">JavaScript Functions as API.</p>
-
 <br/>
 
 A (simplistic) todo app built with:
