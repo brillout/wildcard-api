@@ -412,7 +412,7 @@ We enjoy talking with our users!
    };
    ~~~
 
-3. You can now "call" your enpdoint functions in the browser:
+3. You can now "call" your enpdoint function in the browser:
 
    ~~~js
    // Browser
