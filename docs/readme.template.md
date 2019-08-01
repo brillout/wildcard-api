@@ -118,17 +118,23 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = express();
-   app.use(express.json()); // Make sure to parse the HTTP request body
+
+   // Parses the HTTP request body and makes it available at `req.body`.
+   app.use(express.json());
 
    app.all('/wildcard/*' , async (req, res) => {
+     // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
      const requestProps = {
        url: req.url,
        method: req.method,
        body: req.body,
-       // All requestProps are available to your endpoint functions as `this`.
-       // For example, to access the HTTP request headers in your endpoint functions:
-       headers: req.headers,
      };
+
+     // The `requestProps` object is available in your endpoint functions as `this`.
+     // For example, you can add the `req.headers` object to `requestProps` to be
+     // able to access it in your endpoint functions as `this.headers`.
+     requestProps.headers = req.headers;
+
      const responseProps = await getApiResponse(requestProps);
      res.status(responseProps.statusCode);
      res.type(responseProps.contentType);
@@ -151,14 +157,18 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
      method: '*',
      path: '/wildcard/{param*}',
      handler: async (request, h) => {
+       // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
        const requestProps = {
          url: request.url,
          method: request.method,
          body: request.payload,
-         // All requestProps are available to your endpoint functions as `this`.
-         // For example, to access the HTTP request headers in your endpoint functions:
-         headers: request.headers,
        };
+
+       // The `requestProps` object is available in your endpoint functions as `this`.
+       // For example, you can add the `request.headers` object to `requestProps` to be
+       // able to access it in your endpoint functions as `this.headers`.
+       requestProps.headers = request.headers;
+
        const responseProps = await getApiResponse(requestProps);
        const response = h.response(responseProps.body);
        response.code(responseProps.statusCode);
@@ -181,19 +191,25 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
    const app = new Koa();
-   app.use(bodyParser()); // Make sure to parse the HTTP request body
+
+   // Parses the HTTP request body and makes it available at `ctx.request.body`.
+   app.use(bodyParser());
 
    const router = new Router();
 
    router.all('/wildcard/*', async ctx => {
+     // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
      const requestProps = {
        url: ctx.url,
        method: ctx.method,
        body: ctx.request.body,
-       // All requestProps are available to your endpoint functions as `this`.
-       // For example, to access the HTTP request headers in your endpoint functions:
-       headers: ctx.request.headers,
      };
+
+     // The `requestProps` object is available in your endpoint functions as `this`.
+     // For example, you can add the `ctx.request.headers` object to `requestProps` to be
+     // able to access it in your endpoint functions as `this.headers`.
+     requestProps.headers = ctx.request.headers;
+
      const responseProps = await getApiResponse(requestProps);
      ctx.status = responseProps.statusCode;
      ctx.body = responseProps.body;
@@ -226,15 +242,17 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
        // We assume that your server framework provides an object holding
        // information about the request. We denote this object `req`.
 
+       // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
        const requestProps = {
          url: req.url, // The HTTP request url (or pathname)
          method: req.method, // The HTTP request method (`GET`, `POST`, etc.)
          body: req.body, // The HTTP request body
-
-         // All requestProps are available to your endpoint functions as `this`.
-         // For example, to access the HTTP request headers in your endpoint functions:
-         headers: req.headers,
        };
+
+       // The `requestProps` object is available in your endpoint functions as `this`.
+       // For example, you can add the `req.headers` object to `requestProps` to be
+       // able to access it in your endpoint functions as `this.headers`.
+       requestProps.headers = req.headers;
 
        // We get the HTTP response body, HTTP status code, and the body's content type.
        const responseProps = await getApiResponse(requestProps);
@@ -243,7 +261,6 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
        // We assume that server framework provides a way to create an HTTP response
        // upon `body`, `statusCode`, and `contentType`.
        const response = new HttpResponse({body, statusCode, contentType});
-
        return response;
      }
    );
@@ -261,8 +278,8 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
    const getData = require('./path/to/your/data/retrieval/code');
 
    endpoints.myFirstEndpoint = async function () {
-     // `this` is the `requestProps` you pass to `getApiResponse`.
-     // We passed `requestProps.headers`, thus we can access the headers over `this.headers.cookie`.
+     // `this` is the `requestProps` object we have passed to `getApiResponse`.
+     // Because we have set `requestProps.headers`, we can access the headers over `this.headers`.
      const user = await getLoggedUser(this.headers.cookie);
      const data = await getData(user);
      return data;
