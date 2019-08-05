@@ -110,6 +110,10 @@ which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 ### Getting Started
 
+This getting started is about adding Wildcard to an exisiting app.
+If you don't already have an app or if you just want to try out Wildcard,
+then use a [Reframe starter](https://github.com/reframejs/reframe#getting-started).
+
 1. Add Wildcard to your Node.js server.
 
    With Express:
