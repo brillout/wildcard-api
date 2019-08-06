@@ -97,7 +97,7 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an **API** between your **Node.js** server and the **browser**.
+Wildcard is a JavaScript library to create an API between Node.js and the browser.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
@@ -238,7 +238,7 @@ We enjoy talking with our users!
 
 This getting started is about adding Wildcard to an exisiting app.
 If you don't already have an app or if you just want to try out Wildcard,
-then use a [Reframe starter](https://github.com/reframejs/reframe#getting-started).
+you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-started) to quickly get started.
 
 1. Add Wildcard to your Node.js server.
 
@@ -249,7 +249,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
 
    const app = express();
 
-   // Parses the HTTP request body and makes it available at `req.body`.
+   // Parse the HTTP request body
    app.use(express.json());
 
    app.all('/wildcard/*' , async (req, res) => {
@@ -261,7 +261,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
      };
 
      // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add the `req.headers` object to `requestProps` to be
+     // For example, you can add `req.headers` to `requestProps` to be
      // able to access it in your endpoint functions as `this.headers`.
      requestProps.headers = req.headers;
 
@@ -295,7 +295,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add the `request.headers` object to `requestProps` to be
+       // For example, you can add `request.headers` to `requestProps` to be
        // able to access it in your endpoint functions as `this.headers`.
        requestProps.headers = request.headers;
 
@@ -322,7 +322,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
 
    const app = new Koa();
 
-   // Parses the HTTP request body and makes it available at `ctx.request.body`.
+   // Parse the HTTP request body
    app.use(bodyParser());
 
    const router = new Router();
@@ -336,7 +336,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
      };
 
      // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add the `ctx.request.headers` object to `requestProps` to be
+     // For example, you can add `ctx.request.headers` to `requestProps` to be
      // able to access it in your endpoint functions as `this.headers`.
      requestProps.headers = ctx.request.headers;
 
@@ -380,7 +380,7 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add the `req.headers` object to `requestProps` to be
+       // For example, you can add `req.headers` to `requestProps` to be
        // able to access it in your endpoint functions as `this.headers`.
        requestProps.headers = req.headers;
 
@@ -404,15 +404,14 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
    // Node.js
 
    const {endpoints} = require('wildcard-api');
-   const getLoggedUser = require('./path/to/your/auth/code');
-   const getData = require('./path/to/your/data/retrieval/code');
 
    endpoints.myFirstEndpoint = async function () {
-     // `this` is the `requestProps` object we have passed to `getApiResponse`.
-     // Because we have set `requestProps.headers`, we can access the headers over `this.headers`.
-     const user = await getLoggedUser(this.headers.cookie);
-     const data = await getData(user);
-     return data;
+     // The `this` object is the `requestProps` object we passed to `getApiResponse`. Because
+     // the headers are set on `requestProps.headers`, we can access them over `this.headers`.
+     // You can then, for example, use the headers for authentication.
+     console.log('The HTTP request headers:', this.headers);
+
+     return {msg: 'hello from my first Wildcard endpoint';
    };
    ~~~
 
@@ -424,7 +423,8 @@ then use a [Reframe starter](https://github.com/reframejs/reframe#getting-starte
    import {endpoints} from 'wildcard-api/client'; // npm install wildcard-api
 
    (async () => {
-     const data = await endpoints.myFirstEndpoint();
+     const {msg} = await endpoints.myFirstEndpoint();
+     console.log(msg);
    })();
    ~~~
 
@@ -460,7 +460,7 @@ We enjoy talking with our users!
 ### Authentication
 
 For authentication,
-you typically need an HTTP header such as `Authorization: Bearer AbCdEf123456`, or a cookie that holds the user's session ID.
+you typically need an HTTP header, such as `Authorization: Bearer AbCdEf123456` or the cookie that holds the user's session ID.
 
 You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
 
