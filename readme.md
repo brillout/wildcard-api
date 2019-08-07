@@ -161,6 +161,10 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
+Wildcard is new but it's already used in production at couple of projects,
+every release is assailed against a heavy suit of automated tests,
+and its author is responsive and fixes issues within 1-2 days.
+
 
 <br/>
 
