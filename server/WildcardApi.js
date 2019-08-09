@@ -125,18 +125,9 @@ function WildcardApi(options={}) {
     const endpointName = getEndpointName({pathname});
     const endpointArgs = getEndpointArgs({method, pathname, body});
 
-    if( endpointArgs.constructor!==Array ) {
-      return {
-        isInvalidUrl: true,
-        invalidReason: (
-          [
-            'Malformatted API URL `'+pathname+'`.',
-            'API URL arguments (i.e. endpoint arguments) should be an array.',
-            "Instead we got `"+endpointArgs.constructor+"`.",
-            'API URL arguments: `'+endpointArgsString+'`',
-          ].join('\n')
-        ),
-      };
+    assert.internal(endpointArgs.isInvalidUrl===true || endpointArgs.constructor===Array);
+    if( endpointArgs.isInvalidUrl ){
+      return endpointArgs;
     }
 
     if( ! endpointExists(endpointName) ) {
@@ -209,7 +200,23 @@ function WildcardApi(options={}) {
         };
       }
     }
+
     endpointArgs = endpointArgs || [];
+
+    if( endpointArgs.constructor!==Array ) {
+      return {
+        isInvalidUrl: true,
+        invalidReason: (
+          [
+            'Malformatted API URL `'+pathname+'`.',
+            'API URL arguments (i.e. endpoint arguments) should be an array.',
+            "Instead we got `"+endpointArgs.constructor+"`.",
+            'API URL arguments: `'+endpointArgsString+'`',
+          ].join('\n')
+        ),
+      };
+    }
+
     return endpointArgs;
   }
 
