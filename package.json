@@ -1,6 +1,6 @@
 {
   "name": "wildcard-api",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
     "@brillout/reassert": "^0.1.0",
