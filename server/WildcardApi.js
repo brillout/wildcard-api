@@ -50,15 +50,16 @@ function WildcardApi(options={}) {
       };
     }
 
-    const {isInvalidUrl, invalidReason, endpointName, endpointArgs} = parseRequest({method, pathname, body});
+    const {isInvalidUrl, invalidReason, errorStatusCode, endpointName, endpointArgs} = parseRequest({method, pathname, body});
 
     // URL is invalid
     assert.internal([true, false].includes(isInvalidUrl));
     assert.internal(invalidReason!==undefined);
     if( isInvalidUrl ) {
       assert.internal(invalidReason);
+      assert.internal(errorStatusCode);
       return {
-        statusCode: 404,
+        statusCode: errorStatusCode,
         contentType: 'text/plain',
         body: invalidReason,
       };
@@ -114,11 +115,15 @@ function WildcardApi(options={}) {
   }
 
   function parseRequest({method, pathname, body}) {
-    const urlParts = parsePathname(pathname);
-    if( urlParts.length<1 || urlParts.length>2 || !urlParts[0] ) {
+    const {isInvalidSyntax, pathname__prettified} = parsePathname(pathname);
+    if( isInvalidSyntax ) {
       return {
         isInvalidUrl: true,
-        invalidReason: 'Malformatted API URL `'+pathname+'`',
+        errorStatusCode: 400,
+        invalidReason: [
+          'Malformatted API URL `'+pathname__prettified+'`',
+          'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
+        ].join('\n'),
       };
     }
 
@@ -132,19 +137,27 @@ function WildcardApi(options={}) {
 
     if( ! endpointExists(endpointName) ) {
       if( noEndpointsDefined() ) {
-        const invalidReason__part1 = "You didn't define any endpoint.";
-        const invalidReason__part2 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
-        console.error(colorizeError(invalidReason__part1));
-        console.error(invalidReason__part2);
+        const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
+        const invalidReason__part2 = "You didn't define any endpoint function.";
+        const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
+        console.error(invalidReason__part1);
+        console.error(colorizeError(invalidReason__part2));
+        console.error(invalidReason__part3);
         return {
           isInvalidUrl: true,
-          invalidReason: invalidReason__part1 + '\n' + invalidReason__part2,
+          errorStatusCode: 404,
+          invalidReason: [
+            invalidReason__part1,
+            invalidReason__part2,
+            invalidReason__part3,
+          ].join('\n'),
         };
       } else {
         return {
           isInvalidUrl: true,
+          errorStatusCode: 404,
           invalidReason: (
-            'Endpoint '+endpointName+" doesn't exist." + (
+            'Endpoint `'+endpointName+"` doesn't exist." + (
               !isDev() ? '' : (
                 '\n\nEndpoints: ' +
                 getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
@@ -166,14 +179,12 @@ function WildcardApi(options={}) {
   }
 
   function getEndpointName({pathname}){
-    const urlParts = parsePathname(pathname);
-    const endpointName = urlParts[0];
+    const {endpointName} = parsePathname(pathname);
     return endpointName;
   }
 
   function getEndpointArgs({method, pathname, body}){
-    const urlParts = parsePathname(pathname);
-    const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
+    const {urlArgs, pathname__prettified} = parsePathname(pathname);
     assert.internal(['GET', 'POST'].includes(method));
     assert.internal(!(method==='GET' && body));
     assert.internal(!(method==='POST' && !body));
@@ -187,8 +198,10 @@ function WildcardApi(options={}) {
       } catch(err_) {
         return {
           isInvalidUrl: true,
+          errorStatusCode: 400,
           invalidReason: (
             [
+              'Malformatted API URL `'+pathname__prettified+'`.',
               "JSON Parse Error:",
               err_.message,
               "Argument string:",
@@ -206,9 +219,10 @@ function WildcardApi(options={}) {
     if( endpointArgs.constructor!==Array ) {
       return {
         isInvalidUrl: true,
+        errorStatusCode: 400,
         invalidReason: (
           [
-            'Malformatted API URL `'+pathname+'`.',
+            'Malformatted API URL `'+pathname__prettified+'`.',
             'API URL arguments (i.e. endpoint arguments) should be an array.',
             "Instead we got `"+endpointArgs.constructor+"`.",
             'API URL arguments: `'+endpointArgsString+'`',
@@ -226,7 +240,17 @@ function WildcardApi(options={}) {
     assert.internal(pathname.startsWith(pathnameBase));
     const urlParts = pathname.slice(pathnameBase.length).split('/');
 
-    return urlParts;
+    const isInvalidSyntax = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
+    const endpointName = urlParts[0];
+    const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
+    const pathname__prettified = isInvalidSyntax ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
+
+    return {
+      isInvalidSyntax,
+      endpointName,
+      urlArgs,
+      pathname__prettified,
+    };
   }
 
   function compute_response_object({resultObject, method}) {
