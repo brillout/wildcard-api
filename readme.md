@@ -161,7 +161,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but it's already used in production at couple of projects,
+Wildcard is new but already used in production at couple of projects,
 every release is assailed against a heavy suit of automated tests,
 and its author is responsive and fixes issues within 1-2 days.
 
@@ -198,11 +198,12 @@ We enjoy talking with our users!
 If all you need is to retrieve/mutate data from within your frontend code,
 then Wildcard offers a very easy way.
 All you have to do is to create JavaScript functions
-and all you need to know is written in this little Readme.
+and all you need to know is written in this tiny Readme.
 
-If third parties need to be able to retrieve/mutate your data
+If third parties need to access your data
 then REST and GraphQL are better suited.
 A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties who need a stable and long-term contract with your API.
+With third party we denote anyone who you're not willing to modify your API for.
 
 For quickly evolving applications,
 the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
