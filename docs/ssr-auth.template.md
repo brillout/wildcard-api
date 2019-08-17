@@ -77,11 +77,11 @@ There is no way for Wildcard to get the HTTP headers &mdash; you have to manuall
 ~~~js
 // Node.js (this code never runs in the browser)
 
-// We use the Wildcard client on Node.js
+// We use the Wildcard client in Node.js
 const {endpoints} = require('wildcard-api/client');
 
 module.exports = async ({headers}) => {
-  // Because we are on Node.js, the Wildcard client directly calls
+  // Because we are in Node.js, the Wildcard client directly calls
   // the endpoint function (without doing any HTTP request).
 
   // Wildcard doesn't have access to the headers and we need to bind `headers`:
