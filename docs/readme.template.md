@@ -93,20 +93,22 @@ and its author is responsive and fixes issues within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
-If a third party (anyone who you're not willing to modify your API for) needs to access your data
+If a third party (anyone who you're not willing to modify your API for) needs access to your data
 then REST or GraphQL is better suited.
-A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties who need a stable and long-term contract with your API.
+A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for a third party who needs a stable and long-term contract with your API.
+For example, Facebook uses GraphQL (and rightfully so) for third parties to be able to build all kinds of application on top of their data.
+They need a powerfull API so that third parties can build all kinds of applications.
+Facebook and GitHub will never change their API.
+Their API is set in stone and needs rigid.
 
-For example, it wouldn't make sense for Facebook or GitHub to use Wildcard; they need GraphQL to make their data as accessible as possible for third parties to be able to built all kinds of application on top of their data.
-
-But if all you need is to retrieve/mutate data from within your frontend code,
-then Wildcard offers a very easy way.
+But, if all you need is to retrieve/mutate data from within your frontend code,
+then Wildcard offers a much easier way.
 All you have to do is to create JavaScript functions
 and all you need to know is written in this tiny Readme.
-
 For example,
 if you have a React/Vue/Angular frontend that needs to load data from your Node.js server then Wildcard is
 a better choice than GraphQL/REST.
+Everytime, you change the Wildcard API for.
 
 For quickly evolving prototypes and applications,
 the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
@@ -115,8 +117,10 @@ is schemaless and structureless
 which is a wonderful fit for rapid development, prototyping, and MVPs.
 
 The rule of thumb is:
-- Is your goal is to expose your data to the world? Use REST or GraphQL.
-- Is your goal is to expose your data to your frontend? Use Wildcard.
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your goal is to expose your data to the world? Use REST or GraphQL.
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your goal is to expose your data to your frontend? Use Wildcard.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
