@@ -19,13 +19,13 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between Node.js and the browser.
+Wildcard is a JavaScript library to create an API between the browser and your Node.js server.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 
@@ -49,7 +49,7 @@ import {endpoints} from 'wildcard-api/client';
 
 That's all Wildcard does:
 it makes functions,
-that are defined on the server,
+that are defined on your Node.js server,
 "callable" in the browser.
 Nothing more, nothing less.
 
