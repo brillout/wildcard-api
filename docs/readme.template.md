@@ -85,7 +85,7 @@ endpoints.createTodoItem = async function(text) {
 
 Wildcard is new but already used in production at couple of projects,
 every release is assailed against a heavy suit of automated tests,
-and its author is responsive and fixes issues within 1-2 days.
+its author is responsive, and issues are fixed within 1-2 days.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -93,10 +93,35 @@ and its author is responsive and fixes issues within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
+For internal APIs,
+RPC APIs (Wildcard is a RPC API)
+are better suited than REST/GraphQL.
+
+The question to ask yourself is:
+- Do I want to expose my data to myself? Use REST/GraphQL
+- Do I want to expose my data to the world? Use RPC
+
+For example, Facebook uses GraphQL for third parties to be able to build all kinds of application on top of their data.
+That makes a lot of sense because they expose for anyone in the world.
+
+And if,
+for example,
+you need your React/Vue/Angular frontend to be able to load data from your Node.js server then RPC is the way to go
+And if your backend
+
+Technically speaking,
+Wildcard is RPC between the browser and Node.js.
+and browser simply a well-designed RPC implementation.
+
+If you are not familiar with RPC,
+we showcase how RPC APIs are well suited for internal APIs at
+[RPC vs REST/GraphQL].
+
+
+
 If a third party (anyone who you're not willing to modify your API for) needs access to your data
-then REST or GraphQL is better suited.
+then REST/GraphQL is better suited.
 A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for a third party who needs a stable and long-term contract with your API.
-For example, Facebook uses GraphQL (and rightfully so) for third parties to be able to build all kinds of application on top of their data.
 They need a powerfull API so that third parties can build all kinds of applications.
 Facebook and GitHub will never change their API.
 Their API is set in stone and needs rigid.
@@ -105,8 +130,6 @@ But, if all you need is to retrieve/mutate data from within your frontend code,
 then Wildcard offers a much easier way.
 All you have to do is to create JavaScript functions
 and all you need to know is written in this tiny Readme.
-For example,
-if you have a React/Vue/Angular frontend that needs to load data from your Node.js server then Wildcard is
 a better choice than GraphQL/REST.
 Everytime, you change the Wildcard API for.
 
@@ -327,8 +350,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
 
 ### Authentication
 
-For authentication,
-you typically need an HTTP header, such as `Authorization: Bearer AbCdEf123456` or the cookie that holds the user's session ID.
+Authentication is usually based on HTTP headers.
+Such as `Authorization: Bearer AbCdEf123456`, or a cookie holding the user's session ID.
 
 You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
 
@@ -354,14 +377,18 @@ Wildcard makes `requestProps` available to your endpoint function as `this`:
 // Node.js
 
 const {endpoints} = require('wildcard-api');
-const getUserFromSessionCookie = require('./path/to/your/session/logic');
+const getUser = require('./path/to/your/auth-code/getUser');
 
-endpoints.getLoggedUserInfo = async function() {
+endpoints.getLoggedInUser = async function() {
   // Since `this===requestProps`, `requestProps.headers` is available as `this.headers`.
-  const user = await getUserFromSessionCookie(this.headers.cookie);
+  const user = await getUser(this.headers.cookie);
   return user;
 };
 ~~~
+
+If you do SSR,
+an additional step needs to be done in order to make authentication work,
+see [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -525,11 +552,10 @@ import 'handli'; // npm install handli
 
 ### SSR
 
-The Wildcard client is isomorphic (aka universal) and works in both the browser and Node.js.
+The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
-If you don't need Authentication, then SSR works out of the box.
-
-If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
+If you don't need authentication, then SSR works out of the box.
+Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 

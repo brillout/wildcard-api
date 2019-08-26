@@ -105,3 +105,33 @@ async function endpointDoesNotExist({wildcardApi, browserEval}) {
     assert(text.includes("Endpoint `blub` doesn't exist."), {text});
   });
 }
+
+async function ssr({wildcardApi, wildcardClient}) {
+  const headers = [];
+  wildcardApi.endpoints.hello = async function(name) {
+    assert(this.headers===headers);
+    return 'heyy '+name;
+  };
+
+  const endpointResult = await wildcardClient.endpoints.hello.bind({headers})('Paul');
+  assert(endpointResult==='heyy Paul');
+};
+
+async function ssrMissingRequestProps({wildcardApi, wildcardClient}) {
+  assert endpointFunctionCalled = false;
+  wildcardApi.endpoints.ssrTest = async function() {
+    let exceptionThrown;
+    try {
+      this.headers;
+      exceptionThrown = false;
+    } catch(err) {
+      exceptionThrown = true;
+      assert(err);
+      assert(err.message.includes('Make sure to add `requestProps` with `bind`'));
+    }
+    assert(exceptionThrown===true);
+  };
+
+  await wildcardClient.endpoints.ssrTest();
+  assert(endpointFunctionCalled===true);
+};
