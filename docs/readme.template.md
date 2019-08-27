@@ -93,29 +93,37 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
-For internal APIs,
-RPC APIs (Wildcard is a RPC API)
-are better suited than REST/GraphQL.
+With Wildcard you essentially create an RPC API.
 
-The question to ask yourself is:
-- Do I want to expose my data to myself? Use REST/GraphQL
-- Do I want to expose my data to the world? Use RPC
+**RPC** is commonly used to create an **internal** API
+and **REST/GraphQL** is commonly used to create an API
+for **third parties**.
 
-For example, Facebook uses GraphQL for third parties to be able to build all kinds of application on top of their data.
-That makes a lot of sense because they expose for anyone in the world.
+The rule of thumb is:
+- Do you want to expose your data to the world? Use REST/GraphQL.
+- Do you want to expose your data to your organization? Use RPC.
+
+For example, Facebook exposes data to third parties with GraphQL.
+GraphQL is the best choice here as it allows anywone in the world
+to build any kind of app on top of Facebook's GraphQL API.
+
+An example where RPC is widely used
+is for the communication between internal software of a company.
+Most notably [gRPC](https://grpc.io/) is used by Google, Netflix, Square, Docker and many others.
 
 And if,
 for example,
-you need your React/Vue/Angular frontend to be able to load data from your Node.js server then RPC is the way to go
-And if your backend
+you want your React/Vue/Angular frontend to access data from your Node.js server,
+then use RPC
+and you can use Wildcard to easily create an RPC API.
 
-Technically speaking,
-Wildcard is RPC between the browser and Node.js.
-and browser simply a well-designed RPC implementation.
-
-If you are not familiar with RPC,
-we showcase how RPC APIs are well suited for internal APIs at
-[RPC vs REST/GraphQL].
+<!---
+In case you are not familiar with RPC,
+we strongly recommend you to get familiar with it.
+Your API is a fundamental pillar of your architecture.
+At [RPC vs REST/GraphQL](/docs/rpc_vs_rest-graphql.md).
+we showcase a to-do list app that illustrates how RPC compares to REST/GraphQL.
+--->
 
 
 
