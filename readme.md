@@ -97,13 +97,13 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between Node.js and the browser.
+Wildcard is a JavaScript library to create an API between the browser and your Node.js server.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 
@@ -127,7 +127,7 @@ import {endpoints} from 'wildcard-api/client';
 
 That's all Wildcard does:
 it makes functions,
-that are defined on the server,
+that are defined on your Node.js server,
 "callable" in the browser.
 Nothing more, nothing less.
 
@@ -163,7 +163,7 @@ endpoints.createTodoItem = async function(text) {
 
 Wildcard is new but already used in production at couple of projects,
 every release is assailed against a heavy suit of automated tests,
-and its author is responsive and fixes issues within 1-2 days.
+its author is responsive, and issues are fixed within 1-2 days.
 
 
 <br/>
@@ -195,30 +195,37 @@ We enjoy talking with our users!
 
 ### Wildcard VS GraphQL/REST
 
-If a third party (anyone who you're not willing to modify your API for) needs to access your data
-then REST or GraphQL is better suited.
-A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for third parties who need a stable and long-term contract with your API.
+With Wildcard you essentially create an RPC API.
 
-For example, it wouldn't make sense for Facebook or GitHub to use Wildcard; they need GraphQL to make their data as accessible as possible for third parties to be able to built all kinds of application on top of their data.
-
-But if all you need is to retrieve/mutate data from within your frontend code,
-then Wildcard offers a very easy way.
-All you have to do is to create JavaScript functions
-and all you need to know is written in this tiny Readme.
-
-For example,
-if you have a React/Vue/Angular frontend that needs to load data from your Node.js server then Wildcard is
-a better choice than GraphQL/REST.
-
-For quickly evolving prototypes and applications,
-the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
-Wildcard
-is schemaless and structureless
-which is a wonderful fit for rapid development, prototyping, and MVPs.
+**RPC** is commonly used to create an **internal** API
+and **REST/GraphQL** is commonly used to create an API
+for **third parties**.
 
 The rule of thumb is:
-- Is your goal is to expose your data to the world? Use REST or GraphQL.
-- Is your goal is to expose your data to your frontend? Use Wildcard.
+- Do you want to expose your data to the world? Use REST/GraphQL.
+- Do you want to expose your data to your organization? Use RPC.
+
+For example, Facebook exposes data to third parties with GraphQL.
+GraphQL is the best choice here as it allows anyone in the world
+to build any kind of app on top of Facebook's GraphQL API.
+
+An example where RPC is widely used
+is for the communication between internal software of a company.
+Most notably [gRPC](https://grpc.io/) is used by Google, Netflix, Square, Docker and many others.
+
+And if,
+for example,
+you want your React/Vue/Angular frontend to access data from your Node.js server,
+then use RPC
+and you can use Wildcard to easily create an RPC API.
+
+<!---
+In case you are not familiar with RPC,
+we strongly recommend you to get familiar with it.
+Your API is a fundamental pillar of your architecture.
+At [RPC vs REST/GraphQL](/docs/rpc_vs_rest-graphql.md).
+we showcase a to-do list app that illustrates how RPC compares to REST/GraphQL.
+--->
 
 
 <br/>
@@ -473,8 +480,8 @@ We enjoy talking with our users!
 
 ### Authentication
 
-For authentication,
-you typically need an HTTP header, such as `Authorization: Bearer AbCdEf123456` or the cookie that holds the user's session ID.
+Authentication is usually based on HTTP headers.
+Such as `Authorization: Bearer AbCdEf123456`, or a cookie holding the user's session ID.
 
 You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
 
@@ -500,14 +507,18 @@ Wildcard makes `requestProps` available to your endpoint function as `this`:
 // Node.js
 
 const {endpoints} = require('wildcard-api');
-const getUserFromSessionCookie = require('./path/to/your/session/logic');
+const getUser = require('./path/to/your/auth-code/getUser');
 
-endpoints.getLoggedUserInfo = async function() {
+endpoints.getLoggedInUser = async function() {
   // Since `this===requestProps`, `requestProps.headers` is available as `this.headers`.
-  const user = await getUserFromSessionCookie(this.headers.cookie);
+  const user = await getUser(this.headers.cookie);
   return user;
 };
 ~~~
+
+If you do SSR,
+an additional step needs to be done in order to make authentication work,
+see [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 
 <br/>
@@ -743,11 +754,11 @@ We enjoy talking with our users!
 
 ### SSR
 
-The Wildcard client is isomorphic (aka universal) and works in both the browser and Node.js.
+The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
-If you don't need Authentication, then SSR works out of the box.
+If you don't need authentication, then SSR works out of the box.
 
-If you need Authentication, then read [SSR & Authentication](/docs/ssr-auth.md#readme).
+Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 
 <br/>
