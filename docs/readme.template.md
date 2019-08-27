@@ -104,7 +104,7 @@ The rule of thumb is:
 - Do you want to expose your data to your organization? Use RPC.
 
 For example, Facebook exposes data to third parties with GraphQL.
-GraphQL is the best choice here as it allows anywone in the world
+GraphQL is the best choice here as it allows anyone in the world
 to build any kind of app on top of Facebook's GraphQL API.
 
 An example where RPC is widely used
@@ -535,6 +535,7 @@ import 'handli'; // npm install handli
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
 If you don't need authentication, then SSR works out of the box.
+
 Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path

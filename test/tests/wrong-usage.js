@@ -6,6 +6,7 @@ module.exports = [
   wrongUrl3,
   noEndpoints,
   endpointDoesNotExist,
+  ssrMissingRequestProps,
 ];
 
 async function validUsage1({wildcardApi, browserEval}) {
@@ -106,19 +107,8 @@ async function endpointDoesNotExist({wildcardApi, browserEval}) {
   });
 }
 
-async function ssr({wildcardApi, wildcardClient}) {
-  const headers = [];
-  wildcardApi.endpoints.hello = async function(name) {
-    assert(this.headers===headers);
-    return 'heyy '+name;
-  };
-
-  const endpointResult = await wildcardClient.endpoints.hello.bind({headers})('Paul');
-  assert(endpointResult==='heyy Paul');
-};
-
 async function ssrMissingRequestProps({wildcardApi, wildcardClient}) {
-  assert endpointFunctionCalled = false;
+  let endpointFunctionCalled = false;
   wildcardApi.endpoints.ssrTest = async function() {
     let exceptionThrown;
     try {
@@ -127,11 +117,12 @@ async function ssrMissingRequestProps({wildcardApi, wildcardClient}) {
     } catch(err) {
       exceptionThrown = true;
       assert(err);
-      assert(err.message.includes('Make sure to add `requestProps` with `bind`'));
+      assert(err.stack.includes('Make sure to provide `headers` by using `bind()` when calling your `ssrTest` endpoint in Node.js'), err.stack);
     }
     assert(exceptionThrown===true);
+    endpointFunctionCalled = true;
   };
 
   await wildcardClient.endpoints.ssrTest();
   assert(endpointFunctionCalled===true);
-};
+}

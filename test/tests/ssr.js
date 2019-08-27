@@ -12,7 +12,7 @@ async function ssr({wildcardApi, wildcardClient}) {
 
   const endpointResult = await wildcardClient.endpoints.hello.bind({headers})('Paul');
   assert(endpointResult==='heyy Paul');
-};
+}
 
 async function ssrWithoutRequestProps({wildcardApi, wildcardClient}) {
   wildcardApi.endpoints.hello = async function(name) {
@@ -21,4 +21,4 @@ async function ssrWithoutRequestProps({wildcardApi, wildcardClient}) {
 
   const endpointResult = await wildcardClient.endpoints.hello('Paul');
   assert(endpointResult==='yo Paul');
-};
+}

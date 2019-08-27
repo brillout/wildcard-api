@@ -1,7 +1,7 @@
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-# SSR & HTTP Headers
+# SSR & Authentication
 
 SSR (Server-Side Rendering) denotes the practice of rendering your frontend twice:
 once to HTML in Node.js and then again to the DOM in the browser.
@@ -250,7 +250,7 @@ and when the client run in Node.js,
 
 
 To sum up,
-here is the
+we show the
 isomorphic (aka universal) usage of the Wildcard client:
 
 ~~~js

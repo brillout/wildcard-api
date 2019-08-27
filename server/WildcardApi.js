@@ -666,16 +666,13 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
     if( !requestProps ) {
       assert.internal(isDirectCall===true);
       assert.usage(false,
-        "Cannot get `this"+getPropString(prop)+"`.",
+        colorizeError("Wrong Wildcard client usage in Node.js."),
         "",
-        colorizeError("Make sure to add `requestProps` with `bind` while running the Wildcard client in Node.js."),
+        "When calling an endpoint in Node.js you have to manually provide properties to `this`.",
         "",
-        "For Example:"
+        "Cannot get `this"+getPropString(prop)+"` because you didn't provide `"+prop+"`.",
         "",
-        "if( isNodejs() ) {"
-        "    endpoints"+getPropString(endpointName)+".bind(requestProps);",
-        }
-        "    endpoints"+getPropString(endpointName)+".bind(requestProps);",
+        "Make sure to provide `"+prop+"` by using `bind()` when calling your `"+endpointName+"` endpoint in Node.js.",
         "",
         "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
       );
