@@ -125,34 +125,6 @@ At [RPC vs REST/GraphQL](/docs/rpc_vs_rest-graphql.md).
 we showcase a to-do list app that illustrates how RPC compares to REST/GraphQL.
 --->
 
-
-
-If a third party (anyone who you're not willing to modify your API for) needs access to your data
-then REST/GraphQL is better suited.
-A RESTful/GraphQL API has a schema and a rigid structure which is a good thing for a third party who needs a stable and long-term contract with your API.
-They need a powerfull API so that third parties can build all kinds of applications.
-Facebook and GitHub will never change their API.
-Their API is set in stone and needs rigid.
-
-But, if all you need is to retrieve/mutate data from within your frontend code,
-then Wildcard offers a much easier way.
-All you have to do is to create JavaScript functions
-and all you need to know is written in this tiny Readme.
-a better choice than GraphQL/REST.
-Everytime, you change the Wildcard API for.
-
-For quickly evolving prototypes and applications,
-the rigid structure of a RESTful/GraphQL API gets in a way and is a handicap.
-Wildcard
-is schemaless and structureless
-which is a wonderful fit for rapid development, prototyping, and MVPs.
-
-The rule of thumb is:
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your goal is to expose your data to the world? Use REST or GraphQL.
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your goal is to expose your data to your frontend? Use Wildcard.
-
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
