@@ -19,7 +19,7 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between the browser and your Node.js server.
+Wildcard is a JavaScript library to create an API between your frontend and your Node.js server.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
@@ -103,22 +103,24 @@ The rule of thumb is:
 - Do you want to expose your data to the world? Use REST/GraphQL.
 - Do you want to expose your data to yourself? Use RPC.
 
-For example, Facebook uses a GraphQL API to expose its data to the world.
-GraphQL is a wonderful choice to expose Facebook's public data as it allows anyone in the world
-to build all kinds of app on top of Facebook's data.
+For example, Facebook uses a GraphQL API to expose its data.
+GraphQL fits well as it allows anyone in the world
+to access Facebook's data to build all kinds of app on top of Facebook's data.
 
-Since ~2 years,
-many large companies (Google, Netflix, Square, Docker, ...)
-are increasinlgy using RPC
+Many large companies (Google, Netflix, Square, Docker, ...)
+are starting to use RPC
 for the communication between their internal services.
-Internal services are consumed only within a company which makes RPC a great fit.
+Internal services are consumed only within a company,
+no third party access,
+and RPC makes most sense.
 Most notably,
 [gRPC](https://grpc.io/) is getting more and more popular in the industry for cross-platform communication.
-(Wildcard is essentially gRPC but for the browser and Node.js.)
+(For example between a Python backend and a Java Backend.)
+(Wildcard is essentially gRPC but between your frontend and your Node.js server.)
 
 If you want your React/Vue/Angular frontend to access data from your Node.js server
 then use RPC and
-you can use Wildcard to quickly and easily create an RPC API between your frontend and your Node.js server.
+with Wildcard you can easily create an RPC API.
 
 <!---
 In case you are not familiar with RPC,
@@ -314,7 +316,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    };
    ~~~
 
-3. You can now "call" your enpdoint function in the browser:
+3. You can now "call" your enpdoint function from you frontend:
 
    ~~~js
    // Browser
