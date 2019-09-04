@@ -93,33 +93,37 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
-With Wildcard you essentially create an RPC API.
+With Wildcard you create an RPC API.
 
-**RPC** is commonly used to create an **internal** API
-and **REST/GraphQL** is commonly used to create an API
+RPC is commonly used to create an **internal** API
+while REST and GraphQL are most commonly used to create an API
 for **third parties**.
 
 The rule of thumb is:
 - Do you want to expose your data to the world? Use REST/GraphQL.
-- Do you want to expose your data to your organization? Use RPC.
+- Do you want to expose your data to yourself? Use RPC.
 
-For example, Facebook exposes data to third parties with GraphQL.
-GraphQL is the best choice here as it allows anyone in the world
-to build any kind of app on top of Facebook's GraphQL API.
+For example, Facebook uses a GraphQL API to expose its data to the world.
+GraphQL is a wonderful choice to expose Facebook's public data as it allows anyone in the world
+to build all kinds of app on top of Facebook's data.
 
-An example where RPC is widely used
-is for the communication between internal software of a company.
-Most notably [gRPC](https://grpc.io/) is used by Google, Netflix, Square, Docker and many others.
+Since ~2 years,
+many large companies (Google, Netflix, Square, Docker, ...)
+are increasinlgy using RPC
+for the communication between their internal services.
+Internal services are consumed only within a company which makes RPC a great fit.
+Most notably,
+[gRPC](https://grpc.io/) is getting more and more popular in the industry for cross-platform communication.
+(Wildcard is essentially gRPC but for the browser and Node.js.)
 
-And if,
-for example,
-you want your React/Vue/Angular frontend to access data from your Node.js server,
-then use RPC
-and you can use Wildcard to easily create an RPC API.
+If you want your React/Vue/Angular frontend to access data from your Node.js server
+then use RPC and
+you can use Wildcard to quickly and easily create an RPC API between your frontend and your Node.js server.
 
 <!---
 In case you are not familiar with RPC,
-we strongly recommend you to get familiar with it.
+we recommend you to get familiar with it.
+It's not very known today but is increasinlgy
 Your API is a fundamental pillar of your architecture.
 At [RPC vs REST/GraphQL](/docs/rpc_vs_rest-graphql.md).
 we showcase a to-do list app that illustrates how RPC compares to REST/GraphQL.
