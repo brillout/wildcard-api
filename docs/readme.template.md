@@ -108,11 +108,11 @@ GraphQL is very fitting as it enables anyone in the world
 to access Facebook's data in all kinds of ways.
 
 Many large companies, such as Google and Netflix,
-are starting to replace REST APIs with RPC
+are starting to replace REST/GraphQL with RPC
 for the communication between their internal services.
 Most notably, [gRPC](https://grpc.io/) is getting more and more popular in the industry.
 
-Both gRPC and Wildcard are RPC &mdash; but Wildcard focuses on Node.js server + Browser Frontend setup.
+Both gRPC and Wildcard are RPC &mdash; but Wildcard focuses and only supports the Node.js & Browser stack.
 This makes Wildcard much simpler and much easier to use than gRPC.
 
 So,
