@@ -93,10 +93,10 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
-With Wildcard you create an RPC API.
+When you use Wildcard, you are basically doing RPC.
 
 RPC is commonly used to create an **internal** API
-while REST and GraphQL are most commonly used to create an API
+while REST and GraphQL are best suited to create an API
 for **third parties**.
 
 The rule of thumb is:
@@ -104,39 +104,21 @@ The rule of thumb is:
 - Do you want to expose your data to yourself? Use RPC.
 
 For example, Facebook uses a GraphQL API to expose its data.
-GraphQL is fitting as it enables anyone in the world
+GraphQL is very fitting as it enables anyone in the world
 to access Facebook's data in all kinds of ways.
 
 Many large companies, such as Google and Netflix,
 are starting to replace REST APIs with RPC
 for the communication between their internal services.
-RPC makes more sense than REST/GraphQL as
-both the API consumer
+Most notably, [gRPC](https://grpc.io/) is getting more and more popular in the industry.
 
-Internal services are consumed only within a company,
-no third party access,
-and RPC makes most sense.
-Most notably,
-[gRPC](https://grpc.io/) is getting more and more popular in the industry.
+Both gRPC and Wildcard are RPC &mdash; but Wildcard focuses on Node.js server + Browser Frontend setup.
+This makes Wildcard much simpler and much easier to use than gRPC.
 
-On a high-level Wildcard and gRPC are the same as they both allow you create an RPC API.
-gRPC is designed for cross-platform communication,
-such as between a Python backend and a Java Backend.
-whereas Wildcard
-is designed only for the frontend and Node.js.
-For a frontend + Node.js stack,
-Wildcard is radically simpler and super easy to use.
-
-An API between your React/Vue/Angular frontend and your Node.js server
-is essentially an internal API: you are the consumer of your API.
-RPC is most fitting choice and you can use Wildcard
-to easily create an RPC API.
-
-If you are not sure about RPC,
-We recommend familiarizing yourself with RPC
-as it plays a fundamental architecural role.
-At [RPC Explained](/rpc.md).
-we explain RPC and show its benefits and drawbacks.
+So,
+if you want your React/Vue/Angular frontend to be able to access data from your Node.js server,
+then RPC is the best option
+and you can use Wildcard to quickly create an an RPC-like API.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 

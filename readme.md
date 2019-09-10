@@ -97,7 +97,7 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between the browser and your Node.js server.
+Wildcard is a JavaScript library to create an API between your frontend and your Node.js server.
 
 With Wildcard,
 creating an API is as easy as creating a JavaScript function:
@@ -195,37 +195,32 @@ We enjoy talking with our users!
 
 ### Wildcard VS GraphQL/REST
 
-With Wildcard you essentially create an RPC API.
+When you use Wildcard, you are basically doing RPC.
 
-**RPC** is commonly used to create an **internal** API
-and **REST/GraphQL** is commonly used to create an API
+RPC is commonly used to create an **internal** API
+while REST and GraphQL are best suited to create an API
 for **third parties**.
 
 The rule of thumb is:
 - Do you want to expose your data to the world? Use REST/GraphQL.
-- Do you want to expose your data to your organization? Use RPC.
+- Do you want to expose your data to yourself? Use RPC.
 
-For example, Facebook exposes data to third parties with GraphQL.
-GraphQL is the best choice here as it allows anyone in the world
-to build any kind of app on top of Facebook's GraphQL API.
+For example, Facebook uses a GraphQL API to expose its data.
+GraphQL is very fitting as it enables anyone in the world
+to access Facebook's data in all kinds of ways.
 
-An example where RPC is widely used
-is for the communication between internal software of a company.
-Most notably [gRPC](https://grpc.io/) is used by Google, Netflix, Square, Docker and many others.
+Many large companies, such as Google and Netflix,
+are starting to replace REST APIs with RPC
+for the communication between their internal services.
+Most notably, [gRPC](https://grpc.io/) is getting more and more popular in the industry.
 
-And if,
-for example,
-you want your React/Vue/Angular frontend to access data from your Node.js server,
-then use RPC
-and you can use Wildcard to easily create an RPC API.
+Both gRPC and Wildcard are RPC &mdash; but Wildcard focuses on Node.js server + Browser Frontend setup.
+This makes Wildcard much simpler and much easier to use than gRPC.
 
-<!---
-In case you are not familiar with RPC,
-we strongly recommend you to get familiar with it.
-Your API is a fundamental pillar of your architecture.
-At [RPC vs REST/GraphQL](/docs/rpc_vs_rest-graphql.md).
-we showcase a to-do list app that illustrates how RPC compares to REST/GraphQL.
---->
+So,
+if you want your React/Vue/Angular frontend to be able to access data from your Node.js server,
+then RPC is the best option
+and you can use Wildcard to quickly create an an RPC-like API.
 
 
 <br/>
@@ -436,7 +431,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    };
    ~~~
 
-3. You can now "call" your enpdoint function in the browser:
+3. You can now "call" your enpdoint function from you frontend:
 
    ~~~js
    // Browser
