@@ -19,10 +19,10 @@
 
 ### What is Wildcard
 
-Wildcard is a JavaScript library to create an API between your frontend and your Node.js server.
+Wildcard is a JavaScript library to create an API for your Node.js server that is consumed by your frontend.
 
 With Wildcard,
-creating an API is as easy as creating a JavaScript function:
+creating an API endpoint is as easy as creating a JavaScript function:
 
 ~~~js
 // Node.js server
@@ -64,12 +64,12 @@ const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
-  const user = await getLoggedUser(this.headers); // We explain `this.headers` later
+  const user = await getLoggedUser(this.headers); // We explain `this.headers` later.
 
-  // Abort if the user is not logged in
+  // Abort if the user is not logged in. We explain how to do permissions later.
   if( !user ) return;
 
-  // With ORM/ODM:
+  // With an ORM/ODM:
   const newTodo = new Todo({text, authorId: user.id});
   await newTodo.save();
   /* Or with SQL:
@@ -77,13 +77,14 @@ endpoints.createTodoItem = async function(text) {
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
     {text, authorId: user.id}
-  ); */
+  );
+  */
 
   return newTodo;
 };
 ~~~
 
-Wildcard is new but already used in production at couple of projects,
+Wildcard is new but already used in production at couple of startups,
 every release is assailed against a heavy suit of automated tests,
 its author is responsive, and issues are fixed within 1-2 days.
 
@@ -106,7 +107,7 @@ The rule of thumb is:
 
 For example, Facebook has a GraphQL API which
 is very fitting as it allows any third party
-to access Facebook's data in all kinds of ways.
+to access Facebook's social graph in all kinds of ways.
 
 Many large companies, such as Google and Netflix,
 are starting to replace REST/GraphQL with RPC
