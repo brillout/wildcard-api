@@ -561,7 +561,7 @@ This section collects further information about Wildcard.
    <br/>
    How to use Wildcard with SSR and Authentication.
 
- - [How it work](/docs/how-does-it-work.md#readme)
+ - [How Does It Work](/docs/how-does-it-work.md#readme)
    <br/>
    Explains how Wildcard works.
 
