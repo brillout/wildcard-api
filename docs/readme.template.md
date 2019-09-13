@@ -94,13 +94,13 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 ### Wildcard VS GraphQL/REST
 
-When you use Wildcard, you are essentially doing
+When you use Wildcard you are essentially doing
 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
 
 RPC is commonly used to create **internal** APIs
 while REST and GraphQL are best to create APIs
 for **third parties**.
-(An *internal API* is an API that is not consumed by third parties but that is consumed only by yourself.)
+(An *internal API* is an API that is not consumed by third parties but that is only consumed by yourself or your organization.)
 
 The rule of thumb is:
 - Do you want to expose your data to the world? Use REST/GraphQL.
@@ -123,7 +123,7 @@ This makes Wildcard much simpler and much easier use.
 If all you want is your React/Vue/Angular frontend to access data from your server,
 then the easiest and quickest option is to use RPC.
 And, if your server is a Node.js server,
-you can use
+then you can use
 Wildcard to easily and quickly create an RPC API.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
