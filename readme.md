@@ -84,7 +84,7 @@
 <br/>
 
  - [What is Wildcard](#what-is-wildcard)
- - [Wildcard VS GraphQL/REST](#wildcard-vs-graphqlrest)
+ - [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
  - Usage
    - [Getting Started](#getting-started)
    - [Authentication](#authentication)
@@ -199,7 +199,7 @@ We enjoy talking with our users.
 
 
 
-### Wildcard VS GraphQL/REST
+### Wildcard compared to REST, GraphQL, and other RPCs
 
 When you use Wildcard you are essentially doing
 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
@@ -207,7 +207,7 @@ When you use Wildcard you are essentially doing
 RPC is commonly used to create **internal** APIs
 while REST and GraphQL are best to create APIs
 for **third parties**.
-(An *internal API* is an API that is not consumed by third parties but that is only consumed by yourself or your organization.)
+(An *internal API* is an API that is not consumed by third parties but only by yourself or your organization.)
 
 The rule of thumb is:
 - Do you want to expose your data to the world? Use REST/GraphQL.
