@@ -116,21 +116,21 @@ Both gRPC and Wildcard are RPC.
 While gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) Wildcard only supports the Node.js & browser stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
+If all you want is your React/Vue/Angular frontend to access data from your server,
+then the easiest and quickest option is to use RPC.
+And, if your server is a Node.js server,
+then you can use
+Wildcard to easily and quickly create an RPC API.
+
 On the other hand,
 REST and GraphQL are better suited for APIs consumed by third parties.
 For example, Facebook has a GraphQL API which
 is very fitting as it allows any third party
 to extensively access Facebook's social graph.
 
-In short:
+To sum up:
 - You want to expose your data to the world? Use REST/GraphQL.
 - You want to expose your data to yourself? Use RPC.
-
-If all you want is your React/Vue/Angular frontend to access data from your server,
-then the easiest and quickest option is to use RPC.
-And, if your server is a Node.js server,
-then you can use
-Wildcard to easily and quickly create an RPC API.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
