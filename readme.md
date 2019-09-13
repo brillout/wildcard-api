@@ -196,10 +196,10 @@ We enjoy talking with our users.
 
 ### Wildcard VS GraphQL/REST
 
-When you use Wildcard, you are basically doing RPC.
-
-RPC is commonly used to create an **internal** API
-while REST and GraphQL are best to create an API
+When you use Wildcard, you are essentially doing
+[RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
+RPC is commonly used to create **internal** APIs
+while REST and GraphQL are best to create APIs
 for **third parties**.
 (An *internal API* is an API that is not consumed by third parties but that is consumed only by yourself.)
 
@@ -209,21 +209,23 @@ The rule of thumb is:
 
 For example, Facebook has a GraphQL API which
 is very fitting as it allows any third party
-to access Facebook's social graph in all kinds of ways.
+to extensively access Facebook's social graph.
 
-Many large companies, such as Google and Netflix,
+Many large companies,
+such as Google and Netflix,
 are starting to replace REST/GraphQL with RPC
-for the communication between their internal services.
+for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
 
-Both gRPC and Wildcard are RPC &mdash; but gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) whereas Wildcard only supports the Node.js & Browser stack.
-This makes Wildcard much simpler and much easier to use than gRPC.
+Both gRPC and Wildcard are RPC
+but gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) whereas Wildcard only supports the Node.js & Browser stack.
+This makes Wildcard much simpler and much easier use.
 
 If all you want is your React/Vue/Angular frontend to access data from your server,
-then the easiest and quickest option is to use RPC to create an internal API.
-And if your server is a Node.js server,
-you can then use
-Wildcard to super easily and super quickly create an RPC-like API.
+then the easiest and quickest option is to use RPC.
+And, if your server is a Node.js server,
+you can use
+Wildcard to easily and quickly create an RPC API.
 
 
 <br/>
@@ -802,7 +804,7 @@ This section collects further information about Wildcard.
 
  - [Conceptual FAQ](/docs/conceptual-faq.md#readme)
    <br/>
-   High level discussion about Wildcard, RPC-like APIs, GraphQL, and REST.
+   High level discussion about Wildcard, RPC APIs, GraphQL, and REST.
 
  - [To-do List Example](/example#readme)
    <br/>
