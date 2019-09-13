@@ -102,8 +102,8 @@ its author is responsive, and issues are fixed within 1-2 days.
 When you use Wildcard you are essentially doing
 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
 
-While REST and GraphQL shine when the API is meant to be consumed by third parties,
-RPC is increasingly used to create internal APIs.
+While REST and GraphQL shine when the API is meant to be consumed by **third parties**,
+RPC is increasingly used to create **internal** APIs.
 (An *internal API* is an API that is not consumed by third parties but only by yourself or your organization.)
 
 Many large companies,
