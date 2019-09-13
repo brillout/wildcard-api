@@ -807,7 +807,7 @@ This section collects further information about Wildcard.
    <br/>
    How to use Wildcard with SSR and Authentication.
 
- - [How it work](/docs/how-it-work.md#readme)
+ - [How it work](/docs/how-does-it-work.md#readme)
    <br/>
    Explains how Wildcard works.
 

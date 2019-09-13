@@ -180,11 +180,6 @@ but,
 from your perspective,
 your custom API can be modified at will while developing your frontend.)
 
-GraphQL is a wonderful addition to our developer toolbox.
-Unfortunately,
-GraphQL's hype makes us forget how great custom APIs are.
-Let's remember.
-
 
 <br/>
 
@@ -225,7 +220,7 @@ Wildcard is just a little tool that takes care of:
 
 If you want control over these things,
 then don't use Wildcard.
-But beaware that it's less trivial than you might think.
+But beaware that these things less trivial than you might think.
 (For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
 
 
@@ -304,7 +299,7 @@ a Wildcard API doesn't make sense.
 
 But if your goal is to retrieve/mutate data from your frontend,
 then Wildcard
-offers a simple alternative.
+offers a simpler and more powerful alternative.
 (So does any custom API or RPC-like API.)
 
 The advent of REST and GraphQL
