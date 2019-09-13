@@ -112,6 +112,7 @@ are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
 
+On the other hand,
 REST and GraphQL are better suited for APIs consumed by third parties.
 For example, Facebook has a GraphQL API which
 is very fitting as it allows any third party
