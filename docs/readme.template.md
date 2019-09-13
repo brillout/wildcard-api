@@ -96,6 +96,7 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 When you use Wildcard, you are essentially doing
 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
+
 RPC is commonly used to create **internal** APIs
 while REST and GraphQL are best to create APIs
 for **third parties**.
