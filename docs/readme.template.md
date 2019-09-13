@@ -64,10 +64,15 @@ const getLoggedUser = require('./path/to/your/auth/code');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
-  const user = await getLoggedUser(this.headers); // We explain `this.headers` later.
+  const user = await getLoggedUser(this.headers); // We talk about `this` later.
 
-  // Abort if the user is not logged in. We explain how to do permissions later.
-  if( !user ) return;
+  if( !user ) {
+    // The user is not logged-in.
+    // We abort.
+    // (This is basically how you define permissions with Wildcard
+    // which we will talk more about later.)
+    return;
+  }
 
   // With an ORM/ODM:
   const newTodo = new Todo({text, authorId: user.id});
@@ -331,10 +336,10 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
 
 ### Authentication
 
-Authentication is usually based on HTTP headers.
-Such as `Authorization: Bearer AbCdEf123456`, or a cookie holding the user's session ID.
+Authentication usually uses HTTP headers
+such as `Authorization: Bearer AbCdEf123456` or a cookie holding the user's session ID.
 
-You can access the `headers` object in your endpoint functions by passing it to `getApiResponse`:
+You can access the HTTP request headers in your endpoint functions by passing the `headers` object to `getApiResponse`:
 
 ~~~js
 app.all('/wildcard/*' , async (req, res) => {
@@ -387,10 +392,12 @@ const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('./path/to/your/db/handler');
 
+// The following endpoint showcases how to implement permissions with Wildcard.
+// The endpoint only allows the author of a todo-item to modify it.
+
 endpoints.updateTodoText = async function(todoId, newText) {
-  // Only logged in users are allowed to change a to-do item.
   if( !user ) {
-    // The user is not logged in.
+    // The user is not logged-in.
     // We abort.
     return;
   }
@@ -400,15 +407,16 @@ endpoints.updateTodoText = async function(todoId, newText) {
   if( !todo ) {
     // `todoId` didn't match any todo.
     // We abort.
+    return;
   }
 
   if( todo.authorId !== user.id ) {
-    // Only the author of the to-do item is allowed to modify it.
+    // The user is not the author of the to-do item.
     // We abort.
     return;
   }
 
-  // The user is authorized.
+  // The user is logged-in and is the author of the todo.
   // We commit the new to-do text.
   await db.updateTodoText(todoId, newText);
 };
@@ -521,7 +529,7 @@ You can also use [Handli](https://github.com/brillout/handli) which will automat
 // Browser
 
 import 'handli'; // npm install handli
-// That's it: Handli automatically installs itslef.
+// That's it: Wildcard will automatically use Handli.
 // Errors are now handled by Handli.
 ~~~
 
