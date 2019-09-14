@@ -231,7 +231,7 @@ is very fitting as it allows any third party
 to extensively access Facebook's social graph.
 
 To sum up:
-- You want to expose your data to the world? Use REST/GraphQL.
+- You want to expose your data to third parties? Use REST/GraphQL.
 - You want to expose your data to yourself? Use RPC.
 
 
