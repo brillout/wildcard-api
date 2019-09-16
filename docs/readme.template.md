@@ -129,8 +129,8 @@ is very fitting as it allows any third party
 to extensively access Facebook's social graph.
 
 To sum up:
-- You want to expose your data to third parties? Use REST/GraphQL.
-- You want to expose your data to yourself? Use RPC.
+- Is your API consumed by third parties? Use REST/GraphQL.
+- Is your API consumed by yourself? Use RPC.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
