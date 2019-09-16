@@ -227,7 +227,7 @@ Wildcard to easily and quickly create an RPC API.
 On the other hand,
 REST and GraphQL are better suited for APIs consumed by third parties.
 For example, Facebook has a GraphQL API which
-is very fitting as it allows any third party
+is fitting as it allows any third party
 to extensively access Facebook's social graph.
 
 To sum up:
