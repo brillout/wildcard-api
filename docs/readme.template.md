@@ -107,7 +107,7 @@ RPC is increasingly used to create **internal** APIs.
 (An *internal API* is an API that is not consumed by third parties but only by yourself or your organization.)
 
 Many large companies,
-such as Google and Netflix,
+[such as Google](https://grpc.io/faq/#who-s-using-this-and-why) and [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
