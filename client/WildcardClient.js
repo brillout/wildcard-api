@@ -10,6 +10,7 @@ function WildcardClient({
   wildcardApi,
   stringify,
   parse,
+  argumentsAlwaysInHttpBody=false,
 }={}) {
 
   assert.usage(
@@ -29,8 +30,11 @@ function WildcardClient({
 
   Object.assign(this, {
     fetchEndpoint,
+    argumentsAlwaysInHttpBody,
     endpoints: getEndpointsProxy(),
   });
+
+  const options = this;
 
   return this;
 
@@ -66,7 +70,7 @@ function WildcardClient({
     let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
     if( endpointArgsStr ){
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-      if( endpointArgsStr.length >= 1000 ){
+      if( endpointArgsStr.length >= 1000 || options.argumentsAlwaysInHttpBody){
         body = endpointArgsStr;
       } else {
         url += '/'+encodeURIComponent(endpointArgsStr);
