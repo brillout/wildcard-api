@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const assert = require('@brillout/reassert');
 
 module.exports = launchBrowser;
 
@@ -21,13 +22,26 @@ async function launchBrowser() {
 
   await page.goto('http://localhost:3000');
 
+  let _onHttpRequest;
+  page.on('request', async request => {
+    if( _onHttpRequest ){
+      await _onHttpRequest(request);
+      request.continue();
+    }
+  });
+
   return {
     browser,
     browserEval,
   };
 
-  async function browserEval(fn, {offlineMode=false, args}={}) {
+  async function browserEval(fn, {offlineMode=false, args, onHttpRequest}={}) {
+    // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestcontinueoverrides
+    _onHttpRequest = onHttpRequest;
+    await page.setRequestInterception(!!onHttpRequest);
+
     await page.setOfflineMode(offlineMode);
+
     let ret;
     try {
       ret = await page.evaluate(fn, args);
@@ -44,6 +58,8 @@ async function launchBrowser() {
       process.exit();
       */
       throw err;
+    } finally {
+      _onHttpRequest = null;
     }
     return ret;
   }

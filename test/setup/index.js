@@ -14,6 +14,7 @@ const launchBrowser = require('./browser/launchBrowser');
 const startServer = require('./startServer');
 
 const {symbolSuccess, symbolError, colorError} = require('@brillout/cli-theme');
+const chalk = require('chalk');
 
 /*
 const DEBUG = true;
@@ -56,6 +57,8 @@ const DEBUG = false;
   await browser.close();
 
   await server.stop();
+
+  console.log(chalk.bold.green('All tests successfully passed.'));
 })();
 
 function getTests() {
