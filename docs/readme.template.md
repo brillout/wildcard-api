@@ -585,7 +585,7 @@ callEndpoint();
 async function callEndpoint() {
   await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
 
-  // Normally, Wildcard passes the arguments in the URL:
+  // Normally, Wildcard passes the arguments in the HTTP request URL:
   //   POST /wildcard/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `argumentsAlwaysInHttpBody` to `true`,
