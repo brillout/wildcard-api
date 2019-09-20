@@ -91,6 +91,7 @@
    - [Permissions](#permissions)
    - [Error Handling](#error-handling)
    - [SSR](#ssr)
+   - [Options](#options)
  - [More Resources](#more-resources)
 
 <br/>
@@ -167,7 +168,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production at couple of startups,
+Wildcard is new but already used in production in couple of projects,
 every release is assailed against a heavy suit of automated tests,
 its author is responsive, and issues are fixed within 1-2 days.
 
@@ -204,7 +205,7 @@ We enjoy talking with our users.
 When you use Wildcard you are essentially doing
 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
 
-While REST and GraphQL shine when the API is meant to be consumed by **third parties**,
+While REST and GraphQL shine for APIs that are meant to be consumed by **third parties**,
 RPC is increasingly used to create **internal** APIs.
 (An *internal API* is an API that is not consumed by third parties but only by yourself or your organization.)
 
@@ -219,18 +220,18 @@ While gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) Wildcar
 This allows Wildcard to have a simple design and to be super easy to use.
 
 If all you want is your React/Vue/Angular frontend to access data from your server,
-then the easiest and quickest option is to use RPC.
+then RPC is likely the easiest and best option.
 And, if your server is a Node.js server,
 then you can use
 Wildcard to easily and quickly create an RPC API.
 
 On the other hand,
 REST and GraphQL are better suited for APIs consumed by third parties.
-For example, Facebook has a GraphQL API which
-is fitting as it allows any third party
+For example, Facebook's public API
+is a GraphQL API which is fitting as it allows any third party
 to extensively access Facebook's social graph.
 
-To sum up:
+The rule of thumb being:
 - Is your API consumed by third parties? Use REST/GraphQL.
 - Is your API consumed by yourself? Use RPC.
 
@@ -769,6 +770,76 @@ The Wildcard client is isomorphic (aka universal) and works in the browser as we
 If you don't need authentication, then SSR works out of the box.
 
 Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
+
+
+### Options
+
+In order to keep Wildcard simple, we provide
+a minimal amount of options.
+There is currently only one option: `argumentsAlwaysInHttpBody`.
+
+If you need more options, then
+[open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
+
+###### `wildcardClient.argumentsAlwaysInHttpBody`
+
+`argumentsAlwaysInHttpBody` is about configuring whether
+arguments are passed in the HTTP request body.
+(Instead of being passed in the HTTP request URL.)
+
+For example:
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
+import wilcardClient from 'wildcard-api/client';
+
+wildcardClient.argumentsAlwaysInHttpBody = true;
+
+callEndpoint();
+
+async function callEndpoint() {
+  await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
+
+  // Normally, Wildcard passes the arguments in the URL:
+  //   POST /wildcard/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
+
+  // But because we have set `argumentsAlwaysInHttpBody` to `true`,
+  // Wildcard passes the arguments in the HTTP request body instead:
+  //   POST /wildcard/myEndpoint HTTP/1.1
+  //   Request payload: [{"some":"arguments"},"second arg"]
+};
+~~~
 
 
 <br/>
