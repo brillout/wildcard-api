@@ -1,6 +1,48 @@
+# RPC or REST/GraphQL, which one to use?
+
+An approximate rule of thumb:
+- Is your API consumed by third parties? Use REST/GraphQL
+-API consumed by third parties?
+
+We will now explain this rule of thumb by giving with examples.
+
+- []
+- []
+- []
+- [Conclusion]
+
+
+### Example where RPC is clearly the best choice
+
+1:1 relationship between frontend and backend
+
+Most notably while prototyping.
+
+More powerful; being able to use any SQL/ORM query while developing your frontend is arguably more powerful than any GraphQL query.
+
+
+### Example where GraphQL/REST is clearly the best choice
+
 For example, Facebook uses a GraphQL API to expose its data.
 GraphQL is fitting as it enables anyone in the world
 to access Facebook's data in all kinds of ways.
+
+
+### In Between
+
+Are you willing to modify your API?
+
+### Conclusion
+
+Our rule of thumb can be refined with the following:
+
+> Are you willing to change your API each time a API consumer changes its data requirement changes? If yes, use RPC. Otherwise, use REST/GraphQL.
+
+
+
+Large organization
+
+
 
 Many large companies, such as Google and Netflix,
 are starting to replace REST APIs with RPC
@@ -44,9 +86,6 @@ we explain RPC and show its benefits and drawbacks.
 
 
 ### RPC Explained
-
--API consumed by third parties?
--More precisely are you willing to change your API?
 
 The reason is that with REST / GraphQL you build API endpoints without knowing
 who the consumer of your API is and what he needs.
