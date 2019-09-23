@@ -1,10 +1,9 @@
 # RPC or REST/GraphQL, which one to use?
 
-An approximate rule of thumb:
+In this document,
+we illustrate the following rule of thumb:
 - Is your API consumed by third parties? Use REST/GraphQL.
 - Is your API consumed by yourself? Use REST/GraphQL.
-
-This document illustrates this rule.
 
 - []
 - []
@@ -15,16 +14,12 @@ This document illustrates this rule.
 ### Example where RPC is clearly the best choice
 
 Let's assume that we want to quickly create a prototype for a greenfield project
-that consists of a server with a frontend that are developed hand-in-hand and deployed at the same time.
+that consists of one server and one frontend that are developed hand-in-hand and deployed at the same time.
 
-With RPC,
 While developing the frontend with RPC,
-anything the server
-all the server's power
-can be used
-you can write any function you want
+we can use any server-side tool,
+such as SQL or an ORM,
 to retrieve/mutate data:
-anything the server can do is one endpoint away:
 
 ~~~js
 // Assuming that the backend is a Node.js server
@@ -47,15 +42,69 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
 };
 ~~~
 
-Because the frontend and backend are developed
-hand-in-hand,
-we can write our endpoint 
-While developing you can write any SQL/ORM query you want to retrieve/mutate data from the frontend.
+Being able to use any SQL/ORM query to retrieve/muate data is
+both more powerful and simpler than REST and GraphQL.
 
-Being able to use SQL/ORM is arguably more powerful than REST/GraphQL queries.
+It is also simpler.
 
-This is much simpler than setting up
+With REST/GraphQL you define a schema that replicates the models of your database
+and write CRUD resolvers for each model using SQL/ORM queries,
+whereas with RPC you use SQL/ORM queries directly.
+
+This added comple makes sense for an API that is set in stone:
+an API consumer needs to be able to retrieve/mutate data in all kinds of way without requiring the API to change.
+Creating a shema and CRUD operations on each model allows exactly that: a generic way to access data wihtout requiring change backend.
+It enables the frontend to be developed independently of the backend.
+It decouples frontend development from backend development.
+
+In our example,
+we develop the frontend hand-in-hand with the backend and we don't require such decoupling:
+we can change the API whenever the frontend requires so.
+
+then.
+With RPC you skip all that and can use the ORM directly to retrieve/mutate data
+1. Define a schema that replicates and reprensetns your database
+2. Write CRUD resolvers for all your models
+3. Define permission for all your models
+
+What you endpoint 
+
+In contrast, with RPC you:
+1. Can use any SQl/ORM query
+2. Define permission on case-by-case basis
+
+lean and more case-by-case 
+
+for CRUD operations for each model;
+You bascically create a generic API.
+This redudant 
+
+This makes sense for an API that is set in stone.
+But in our case we don't need:
+we develop the API provider (the server) and the API consumer (the frontend)
+hand-in-hand allowing us to modify the API each time the frontend needs a change.
+
+This ability to change the API at the whim of the frontend,
+is
+This is at the core of the decision whether to use RPC or REST/GraphQL.
+
+
+but for an API that is developed hand-in-hand 
+
+an uncesseray redundancy reflecting your database.
+the rigid structure and schema of a RESTful or GraphQL API is not only
+an uncesseray indirection but also get's in the way of quickly evolving your app.
+
+If you can afford to develop 
+
+not only vastly simpler and vastly more powerful.
+And that by a order of magnitute.
+Even if you need only couple of queries
+With RPC, you 
 In when you set up REST/GrahQL.
+We skip 
+
+
 
 > :information_source: **Auto-generated GraphQL**
 > <br/>
