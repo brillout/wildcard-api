@@ -1,10 +1,10 @@
 # RPC or REST/GraphQL, which one to use?
 
 An approximate rule of thumb:
-- Is your API consumed by third parties? Use REST/GraphQL
--API consumed by third parties?
+- Is your API consumed by third parties? Use REST/GraphQL.
+- Is your API consumed by yourself? Use REST/GraphQL.
 
-We will now explain this rule of thumb by giving with examples.
+This document illustrates this rule.
 
 - []
 - []
@@ -13,6 +13,106 @@ We will now explain this rule of thumb by giving with examples.
 
 
 ### Example where RPC is clearly the best choice
+
+Let's assume that we want to quickly create a prototype for a greenfield project
+that consists of a server with a frontend that are developed hand-in-hand and deployed at the same time.
+
+With RPC,
+While developing the frontend with RPC,
+anything the server
+all the server's power
+can be used
+you can write any function you want
+to retrieve/mutate data:
+anything the server can do is one endpoint away:
+
+~~~js
+// Assuming that the backend is a Node.js server
+// and the frontend is a web frontend (React/Vue/Angular/...).
+// we can then use Wildcard.
+
+const {endpoints} = require('wildcard-api');
+
+prototype with full-stack JavaScript (Node.js Server + React/Vue/Angular/... Frontend) prototype for a greenfield project.
+
+endpoints.whateverTheFrontendNeeds = function(productId) {
+  // 
+  // Depending
+  if( !productId || productId.constructor===Number ){
+    return;
+  }
+
+  // In Here we can do whatever
+  // In short, we can use the full server power for our frontend.
+};
+~~~
+
+Because the frontend and backend are developed
+hand-in-hand,
+we can write our endpoint 
+While developing you can write any SQL/ORM query you want to retrieve/mutate data from the frontend.
+
+Being able to use SQL/ORM is arguably more powerful than REST/GraphQL queries.
+
+This is much simpler than setting up
+In when you set up REST/GrahQL.
+
+> :information_source: **Auto-generated GraphQL**
+> <br/>
+> Some frameworks automatically generate a GraphQL API for you.
+> In that case using GraphQL instead of the ORM is fine.
+> You still need to define permissions though
+> (permissions are application specific and no framework can define permissions for you),
+> and RPC can be used a thin permission layer.
+> you always need to write permission.
+> One way to think about it is that **RPC is a thin permission layer**.
+> It's thin because with RPC you define permissions in a schema-less, structure-less, programmatic, and case-by-case way.
+
+Not only is it simpler but it is also more powerful than REST/Graphql.
+SQL/ORM.
+We skip schema and structure.
+In a sense, the schema is an uncessary indirection.
+
+But we have made strong assumtion here: we said that the.
+This is the 
+
+> RPC is only an option if you are willing to change the API for each consumer.
+
+This is a safe assumption.
+
+
+To illustrate:
+
+~~~js
+// RPC for full-stack JavaScript with Wildcard
+
+endpoints.whateverTheFrontendNeeds = function() {
+  // We don't return product.description
+};
+~~~
+
+If the frontend were to change to require `product.description`.
+This is where the power of GraphQL comes in.
+That is set in stone
+But for an API that can change at the whip of the frontend, RPC is actually more powerful than GraphQL.
+
+
+But if your API is by 5 frontends,
+then using GraphQL can be more fitting.
+
+(in the end GraphQL/REST 
+While develop
+
+We can develop hand-in-hand and .
+
+We assume
+
+
+Because 
+
+write SQL/ORM queries 
+
+The prototype requires only couple of 
 
 1:1 relationship between frontend and backend
 
@@ -31,6 +131,8 @@ to access Facebook's data in all kinds of ways.
 ### In Between
 
 Are you willing to modify your API?
+
+progressively replace RPC with REST/GraphQL.
 
 ### Conclusion
 
