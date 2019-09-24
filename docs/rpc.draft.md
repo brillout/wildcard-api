@@ -5,12 +5,46 @@ we illustrate the following rule of thumb:
 - Is your API consumed by third parties? Use REST/GraphQL.
 - Is your API consumed by yourself? Use REST/GraphQL.
 
+- [What is RPC]()
 - [Example where RPC is clearly the best choice]()
 - [Example where GraphQL/REST is clearly the best choice]()
 - [In Between]()
 - [Tight frontend - backend development]()
 - [Conclusion]()
 
+
+### What is RPC
+
+The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) explains RPC quite well:
+
+> [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute in a different [...] computer [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
+
+For example with Wildcard:
+
+~~~js
+// Node.js server
+
+const {endpoints} = require('wildcard-api');
+
+// We define a function (aka procedure) `hello` in Node.js
+endpoints.hello = function(name) {
+  return {message: 'Welcome '+name};
+};
+~~~
+
+~~~js
+// Browser
+
+import {endpoints} from 'wildcard-api/client';
+
+(async () => {
+  // We call `hello` remotely in the browser
+  const {message} = await endpoints.hello('Alice');
+  console.log(message); // Prints `Welcome Alice`
+})();
+~~~
+
+This is what RPC is about: our function `hello` is exectued on the Node.js server but called remotely in the browser.
 
 ### Example where RPC is clearly the best choice
 
@@ -41,12 +75,77 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
 
 With RPC we use SQL/ORM queries directly.
 
-With REST/GraphQL we would need to define a schema that replicates the models of your database
-and you write CRUD resolvers using SQL/ORM for each model REST/GraphQL schema.
+With REST/GraphQL we would need to define a schema replicating the models of your database
+and then use SQL/ORM queries to define CRUD resolvers for each schema model.
+
+On a high level, this is the fundamental difference between RPC and REST/GraphQL:
+with RPC we use SQL/ORM queries directly whereas a REST/GraphQL schema proxies SQL/ORM.
+
+The schema is about creating a generic API,
+that is an API that is able to fulfill all kinds of data requirements,
+independently of what the frontend needs.
+
+Such generic API makes a lot of sense when the backend and its API are set in stone:
+the backend needs to support the frontend with whatever frontend may eventually need;
+the more generic the API the better.
+
+A generic API decouples frontend and backend:
+the frontend can be devloped independently of the backend and vice versa.
+
+With RPC,
+we do the opposite:
+we develop the API and the frontend hand-in-hand and create and evolve endpoints progressively as the frontend needs arise.
+
+So, when we develop API and frontend hand-in-hand we don't need REST, GraphQL, nor any API schema.
+
+In a sense, a API schema makes things more rigid.
+That is certainly a good thing from the perspective of a thrid party that
+
+needs a long term contract
+between 
+
+Not only don't we need to duplicate the schema, but it actually it also get's in the way of quickly evolving our app.
+Every time we need change our models we have to change it in two places: the database itslef and the API schema.
+Duplicated
+
+When we 
+programatic 
 
 Is it wasteful, this indirection makes sense when the API is set in stone.
 Thanks to the schema and its CRUD operation without changing the API backbone.
 The backend and its API is set in stone.
+
+
+If your goal is to create an API that is
+- Rigid and set in stone
+- Consumed by many 
+- Developed independently
+
+But if your goal is to create an API that is:
+- Simple, quick, and easy
+- Evolves hand-in-hand with your frontend
+
+
+
+lean and more case-by-case 
+
+for CRUD operations for each model;
+You bascically create a generic API.
+This redudant 
+
+This makes sense for an API that is set in stone.
+But in our case we don't need:
+we develop the API provider (the server) and the API consumer (the frontend)
+hand-in-hand allowing us to modify the API each time the frontend needs a change.
+
+This ability to change the API at the whim of the frontend,
+is
+This is at the core of the decision whether to use RPC or REST/GraphQL.
+
+
+
+
+
 
 Each time we change the SQL/ORM queries the frontend uses, we need to modify and re-deploy the backend.
 retrieve/mutate we need to change and the backend code.
@@ -122,20 +221,6 @@ In contrast, with RPC you:
 1. Can use any SQl/ORM query
 2. Define permission on case-by-case basis
 
-lean and more case-by-case 
-
-for CRUD operations for each model;
-You bascically create a generic API.
-This redudant 
-
-This makes sense for an API that is set in stone.
-But in our case we don't need:
-we develop the API provider (the server) and the API consumer (the frontend)
-hand-in-hand allowing us to modify the API each time the frontend needs a change.
-
-This ability to change the API at the whim of the frontend,
-is
-This is at the core of the decision whether to use RPC or REST/GraphQL.
 
 
 but for an API that is developed hand-in-hand 
@@ -292,3 +377,5 @@ who the consumer of your API is and what he needs.
 With RPC, you build an API for yourself and you know what endpoints you need.
 
 
+
+learning the procedures of a remote API is very similar to learning a new programming library.
