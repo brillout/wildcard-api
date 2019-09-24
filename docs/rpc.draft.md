@@ -5,10 +5,11 @@ we illustrate the following rule of thumb:
 - Is your API consumed by third parties? Use REST/GraphQL.
 - Is your API consumed by yourself? Use REST/GraphQL.
 
-- []
-- []
-- []
-- [Conclusion]
+- [Example where RPC is clearly the best choice]()
+- [Example where GraphQL/REST is clearly the best choice]()
+- [In Between]()
+- [Tight frontend - backend development]()
+- [Conclusion]()
 
 
 ### Example where RPC is clearly the best choice
@@ -16,10 +17,7 @@ we illustrate the following rule of thumb:
 Let's assume that we want to quickly create a prototype for a greenfield project
 that consists of one server and one frontend that are developed hand-in-hand and deployed at the same time.
 
-While developing the frontend with RPC,
-we can use any server-side tool,
-such as SQL or an ORM,
-to retrieve/mutate data:
+With RPC, the frontend can use any server-side tool to retrieve/mutate data, such as SQL or an ORM:
 
 ~~~js
 // Assuming that the backend is a Node.js server
@@ -31,7 +29,6 @@ const {endpoints} = require('wildcard-api');
 prototype with full-stack JavaScript (Node.js Server + React/Vue/Angular/... Frontend) prototype for a greenfield project.
 
 endpoints.whateverTheFrontendNeeds = function(productId) {
-  // 
   // Depending
   if( !productId || productId.constructor===Number ){
     return;
@@ -42,16 +39,68 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
 };
 ~~~
 
+With RPC we use SQL/ORM queries directly.
+
+With REST/GraphQL we would need to define a schema that replicates the models of your database
+and you write CRUD resolvers using SQL/ORM for each model REST/GraphQL schema.
+
+Is it wasteful, this indirection makes sense when the API is set in stone.
+Thanks to the schema and its CRUD operation without changing the API backbone.
+The backend and its API is set in stone.
+
+Each time we change the SQL/ORM queries the frontend uses, we need to modify and re-deploy the backend.
+retrieve/mutate we need to change and the backend code.
+
+For web development, whether to use RPC boils down to the following trade-off:
+ - Con: Higher frontend - backend coupling
+ - Pro: Simpler
+ - Pro: Powerful
+
+This means that.
+
+For example,
+if your backend is developed by a contractor that will deliver and sign off the backend before the frontend is being developed,
+then REST/GraphQL is the way to go;
+the backend and the API are set in stone and the frontend needs a generic API.
+
+But if your backend and frontend are developed within the same organization,
+and if the backend team is willing to modify the backend's API when the frontend needs a change,
+then RPC is most likely the way to go.
+The drawback of RPC is that the backend will have to change and re-deploy the API more frequently
+but the added simplicity and powerfulness of RPC largely outweighs this drawback.
+
+And,
+if you are a single full-stack JavaScript developer writing a prototype,
+then Wildcard is superior in virtually every way.
+
+For web dev, we can refine our rule to:
+> Do you develop your frontend
+For web development
+If you need to be able to develop the frontend independently of the backend
+then use REST/GrapQL.
+Otherwise RPC is simpler and more powerful.
+We discuss whether a highter frontend - backend coupling is a good thing in
+[Tight frontend - backend development]()
+
+The sc
+the reason
+? It depends
+
+with REST/GraphQL you first have to define 
+and write CRUD resolvers for each model using SQL/ORM queries.
+
+
+
+
+
+
 Being able to use any SQL/ORM query to retrieve/muate data is
 both more powerful and simpler than REST and GraphQL.
 
 It is also simpler.
 
-With REST/GraphQL you define a schema that replicates the models of your database
-and write CRUD resolvers for each model using SQL/ORM queries,
-whereas with RPC you use SQL/ORM queries directly.
 
-This added comple makes sense for an API that is set in stone:
+This added complexity makes sense for an API that is set in stone:
 an API consumer needs to be able to retrieve/mutate data in all kinds of way without requiring the API to change.
 Creating a shema and CRUD operations on each model allows exactly that: a generic way to access data wihtout requiring change backend.
 It enables the frontend to be developed independently of the backend.
