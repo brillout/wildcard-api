@@ -8,13 +8,13 @@ We also show in what situations RPC or REST/GraphQL should be used.
 > - RPC is schemaless whereas REST/GraphQL has a schema.
 > - REST/GraphQL's schema approach can be beneficial in decoupling frontend and backend.
 > - RPC is simpler and more powerful for a frontend developed hand-in-hand with the backend.
-> - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by hundreds or more third parties.
+> - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by many third parties.
 
-- [What is RPC]()
-- [Schema vs Schemaless]()
-- [Examples where RPC is the right choice]()
-- [Examples where GraphQL/REST is the right choice]()
-- [Conclusion]()
+- [What is RPC](#what-is-rpc)
+- [Schema vs Schemaless](#schema-vs-schemaless)
+- [Examples where RPC is the right choice](#examples-where-rpc-is-the-right-choice)
+- [Examples where GraphQL/REST is the right choice](#examples-where-graphqlrest-is-the-right-choice)
+- [Conclusion](#conclusion)
 
 ### What is RPC
 
@@ -179,14 +179,14 @@ SQL queries are significantly more powerful than schema operations.
 > GraphQL alleviates the situation as GraphQL queries are more powerful than RESTful queries.
 > But only to a certain degree &mdash; SQL/ORM queries are still significantly more powerful than GraphQL queries.
 
-###### RPC is simple
+###### Schemaless is simple
 
 RPC is simple:
 there is no schema to define, no CRUD resolvers to write.
 
 Instead, we simply define functions on our server and remotely call them in the browser allowing
 our frontend to use whatever server-side tool we want to retrieve/mutate data, such as SQL or an ORM.
-(You do have to be [careful about permissions]() though.)
+(You do have to be [careful about permissions](/../../#permissions) though.)
 
 And, RPC tools such as Wildcard require virtually no setup.
 
@@ -208,6 +208,8 @@ then we would have to change the function `ehui` defined on the Node.js server.
 
 As we can see in this example,
 anytime the frontend wants to change a SQL/ORM query, the backend code needs to be changed and re-deployed.
+
+Being able to change the backend code at the whim of the frontend is the central prerequisite for using RPC.
 
 REST/GraphQL, on the other hand, decouples:
 as long as the schema doesn't change, the frontend and backend can be developed independently of each other.
@@ -240,37 +242,33 @@ Wildcard offers a super simple way to create an RPC API.
 
 Since the prototype is developed by a single developer,
 the frontend and backend are devloped hand-in-hand,
-and RPC is then super powerful as it allows the developer to use any SQL/ORM query to retrieve/mutate data while developing the frontend.
+we can use RPC, its simplicity, and the power of being able to use
+any SQL/ORM query to retrieve/mutate data while developing the frontend.
 
-a schema is crippling
+Since the frontend and backend don't need to be decoupled
+a schema (and therefore REST/GraphQL) is not necessary.
 
 Not only is the schema approach of REST/GraphQL
 an unnecessary indirection but it also gets in the way of quickly evolving the prototype;
 anytime you make a change to your database's schema you will also have to change the schema of your REST/GraphQL API.
 
-And, if the prototype happens to scale to a large project, RPC can be progressively replaced with REST/GraphQL.
+If the prototype evolves into becoming large scale project, RPC can be progressively replaced with REST/GraphQL.
 
-For a full-stack JavaScript developer writing a prototype (for example with Next.js or Nuxt.js),
+For a full-stack JavaScript developer writing a prototype (for example with Next.js, Nuxt.js, or Goldpage),
 there is virtually no reason to not use RPC.
 
 **Hand-in-hand development**
 
 In genreal,
-when the backend team is willing to modify and re-deploy the API whenever the frontend wants to change or use a new SQL/ORM query,
-then RPC offers a simpler and more powerful alternative to REST/GraphQL (as explained in our previous section []()).
-
-But, if your backend and frontend are developed within the same organization,
-and if the backend team is willing to modify the backend's API when the frontend needs a change,
-then RPC is the way to go.
-The drawback of RPC is that the backend will have to change and re-deploy the API more frequently
-but the added simplicity and powerfulness of RPC largely outweighs this drawback.
+if the backend team is willing to modify and re-deploy the API whenever the frontend needs a change,
+then RPC offers a simpler and more powerful alternative to REST/GraphQL.
 
 If you have a 1:1 relationship between frontend and backend,
-that is your frontend is the only frontend of your backend and vice versa,
-then a hand-in-hand development is likely a good thing in itself.
-
-We discuss whether a highter frontend - backend coupling is a good thing in
-[Tight frontend - backend development]()
+that is the frontend is the only frontend of the backend and vice versa,
+then a hand-in-hand development is actually most likely a good thing in itself.
+<!---
+, as explained [here].
+-->
 
 
 ### Examples where REST/GraphQL is the right choice
@@ -285,18 +283,20 @@ We discuss whether a highter frontend - backend coupling is a good thing in
 Facebook uses a GraphQL API to
 enable third parties to build applications on top of Facebook's social graph.
 
-Facebook cannot modify its API at the whim of each third party &mdash; RPC is not an option (as explained in []()).
-Instead, a GraphQL API is fitting as it allows any third party to extensively access Facebook's social graph.
+As explained in
+[Schema vs Schemaless](#schema-vs-schemaless),
+being able to change the backend code at the whim of the frontend is the central prerequisite for using RPC,
+and
+Facebook certainly cannot modify its API at the whim of each third party &mdash; RPC is not an option.
 
-In a sense, REST/GraphQL
-makes your schema redundent:
-your data schema is defined twice: once on your database and a second time on your REST/GraphQL API.
-The REST/GraphQL schema then essentially acts as a long-term contract between your API and third parties.
-Such long-term rigidity is crucial for thrid parties that don't want to change how they consume your API anytime you make change in your data.
+A GraphQL API instead is fitting as it allows any third party to extensively access Facebook's social graph.
 
-In short, if you API is consumed by third parties, then you need REST/GraphQL.
+The REST/GraphQL schema essentially acts as a rigid long-term contract between your API and third parties,
+which is crucial as thrid parties don't want to change how they consume your API all too often.
 
-You can, however, have two APIs: one RPC API for your own frontend and a REST/GraphQL API for third parties;
+In short, if your API is consumed by third parties, then you have no choice than to use REST/GraphQL.
+
+However, having two APIs can be a successful strategy: one RPC API for your own frontend and a REST/GraphQL API for third parties;
 your frontend then has the priviledge to be able to use any SQL/ORM query for data requirements that your REST/GraphQL API cannot fullfill.
 
 **Large teams**
@@ -304,47 +304,29 @@ your frontend then has the priviledge to be able to use any SQL/ORM query for da
 For large projects,
 decoupling the frontend team from the backend team can be a crucial strategy.
 
-As explained previously in [](),
-a REST/GraphQL API allows you to decouple the frontend development from the backend development.
+As explained in
+[Schema vs Schemaless](#schema-vs-schemaless),
+a REST/GraphQL API allows you to decouple frontend development from backend development.
 
 An alternative is to set up an API server that: (a) has access to the backend's database, (b) exposes an RPC API, and (c) is developed and maintained by the frontend team.
-In essence, such API server acts as a thin permission layer between frontend and database.
+Such API server essentially acts as a thin permission layer between frontend and database.
 The API server is stateless and can be easily deployed and scaled as a serverless service.
 
 
 ### Conclusion
 
-We have seen that the fundamental difference between RPC and REST/GraphQL is that RPC is schmelass where as REST/GraphQL uses a schema that
-effectively acts as a rigid long-term contract between frontend and backend.
+We have seen that the fundamental difference between RPC and REST/GraphQL is that
+RPC is schmelass, whereas REST/GraphQL uses a schema
+acting as a rigid long-term contract between frontend and backend.
 
-Such rigid long-term contract is required for APIs consumed by hundreds or more third parties,
+Such rigid long-term contract is required for APIs consumed by many third parties,
 and can beneficial in enabling a large frontend team and a large backend team to work independently of each other.
 
-For small teams,
-and most notably when prototyping,
+For small teams
+and for prototyping,
 a hand-in-hand frontend and backend developmenet with RPC is
 simpler, faster, and more flexible.
 
 Given a hand-in-hand frontend and backend development,
 an RPC API is simpler and more powerful than REST/GraphQL.
 
-
-
-
-
-### Auto-generated GraphQL
-
-> :information_source: **Auto-generated GraphQL**
-> <br/>
-> Some frameworks automatically generate a GraphQL API for you.
-> In that case using GraphQL instead of the ORM is fine.
-> You still need to define permissions though
-> (permissions are application specific and no framework can define permissions for you),
-> and RPC can be used a thin permission layer.
-> you always need to write permission.
-> One way to think about it is that **RPC is a thin permission layer**.
-> It's thin because with RPC you define permissions in a schema-less, structure-less, programmatic, and case-by-case way.
-
-
-- learning the procedures of a remote API is very similar to learning a new programming library.
-> - One way to think about RPC is that's it is like any other programming library &mdash; it's just called remotaly instead of locally but all the programming paradigms you cherish and learned programming can be applied to RPC.
