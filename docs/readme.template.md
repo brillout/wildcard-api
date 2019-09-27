@@ -8,7 +8,6 @@
 - [What is Wildcard](#what-is-wildcard)
 - [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
 - [How does it work]()
-- [FAQ](#faq)
 - Usage
   - [Getting Started](#getting-started)
   - [Authentication](#authentication)
@@ -134,24 +133,6 @@ to extensively access Facebook's social graph.
 The rule of thumb being:
 - Is your API consumed by third parties? Use REST/GraphQL.
 - Is your API consumed by yourself? Use RPC.
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
-
-### FAQ
-
-- RPC
-  - When should I use RPC?
-  - Does RPC couple API provider with API consumer?
-  - GraphQL or RPC, which is more powerful?
-  - Does RPC scale?
-- Wildcard Usage
-  - Is it secure?
-  - How to make API discoverable?
-  - How to do API versioning?
-  -
-
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
