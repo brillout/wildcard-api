@@ -83,16 +83,17 @@
 
 <br/>
 
- - [What is Wildcard](#what-is-wildcard)
- - [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
- - Usage
-   - [Getting Started](#getting-started)
-   - [Authentication](#authentication)
-   - [Permissions](#permissions)
-   - [Error Handling](#error-handling)
-   - [SSR](#ssr)
-   - [Options](#options)
- - [More Resources](#more-resources)
+- [What is Wildcard](#what-is-wildcard)
+- [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
+- [How does it work]()
+- Usage
+  - [Getting Started](#getting-started)
+  - [Authentication](#authentication)
+  - [Permissions](#permissions)
+  - [Error Handling](#error-handling)
+  - [SSR](#ssr)
+  - [Options](#options)
+- [More Resources](#more-resources)
 
 <br/>
 
