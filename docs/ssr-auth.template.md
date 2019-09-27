@@ -289,3 +289,7 @@ async function getGreeting ({headers}) {
 };
 ~~~
 
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+
+

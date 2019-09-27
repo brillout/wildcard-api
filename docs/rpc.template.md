@@ -1,11 +1,6 @@
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-# RPC vs REST/GraphQL
-
-In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
-We also show in what situations RPC or REST/GraphQL should be used.
-
 > **TL;DR**
 > <br/>
 > - RPC is schemaless whereas REST/GraphQL has a schema.
@@ -13,11 +8,18 @@ We also show in what situations RPC or REST/GraphQL should be used.
 > - RPC is simpler and more powerful for a frontend developed hand-in-hand with the backend.
 > - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by many third parties.
 
+# RPC vs REST/GraphQL
+
+In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
+We also show in what situations RPC or REST/GraphQL should be used.
+
 - [What is RPC](#what-is-rpc)
 - [Schema vs Schemaless](#schema-vs-schemaless)
 - [Examples where RPC is the right choice](#examples-where-rpc-is-the-right-choice)
-- [Examples where GraphQL/REST is the right choice](#examples-where-graphqlrest-is-the-right-choice)
+- [Examples where REST/GraphQL is the right choice](#examples-where-restgraphql-is-the-right-choice)
 - [Conclusion](#conclusion)
+
+<br/>
 
 ## What is RPC
 
@@ -70,6 +72,8 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
   // In short, we can use the full server power for our frontend.
 };
 ~~~
+
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
@@ -152,7 +156,7 @@ the frontned uses schema operations.
 Both the schema approach and the schemaless approach have their benefits and drawbacks which we now discuss.
 
 
-**SQL/ORM queries are more powerful than schema operations**
+**SQL/ORM is powerful**
 
 A considerable benefit of RPC's schemaless approach is
 that SQL/ORM queries are more powerful than schema operations. For example:
@@ -228,6 +232,8 @@ One way to think about the schema (and therefore about REST/GraphQL) is that it
 acts as a rigid long-term contract between the frontend and the backend
 enabling a decoupled development.
 
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
 
 
 ## Examples where RPC is the right choice
@@ -273,6 +279,9 @@ then a hand-in-hand development is actually most likely a good thing in itself.
 , as explained [here].
 -->
 
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+
 
 ## Examples where REST/GraphQL is the right choice
 
@@ -315,6 +324,9 @@ An alternative is to set up an API server that: (a) has access to the backend's 
 Such API server essentially acts as a thin permission layer between frontend and database.
 The API server is stateless and can be easily deployed and scaled as a serverless service.
 
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+
 
 ## Conclusion
 
@@ -332,5 +344,8 @@ simpler, faster, and more flexible.
 
 Given a hand-in-hand frontend and backend development,
 an RPC API is simpler and more powerful than REST/GraphQL.
+
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
 
 

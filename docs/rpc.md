@@ -82,11 +82,6 @@
 </p>
 &nbsp;
 
-# RPC vs REST/GraphQL
-
-In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
-We also show in what situations RPC or REST/GraphQL should be used.
-
 > **TL;DR**
 > <br/>
 > - RPC is schemaless whereas REST/GraphQL has a schema.
@@ -94,11 +89,18 @@ We also show in what situations RPC or REST/GraphQL should be used.
 > - RPC is simpler and more powerful for a frontend developed hand-in-hand with the backend.
 > - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by many third parties.
 
+# RPC vs REST/GraphQL
+
+In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
+We also show in what situations RPC or REST/GraphQL should be used.
+
 - [What is RPC](#what-is-rpc)
 - [Schema vs Schemaless](#schema-vs-schemaless)
 - [Examples where RPC is the right choice](#examples-where-rpc-is-the-right-choice)
-- [Examples where GraphQL/REST is the right choice](#examples-where-graphqlrest-is-the-right-choice)
+- [Examples where REST/GraphQL is the right choice](#examples-where-restgraphql-is-the-right-choice)
 - [Conclusion](#conclusion)
+
+<br/>
 
 ## What is RPC
 
@@ -151,6 +153,32 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
   // In short, we can use the full server power for our frontend.
 };
 ~~~
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -233,7 +261,7 @@ the frontned uses schema operations.
 Both the schema approach and the schemaless approach have their benefits and drawbacks which we now discuss.
 
 
-**SQL/ORM queries are more powerful than schema operations**
+**SQL/ORM is powerful**
 
 A considerable benefit of RPC's schemaless approach is
 that SQL/ORM queries are more powerful than schema operations. For example:
@@ -310,6 +338,32 @@ acts as a rigid long-term contract between the frontend and the backend
 enabling a decoupled development.
 
 
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
 
 ## Examples where RPC is the right choice
 
@@ -355,6 +409,33 @@ then a hand-in-hand development is actually most likely a good thing in itself.
 -->
 
 
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
 ## Examples where REST/GraphQL is the right choice
 
 > **TL;DR**
@@ -397,6 +478,33 @@ Such API server essentially acts as a thin permission layer between frontend and
 The API server is stateless and can be easily deployed and scaled as a serverless service.
 
 
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
 ## Conclusion
 
 We have seen that the fundamental difference between RPC and REST/GraphQL is that
@@ -413,6 +521,33 @@ simpler, faster, and more flexible.
 
 Given a hand-in-hand frontend and backend development,
 an RPC API is simpler and more powerful than REST/GraphQL.
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
 
 
 
