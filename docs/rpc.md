@@ -75,6 +75,13 @@
 
 
 -->
+<p align="center">
+  <a href="/../../#readme">
+    <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=96 alt="Wildcard API"/>
+  </a>
+</p>
+&nbsp;
+
 # RPC vs REST/GraphQL
 
 In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
@@ -93,7 +100,7 @@ We also show in what situations RPC or REST/GraphQL should be used.
 - [Examples where GraphQL/REST is the right choice](#examples-where-graphqlrest-is-the-right-choice)
 - [Conclusion](#conclusion)
 
-### What is RPC
+## What is RPC
 
 The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) has a decent definition:
 
@@ -147,7 +154,7 @@ endpoints.whateverTheFrontendNeeds = function(productId) {
 
 
 
-### Schema vs Schemaless
+## Schema vs Schemaless
 
 > **TL;DR**
 > <br/>
@@ -226,7 +233,7 @@ the frontned uses schema operations.
 Both the schema approach and the schemaless approach have their benefits and drawbacks which we now discuss.
 
 
-###### SQL/ORM queries are more powerful than schema operations
+**SQL/ORM queries are more powerful than schema operations**
 
 A considerable benefit of RPC's schemaless approach is
 that SQL/ORM queries are more powerful than schema operations. For example:
@@ -251,12 +258,12 @@ is and very inefficient as you'd need to call the create operation `HTTP POST ht
 As illustrated in this example,
 SQL queries are significantly more powerful than schema operations.
 
-> :information_source: **GraphQL**
+> :information_source: **GraphQL's power**
 > <br/>
 > GraphQL alleviates the situation as GraphQL queries are more powerful than RESTful queries.
 > But only to a certain degree &mdash; SQL/ORM queries are still significantly more powerful than GraphQL queries.
 
-###### Schemaless is simple
+**Schemaless is simple**
 
 RPC is simple:
 there is no schema to define, no CRUD resolvers to write.
@@ -268,7 +275,7 @@ our frontend to use whatever server-side tool we want to retrieve/mutate data, s
 And, RPC tools such as Wildcard require virtually no setup.
 
 
-###### A schema decouples
+**A schema decouples**
 
 If RPC is simpler and SQL/ORM queries more powerful, what's the benefit of using a schema and REST/GraphQL?
 The answer is that it decouples the frontend from the backend.
@@ -304,7 +311,7 @@ enabling a decoupled development.
 
 
 
-### Examples where RPC is the right choice
+## Examples where RPC is the right choice
 
 > **TL;DR**
 > <br/>
@@ -348,7 +355,7 @@ then a hand-in-hand development is actually most likely a good thing in itself.
 -->
 
 
-### Examples where REST/GraphQL is the right choice
+## Examples where REST/GraphQL is the right choice
 
 > **TL;DR**
 > <br/>
@@ -390,7 +397,7 @@ Such API server essentially acts as a thin permission layer between frontend and
 The API server is stateless and can be easily deployed and scaled as a serverless service.
 
 
-### Conclusion
+## Conclusion
 
 We have seen that the fundamental difference between RPC and REST/GraphQL is that
 RPC is schmelass, whereas REST/GraphQL uses a schema
@@ -406,6 +413,7 @@ simpler, faster, and more flexible.
 
 Given a hand-in-hand frontend and backend development,
 an RPC API is simpler and more powerful than REST/GraphQL.
+
 
 
 <!---
