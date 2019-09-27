@@ -85,7 +85,6 @@
 
 - [What is Wildcard](#what-is-wildcard)
 - [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
-- [How does it work]()
 - Usage
   - [Getting Started](#getting-started)
   - [Authentication](#authentication)
