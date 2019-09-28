@@ -90,7 +90,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production in couple of projects,
+Wildcard is new but already used in production at couple of projects,
 every release is assailed against a heavy suit of automated tests,
 its author is responsive, and issues are fixed within 1-2 days.
 
@@ -101,14 +101,13 @@ its author is responsive, and issues are fixed within 1-2 days.
 ### Wildcard compared to REST, GraphQL, and other RPCs
 
 When you use Wildcard you are essentially doing
-[RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
+[RPC](/docs/rpc#what-is-rpc).
 
 While REST and GraphQL shine for APIs that are meant to be consumed by **third parties**,
 RPC is increasingly used to create **internal** APIs.
-(An *internal API* is an API that is not consumed by third parties but only by yourself or your organization.)
 
 Many large companies,
-[such as Google](https://grpc.io/faq/#who-s-using-this-and-why) and [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
+[such as Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why) and [Google](https://grpc.io/faq/#who-s-using-this-and-why),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
@@ -117,21 +116,9 @@ Both gRPC and Wildcard are RPC.
 While gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) Wildcard only supports the Node.js & browser stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-If all you want is your React/Vue/Angular frontend to access data from your server,
-then RPC is likely the easiest and best option.
-And, if your server is a Node.js server,
-then you can use
-Wildcard to easily and quickly create an RPC API.
-
-On the other hand,
-REST and GraphQL are better suited for APIs consumed by third parties.
-For example, Facebook's public API
-is a GraphQL API which is fitting as it allows any third party
-to extensively access Facebook's social graph.
-
-The rule of thumb being:
-- Is your API consumed by third parties? Use REST/GraphQL.
-- Is your API consumed by yourself? Use RPC.
+If all you want is your React/Vue/Angular frontend to access data from your backend,
+and you develop your backend hand-in-hand with your frontend,
+then RPC is simpler and more powerful than REST/GraphQL. We explain why [here](/docs/rpc#rpc-vs-restgraphql).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
