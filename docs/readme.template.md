@@ -101,7 +101,7 @@ its author is responsive, and issues are fixed within 1-2 days.
 ### Wildcard compared to REST, GraphQL, and other RPCs
 
 When you use Wildcard you are essentially doing
-[RPC](/docs/rpc#what-is-rpc).
+[RPC](/docs/rpc.md#what-is-rpc).
 
 While REST and GraphQL shine for APIs that are meant to be consumed by **third parties**,
 RPC is increasingly used to create **internal** APIs.
@@ -118,7 +118,7 @@ This allows Wildcard to have a simple design and to be super easy to use.
 
 If all you want is your React/Vue/Angular frontend to access data from your backend,
 and you develop your backend hand-in-hand with your frontend,
-then RPC is simpler and more powerful than REST/GraphQL. We explain why [here](/docs/rpc#rpc-vs-restgraphql).
+then RPC is simpler and more powerful than REST/GraphQL. We explain why [here](/docs/rpc.md#rpc-vs-restgraphql).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
