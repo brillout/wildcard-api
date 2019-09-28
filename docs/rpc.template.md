@@ -4,7 +4,7 @@
 > **TL;DR**
 > <br/>
 > - RPC is schemaless whereas REST/GraphQL has a schema.
-> - REST/GraphQL's schema approach can be beneficial in decoupling frontend and backend.
+> - REST/GraphQL's schema is beneficial in decoupling frontend and backend.
 > - RPC is simpler and more powerful for a frontend developed hand-in-hand with the backend.
 > - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by many third parties.
 
@@ -23,7 +23,7 @@ We also show in what situations RPC or REST/GraphQL should be used.
 
 ## What is RPC
 
-The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) has a decent definition:
+The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) explains it well:
 
 > [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
 
@@ -60,16 +60,33 @@ In the context of web development, RPC is usually used to remotely call SQL/ORM 
 ~~~js
 // Node.js
 
-const {endpoints} = require('wildcard-api');
+const endpoints = require('wildcard-api');
+const getLoggedUser = require('./path/to/your/auth/code');
+const Todo = require('./path/to/your/data/model/Todo');
 
-endpoints.whateverTheFrontendNeeds = function(productId) {
-  // Depending
-  if( !productId || productId.constructor===Number ){
+endpoints.createTodoItem = async function(text) {
+  const user = await getLoggedUser(this.headers); // We talk about `this` later.
+
+  if( !user ) {
+    // The user is not logged-in.
+    // We abort.
+    // (This is basically how you define permissions with Wildcard
+    // which we will talk more about later.)
     return;
   }
 
-  // In Here we can do whatever
-  // In short, we can use the full server power for our frontend.
+  // With an ORM/ODM:
+  const newTodo = new Todo({text, authorId: user.id});
+  await newTodo.save();
+  /* Or with SQL:
+  const db = require('your-favorite-sql-query-builder');
+  const [newTodo] = await db.query(
+    "INSERT INTO todos VALUES (:text, :authorId);",
+    {text, authorId: user.id}
+  );
+  */
+
+  return newTodo;
 };
 ~~~
 
