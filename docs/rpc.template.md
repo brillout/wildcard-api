@@ -1,3 +1,42 @@
+While REST and GraphQL are wonderful tools to create APIs consumed by third parties, RPC is increasingly used to create internal APIs.
+
+Large companies, such as Google and Netfix, are starting to replace their REST/GraphQL internal APIs with gRPC.
+
+Both gRPC and Wildcard are RPC. While gRPC focuses on cross-platform support (), Wildcard only supports Node.js and the browser. This allows Wildcard to have a simple design (with only 1.1K-LOCs!) and to be super easy to use.
+
+If your frontend is the only consumer of your backend's API, then you essentially have an internal API and RPC is the way to go. And, if your backend is written with Node.js, you can use Wildcard to quickly and easily create an RPC API.
+
+If you are unfamiliar with RPC you can learn more by reading [RPC vs REST/GraphQL]().
+RPC is a constituent element of a modern tool belt.
+
+
+
+RPC, REST, and GraphQL are wonderful tools and this document about explaining which tool should be used when.
+
+Choose the right tool for the right job and this documents clarifies when
+
+In this document we explain what RPC is and how it compares to REST/GraphQL.
+
+The fundamental difference between RPC and REST/GraphQL is that REST/GraphQL has a schema whereas RPC is schemaless. We ellaborate the differences bweteen the schema and schemaless approach and illustrate which approach should be used when.
+
+- What is RPC
+- Schema VS Schemaless
+- Case Studies
+- Conclusion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
