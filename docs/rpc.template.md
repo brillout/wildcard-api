@@ -1,76 +1,31 @@
-While REST and GraphQL are wonderful tools to create APIs consumed by third parties, RPC is increasingly used to create internal APIs.
-
-Large companies, such as Google and Netfix, are starting to replace their REST/GraphQL internal APIs with gRPC.
-
-Both gRPC and Wildcard are RPC. While gRPC focuses on cross-platform support (), Wildcard only supports Node.js and the browser. This allows Wildcard to have a simple design (with only 1.1K-LOCs!) and to be super easy to use.
-
-If your frontend is the only consumer of your backend's API, then you essentially have an internal API and RPC is the way to go. And, if your backend is written with Node.js, you can use Wildcard to quickly and easily create an RPC API.
-
-If you are unfamiliar with RPC you can learn more by reading [RPC vs REST/GraphQL]().
-RPC is a constituent element of a modern tool belt.
-
-
-
-RPC, REST, and GraphQL are wonderful tools and this document about explaining which tool should be used when.
-
-Choose the right tool for the right job and this documents clarifies when
-
-In this document we explain what RPC is and how it compares to REST/GraphQL.
-
-The fundamental difference between RPC and REST/GraphQL is that REST/GraphQL has a schema whereas RPC is schemaless. We ellaborate the differences bweteen the schema and schemaless approach and illustrate which approach should be used when.
-
-- What is RPC
-- Schema VS Schemaless
-- Case Studies
-- Conclusion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-> **TL;DR**
-> <br/>
-> - RPC is schemaless whereas REST/GraphQL has a schema.
-> - REST/GraphQL's schema is beneficial in decoupling frontend and backend.
-> - RPC is simpler and more powerful for a frontend developed hand-in-hand with the backend.
-> - RPC excels for rapid prototyping while REST/GraphQL excels for APIs consumed by many third parties.
-
 # RPC vs REST/GraphQL
 
-In this document, we illustrate the differences between RPC and REST/GraphQL in the context of web development.
-We also show in what situations RPC or REST/GraphQL should be used.
+This document explains: (a) what RPC is; and (b) how it compares to REST/GraphQL.
+
+> :heavy_check_mark: After reading this document, you will know how to choose the right tool for the job.
 
 - [What is RPC](#what-is-rpc)
 - [Schema vs Schemaless](#schema-vs-schemaless)
-- [Examples where RPC is the right choice](#examples-where-rpc-is-the-right-choice)
-- [Examples where REST/GraphQL is the right choice](#examples-where-restgraphql-is-the-right-choice)
+- [Case Studies](#case-studies)
 - [Conclusion](#conclusion)
 
 <br/>
 
 ## What is RPC
 
-The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) explains it well:
+The [Wikipedia RPC article](https://en.wikipedia.org/wiki/Remote_procedure_call) has a decent explanation:
 
 > [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
 
-For example with Wildcard:
+For example:
 
 ~~~js
 // Node.js server
 
+// We use Wildcard to create an RPC API
 const {endpoints} = require('wildcard-api');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
@@ -92,9 +47,11 @@ import {endpoints} from 'wildcard-api/client';
 ~~~
 
 What we are doing here is RPC:
-our function `hello` is exectued on the Node.js server but called remotely in the browser.
+our function `hello` is executed on the Node.js server but called remotely in the browser.
 
-In the context of web development, RPC is usually used to remotely call SQL/ORM queries:
+In the context of web development,
+RPC is usually used to call SQL/ORM queries in order to retrieve or mutate data.
+For example:
 
 ~~~js
 // Node.js
@@ -137,22 +94,27 @@ endpoints.createTodoItem = async function(text) {
 
 > **TL;DR**
 > <br/>
-> - The schema abstracts SQL/ORM queries away from the frontend.
+> - REST/GraphQL have a schema which abstracts SQL/ORM queries away from the frontend.
 > - The schema decouples frontend development from backend development.
 > - RPC is schemaless and the frontend uses SQL/ORM queries directly instead.
 > - RPC is simpler and more powerful when frontend and backend are developed hand-in-hand
 
-The fundamental difference between RPC and REST/GraphQL is that
-RPC is schemaless and SQL/ORM queries are used directly whereas REST/GraphQL uses a schema that essentially proxies SQL/ORM queries.
 
-For example, a RESTful API of a simple todo list app would have a schema with operations like the following:
+The fundamental difference between RPC and REST/GraphQL is that RPC is schemaless whereas REST/GraphQL has a schema.
+This section we explain what schemaless and having a schema means and the consequences between the two.
+
+-IMAGE
+
+Let's for example consider a todo list.
+
+For example, a RESTful API of a simple todo list app would have a schema queries with operations like the following:
 - `HTTP GET /todos` to list all todo items.
 - `HTTP POST /todos` to create a new todo item.
 - `HTTP GET /todos/{id}` to read a todo item with the id `{id}`.
 - `HTTP PUT /todos/{id}` to update a todo item with the id `{id}`.
 - `HTTP DELETE /todos/{id}` to delete to delete a todo item with the id `{id}`.
 
-The frontend uses these schema operations to retrieve/mutate todo items.
+The frontend uses these schema queries to retrieve/mutate todo items.
 For example:
 
 ~~~js
@@ -175,7 +137,7 @@ import React from 'react';
 import fetchTodos from './fetchTodos.js'
 import useData from './react-hooks/useData.js';
 
-// We can then use our `fetchTodos` function and React to render our todo list.
+// We use our `fetchTodos` function and React to render our todo list.
 
 export default TodoList;
 
@@ -197,9 +159,49 @@ function TodoList() {
 }
 ~~~
 
-From the perspective of the frontend, the shema operations is all there is:
+The important thing to note here is that the frontend:
+the frontend never writes SQL/ORM queries.
+Instead it is the RESTful API that runs SQL/ORM queries on behalf of the frontend.
+
+From the perspective of the frontend, the schema and its queries is all there is.
+
+This is the raison d'être and purpose of a schema:
+
+
+
+From the perspective of the frontend, the schema queries is all there is:
 any SQL/ORM query is done by the RESTful API and is hidden from the frontend developer;
+A frontend developer doesn't even have to know whether the database is MongoDB or PostgreSQL.
+
 a schema abstracts the database away from the frontend.
+
+Of course, the RESTful API will eventually.
+But the point here is that any SQL/ORM query is abstracted away from the frontend.
+As we can see in the diagram, the frontend uses the blue arrows
+(the green arrows in the diagram)
+
+
+This is the fundamental part of a schema:
+
+> :bulb: The schema abstracts the database away from the frontend.
+
+To Software Architect, the simplicity of the Software Architect and his very first question will be: I want my Software Architect to be as simple as possbile; do I need? is first and foremost concerned about the simplicity
+In a sense the schema is an additional abstraction in your Software Architecture.
+convoluted
+If you are, and rightfuly so, a minimalist you may ask yourself: what is the benefit of such additional abstraction?
+I want my Software Architecture to be as simple as possible
+the goal
+the benefit of such decoupling.
+
+You could even change the entire database and the frontend.
+
+An abstraction is absolutely necessary for Facebook.
+It would be insane for Facebook to expose.
+It would block Facebook's development of the backend.
+Such decoupling abstraction that the schema is and that's a boon and an imperative for Facebook.
+
+This is the benefit of having a schema and we will talk more about it in a moment.
+Before we delve into the benefits of this decoupling, let's see the same example but with implemented with RPC this time.
 
 Before we talk about the benefits and drawbacks of having such schema, let's see the same example but implemented with RPC:
 
@@ -212,7 +214,7 @@ const {endpoints} = require('wildcard-api');
 // We implement a `getAllTodos` function on the server that
 // runs a SQL query in order to get the todo items.
 
-endpoints.getAllTodos = async function({text}) {
+endpoints.getAllTodos = async function() {
   const todos = await db.query("SELECT id, text FROM todos;");
   return todos;
 };
@@ -232,6 +234,11 @@ async function fetchTodos() {
 };
 ~~~
 
+In a sense this is the exact opposite of the previous example:
+the frontend developer uses and writes SQL/ORM queries and has to know;
+the database is fully exposed to the frontend developed and he has to know
+how to write SQL/ORM queries.
+
 As we can see in this example,
 with RPC there is no schema and we directly use SQL/ORM queries instead.
 
@@ -240,6 +247,8 @@ with RPC the frontend uses SQL/ORM queries directly
 whereas with REST/GraphQL
 the frontned uses schema operations.
 
+// RPC is schemaless and SQL/ORM queries are used directly whereas REST/GraphQL uses a schema that essentially proxies SQL/ORM queries.
+The question whether to use RPC or REST/GraphQL boils down to the following question: is a schema required?
 Both the schema approach and the schemaless approach have their benefits which we now discuss.
 
 
@@ -355,16 +364,19 @@ In other words, with REST/GraphQL the frontend is more decoupled from the backen
 One way to think about the schema (and therefore about REST/GraphQL) is that it
 acts as a rigid long-term contract between the frontend and the backend.
 
+To sum up:
+- 
+- 
+- 
+
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
 
-## Examples where RPC is the right choice
+## Case Studies
 
-> **TL;DR**
-> <br/>
-> - RPC is most often the right choice for prototyping.
-> - In general, RPC is the right choice when the frontend is developed hand-in-hand with the backend.
+In this section
+We explore whether RPC or REST/GraphQL should be used upon concrete situations.
 
 **Prototyping**
 
@@ -390,30 +402,6 @@ For a full-stack JavaScript developer writing a prototype with Node.js and React
 Wildcard can be used to easily create an RPC API and
 there is virtually no reason to not use RPC.
 
-**Hand-in-hand development**
-
-In genreal,
-if the backend team is willing to modify and re-deploy the API whenever the frontend needs a change,
-then RPC offers a simpler and more powerful alternative over REST/GraphQL.
-
-If you have a 1:1 relationship between frontend and backend,
-that is the frontend is the only frontend of the backend and vice versa,
-then a hand-in-hand development is most likely a good thing in itself.
-<!---
-, as explained [here].
--->
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
-
-## Examples where REST/GraphQL is the right choice
-
-> **TL;DR**
-> <br/>
-> - REST/GraphQL is the right choice for APIs consumed by third parties.
-> - The schema of REST/GraphQL can be beneficial in enabling the frontend to be developed independently of the backend.
-
 **Third parties**
 
 As explained in
@@ -433,6 +421,19 @@ In short, if your API is consumed by third parties, then you have no choice than
 
 However, having two APIs can be a successful strategy: one RPC API for your own frontend and a REST/GraphQL API for third parties;
 your frontend then has the priviledge to be able to use any SQL/ORM query for data requirements that your REST/GraphQL API cannot fullfill.
+
+**Hand-in-hand development**
+
+In genreal,
+if the backend team is willing to modify and re-deploy the API whenever the frontend needs a change,
+then RPC offers a simpler and more powerful alternative over REST/GraphQL.
+
+If you have a 1:1 relationship between frontend and backend,
+that is the frontend is the only frontend of the backend and vice versa,
+then a hand-in-hand development is most likely a good thing in itself.
+<!---
+, as explained [here].
+-->
 
 **Large teams**
 
