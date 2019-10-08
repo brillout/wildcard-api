@@ -92,22 +92,11 @@ endpoints.createTodoItem = async function(text) {
 
 ## Schema vs Schemaless
 
-> **TL;DR**
-> <br/>
-> - REST/GraphQL have a schema which abstracts SQL/ORM queries away from the frontend.
-> - The schema decouples frontend development from backend development.
-> - RPC is schemaless and the frontend uses SQL/ORM queries directly instead.
-> - RPC is simpler and more powerful when frontend and backend are developed hand-in-hand
-
-
 The fundamental difference between RPC and REST/GraphQL is that RPC is schemaless whereas REST/GraphQL has a schema.
-This section we explain what schemaless and having a schema means and the consequences between the two.
-
--IMAGE
 
 Let's for example consider a todo list.
 
-For example, a RESTful API of a simple todo list app would have a schema queries with operations like the following:
+A RESTful API of a simple todo list app would have a schema queries like this:
 - `HTTP GET /todos` to list all todo items.
 - `HTTP POST /todos` to create a new todo item.
 - `HTTP GET /todos/{id}` to read a todo item with the id `{id}`.
@@ -159,42 +148,26 @@ function TodoList() {
 }
 ~~~
 
-The important thing to note here is that the frontend:
-the frontend never writes SQL/ORM queries.
+The important thing to note here is that the frontend never uses SQL/ORM queries directly.
 Instead it is the RESTful API that runs SQL/ORM queries on behalf of the frontend.
 
-From the perspective of the frontend, the schema and its queries is all there is.
-
-This is the raison d'être and purpose of a schema:
-
-
-
-From the perspective of the frontend, the schema queries is all there is:
-any SQL/ORM query is done by the RESTful API and is hidden from the frontend developer;
+From the perspective of the frontend, the schema and its queries is all there is:
+the database and its SQL/ORM queries are hidden by the schema.
 A frontend developer doesn't even have to know whether the database is MongoDB or PostgreSQL.
 
-a schema abstracts the database away from the frontend.
+This is the raison d'être and the fundamental purpose of a schema:
 
-Of course, the RESTful API will eventually.
-But the point here is that any SQL/ORM query is abstracted away from the frontend.
-As we can see in the diagram, the frontend uses the blue arrows
-(the green arrows in the diagram)
+> :bulb: The schema abstracts the database away.
 
+To a Software Architect,
+who is crucially concerned about keeping the Software Architecture as simple as possbile,
+on of the most crucial goal of a Software Architect is to make the Software Architecture as simple as possible;
+questions arise &mdash; what is the added benefit of using a schema? What is the justification of using a schema? Is a schema needed and can we get rid of it?
 
-This is the fundamental part of a schema:
-
-> :bulb: The schema abstracts the database away from the frontend.
-
-To a Software Architect, the simplicity of the Software Architect and his very first question will be: I want my Software Architect to be as simple as possbile; do I need?
-is first and foremost concerned about the simplicity
-In a sense the schema is an additional abstraction in your Software Architecture.
-convoluted
 If you are, and rightfuly so, a minimalist you may ask yourself: what is the benefit of such additional abstraction?
 I want my Software Architecture to be as simple as possible
 the goal
 the benefit of such decoupling.
-
-You could even change the entire database and the frontend.
 
 This is the benefit of having a schema and we will talk more about it in a moment.
 Before we delve into the benefits of this decoupling, let's see the same example but with implemented with RPC this time.
@@ -355,6 +328,7 @@ Being able to change the backend code at the whim of the frontend is *the prereq
 REST/GraphQL, on the other hand, decouples:
 as long as the schema and its operations don't change,
 the frontend and backend can be developed independently of each other.
+The backend could even switch entirely switch its database without having to do a single change to the frontend.
 
 A schema is usually designed in a generic way,
 in other words it is designed to be able to fulfill a maximum number of data requirements.
