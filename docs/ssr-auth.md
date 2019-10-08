@@ -84,15 +84,15 @@
 
 # SSR & Authentication
 
-SSR (Server-Side Rendering) denotes the practice of rendering your frontend twice:
+SSR (Server-Side Rendering) denotes the practice of rendering a page twice:
 once to HTML in Node.js and then again to the DOM in the browser.
 
 > :warning:
-> This document is meant for people that know what SSR is and that do SSR.
-> If you don't know whether you are doing SSR then
+> This document is meant for people that want to use Wildcard with SSR.
+> If you don't know what SSR is then
 > you are most likely not doing it.
-> If you don't use SSR,
-> then you can use Wildcard without reading this document.
+> If you don't do SSR,
+> you can use Wildcard without reading this document.
 
 SSR works out of the box.
 But with one exception:
@@ -100,7 +100,7 @@ when calling an endpoint in Node.js,
 you need to manually provide any HTTP request information
 your endpoint function may need.
 
-Such as HTTP headers:
+For example:
 
 ~~~js
 // Node.js
