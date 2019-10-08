@@ -160,19 +160,10 @@ This is the raison d'être and the fundamental purpose of a schema:
 > :bulb: The schema abstracts the database away.
 
 To a Software Architect,
-who is crucially concerned about keeping the Software Architecture as simple as possbile,
-on of the most crucial goal of a Software Architect is to make the Software Architecture as simple as possible;
-questions arise &mdash; what is the added benefit of using a schema? What is the justification of using a schema? Is a schema needed and can we get rid of it?
+who is (rightfully) crucially concerned about keeping the Software Architecture as simple as possbile,
+question arises &mdash; what is the added benefit of using a schema? What is the justification of adding an abstraction that the schema represents? Is a schema needed and can we get rid of it?
 
-If you are, and rightfuly so, a minimalist you may ask yourself: what is the benefit of such additional abstraction?
-I want my Software Architecture to be as simple as possible
-the goal
-the benefit of such decoupling.
-
-This is the benefit of having a schema and we will talk more about it in a moment.
-Before we delve into the benefits of this decoupling, let's see the same example but with implemented with RPC this time.
-
-Before we talk about the benefits and drawbacks of having such schema, let's see the same example but implemented with RPC:
+Before we delve into the benefits and drawbacks of having such schema, let's have a look at the same example but implemented with RPC:
 
 ~~~js
 // Node.js server
@@ -203,26 +194,18 @@ async function fetchTodos() {
 };
 ~~~
 
-the frontend developer uses and writes SQL/ORM queries to retrieve/mutate data.
-The database is fully exposed to the frontend developed and he has to know
-how to write SQL/ORM queries.
-In a sense this is the exact opposite of the previous example where the database is abstraced away from he frontend.
-
-In a nutshell,
-RPC is schemaless and SQL/ORM queries are used directly whereas REST/GraphQL uses a schema that essentially proxies SQL/ORM queries.
-
-As we can see in this example,
-with RPC there is no schema and we directly use SQL/ORM queries instead.
+There is no schema:
+instead, the frontend developer directly writes SQL/ORM queries to retrieve/mutate data.
+This is the opposite of our previous example with REST where the database is abstraced away from the frontend developer.
 
 > :bulb: RPC is schemaless: the frontend developer directly writes and uses SQL/ORM queries to retrieve and mutate data.
 
-This is, as we mentioned at the beginning of this section, the fundamental difference between RPC and REST/GraphQL:
+This is, as mentioned in the beginning of this section, the fundamental difference between RPC and REST/GraphQL:
 with RPC the frontend uses SQL/ORM queries directly
 whereas with REST/GraphQL
-the frontned uses schema operations.
+the frontned uses schema queries.
 
 The question whether to use RPC or REST/GraphQL boils down to the following question: is a schema required?
-
 We now explore the benefits and drawbacks of using a schema.
 
 **SQL/ORM is powerful**
@@ -255,7 +238,7 @@ async function markAllCompleted() {
 };
 ~~~
 
-Achieving the same using schema operations:
+Achieving the same using schema queries:
 
 ~~~js
 export default markAllCompleted;
@@ -283,7 +266,7 @@ a schema is crippling.
 > :information_source: **GraphQL's power**
 > <br/>
 > GraphQL improves the situation as GraphQL queries are more powerful than RESTful queries.
-> But only to a certain degree &mdash; SQL/ORM queries are still significantly more powerful than GraphQL queries.
+> But only to a certain degree &mdash; SQL/ORM queries are still more powerful than GraphQL queries.
 
 
 **Schemaless is simple**
