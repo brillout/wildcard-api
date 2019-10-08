@@ -117,7 +117,7 @@ async function ssrMissingRequestProps({wildcardApi, wildcardClient}) {
     } catch(err) {
       exceptionThrown = true;
       assert(err);
-      assert(err.stack.includes('Make sure to provide `headers` by using `bind()` when calling your `ssrTest` endpoint in Node.js'), err.stack);
+      assert(err.stack.includes('Make sure to provide `headers` by using `bind({headers})` when calling your `ssrTest` endpoint in Node.js'), err.stack);
     }
     assert(exceptionThrown===true);
     endpointFunctionCalled = true;

@@ -665,19 +665,20 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
   function get(_, prop) {
     if( !requestProps ) {
       assert.internal(isDirectCall===true);
-      const {propAccessor, propStr} = getPropAccessor(prop);
+      console.log('pp', prop, 'pe');
+      const propNameIsNormal = isPropNameNormal(prop);
       assert.usage(false,
         colorizeError("Wrong usage of the Wildcard client in Node.js."),
         ...(
-          propAccessor ? [
+          propNameIsNormal ? [
             "",
-            "Cannot get `this"+propAccessor+"` because you didn't provide `"+propStr+"`.",
+            "Cannot get `this."+prop+"` because you didn't provide `"+prop+"`.",
           ] : []
         ),
         "",
         colorizeEmphasis(
-          propStr ? (
-            "Make sure to provide `"+propStr+"` by using `bind({"+propStr+"})` when calling your `"+endpointName+"` endpoint in Node.js."
+          propNameIsNormal ? (
+            "Make sure to provide `"+prop+"` by using `bind({"+prop+"})` when calling your `"+endpointName+"` endpoint in Node.js."
           ) : (
             "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `requestProps`/`this`."
           )
@@ -691,28 +692,13 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
   }
 }
 
-function getPropAccessor(prop) {
+function isPropNameNormal(prop) {
   let propStr;
   try {
     propStr = prop.toString();
   } catch(err) {}
 
-  if( !propStr ){
-    return {};
-  }
-
-  const propAccessor = getAccessor();
-  return {propAccessor, propStr};
-
-  function getAccessor() {
-    if( propStr !== prop ){
-      return '['+propStr+']';
-    }
-    if( /^[a-zA-Z0-9_]+$/.test(propStr) ){
-      return '.'+propStr;
-    }
-    return "['"+propStr+"']";
-  }
+  return propStr===prop && /^[a-zA-Z0-9_]+$/.test(prop);
 }
 
 function colorizeError(text) {
