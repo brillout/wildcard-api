@@ -5,6 +5,7 @@ module.exports = [
   wrongUrl2,
   wrongUrl3,
   noEndpoints,
+  noEndpoints2,
   endpointDoesNotExist,
   ssrMissingRequestProps,
 ];
@@ -93,6 +94,19 @@ async function noEndpoints({wildcardApi, browserEval}) {
   });
 }
 
+async function noEndpoints2({wildcardApi, wildcardClient}) {
+  let errorThrown = false;
+  try {
+    await wildcardClient.endpoints.helloSsr();
+  } catch(err) {
+    errorThrown = true;
+    assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."), err.stack);
+    assert(err.stack.includes("You didn't define any endpoint function."), err.stack);
+    assert(err.stack.includes("Did you load your endpoint definitions?"), err.stack);
+  }
+  assert(errorThrown===true);
+}
+
 async function endpointDoesNotExist({wildcardApi, browserEval}) {
   wildcardApi.endpoints.hello = async function(name) {
     return 'Greetings '+name;
@@ -110,16 +124,15 @@ async function endpointDoesNotExist({wildcardApi, browserEval}) {
 async function ssrMissingRequestProps({wildcardApi, wildcardClient}) {
   let endpointFunctionCalled = false;
   wildcardApi.endpoints.ssrTest = async function() {
-    let exceptionThrown;
+    let errorThrown = false;
     try {
       this.headers;
-      exceptionThrown = false;
     } catch(err) {
-      exceptionThrown = true;
+      errorThrown = true;
       assert(err);
       assert(err.stack.includes('Make sure to provide `headers` by using `bind({headers})` when calling your `ssrTest` endpoint in Node.js'), err.stack);
     }
-    assert(exceptionThrown===true);
+    assert(errorThrown===true);
     endpointFunctionCalled = true;
   };
 
