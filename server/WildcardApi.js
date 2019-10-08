@@ -100,7 +100,7 @@ function WildcardApi(options={}) {
 
     assert.usage(
       endpointExists(endpointName),
-      'Endpoint '+endpointName+" doesn't exist.",
+      getNoEndpointError({endpointName, calledInBrowser: false}),
     );
 
     const resultObject = await runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall: true});
@@ -136,38 +136,11 @@ function WildcardApi(options={}) {
     }
 
     if( ! endpointExists(endpointName) ) {
-      if( noEndpointsDefined() ) {
-        const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
-        const invalidReason__part2 = "You didn't define any endpoint function.";
-        const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
-        console.error(invalidReason__part1);
-        console.error(colorizeError(invalidReason__part2));
-        console.error(invalidReason__part3);
-        return {
-          isInvalidUrl: true,
-          errorStatusCode: 404,
-          invalidReason: [
-            invalidReason__part1,
-            invalidReason__part2,
-            invalidReason__part3,
-          ].join('\n'),
-        };
-      } else {
-        return {
-          isInvalidUrl: true,
-          errorStatusCode: 404,
-          invalidReason: (
-            'Endpoint `'+endpointName+"` doesn't exist." + (
-              !isDev() ? '' : (
-                '\n\nEndpoints: ' +
-                getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
-                "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)"+
-                '\n\n(The list of endpoints is only shown in development.)'
-              )
-            )
-          ),
-        };
-      }
+      return {
+        isInvalidUrl: true,
+        errorStatusCode: 404,
+        invalidReason: getNoEndpointError({endpointName, calledInBrowser: true}),
+      };
     }
 
     return {
@@ -446,6 +419,35 @@ function WildcardApi(options={}) {
   }
   function noEndpointsDefined() {
     return getEndpointNames().length===0;
+  }
+  function getNoEndpointError({endpointName, calledInBrowser}) {
+    assert.internal([true, false].includes(calledInBrowser));
+
+    if( noEndpointsDefined() ) {
+      const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
+      const invalidReason__part2 = "You didn't define any endpoint function.";
+      const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
+      console.error(invalidReason__part1);
+      console.error(colorizeError(invalidReason__part2));
+      console.error(invalidReason__part3);
+      return [
+        invalidReason__part1,
+        invalidReason__part2,
+        invalidReason__part3,
+      ].join('\n');
+    } else {
+      return (
+        'Endpoint `'+endpointName+"` doesn't exist." + (
+          (calledInBrowser && !isDev()) ? '' : (
+            '\n\nEndpoints: ' +
+            getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
+            "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)" + (
+              !calledInBrowser ? '' : '\n\n(The list of endpoints is only shown in development.)'
+            )
+          )
+        )
+      );
+    }
   }
   function getListOfEndpoints() {
     const htmlBody = `
