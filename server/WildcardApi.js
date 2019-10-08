@@ -665,14 +665,23 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
   function get(_, prop) {
     if( !requestProps ) {
       assert.internal(isDirectCall===true);
+      const {propAccessor, propStr} = getPropAccessor(prop);
       assert.usage(false,
-        colorizeError("Wrong Wildcard client usage in Node.js."),
+        colorizeError("Wrong usage of the Wildcard client in Node.js."),
+        ...(
+          propAccessor ? [
+            "",
+            "Cannot get `this"+propAccessor+"` because you didn't provide `"+propStr+"`.",
+          ] : []
+        ),
         "",
-        "When calling an endpoint in Node.js you have to manually provide properties to `this`.",
-        "",
-        "Cannot get `this"+getPropString(prop)+"` because you didn't provide `"+prop+"`.",
-        "",
-        "Make sure to provide `"+prop+"` by using `bind()` when calling your `"+endpointName+"` endpoint in Node.js.",
+        colorizeEmphasis(
+          propStr ? (
+            "Make sure to provide `"+propStr+"` by using `bind({"+propStr+"})` when calling your `"+endpointName+"` endpoint in Node.js."
+          ) : (
+            "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `requestProps`/`this`."
+          )
+        ),
         "",
         "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
       );
@@ -682,14 +691,33 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
   }
 }
 
-function getPropString(prop) {
-  return (
-    /^[a-zA-Z0-9_]+$/.test(prop) ?
-      '.'+prop :
-      "['"+prop+"']"
-  );
+function getPropAccessor(prop) {
+  let propStr;
+  try {
+    propStr = prop.toString();
+  } catch(err) {}
+
+  if( !propStr ){
+    return {};
+  }
+
+  const propAccessor = getAccessor();
+  return {propAccessor, propStr};
+
+  function getAccessor() {
+    if( propStr !== prop ){
+      return '['+propStr+']';
+    }
+    if( /^[a-zA-Z0-9_]+$/.test(propStr) ){
+      return '.'+propStr;
+    }
+    return "['"+propStr+"']";
+  }
 }
 
 function colorizeError(text) {
   return chalk.bold.red(text);
+}
+function colorizeEmphasis(text) {
+  return chalk.cyan(text);
 }
