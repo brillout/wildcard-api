@@ -185,7 +185,8 @@ This is the fundamental part of a schema:
 
 > :bulb: The schema abstracts the database away from the frontend.
 
-To Software Architect, the simplicity of the Software Architect and his very first question will be: I want my Software Architect to be as simple as possbile; do I need? is first and foremost concerned about the simplicity
+To a Software Architect, the simplicity of the Software Architect and his very first question will be: I want my Software Architect to be as simple as possbile; do I need?
+is first and foremost concerned about the simplicity
 In a sense the schema is an additional abstraction in your Software Architecture.
 convoluted
 If you are, and rightfuly so, a minimalist you may ask yourself: what is the benefit of such additional abstraction?
@@ -194,11 +195,6 @@ the goal
 the benefit of such decoupling.
 
 You could even change the entire database and the frontend.
-
-An abstraction is absolutely necessary for Facebook.
-It would be insane for Facebook to expose.
-It would block Facebook's development of the backend.
-Such decoupling abstraction that the schema is and that's a boon and an imperative for Facebook.
 
 This is the benefit of having a schema and we will talk more about it in a moment.
 Before we delve into the benefits of this decoupling, let's see the same example but with implemented with RPC this time.
@@ -234,23 +230,27 @@ async function fetchTodos() {
 };
 ~~~
 
-In a sense this is the exact opposite of the previous example:
-the frontend developer uses and writes SQL/ORM queries and has to know;
-the database is fully exposed to the frontend developed and he has to know
+the frontend developer uses and writes SQL/ORM queries to retrieve/mutate data.
+The database is fully exposed to the frontend developed and he has to know
 how to write SQL/ORM queries.
+In a sense this is the exact opposite of the previous example where the database is abstraced away from he frontend.
+
+In a nutshell,
+RPC is schemaless and SQL/ORM queries are used directly whereas REST/GraphQL uses a schema that essentially proxies SQL/ORM queries.
 
 As we can see in this example,
 with RPC there is no schema and we directly use SQL/ORM queries instead.
+
+> :bulb: RPC is schemaless: the frontend developer directly writes and uses SQL/ORM queries to retrieve and mutate data.
 
 This is, as we mentioned at the beginning of this section, the fundamental difference between RPC and REST/GraphQL:
 with RPC the frontend uses SQL/ORM queries directly
 whereas with REST/GraphQL
 the frontned uses schema operations.
 
-// RPC is schemaless and SQL/ORM queries are used directly whereas REST/GraphQL uses a schema that essentially proxies SQL/ORM queries.
 The question whether to use RPC or REST/GraphQL boils down to the following question: is a schema required?
-Both the schema approach and the schemaless approach have their benefits which we now discuss.
 
+We now explore the benefits and drawbacks of using a schema.
 
 **SQL/ORM is powerful**
 
@@ -365,9 +365,10 @@ One way to think about the schema (and therefore about REST/GraphQL) is that it
 acts as a rigid long-term contract between the frontend and the backend.
 
 To sum up:
-- 
-- 
-- 
+- The schema of a RESTful/GraphQL API abstracts the database away from the frontend.
+- RPC is schemaless: the frontend directly uses SQL/ORM queries to retreive/mutate data.
+- A schema allows a decoupled development of the frontend and backend.
+- Given a hand-in-hand frontend-backend development, schemaless is simpler and more powerful.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -376,37 +377,40 @@ To sum up:
 ## Case Studies
 
 In this section
-We explore whether RPC or REST/GraphQL should be used upon concrete situations.
+we explore whether RPC or REST/GraphQL should be used upon concrete situations.
 
 **Prototyping**
 
-For a prototype
-written by a single full-stack developer,
-RPC is very likely the right choice.
+Let's imagine a single full-stack developer
+writting a prototype on its own.
 
-Since the prototype is developed by a single developer,
+The prototype is developed by a single developer;
 the frontend and backend are devloped hand-in-hand.
-The developer can therefore use RPC and use
-any SQL/ORM query to retrieve/mutate data while developing the frontend.
+The developer can use RPC to be able to
+use any SQL/ORM query to retrieve/mutate data while developing the frontend.
 
 Since the frontend and backend don't need to be decoupled
 a schema (and therefore REST/GraphQL) is not necessary.
 
 Not only is a schema unnecessary
-but is also an unnecessary indirection that gets in the way of quickly evolving the prototype;
-anytime the devloper makes a change to the database's schema he would also have to change the schema of the REST/GraphQL API.
+but is also an indirection that gets in the way of quickly evolving the prototype;
+anytime the developer makes a change to the database's schema he also has to change the schema of the REST/GraphQL API.
 
-And, if the prototype evolves into becoming large scale project, RPC can be progressively replaced with REST/GraphQL.
+If the prototype evolves into becoming large scale project, RPC can be progressively replaced with REST/GraphQL.
 
-For a full-stack JavaScript developer writing a prototype with Node.js and React/Vue/Angular,
-Wildcard can be used to easily create an RPC API and
-there is virtually no reason to not use RPC.
+For a full-stack developer writting a prototype there is virtually no reason to not use RPC.
 
 **Third parties**
 
 As explained in
 [Schema vs Schemaless](#schema-vs-schemaless),
-being able to change the backend code at the whim of the frontend is the central prerequisite for using RPC,
+being able to change the backend code at the whim of the frontend is the central prerequisite for using RPC.
+
+An abstraction is absolutely necessary for Facebook.
+It would be insane for Facebook to expose.
+It would block Facebook's development of the backend.
+Such decoupling abstraction that the schema is and that's a boon and an imperative for Facebook.
+TODO
 
 For example,
 Facebook uses a GraphQL API to
@@ -463,7 +467,7 @@ and can be beneficial in enabling a large frontend team and a large backend team
 
 For small teams
 and for prototyping,
-a hand-in-hand frontend and backend developmenet with RPC is
+a hand-in-hand frontend and backend development with RPC is
 simpler, faster, and more flexible.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
