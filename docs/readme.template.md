@@ -546,14 +546,68 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 ### Options
 
-In order to keep Wildcard simple, we provide
-a minimal amount of options.
-There is currently only one option: `argumentsAlwaysInHttpBody`.
+> :information_source:
+> If you need an option that Wildcard is missing, then
+> [open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
+> We usually implement new options within 1-2 days.
 
-If you need more options, then
-[open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
+Overview of all options:
 
-###### `wildcardClient.argumentsAlwaysInHttpBody`
+~~~js
+import {WildcardClient} from 'wildcard-api/client';
+// (Or `const {WildcardClient} = require('wildcard-api/client');`)
+
+const endpoints = new WildcardClient({
+  // The URL of the Node.js server that serves the API
+  serverUrl: null, // Default value
+
+  // Whether the endpoint arguments are passed in the HTTP body or in the HTTP URL
+  argumentsAlwaysInHttpBody: false, // Default value
+});
+~~~
+
+More details about each option:
+
+- [`serverUrl`](#serverurl)
+- [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
+
+### `serverUrl`
+
+Wildcard automatically determines the adress of the server and you
+don't need to provide a `serverUrl`.
+
+But if the Node.js server that serves the API is not the same server than the server that serves your browser-side assets,
+then you need to tell Wildcard where adress of the API server.
+
+For example:
+
+~~~js
+// Browser
+
+import {WildcardClient} from 'wildcard-api/client';
+import assert from 'assert';
+
+const endpoints = new WildcardClient({
+  serverUrl: 'https://api.example.com:1337'
+});
+
+callEndpoint();
+
+async function callEndpoint() {
+  await endpoints.myEndpoint();
+
+  assert(window.location.origin==='https://example.com');
+
+  // Normally, Wildcard makes HTTP requests to the same origin:
+  //   POST https://example.com/wildcard/myEndpoint HTTP/1.1
+
+  // But because we have set `serverUrl`, Wildcard makes
+  // the HTTP requests to `https://api.example.com:1337`
+  //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
+};
+~~~
+
+### `argumentsAlwaysInHttpBody`
 
 `argumentsAlwaysInHttpBody` is about configuring whether
 arguments are passed in the HTTP request body.
@@ -564,10 +618,11 @@ For example:
 ~~~js
 // Browser
 
-import {endpoints} from 'wildcard-api/client';
-import wilcardClient from 'wildcard-api/client';
+import {WildcardClient} from 'wildcard-api/client';
 
-wildcardClient.argumentsAlwaysInHttpBody = true;
+const endpoints = new WildcardClient({
+  argumentsAlwaysInHttpBody: true
+});
 
 callEndpoint();
 

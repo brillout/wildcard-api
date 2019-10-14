@@ -202,25 +202,27 @@ We enjoy talking with our users.
 
 ### Wildcard compared to REST, GraphQL, and other RPCs
 
-When you use Wildcard you are essentially doing
-[RPC](/docs/rpc.md#what-is-rpc).
+Wildcard is an [RPC](/docs/rpc.md#what-is-rpc) tool.
 
-While REST and GraphQL shine for APIs that are meant to be consumed by **third parties**,
-RPC is increasingly used to create **internal** APIs.
+While REST and GraphQL are first-grade tools to create APIs that are meant to be consumed by third parties,
+RPC is increasingly used to create internal APIs.
 
-Many large companies,
+Large companies,
 [such as Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why) and [Google](https://grpc.io/faq/#who-s-using-this-and-why),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
 
-Both gRPC and Wildcard are RPC.
-While gRPC supports all kinds of platforms (Go, Python, Java, C++, etc.) Wildcard only supports the Node.js & browser stack.
-This allows Wildcard to have a simple design and to be super easy to use.
+Both gRPC and Wildcard are RPC tools.
+While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
+Wildcard only supports the Node.js-browser stack.
+This allows Wildcard to have a simple design (with a mere 1.1K-LOCs) and to be super easy to use.
 
-If all you want is your React/Vue/Angular frontend to access data from your backend,
-and you develop your backend hand-in-hand with your frontend,
-then RPC is simpler and more powerful than REST/GraphQL. We explain why [here](/docs/rpc.md#rpc-vs-restgraphql).
+If your frontend is the only consumer of your backend's API, then your API is essentially internal and RPC is the way to go. And, if your backend is Node.js, you can use Wildcard to quickly and easily create an RPC API.
+
+If you are unfamiliar with RPC,
+you can read [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql) which teaches what RPC is and when it should be used.
+RPC is becoming an essential of any modern tool belt.
 
 
 <br/>
@@ -790,14 +792,68 @@ We enjoy talking with our users.
 
 ### Options
 
-In order to keep Wildcard simple, we provide
-a minimal amount of options.
-There is currently only one option: `argumentsAlwaysInHttpBody`.
+> :information_source:
+> If you need an option that Wildcard is missing, then
+> [open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
+> We usually implement new options within 1-2 days.
 
-If you need more options, then
-[open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
+Overview of all options:
 
-###### `wildcardClient.argumentsAlwaysInHttpBody`
+~~~js
+import {WildcardClient} from 'wildcard-api/client';
+// (Or `const {WildcardClient} = require('wildcard-api/client');`)
+
+const endpoints = new WildcardClient({
+  // The URL of the Node.js server that serves the API
+  serverUrl: null, // Default value
+
+  // Whether the endpoint arguments are passed in the HTTP body or in the HTTP URL
+  argumentsAlwaysInHttpBody: false, // Default value
+});
+~~~
+
+More details about each option:
+
+- [`serverUrl`](#serverurl)
+- [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
+
+### `serverUrl`
+
+Wildcard automatically determines the adress of the server and you
+don't need to provide a `serverUrl`.
+
+But if the Node.js server that serves the API is not the same server than the server that serves your browser-side assets,
+then you need to tell Wildcard where adress of the API server.
+
+For example:
+
+~~~js
+// Browser
+
+import {WildcardClient} from 'wildcard-api/client';
+import assert from 'assert';
+
+const endpoints = new WildcardClient({
+  serverUrl: 'https://api.example.com:1337'
+});
+
+callEndpoint();
+
+async function callEndpoint() {
+  await endpoints.myEndpoint();
+
+  assert(window.location.origin==='https://example.com');
+
+  // Normally, Wildcard makes HTTP requests to the same origin:
+  //   POST https://example.com/wildcard/myEndpoint HTTP/1.1
+
+  // But because we have set `serverUrl`, Wildcard makes
+  // the HTTP requests to `https://api.example.com:1337`
+  //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
+};
+~~~
+
+### `argumentsAlwaysInHttpBody`
 
 `argumentsAlwaysInHttpBody` is about configuring whether
 arguments are passed in the HTTP request body.
@@ -808,10 +864,11 @@ For example:
 ~~~js
 // Browser
 
-import {endpoints} from 'wildcard-api/client';
-import wilcardClient from 'wildcard-api/client';
+import {WildcardClient} from 'wildcard-api/client';
 
-wildcardClient.argumentsAlwaysInHttpBody = true;
+const endpoints = new WildcardClient({
+  argumentsAlwaysInHttpBody: true
+});
 
 callEndpoint();
 
