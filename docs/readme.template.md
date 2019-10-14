@@ -570,6 +570,8 @@ More details about each option:
 - [`serverUrl`](#serverurl)
 - [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
 
+<br/>
+
 ### `serverUrl`
 
 Wildcard automatically determines the adress of the server and you
@@ -604,6 +606,8 @@ async function callEndpoint() {
   //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
 };
 ~~~
+
+<br/>
 
 ### `argumentsAlwaysInHttpBody`
 
