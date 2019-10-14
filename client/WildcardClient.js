@@ -1,50 +1,39 @@
 const assert = require('@brillout/reassert');
+const {parse, stringify} = require('./serializer');
+const makeHttpRequest = require('./makeHttpRequest');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
+const IS_CALLED_BY_PROXY = Symbol();
 
 module.exports = WildcardClient;
 
 function WildcardClient({
-  makeHttpRequest,
-  apiUrlBase=DEFAULT_API_URL_BASE,
-  wildcardApi,
-  stringify,
-  parse,
+  serverUrl=null,
   argumentsAlwaysInHttpBody=false,
+  __INTERNAL__wildcardApi,
 }={}) {
-
   assert.usage(
-    makeHttpRequest,
-    "You need to provide `makeHttpRequest`: `new WildcardClient({makeHttpRequest})`.",
+    serverUrl===null ||
+    // Should be an HTTP URL
+    serverUrl && serverUrl.startsWith && (serverUrl.startsWith('http') ||
+    // Or an IP address
+    /^\d/.test(serverUrl)),
+    "You provided a wrong value for the option `serverUrl`.",
+    {serverUrl}
   );
-  assert.usage(
-    stringify,
-    "You need to provide `stringify`: `new WildcardClient({stringify})`.",
-  );
-  assert.usage(
-    parse,
-    "You need to provide `parse`: `new WildcardClient({parse})`.",
-  );
+  const apiUrlBase = DEFAULT_API_URL_BASE;
 
-  const isCalledByProxy = Symbol();
+  const endpoints = getEndpointsProxy();
 
-  Object.assign(this, {
-    fetchEndpoint,
-    argumentsAlwaysInHttpBody,
-    endpoints: getEndpointsProxy(),
-  });
-
-  const options = this;
-
-  return this;
+  return endpoints;
 
   function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
     endpointArgs = endpointArgs || [];
 
-    const {requestProps, serverRootUrl} = wildcardApiArgs;
+    const {requestProps} = wildcardApiArgs;
 
-    const wildcardApiFound = wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
+    const wildcardApiFound = __INTERNAL__wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
     const runDirectlyWithoutHTTP = !!wildcardApiFound;
 
     validateArgs({endpointName, endpointArgs, wildcardApiArgs, restArgs, wildcardApiFound, runDirectlyWithoutHTTP});
@@ -54,7 +43,11 @@ function WildcardClient({
       return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps});
     } else {
       assert.internal(!requestProps);
-      return callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl});
+      assert.usage(
+        serverUrl || isBrowser(),
+        "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
+      );
+      return callEndpointOverHttp({endpointName, endpointArgs});
     }
   }
 
@@ -62,15 +55,15 @@ function WildcardClient({
     return wildcardApiFound.__directCall({endpointName, endpointArgs, requestProps});
   }
 
-  function callEndpointOverHttp({endpointName, endpointArgs, serverRootUrl}) {
-    let url = getEndpointUrl({endpointName, endpointArgs, serverRootUrl});
+  function callEndpointOverHttp({endpointName, endpointArgs}) {
+    let url = getEndpointUrl({endpointName, endpointArgs});
     let body = stringify([]);
 
     // Add arguments
     let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
     if( endpointArgsStr ){
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-      if( endpointArgsStr.length >= 1000 || options.argumentsAlwaysInHttpBody){
+      if( endpointArgsStr.length >= 1000 || argumentsAlwaysInHttpBody){
         body = endpointArgsStr;
       } else {
         url += '/'+encodeURIComponent(endpointArgsStr);
@@ -88,28 +81,31 @@ function WildcardClient({
       endpointArgs.constructor===Array,
       restArgs.length===0,
       wildcardApiArgs.constructor===Object &&
-      Object.keys(wildcardApiArgs).every(arg => ['requestProps', 'serverRootUrl', isCalledByProxy].includes(arg))
+      Object.keys(wildcardApiArgs).every(arg => ['requestProps', IS_CALLED_BY_PROXY].includes(arg))
     );
 
-    if( wildcardApiArgs[isCalledByProxy] ) {
+    if( wildcardApiArgs[IS_CALLED_BY_PROXY] ) {
       assert.internal(fetchEndpoint__validArgs);
     } else {
+      // TODO remove all code related to directly calling `fetchEndpoint`
+      assert.internal(false);
+      /*
       assert.usage(
         fetchEndpoint__validArgs,
         "Usage:"+
         "",
-        "  `fetchEndpoint(endpointName, endpointArgs, {requestProps, serverRootUrl})`",
+        "  `fetchEndpoint(endpointName, endpointArgs, {requestProps})`",
         "",
         "    Where:",
         "      - `endpointName` is the name of the endpoint (required string)",
         "      - `endpointArgs` is the argument list of the endpoint (optional array)",
         "      - `requestProps` is the HTTP request object (optional object)",
-        "      - `serverRootUrl` is the URL root of the server (optional string)",
         "",
         "    Examples:",
         "      `fetchEndpoint('getTodos')`",
         "      `fetchEndpoint('getTodos', [{tags: ['food']}, {onlyCompleted: true}])`",
       );
+      */
     }
 
     const {requestProps} = wildcardApiArgs;
@@ -127,8 +123,7 @@ function WildcardClient({
       assert.usage(
         wildcardApiFound.__directCall,
         errorIntro,
-        "You are providing the `wildcardApi` parameter to `new WildcardClient({wildcardApi})`.",
-        "But `wildcardApi` doesn't seem to be a instance of `new WildcardApi()`.",
+        "You are providing the `__INTERNAL__wildcardApi` option but it isn't an instance of `new WildcardApi()`."
       );
     } else {
       assert.usage(
@@ -143,40 +138,31 @@ function WildcardClient({
     }
   }
 
-  function getEndpointUrl({endpointName, endpointArgs, serverRootUrl}) {
-    serverRootUrl = serverRootUrl || '';
-    if( serverRootUrl.endsWith('/') ) {
-      serverRootUrl = serverRootUrl.slice(0, -1);
-    }
-    assert.usage(
-      apiUrlBase && apiUrlBase.length>0 && apiUrlBase.startsWith,
-      "Argument `apiUrlBase` in `new WildcardClient({apiUrlBase})` should be a non-empty string."
-    );
-    if( !apiUrlBase.endsWith('/') ) {
-      apiUrlBase += '/';
-    }
-    if( !apiUrlBase.startsWith('/') ) {
-      apiUrlBase = '/'+apiUrlBase;
+  function getEndpointUrl({endpointName, endpointArgs}) {
+    let url;
+
+    assert.internal(serverUrl || isBrowser());
+    if( serverUrl ) {
+      url = serverUrl;
+    } else {
+      url = '';
     }
 
-    assert.internal(apiUrlBase.startsWith('/') && apiUrlBase.endsWith('/'));
-    assert.internal(!serverRootUrl.startsWith('/'));
-    const url = serverRootUrl+apiUrlBase+endpointName;
-
- // assert.internal(!makeHttpRequest.isUsingBrowserBuiltIn);
-    const urlRootIsMissing = !serverRootUrl && makeHttpRequest.isUsingBrowserBuiltIn && !makeHttpRequest.isUsingBrowserBuiltIn();
-    if( urlRootIsMissing ) {
-      assert.internal(isNodejs());
-      assert.usage(
-        false,
-        [
-          "Trying to fetch `"+url+"` from Node.js.",
-          "But the URL root is missing.",
-          "In Node.js URLs need to include the URL root.",
-          "Use the `serverRootUrl` parameter. E.g. `fetchEndpoint('getTodos', {onlyCompleted: true}, {serverRootUrl: 'https://api.example.org'});`.",
-        ].join('\n')
-      );
+    if( apiUrlBase ) {
+      if( !url.endsWith('/') && !apiUrlBase.startsWith('/') ) {
+        url += '/';
+      }
+      if( url.endsWith('/') && apiUrlBase.startsWith('/') ) {
+        url = url.slice(0, -1);
+        assert.internal('bla/'.slice(0, -1)==='bla');
+      }
+      url += apiUrlBase;
     }
+
+    if( !url.endsWith('/') ){
+      url += '/';
+    }
+    url += endpointName;
 
     return url;
   }
@@ -223,7 +209,7 @@ function WildcardClient({
           typeof global !== "undefined" && this===global
         );
         const requestProps = noBind ? undefined : this;
-        return fetchEndpoint(prop, endpointArgs, {requestProps, [isCalledByProxy]: true});
+        return fetchEndpoint(prop, endpointArgs, {requestProps, [IS_CALLED_BY_PROXY]: true});
       };
     }
 
@@ -241,7 +227,21 @@ function WildcardClient({
 }
 
 function isNodejs() {
-  return typeof "process" !== "undefined" && process && process.versions && process.versions.node;
+  const itIs = __nodeTest();
+  assert.internal(itIs===!__browserTest());
+  return itIs;
+}
+function __nodeTest() {
+  const nodeVersion = typeof process !== "undefined" && process && process.versions && process.versions.node;
+  return !!nodeVersion;
+}
+function isBrowser() {
+  const itIs = __browserTest();
+  assert.internal(itIs===!__nodeTest());
+  return itIs;
+}
+function __browserTest() {
+  return typeof window !== 'undefined';
 }
 
 function assertProxySupport() {
@@ -249,10 +249,9 @@ function assertProxySupport() {
     envSupportsProxy(),
     [
       "This JavaScript environment doesn't seem to support Proxy.",
-      "Use `fetchEndpoint` instead of `endpoints`.",
       "",
       "Note that all browsers support Proxy with the exception of Internet Explorer.",
-      "If you want to support IE then use `fetchEndpoint` instead.",
+      "If you want support for IE then open a GitHub issue.",
     ].join('\n')
   );
 }

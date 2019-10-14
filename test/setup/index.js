@@ -4,9 +4,7 @@ const assert = require('@brillout/reassert');
 global.assert = assert;
 
 const WildcardApi = require('../../server/WildcardApi');
-const WildcardClient = require('../../client/WildcardClient');
-const {parse, stringify} = require('../../client/serializer');
-const makeHttpRequest = require('../../client/makeHttpRequest');
+const {WildcardClient} = require('../../client');
 
 const bundle = require('./browser/bundle');
 const launchBrowser = require('./browser/launchBrowser');
@@ -36,13 +34,15 @@ const DEBUG = false;
 
     Object.assign(wildcardApiHolder, {wildcardApi});
 
-    const wildcardClient = new WildcardClient({wildcardApi, makeHttpRequest, stringify, parse});
+    const endpoints = new WildcardClient({__INTERNAL__wildcardApi: wildcardApi});
+
+    const wildcardClient = {endpoints};
 
     const testName = test.name+' ('+file+')';
 
     !DEBUG && log_suppressor.enable();
     try {
-      await test({wildcardApi, wildcardClient, browserEval});
+      await test({wildcardApi, wildcardClient, WildcardClient, browserEval});
     } catch(err) {
       !DEBUG && log_suppressor.flush();
       !DEBUG && log_suppressor.disable();
