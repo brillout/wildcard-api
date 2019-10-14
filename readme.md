@@ -801,13 +801,12 @@ Overview of all options:
 
 ~~~js
 import {WildcardClient} from 'wildcard-api/client';
-// (Or `const {WildcardClient} = require('wildcard-api/client');`)
 
 const endpoints = new WildcardClient({
   // The URL of the Node.js server that serves the API
   serverUrl: null, // Default value
 
-  // Whether the endpoint arguments are passed in the HTTP body or in the HTTP URL
+  // Whether the endpoint arguments are always passed in the HTTP body
   argumentsAlwaysInHttpBody: false, // Default value
 });
 ~~~
@@ -828,13 +827,12 @@ then you need to tell Wildcard where adress of the API server.
 For example:
 
 ~~~js
-// Browser
-
 import {WildcardClient} from 'wildcard-api/client';
+// (Or `const {WildcardClient} = require('wildcard-api/client');`)
 import assert from 'assert';
 
 const endpoints = new WildcardClient({
-  serverUrl: 'https://api.example.com:1337'
+  serverUrl: 'https://api.example.com:1337',
 });
 
 callEndpoint();
@@ -856,18 +854,17 @@ async function callEndpoint() {
 ### `argumentsAlwaysInHttpBody`
 
 `argumentsAlwaysInHttpBody` is about configuring whether
-arguments are passed in the HTTP request body.
+arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
 For example:
 
 ~~~js
-// Browser
-
 import {WildcardClient} from 'wildcard-api/client';
+// (Or `const {WildcardClient} = require('wildcard-api/client');`)
 
 const endpoints = new WildcardClient({
-  argumentsAlwaysInHttpBody: true
+  argumentsAlwaysInHttpBody: true,
 });
 
 callEndpoint();
