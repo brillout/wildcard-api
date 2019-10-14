@@ -575,10 +575,10 @@ More details about each option:
 ### `serverUrl`
 
 Wildcard automatically determines the adress of the server and you
-don't need to provide a `serverUrl`.
+don't need to provide `serverUrl`.
 
-But if the Node.js server that serves the API is not the same server than the server that serves your browser-side assets,
-then you need to tell Wildcard where adress of the API server.
+But if the Node.js server that serves the API is not the same server that serves your browser-side assets,
+then you need to provide `serverUrl`.
 
 For example:
 
@@ -602,7 +602,7 @@ async function callEndpoint() {
   //   POST https://example.com/wildcard/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Wildcard makes
-  // the HTTP requests to `https://api.example.com:1337`
+  // the HTTP requests to `https://api.example.com:1337`:
   //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
 };
 ~~~
