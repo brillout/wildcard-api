@@ -1,11 +1,12 @@
 const Hapi = require('hapi');
 const Inert = require('inert');
+const getTestPort = require('./getTestPort');
 
 module.exports = startServer;
 
 async function startServer(wildcardApiHolder) {
   const server = Hapi.Server({
-    port: 3000,
+    port: getTestPort(),
     debug: {request: ['internal']},
   });
 

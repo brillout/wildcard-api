@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const assert = require('@brillout/reassert');
+const getTestPort = require('../getTestPort');
 
 module.exports = launchBrowser;
 
@@ -20,7 +21,7 @@ async function launchBrowser() {
 	});
 	*/
 
-  await page.goto('http://localhost:3000');
+  await page.goto('http://localhost:'+getTestPort());
 
   let _onHttpRequest;
   page.on('request', async request => {
