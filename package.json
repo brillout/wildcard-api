@@ -21,7 +21,7 @@
     "hapi": "^18.1.0",
     "inert": "^5.1.2",
     "parcel-bundler": "^1.12.3",
-    "puppeteer": "^1.13.0"
+    "puppeteer": "^1.20.0"
   },
   "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api"
