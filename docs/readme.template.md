@@ -18,7 +18,7 @@
 
 <br/>
 
-### What is Wildcard
+## What is Wildcard
 
 Wildcard is a JavaScript library to create an API between your Node.js server and your frontend.
 
@@ -98,7 +98,7 @@ its author is responsive, and issues are fixed within 1-2 days.
 
 
 
-### Wildcard compared to REST, GraphQL, and other RPCs
+## Wildcard compared to REST, GraphQL, and other RPCs
 
 Wildcard is an [RPC](/docs/rpc.md#what-is-rpc) tool.
 
@@ -126,7 +126,7 @@ RPC is becoming an essential of any modern tool belt.
 
 
 
-### Getting Started
+## Getting Started
 
 This getting started is about adding Wildcard to an exisiting app.
 If you don't already have an app or if you just want to try out Wildcard,
@@ -325,7 +325,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
 
 
 
-### Authentication
+## Authentication
 
 Authentication usually uses HTTP headers
 such as `Authorization: Bearer AbCdEf123456` or a cookie holding the user's session ID.
@@ -372,7 +372,7 @@ see [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 
 
-### Permissions
+## Permissions
 
 Permission is defined by code. For example:
 
@@ -421,7 +421,7 @@ See the [to-do list app example](/example/) for further permission examples.
 
 
 
-### Error Handling
+## Error Handling
 
 Calling an endpoint throws an error when:
  - The browser cannot connect to the server. (The user is offline or your server is down.)
@@ -530,7 +530,7 @@ import 'handli'; // npm install handli
 
 
 
-### SSR
+## SSR
 
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
@@ -544,7 +544,7 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 
 
-### Options
+## Options
 
 > :information_source:
 > If you need an option that Wildcard is missing, then
@@ -646,7 +646,7 @@ async function callEndpoint() {
 
 
 
-### More Resources
+## More Resources
 
 This section collects further information about Wildcard.
 

@@ -96,7 +96,7 @@
 
 <br/>
 
-### What is Wildcard
+## What is Wildcard
 
 Wildcard is a JavaScript library to create an API between your Node.js server and your frontend.
 
@@ -200,7 +200,7 @@ We enjoy talking with our users.
 
 
 
-### Wildcard compared to REST, GraphQL, and other RPCs
+## Wildcard compared to REST, GraphQL, and other RPCs
 
 Wildcard is an [RPC](/docs/rpc.md#what-is-rpc) tool.
 
@@ -252,7 +252,7 @@ We enjoy talking with our users.
 
 
 
-### Getting Started
+## Getting Started
 
 This getting started is about adding Wildcard to an exisiting app.
 If you don't already have an app or if you just want to try out Wildcard,
@@ -475,7 +475,7 @@ We enjoy talking with our users.
 
 
 
-### Authentication
+## Authentication
 
 Authentication usually uses HTTP headers
 such as `Authorization: Bearer AbCdEf123456` or a cookie holding the user's session ID.
@@ -546,7 +546,7 @@ We enjoy talking with our users.
 
 
 
-### Permissions
+## Permissions
 
 Permission is defined by code. For example:
 
@@ -619,7 +619,7 @@ We enjoy talking with our users.
 
 
 
-### Error Handling
+## Error Handling
 
 Calling an endpoint throws an error when:
  - The browser cannot connect to the server. (The user is offline or your server is down.)
@@ -752,7 +752,7 @@ We enjoy talking with our users.
 
 
 
-### SSR
+## SSR
 
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
@@ -790,7 +790,7 @@ We enjoy talking with our users.
 
 
 
-### Options
+## Options
 
 > :information_source:
 > If you need an option that Wildcard is missing, then
@@ -916,7 +916,7 @@ We enjoy talking with our users.
 
 
 
-### More Resources
+## More Resources
 
 This section collects further information about Wildcard.
 
