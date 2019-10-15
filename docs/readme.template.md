@@ -580,16 +580,11 @@ List of all options:
 ~~~js
 import wildcardClient from 'wildcard-api/client';
 
-Object.assign(
-  wildcardClient,
-  {
-    // The URL of the Node.js server that serves the API
-    serverUrl: null, // Default value
+// The URL of the Node.js server that serves the API
+wildcardClient.serverUrl = null; // Default value
 
-    // Whether the endpoint arguments are always passed in the HTTP body
-    argumentsAlwaysInHttpBody: false, // Default value
-  }
-);
+// Whether the endpoint arguments are always passed in the HTTP body
+wildcardClient.argumentsAlwaysInHttpBody = false; // Default value
 ~~~
 
 More details about each option:
@@ -601,11 +596,16 @@ More details about each option:
 
 ### `serverUrl`
 
-Wildcard automatically determines the adress of the server and you
+Wildcard automatically determines the address of the server and you
 don't need to provide `serverUrl`.
 
 But if the Node.js server that serves the API is not the same server that serves your browser-side assets,
 then you need to provide `serverUrl`.
+
+`serverUrl` can be one of the following:
+- `null`
+- The HTTP origin URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
+- The IP address of the server, for example `92.194.249.32`.
 
 For example:
 
