@@ -26,6 +26,6 @@
     "wildcard-api": "*"
   },
   "devDependencies": {
-    "yarn": "1.12.3"
+    "yarn": "^1.19.1"
   }
 }
