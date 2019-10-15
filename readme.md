@@ -204,8 +204,8 @@ We enjoy talking with our users.
 
 Wildcard is an [RPC](/docs/rpc.md#what-is-rpc) tool.
 
-While REST and GraphQL are first-grade tools to create APIs that are meant to be consumed by third parties,
-RPC is increasingly used to create internal APIs.
+While REST and GraphQL shine for APIs that are meant to consumed by third parties,
+RPC is increasingly used for internal APIs, prototypes, and apps with a frontend and backend developed hand-in-hand.
 
 Large companies,
 [such as Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why) and [Google](https://grpc.io/faq/#who-s-using-this-and-why),
@@ -218,11 +218,12 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Node.js-browser stack.
 This allows Wildcard to have a simple design (with a mere 1.1K-LOCs) and to be super easy to use.
 
-If your frontend is the only consumer of your backend's API, then your API is essentially internal and RPC is the way to go. And, if your backend is Node.js, you can use Wildcard to quickly and easily create an RPC API.
+Wildcard's simplicity and flexibility excel most for prototypes that are quickly evolving.
+
+If you are a full-stack JavaScript developer using a framework such as Next.js or Nuxt, and your frontend is the only consumer of your backend's API, then Wildcard is, compared to REST/GraphQL, superior in virtually every way.
 
 If you are unfamiliar with RPC,
-you can read [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql) which teaches what RPC is and when it should be used.
-RPC is becoming an essential of any modern tool belt.
+then check out [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
 
 
 <br/>
