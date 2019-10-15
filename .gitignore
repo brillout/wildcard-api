@@ -4,5 +4,6 @@ yarn-error.log
 package-lock.json
 
 dist/
+.parcel-cache/
 .cache/
 node_modules/
