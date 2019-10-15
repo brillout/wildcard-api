@@ -54,7 +54,7 @@ RPC is usually used to call SQL/ORM queries in order to retrieve/mutate data.
 For example:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
@@ -243,6 +243,8 @@ async function markAllCompleted() {
 Achieving the same using schema queries:
 
 ~~~js
+// Browser
+
 export default markAllCompleted;
 
 // We use the schema operation `HTTP PUT /todos/{id}` to set each todo

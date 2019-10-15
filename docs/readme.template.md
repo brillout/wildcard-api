@@ -58,7 +58,7 @@ How you retrieve/mutate data is up to you;
 you can use any SQL/NoSQL/ORM query:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const endpoints = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
@@ -136,6 +136,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
 
    With Express:
    ~~~js
+   // Node.js server
+
    const express = require('express');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
@@ -170,6 +172,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    </summary>
 
    ~~~js
+   // Node.js server
+
    const Hapi = require('hapi');
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
 
@@ -207,6 +211,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    </summary>
 
    ~~~js
+   // Node.js server
+
    const Koa = require('koa');
    const Router = require('koa-router');
    const bodyParser = require('koa-bodyparser');
@@ -251,6 +257,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    All you have to do is to reply all HTTP requests made to `/wildcard/*`
    with `getApiResponse`:
    ~~~js
+   // Node.js server
+
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
    const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
@@ -293,7 +301,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    in Node.js:
 
    ~~~js
-   // Node.js
+   // Node.js server
 
    const {endpoints} = require('wildcard-api');
 
@@ -333,6 +341,8 @@ such as `Authorization: Bearer AbCdEf123456` or a cookie holding the user's sess
 You can access the HTTP request headers in your endpoint functions by passing the `headers` object to `getApiResponse`:
 
 ~~~js
+// Node.js server
+
 app.all('/wildcard/*' , async (req, res) => {
   const requestProps = {
     url: req.url,
@@ -351,7 +361,7 @@ app.all('/wildcard/*' , async (req, res) => {
 Wildcard makes `requestProps` available to your endpoint function as `this`:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 const getUser = require('./path/to/your/auth-code/getUser');
@@ -377,7 +387,7 @@ see [SSR & Authentication](/docs/ssr-auth.md#readme).
 Permission is defined by code. For example:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
@@ -430,7 +440,7 @@ Calling an endpoint throws an error when:
 If you use a library that is expected to throws errors, then catch them:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 const validatePhoneNumber = require('some-phone-number-validatation-library');
@@ -456,7 +466,7 @@ You should always catch expected errors: Wildcard treats any uncaught error as a
 In particular, don't throw an error upon validation failure:
 
 ~~~js
-// Node.js
+// Node.js server
 
 const {endpoints} = require('wildcard-api');
 const isStrongPassword = require('./path/to/isStrongPassword');
