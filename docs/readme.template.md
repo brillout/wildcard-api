@@ -561,18 +561,21 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 > [open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
 > We usually implement new options within 1-2 days.
 
-Overview of all options:
+List of all options:
 
 ~~~js
-import {WildcardClient} from 'wildcard-api/client';
+import wildcardClient from 'wildcard-api/client';
 
-const endpoints = new WildcardClient({
-  // The URL of the Node.js server that serves the API
-  serverUrl: null, // Default value
+Object.assign(
+  wildcardClient,
+  {
+    // The URL of the Node.js server that serves the API
+    serverUrl: null, // Default value
 
-  // Whether the endpoint arguments are always passed in the HTTP body
-  argumentsAlwaysInHttpBody: false, // Default value
-});
+    // Whether the endpoint arguments are always passed in the HTTP body
+    argumentsAlwaysInHttpBody: false, // Default value
+  }
+);
 ~~~
 
 More details about each option:
@@ -593,13 +596,10 @@ then you need to provide `serverUrl`.
 For example:
 
 ~~~js
-import {WildcardClient} from 'wildcard-api/client';
-// (Or `const {WildcardClient} = require('wildcard-api/client');`)
+import wildcardClient, {endpoints} from 'wildcard-api/client';
 import assert from 'assert';
 
-const endpoints = new WildcardClient({
-  serverUrl: 'https://api.example.com:1337',
-});
+wildcardClient.serverUrl = 'https://api.example.com:1337';
 
 callEndpoint();
 
@@ -628,12 +628,9 @@ arguments are always passed in the HTTP request body.
 For example:
 
 ~~~js
-import {WildcardClient} from 'wildcard-api/client';
-// (Or `const {WildcardClient} = require('wildcard-api/client');`)
+import wildcardClient, {endpoints} from 'wildcard-api/client';
 
-const endpoints = new WildcardClient({
-  argumentsAlwaysInHttpBody: true,
-});
+wildcardClient.argumentsAlwaysInHttpBody = true;
 
 callEndpoint();
 

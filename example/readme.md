@@ -268,7 +268,7 @@ app.use(express.static('client/dist', {extensions: ['html']}));
 
 app.listen(3000);
 
-console.log('Server is running. Go to http://localhost:3000')
+console.log('Server is running, go to http://localhost:3000')
 ~~~
 
 <details>
@@ -333,7 +333,7 @@ async function startServer() {
 
   await server.start();
 
-  console.log('Server is running. Go to http://localhost:3000')
+  console.log('Server is running, go to http://localhost:3000')
 }
 ~~~
 </details>
@@ -388,7 +388,7 @@ app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 
-console.log('Server is running. Go to http://localhost:3000')
+console.log('Server is running, go to http://localhost:3000')
 ~~~
 </details>
 
