@@ -260,7 +260,7 @@ From the perspective of the frontend, the schema and its queries are all there i
 the database and SQL/ORM queries are hidden by the schema.
 A frontend developer doesn't even have to know whether the database is MongoDB or PostgreSQL.
 
-This is the raison d'être and the fundamental purpose of a schema:
+This is the raison d'être and the fundamental purpose of a schema.
 
 > :bulb: The schema abstracts the database away.
 
@@ -303,7 +303,7 @@ async function fetchTodos() {
 This example doesn't use a schema;
 instead, we use functions that directly use SQL/ORM queries.
 In other words, we use SQL/ORM queries while developing the frontend.
-This is the opposite of our previous example where RESTful API abstracts away the database.
+This is the opposite of our previous example where the REST schema abstracts away the database.
 
 > :bulb: RPC is schemaless: a frontend developer directly writes and uses SQL/ORM queries to retrieve and mutate data.
 
