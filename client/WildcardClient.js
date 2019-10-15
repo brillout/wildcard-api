@@ -2,30 +2,26 @@ const assert = require('@brillout/reassert');
 const {parse, stringify} = require('./serializer');
 const makeHttpRequest = require('./makeHttpRequest');
 
-const DEFAULT_API_URL_BASE = '/wildcard/';
+const PATH_NAME_BASE = '/wildcard/';
 const IS_CALLED_BY_PROXY = Symbol();
 
 module.exports = WildcardClient;
 
-function WildcardClient({
-  serverUrl=null,
-  argumentsAlwaysInHttpBody=false,
-  __INTERNAL__wildcardApi,
-}={}) {
-  assert.usage(
-    serverUrl===null ||
-    // Should be an HTTP URL
-    serverUrl && serverUrl.startsWith && (serverUrl.startsWith('http') ||
-    // Or an IP address
-    /^\d/.test(serverUrl)),
-    "You provided a wrong value for the option `serverUrl`.",
-    {serverUrl}
+function WildcardClient() {
+  forbidArgs(arguments);
+
+  Object.assign(
+    this,
+    {
+      endpoints: getEndpointsProxy(),
+      serverUrl: null,
+      argumentsAlwaysInHttpBody: false,
+    }
   );
-  const apiUrlBase = DEFAULT_API_URL_BASE;
 
-  const endpoints = getEndpointsProxy();
+  const options = this;
 
-  return endpoints;
+  return this;
 
   function fetchEndpoint(endpointName, endpointArgs, wildcardApiArgs, ...restArgs) {
     wildcardApiArgs = wildcardApiArgs || {};
@@ -33,7 +29,7 @@ function WildcardClient({
 
     const {requestProps} = wildcardApiArgs;
 
-    const wildcardApiFound = __INTERNAL__wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
+    const wildcardApiFound = options.__INTERNAL__wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
     const runDirectlyWithoutHTTP = !!wildcardApiFound;
 
     validateArgs({endpointName, endpointArgs, wildcardApiArgs, restArgs, wildcardApiFound, runDirectlyWithoutHTTP});
@@ -43,10 +39,7 @@ function WildcardClient({
       return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps});
     } else {
       assert.internal(!requestProps);
-      assert.usage(
-        serverUrl || isBrowser(),
-        "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
-      );
+      assert_serverUrl(options.serverUrl);
       return callEndpointOverHttp({endpointName, endpointArgs});
     }
   }
@@ -63,7 +56,7 @@ function WildcardClient({
     let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
     if( endpointArgsStr ){
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-      if( endpointArgsStr.length >= 1000 || argumentsAlwaysInHttpBody){
+      if( endpointArgsStr.length >= 1000 || options.argumentsAlwaysInHttpBody){
         body = endpointArgsStr;
       } else {
         url += '/'+encodeURIComponent(endpointArgsStr);
@@ -141,6 +134,7 @@ function WildcardClient({
   function getEndpointUrl({endpointName, endpointArgs}) {
     let url;
 
+    const {serverUrl} = options;
     assert.internal(serverUrl || isBrowser());
     if( serverUrl ) {
       url = serverUrl;
@@ -148,15 +142,15 @@ function WildcardClient({
       url = '';
     }
 
-    if( apiUrlBase ) {
-      if( !url.endsWith('/') && !apiUrlBase.startsWith('/') ) {
+    if( PATH_NAME_BASE ) {
+      if( !url.endsWith('/') && !PATH_NAME_BASE.startsWith('/') ) {
         url += '/';
       }
-      if( url.endsWith('/') && apiUrlBase.startsWith('/') ) {
+      if( url.endsWith('/') && PATH_NAME_BASE.startsWith('/') ) {
         url = url.slice(0, -1);
         assert.internal('bla/'.slice(0, -1)==='bla');
       }
-      url += apiUrlBase;
+      url += PATH_NAME_BASE;
     }
 
     if( !url.endsWith('/') ){
@@ -226,6 +220,26 @@ function WildcardClient({
   }
 }
 
+function forbidArgs(args) {
+  if( args.length===0 ) return;
+
+  const prop = args[0] && Object.keys(args[0]) || 'someOption';
+  let val = args[0][prop];
+  if( val && val.constructor===String ) {
+    val = "'"+val+"'";
+  } else if( [null, undefined, true, false].includes(val) || val && val.constructor===Number ){
+    val = ''+val;
+  } else {
+    val = 'someValue';
+  }
+
+  assert.usage(
+    false,
+    "Don't do `const wildcardClient = new WildcardClient({"+prop+": "+val+"});`.",
+    "Instead, do `const wildcardClient = new WildcardClient(); wildcardClient."+prop+" = "+val+";",
+  );
+}
+
 function isNodejs() {
   const itIs = __nodeTest();
   assert.internal(itIs===!__browserTest());
@@ -280,4 +294,21 @@ function serializeArgs({endpointArgs, endpointName, stringify}) {
     );
   }
   return serializedArgs;
+}
+
+function assert_serverUrl(serverUrl) {
+  assert.usage(
+    serverUrl===null ||
+    // Should be an HTTP URL
+    serverUrl && serverUrl.startsWith && (serverUrl.startsWith('http') ||
+    // Or an IP address
+    /^\d/.test(serverUrl)),
+    "You provided a wrong value for the option `serverUrl`.",
+    {serverUrl}
+  );
+
+  assert.usage(
+    serverUrl || isBrowser(),
+    "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
+  );
 }

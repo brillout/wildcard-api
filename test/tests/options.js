@@ -38,9 +38,11 @@ async function option_argumentsAlwaysInHttpBody_2({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const {WildcardClient} = window;
-    const endpoints = new WildcardClient({argumentsAlwaysInHttpBody: true});
+    const {wildcardClient} = window;
+    assert(wildcardClient.argumentsAlwaysInHttpBody===false);
+    wildcardClient.argumentsAlwaysInHttpBody = true;
     await endpoints.testEndpoint__argumentsAlwaysInHttpBody('just some args');
+    wildcardClient.argumentsAlwaysInHttpBody = false;
   }, {onHttpRequest});
 
   assert(endpointCalled && onHttpRequestCalled);
@@ -57,27 +59,29 @@ async function option_serverUrl({wildcardApi, wildcardClient, browserEval}) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  wildcardApi.endpoints.testEndpoint_option__serverUrl_1 = async function() {
+  wildcardApi.endpoints.test_serverUrl = async function() {
     endpointCalled = true;
   };
 
   assert(getTestPort()===3441);
   await browserEval(async () => {
     const {WildcardClient} = window;
-    const endpoints = new WildcardClient({serverUrl: 'http://localhost:3442'});
-    let failed;
+    const wildcardClient = new WildcardClient();
+    wildcardClient.serverUrl = 'http://localhost:3442';
+    const {endpoints} = wildcardClient;
+    let failed = false;
     try {
-      await endpoints.testEndpoint_option__serverUrl_1();
+      await endpoints.test_serverUrl();
     } catch(err) {
       failed = true;
     }
-    assert(failed===true);
+    assert(failed===true, {failed});
   }, {onHttpRequest});
 
   assert(endpointCalled===false && onHttpRequestCalled===true, {endpointCalled, onHttpRequestCalled});
 
   function onHttpRequest(request) {
-    assert(request._url.startsWith('http://localhost:3442'));
+    assert(request._url.startsWith('http://localhost:3442'), request._url);
     onHttpRequestCalled = true;
   }
 }

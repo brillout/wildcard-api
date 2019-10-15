@@ -4,7 +4,7 @@ const assert = require('@brillout/reassert');
 global.assert = assert;
 
 const WildcardApi = require('../../server/WildcardApi');
-const {WildcardClient} = require('../../client');
+const WildcardClient = require('../../client/WildcardClient');
 
 const bundle = require('./browser/bundle');
 const launchBrowser = require('./browser/launchBrowser');
@@ -34,9 +34,8 @@ const DEBUG = false;
 
     Object.assign(wildcardApiHolder, {wildcardApi});
 
-    const endpoints = new WildcardClient({__INTERNAL__wildcardApi: wildcardApi});
-
-    const wildcardClient = {endpoints};
+    const wildcardClient = new WildcardClient();
+    wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
 
     const testName = test.name+' ('+file+')';
 

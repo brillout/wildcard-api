@@ -1,4 +1,6 @@
 require('babel-polyfill');
-const {endpoints, WildcardClient} = require('../../../client');
+const wildcardClient = require('../../../client');
+const {endpoints} = wildcardClient;
+const WildcardClient = require('../../../client/WildcardClient');
 const assert = require('@brillout/reassert');
-Object.assign(window, {endpoints, assert, WildcardClient});
+Object.assign(window, {assert, endpoints, wildcardClient, WildcardClient});
