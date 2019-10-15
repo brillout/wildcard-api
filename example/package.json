@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "start": "npm run setup && npm run build && npm run server",
+    "start": "npm run setup && yarn run build && yarn run server",
     "server": "node ./start-with-express.js",
     "build": "cd client && parcel build *.html",
-    "setup": "npm run install-yarn && npm run install-deps",
+    "setup": "npm run install-yarn && yarn run link-wildcard && yarn install",
     "install-yarn": "npm install --only=dev --no-save yarn",
-    "install-deps": "(cd .. && yarn && yarn link) && yarn link wildcard-api && yarn"
+    "link-wildcard": "(cd .. && yarn install && yarn link) && yarn link wildcard-api"
   },
   "dependencies": {
     "@hapi/inert": "^5.2.1",
