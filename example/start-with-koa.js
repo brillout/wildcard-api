@@ -40,4 +40,4 @@ app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 
-console.log('Server is running. Go to http://localhost:3000')
+console.log('Server is running, go to http://localhost:3000')
