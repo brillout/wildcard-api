@@ -5,7 +5,7 @@
 
 This document explains: (a) what RPC is; and (b) how it compares to REST/GraphQL.
 
-> :heavy_check_mark: After reading this document, you will know how to choose the right tool for the job.
+> :heavy_check_mark: After reading this document, you will know when to use REST/GraphQL or RPC.
 
 - [What is RPC](#what-is-rpc)
 - [Schema vs Schemaless](#schema-vs-schemaless)

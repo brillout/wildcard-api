@@ -43,8 +43,8 @@ import {endpoints} from 'wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Alice');
-  console.log(message); // Prints `Welcome Alice`
+  const {message} = await endpoints.hello('Elisabeth');
+  console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
 
@@ -54,8 +54,8 @@ that are defined on your Node.js server,
 "callable" in the browser.
 Nothing more, nothing less.
 
-How you retrieve/mutate data is up to you;
-you can use any SQL/NoSQL/ORM query:
+How you retrieve and mutate data is up to you;
+you can use any SQL/ORM query:
 
 ~~~js
 // Node.js server
@@ -68,14 +68,13 @@ endpoints.createTodoItem = async function(text) {
   const user = await getLoggedUser(this.headers); // We talk about `this` later.
 
   if( !user ) {
-    // The user is not logged-in.
-    // We abort.
+    // The user is not logged-in. We abort.
     // (This is basically how you define permissions with Wildcard
     // which we will talk more about later.)
     return;
   }
 
-  // With an ORM/ODM:
+  // With an ORM:
   const newTodo = new Todo({text, authorId: user.id});
   await newTodo.save();
   /* Or with SQL:
@@ -90,7 +89,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production at couple of projects,
+Wildcard is new but already used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 its author is responsive, and issues are fixed within 1-2 days.
 
@@ -114,7 +113,7 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design (with a mere 1.1K-LOCs) and to be super easy to use.
 
-Wildcard's simplicity and flexibility excel most for prototypes that quickly evolve.
+Wildcard's simplicity and flexibility excel for prototypes that quickly evolve.
 
 If you are a full-stack JavaScript developer and your frontend is the only consumer of your backend's API,
 then Wildcard is, compared to REST/GraphQL, superior in virtually every way.
@@ -128,11 +127,26 @@ then check out [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
 
 ## Getting Started
 
-This getting started is about adding Wildcard to an exisiting app.
-If you don't already have an app or if you just want to try out Wildcard,
-you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-started) to quickly get started.
+- [Scaffold a new app](#scaffold-a-new-app)
+- [Add Wildcard to an existing app](#add-wildcard-to-an-existing-app)
 
-1. Add Wildcard to your Node.js server.
+### Scaffold a new app
+
+If you want the freedom to choose the stack you want, then use the bare minimum starter:
+- [Wildcard Starter](https://github.com/brillout/wildcard-starter)
+
+If you want an opinionated starter,
+then use Reframe's starter
+which includes React, [Goldpage](https://github.com/reframejs/goldpage) and Wildcard:
+- [Reframe Starter](https://github.com/reframejs/reframe-full-stack)
+
+You can also check for community starters:
+- [Community Starters](https://github.com/topics/wildcard-starter)
+
+
+### Add Wildcard to an existing app
+
+1. Install Wildcard on your Node.js server.
 
    With Express:
    ~~~js
@@ -315,7 +329,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    };
    ~~~
 
-3. You can now "call" your enpdoint function from you frontend:
+3. The enpdoint function `myFirstEndpoint` can be remotely called from the browser:
 
    ~~~js
    // Browser
