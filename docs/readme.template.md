@@ -170,7 +170,7 @@ You can also check for community starters:
 
      // The `requestProps` object is available in your endpoint functions as `this`.
      // For example, you can add `req.headers` to `requestProps` to be
-     // able to access it in your endpoint functions as `this.headers`.
+     // able to access the HTTP headers in your endpoint functions at `this.headers`.
      requestProps.headers = req.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -205,8 +205,8 @@ You can also check for community starters:
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `request.headers` to `requestProps` to be
-       // able to access it in your endpoint functions as `this.headers`.
+       // For example, you can add `req.headers` to `requestProps` to be
+       // able to access the HTTP headers in your endpoint functions at `this.headers`.
        requestProps.headers = request.headers;
 
        const responseProps = await getApiResponse(requestProps);
@@ -248,8 +248,8 @@ You can also check for community starters:
      };
 
      // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add `ctx.request.headers` to `requestProps` to be
-     // able to access it in your endpoint functions as `this.headers`.
+     // For example, you can add `req.headers` to `requestProps` to be
+     // able to access the HTTP headers in your endpoint functions at `this.headers`.
      requestProps.headers = ctx.request.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -294,7 +294,7 @@ You can also check for community starters:
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `req.headers` to `requestProps` to be
+       // For example, you can add `ctx.request.headers` to `requestProps` to be
        // able to access it in your endpoint functions as `this.headers`.
        requestProps.headers = req.headers;
 
