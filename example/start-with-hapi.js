@@ -1,4 +1,4 @@
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');

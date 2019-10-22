@@ -1,4 +1,4 @@
-const stringify = require('json-s/stringify');
-const parse = require('json-s/parse');
+const stringify = require('@brillout/json-s/stringify');
+const parse = require('@brillout/json-s/parse');
 
 module.exports = {stringify, parse};

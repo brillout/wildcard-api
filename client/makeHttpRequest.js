@@ -1,5 +1,5 @@
 const fetch = require('@brillout/fetch');
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 
 module.exports = makeHttpRequest;
 

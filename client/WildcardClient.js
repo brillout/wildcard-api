@@ -1,4 +1,4 @@
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const {parse, stringify} = require('./serializer');
 const makeHttpRequest = require('./makeHttpRequest');
 

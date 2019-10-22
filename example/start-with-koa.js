@@ -1,4 +1,4 @@
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const Koa = require('koa');
 const Router = require('koa-router');
 const Static = require('koa-static');

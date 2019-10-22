@@ -1,5 +1,5 @@
-const assert = require('@brillout/reassert');
-const defaultSerializer = require('json-s');
+const assert = require('@brillout/assert');
+const defaultSerializer = require('@brillout/json-s');
 const chalk = require('chalk');
 const docsUrl = require('../package.json').repository;
 const getUrlProps = require('@brillout/url-props');

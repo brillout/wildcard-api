@@ -3,11 +3,11 @@
   "version": "0.7.3",
   "main": "server/index.js",
   "dependencies": {
+    "@brillout/assert": "^0.1.0",
     "@brillout/fetch": "^0.1.2",
-    "@brillout/reassert": "^0.1.0",
+    "@brillout/json-s": "^0.1.0",
     "@brillout/url-props": "^0.1.1",
-    "chalk": "^2.4.2",
-    "json-s": "^0.1.0"
+    "chalk": "^2.4.2"
   },
   "scripts": {
     "test": "cd test/ && yarn run-tests",
