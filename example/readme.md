@@ -233,7 +233,7 @@ With Express:
 ~~~js
 // ../example/start-with-express
 
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const express = require('express');
 const {getApiResponse} = require('wildcard-api');
 require('./api/endpoints');
@@ -279,7 +279,7 @@ With Hapi
 ~~~js
 // ../example/start-with-hapi
 
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
 const {getApiResponse} = require('wildcard-api');
@@ -346,7 +346,7 @@ With Koa
 ~~~js
 // ../example/start-with-koa
 
-const assert = require('@brillout/reassert');
+const assert = require('@brillout/assert');
 const Koa = require('koa');
 const Router = require('koa-router');
 const Static = require('koa-static');

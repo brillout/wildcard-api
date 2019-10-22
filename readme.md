@@ -121,8 +121,8 @@ import {endpoints} from 'wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Alice');
-  console.log(message); // Prints `Welcome Alice`
+  const {message} = await endpoints.hello('Elisabeth');
+  console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
 
@@ -132,8 +132,8 @@ that are defined on your Node.js server,
 "callable" in the browser.
 Nothing more, nothing less.
 
-How you retrieve/mutate data is up to you;
-you can use any SQL/NoSQL/ORM query:
+How you retrieve and mutate data is up to you;
+you can use any SQL/ORM query:
 
 ~~~js
 // Node.js server
@@ -146,14 +146,13 @@ endpoints.createTodoItem = async function(text) {
   const user = await getLoggedUser(this.headers); // We talk about `this` later.
 
   if( !user ) {
-    // The user is not logged-in.
-    // We abort.
+    // The user is not logged-in. We abort.
     // (This is basically how you define permissions with Wildcard
     // which we will talk more about later.)
     return;
   }
 
-  // With an ORM/ODM:
+  // With an ORM:
   const newTodo = new Todo({text, authorId: user.id});
   await newTodo.save();
   /* Or with SQL:
@@ -168,7 +167,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production at couple of projects,
+Wildcard is new but already used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 its author is responsive, and issues are fixed within 1-2 days.
 
@@ -216,7 +215,7 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design (with a mere 1.1K-LOCs) and to be super easy to use.
 
-Wildcard's simplicity and flexibility excel most for prototypes that quickly evolve.
+Wildcard's simplicity and flexibility excel for prototypes that quickly evolve.
 
 If you are a full-stack JavaScript developer and your frontend is the only consumer of your backend's API,
 then Wildcard is, compared to REST/GraphQL, superior in virtually every way.
@@ -254,11 +253,7 @@ We enjoy talking with our users.
 
 ## Getting Started
 
-This getting started is about adding Wildcard to an exisiting app.
-If you don't already have an app or if you just want to try out Wildcard,
-you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-started) to quickly get started.
-
-1. Add Wildcard to your Node.js server.
+1. Install Wildcard on your Node.js server.
 
    With Express:
    ~~~js
@@ -282,7 +277,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
 
      // The `requestProps` object is available in your endpoint functions as `this`.
      // For example, you can add `req.headers` to `requestProps` to be
-     // able to access it in your endpoint functions as `this.headers`.
+     // able to access the HTTP headers in your endpoint functions at `this.headers`.
      requestProps.headers = req.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -317,8 +312,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `request.headers` to `requestProps` to be
-       // able to access it in your endpoint functions as `this.headers`.
+       // For example, you can add `req.headers` to `requestProps` to be
+       // able to access the HTTP headers in your endpoint functions at `this.headers`.
        requestProps.headers = request.headers;
 
        const responseProps = await getApiResponse(requestProps);
@@ -360,8 +355,8 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
      };
 
      // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add `ctx.request.headers` to `requestProps` to be
-     // able to access it in your endpoint functions as `this.headers`.
+     // For example, you can add `req.headers` to `requestProps` to be
+     // able to access the HTTP headers in your endpoint functions at `this.headers`.
      requestProps.headers = ctx.request.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -406,7 +401,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
        };
 
        // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `req.headers` to `requestProps` to be
+       // For example, you can add `ctx.request.headers` to `requestProps` to be
        // able to access it in your endpoint functions as `this.headers`.
        requestProps.headers = req.headers;
 
@@ -441,7 +436,7 @@ you can use a [Reframe starter](https://github.com/reframejs/reframe#getting-sta
    };
    ~~~
 
-3. You can now "call" your enpdoint function from you frontend:
+3. The enpdoint function `myFirstEndpoint` can be remotely called from the browser:
 
    ~~~js
    // Browser
@@ -812,16 +807,11 @@ List of all options:
 ~~~js
 import wildcardClient from 'wildcard-api/client';
 
-Object.assign(
-  wildcardClient,
-  {
-    // The URL of the Node.js server that serves the API
-    serverUrl: null, // Default value
+// The URL of the Node.js server that serves the API
+wildcardClient.serverUrl = null; // Default value
 
-    // Whether the endpoint arguments are always passed in the HTTP body
-    argumentsAlwaysInHttpBody: false, // Default value
-  }
-);
+// Whether the endpoint arguments are always passed in the HTTP body
+wildcardClient.argumentsAlwaysInHttpBody = false; // Default value
 ~~~
 
 More details about each option:
@@ -833,11 +823,16 @@ More details about each option:
 
 ### `serverUrl`
 
-Wildcard automatically determines the adress of the server and you
+Wildcard automatically determines the address of the server and you
 don't need to provide `serverUrl`.
 
 But if the Node.js server that serves the API is not the same server that serves your browser-side assets,
 then you need to provide `serverUrl`.
+
+`serverUrl` can be one of the following:
+- `null`
+- The HTTP origin URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
+- The IP address of the server, for example `92.194.249.32`.
 
 For example:
 
