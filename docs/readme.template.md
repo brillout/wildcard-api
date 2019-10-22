@@ -127,25 +127,6 @@ then check out [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
 
 ## Getting Started
 
-- [Scaffold a new app](#scaffold-a-new-app)
-- [Add Wildcard to an existing app](#add-wildcard-to-an-existing-app)
-
-### Scaffold a new app
-
-If you want the freedom to choose the stack you want, then use the bare minimum starter:
-- [Wildcard Starter](https://github.com/brillout/wildcard-starter)
-
-If you want an opinionated starter,
-then use Reframe's starter
-which includes React, [Goldpage](https://github.com/reframejs/goldpage) and Wildcard:
-- [Reframe Starter](https://github.com/reframejs/reframe-full-stack)
-
-You can also check for community starters:
-- [Community Starters](https://github.com/topics/wildcard-starter)
-
-
-### Add Wildcard to an existing app
-
 1. Install Wildcard on your Node.js server.
 
    With Express:
