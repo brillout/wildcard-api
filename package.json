@@ -10,20 +10,14 @@
     "json-s": "^0.1.0"
   },
   "scripts": {
-    "test": "node test/",
+    "test": "cd test/ && yarn run-tests",
+    "example": "cd example/ && yarn start",
     "release": "npm run publish",
     "docs": "mdocs",
     "clean": "git clean -Xdf"
   },
   "devDependencies": {
-    "@brillout/cli-theme": "^0.3.1",
     "@brillout/mdocs": "^0.1.24",
-    "babel-polyfill": "^6.26.0",
-    "glob": "^7.1.3",
-    "hapi": "^18.1.0",
-    "inert": "^5.1.2",
-    "parcel-bundler": "^1.12.3",
-    "puppeteer": "^1.20.0",
     "yarn": "^1.19.1"
   },
   "description": "JavaScript Functions as API.",
