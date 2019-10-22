@@ -2,12 +2,6 @@
   "name": "wildcard-api",
   "version": "0.7.3",
   "main": "server/index.js",
-  "files": [
-    "dist/",
-    "/client",
-    "/server",
-    "/docs/images/logo-with-text.svg"
-  ],
   "dependencies": {
     "@brillout/fetch": "^0.1.2",
     "@brillout/reassert": "^0.1.0",
@@ -16,11 +10,7 @@
     "json-s": "^0.1.0"
   },
   "scripts": {
-    "release": "yarn build-dist && npm run publish",
-    "build": "yarn build:client && yarn build:WildcardClient",
-    "build:client": "yarn build:module client/index.js --global wildcardClient",
-    "build:WildcardClient": "yarn build:module client/WildcardClient.js --global WildcardClient",
-    "build:module": "yarn parcel build --target browser --out-dir dist/client/",
+    "release": "npm run publish",
     "clean": "git clean -Xdf",
     "docs": "mdocs",
     "test": "node test/"
@@ -32,15 +22,10 @@
     "glob": "^7.1.3",
     "hapi": "^18.1.0",
     "inert": "^5.1.2",
-    "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.3",
     "puppeteer": "^1.20.0",
     "yarn": "^1.19.1"
   },
-  "browserslist": [
-    "last 5 Chrome version",
-    "last 5 Firefox version"
-  ],
   "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api"
 }
