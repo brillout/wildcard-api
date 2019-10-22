@@ -10,10 +10,10 @@
     "json-s": "^0.1.0"
   },
   "scripts": {
+    "test": "node test/",
     "release": "npm run publish",
-    "clean": "git clean -Xdf",
     "docs": "mdocs",
-    "test": "node test/"
+    "clean": "git clean -Xdf"
   },
   "devDependencies": {
     "@brillout/cli-theme": "^0.3.1",
