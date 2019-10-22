@@ -1,9 +1,7 @@
+node_modules/
+dist/
+.cache/
+
 npm-debug.log*
-lerna-debug.log
 yarn-error.log
 package-lock.json
-
-dist/
-.parcel-cache/
-.cache/
-node_modules/
