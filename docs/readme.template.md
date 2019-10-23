@@ -3,8 +3,6 @@
 !OUTPUT ../readme.md
 !INLINE ./header.md --hide-source-path
 
-<br/>
-
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
