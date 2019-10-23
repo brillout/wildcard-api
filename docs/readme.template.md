@@ -10,8 +10,6 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[More Resources](#more-resources)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -25,6 +23,8 @@ Usage
 [SSR](#ssr)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Options](#options)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[More Resources](#more-resources)
 
 <br/>
 
