@@ -565,7 +565,7 @@ We enjoy talking with our users.
 
 ## Permissions
 
-Permission is defined by code. For example:
+Permissions are defined by code. For example:
 
 ~~~js
 // Node.js server
@@ -578,7 +578,8 @@ const db = require('./path/to/your/db/handler');
 // The endpoint only allows the author of a todo-item to modify it.
 
 endpoints.updateTodoText = async function(todoId, newText) {
-  if( !user ) {
+  const user = getLoggedUser(this.headers);
+  if( !user ){
     // The user is not logged-in.
     // We abort.
     return;
@@ -586,13 +587,13 @@ endpoints.updateTodoText = async function(todoId, newText) {
 
   const todo = await db.getTodo(todoId);
 
-  if( !todo ) {
+  if( !todo ){
     // `todoId` didn't match any todo.
     // We abort.
     return;
   }
 
-  if( todo.authorId !== user.id ) {
+  if( todo.authorId !== user.id ){
     // The user is not the author of the to-do item.
     // We abort.
     return;
@@ -603,6 +604,34 @@ endpoints.updateTodoText = async function(todoId, newText) {
   await db.updateTodoText(todoId, newText);
 };
 ~~~
+
+Note that you shouldn't throw exceptions:
+
+~~~js
+// Don't do this:
+endpoints.updateTodoText = async function(todoId, newText) {
+  /*...*/
+  if (todo.authorId !== user.id ){
+    throw new Error('Permissen denied: user '+user.authorId+' is not the author of todo item '+todoId);
+  }
+  /*...*/
+};
+
+// Do this instead:
+
+endpoints.updateTodoText = async function(todoId, newText) {
+  /*...*/
+  if (todo.authorId !== user.id ){
+    return {
+      notAllowed: true,
+      reason: user '+user.authorId+' is not the author of todo item '+todoId),
+    };
+  }
+  /*...*/
+};
+~~~
+
+In general, your endpoint functions should not deliberately throw execptions, see [Error Handling](#error-handling).
 
 See the [to-do list app example](/example/) for further permission examples.
 
