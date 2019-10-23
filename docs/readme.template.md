@@ -701,17 +701,17 @@ async function callEndpoint() {
 
 This section collects further information about Wildcard.
 
- - [SSR & Authentication](/docs/ssr-auth.md#readme)
-   <br/>
-   How to use Wildcard with SSR and Authentication.
-
- - [Conceptual FAQ](/docs/conceptual-faq.md#readme)
-   <br/>
-   High level discussion about Wildcard, RPC APIs, GraphQL, and REST.
-
  - [Example - A Todo List](/example#readme)
    <br/>
    An example of a to-do list app implemented with Wildcard.
+
+ - [Conceptual FAQ](/docs/conceptual-faq.md#readme)
+   <br/>
+   High level discussion about Wildcard, RPC APIs, GraphQL and REST.
+
+ - [SSR & Authentication](/docs/ssr-auth.md#readme)
+   <br/>
+   How to use Wildcard with SSR and Authentication.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
