@@ -1,9 +1,8 @@
-!MENU_ORDER 3
-!MENU_LINK /example/
 !OUTPUT ../example/readme.md
 !INLINE ./header.md --hide-source-path
+&nbsp;
 
-<br/>
+# Example - A Todo List
 
 A (simplistic) todo app built with:
  - React

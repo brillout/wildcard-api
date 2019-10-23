@@ -1,5 +1,3 @@
-!MENU_ORDER 1
-!MENU_LINK /../../
 !OUTPUT ../readme.md
 !INLINE ./header.md --hide-source-path
 
@@ -603,7 +601,7 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 > [open a ticket](https://github.com/reframejs/wildcard-api/issues/new).
 > We implement new options within usually 1-2 days.
 
-List of all options:
+List of options:
 
 ~~~js
 import wildcardClient from 'wildcard-api/client';
@@ -696,11 +694,11 @@ async function callEndpoint() {
 
 This section collects further information about Wildcard.
 
- - [Example - A Todo List](/example#readme)
+ - [Example - A Todo List](/example#example--a-todo-list)
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
- - [Conceptual FAQ](/docs/conceptual-faq.md#readme)
+ - [Conceptual FAQ](/docs/conceptual-faq.md#conceptual-faq)
    <br/>
    High level discussion about Wildcard, RPC APIs, GraphQL and REST.
 

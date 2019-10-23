@@ -1,7 +1,6 @@
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-
 # Conceptual FAQ
 
 - [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
@@ -9,7 +8,7 @@
 - [I can create custom endpoints myself, why do I need Wildcard?](#i-can-create-custom-endpoints-myself-why-do-i-need-wildcard)
 - [RPC is old, why today?](#rpc-is-old-why-today)
 
-
+<br/>
 
 ### How does Wildcard compare to GraphQL/REST?
 

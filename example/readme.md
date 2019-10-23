@@ -80,8 +80,9 @@
     <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=106 alt="Wildcard API"/>
   </a>
 </p>
+&nbsp;
 
-<br/>
+# Example - A Todo List
 
 A (simplistic) todo app built with:
  - React
