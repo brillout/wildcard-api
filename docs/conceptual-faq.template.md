@@ -6,8 +6,8 @@
 
 - [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
 - [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)
-- [I can create a custom API myself, do I need Wildcard?](#i-can-create-a-custom-api-myself-do-i-need-wildcard)
-- [Isn't Wildcard just RPC?](#isnt-wildcard-just-rpc)
+- [I can create custom endpoints myself, why do I need Wildcard?](#i-can-create-custom-endpoints-myself-why-do-i-need-wildcard)
+- [RPC is old, why today?](#rpc-is-old-why-today)
 
 
 
@@ -39,7 +39,7 @@ yes,
 GraphQL is more powerful.
 
 But,
-from the perspective of frontend development,
+from the perspective of your frontend development,
 things are different.
 
 While developing your frontend,
@@ -70,19 +70,19 @@ That's arguably more powerful than GraphQL.
 
 The distinctive difference is that,
 from the perspective of a third party,
-your custom API is set in stone
+your API is set in stone
 but,
 from your perspective,
-your custom API can be modified at will while developing your frontend.
+your API can be modified at will while developing your frontend.
 
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
-### I can create a custom API myself, do I need Wildcard?
+### I can create custom endpoints myself, why do I need Wildcard?
 
 Instead of Wildcard,
-you can create a custom API yourself by manually adding HTTP routes to your web server.
+you can create an API yourself by manually adding HTTP routes to your web server.
 
 Wildcard is just a little tool that takes care of:
  - Serialization
@@ -93,17 +93,17 @@ If you want control over these things,
 then don't use Wildcard.
 
 But beaware that these things less trivial than you might think.
-For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
+We for example use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
+And SSR is particularly tricky to pull off.
 
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
 
-### Isn't Wildcard just RPC?
+### RPC is old, why today?
 
-Yes,
 Wildcard is basically
-[RPC](https://en.wikipedia.org/wiki/Remote_procedure_call)
+[RPC](/docs/rpc.md#what-is-rpc)
 between your browser frontend and your Node.js server.
 
 RPC existed long before REST.
@@ -134,27 +134,20 @@ now expose their data as a GraphQL API,
 reinforcing their position as a platform.
 
 If you want to enable an ecosystem of third-party applications built on top of your data,
-then setting up a generic API
-is an obligatory step
-(such as with REST or GraphQL).
+then setting up a RESTful/GraphQL API
+is an obligatory step.
 
-This is not Wildcard's use case.
-An API created with Wildcard is meant to be consumed by your clients and your clients only.
-Such API is not generic and,
-from the perspective of a third party,
-a Wildcard API doesn't make sense.
-(Nor does any custom API or RPC-like API.)
-
-But if your goal is to retrieve/mutate data from your frontend,
-then Wildcard
-offers a simpler and more powerful alternative.
-(So does any custom API or RPC-like API.)
+This is not RPC's use case.
+An API created with RPC is meant to be consumed by your clients and your clients only.
+If your goal is simply to retrieve/mutate data from your frontend,
+then RPC
+offers a simple and powerful alternative.
 
 The advent of REST and GraphQL
 spur the rise of vast ecosystems of third-party apps.
 That's wonderful.
 But sadly,
-their success is casting a shadow over RPC,
+their success casted a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
