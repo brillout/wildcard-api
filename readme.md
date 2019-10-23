@@ -987,17 +987,6 @@ This section collects further information about Wildcard.
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
- - [Custom VS Generic](/docs/custom-vs-generic.md#readme)
-   <br/>
-   Goes into depth of whether you should implement a generic API (REST/GraphQL),
-   or a custom API (Wildcard),
-   or both.
-   In general, the rule of thumb for deciding which one to use is simple:
-   if third parties need to access your data,
-   then implement a generic API,
-   otherwise implement a custom API.
-   But in certain cases it's not that easy and this document goes into more depth.
-
 
 <br/>
 
