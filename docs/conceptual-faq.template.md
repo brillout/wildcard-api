@@ -25,6 +25,9 @@ an API that fulfills the data requirements of your clients and your clients only
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
+We explain this in more depth at
+[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
+
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
 
