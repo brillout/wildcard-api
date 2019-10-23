@@ -345,7 +345,7 @@ async function markAllCompleted() {
 };
 ~~~
 
-Achieving the same using schema queries:
+Achieving the same using a schema is a clunky experience:
 
 ~~~js
 // Browser
@@ -365,26 +365,27 @@ async function markAllCompleted() {
 };
 ~~~
 
-In this example a schema is less efficient.
-There are even some situations where a schema makes things impossible.
+A schema can stand in the way of retrieving/mutating data
+and can make things more difficult and sometimes not even possible.
 
-In general,
-SQL/ORM queries are vastly more powerful than schema queries
+SQL/ORM queries are vastly more powerful;
 the schema cripples the power of SQL / your ORM.
 
 > :information_source: **GraphQL's power**
 > <br/>
-> GraphQL improves the situation but only to a certain degree &mdash; SQL/ORM queries
+> GraphQL is more powerful than REST and improves the situation. But only to a certain degree &mdash; SQL/ORM queries
 > are still vastly more powerful than GraphQL queries.
 
 
 **Schemaless is simple**
 
 RPC is simple:
-there is no schema to define, no CRUD resolvers to write.
+there is no schema to define and no CRUD resolvers to write.
 
-Instead, we simply define functions on our server and remotely call them in the browser allowing
-our frontend to use any server-side tool to retrieve/mutate data, such as SQL or an ORM.
+Instead, we simply define functions on our server and remotely call them in the browser.
+Which allows, while developing the frontend,
+to use any server-side tool we want to retrieve/mutate data,
+such as SQL queries or an ORM.
 (We have to be [careful about permissions](/../../#permissions) though.)
 
 
@@ -411,11 +412,11 @@ For that we need to change our SQL query:
   };
 ~~~
 
-This means that our server code needs to be changed and re-deployed;
-with RPC,
-anytime the frontend wants to change a SQL/ORM query, the backend code needs to be changed and re-deployed.
+This means that our backend code needs to be changed and re-deployed.
+In general, with RPC,
+anytime the frontend wants to change a query, the backend code needs to be changed and re-deployed.
 
-Being able to change the backend at the whim of the frontend is a *the central prerequisite* for using RPC.
+Being able to change the backend at the whim of the frontend is *the* central prerequisite for using RPC.
 
 REST/GraphQL, on the other hand, decouples:
 as long as the schema doesn't change,
@@ -426,10 +427,10 @@ One way to think about the schema (and therefore about REST/GraphQL) is that it
 acts as a rigid long-term contract between the frontend and the backend.
 
 To sum up:
-- The schema of REST/GraphQL abstracts the database away from the frontend.
-- RPC is schemaless: the frontend directly uses SQL/ORM queries to retreive/mutate data.
+- The schema of a REST/GraphQL API abstracts the database away from the frontend.
+- RPC is schemaless: the frontend uses SQL/ORM queries to retreive/mutate data.
 - A schema allows a decoupled development of the frontend and backend.
-- Schemaless is simpler and more powerful but requires a frontend and backend developed hand-in-hand.
+- Schemaless is simpler and more powerful but requires the frontend to be developed hand-in-hand with the backend.
 
 
 <br/>
@@ -575,12 +576,12 @@ We have seen that the fundamental difference between RPC and REST/GraphQL is tha
 RPC is schmelass whereas REST/GraphQL uses a schema.
 This schema acts as a rigid long-term contract between frontend and backend.
 
-Such rigid long-term contract is required for APIs consumed by third parties
-and can be beneficial in enabling large frontend and backend teams to work independently of each other.
+Such rigid long-term contract is required for APIs consumed by third parties.
+It can also be beneficial in enabling large frontend and backend teams to work independently of each other.
 
 For prototyping,
-and in general for a frontend and backend developed hand-in-hand,
-RPC is simpler, faster, and more flexible.
+and in general for a frontend developed hand-in-hand with the backend,
+RPC is simpler, faster to develop, more flexible, more performant, and more powerful.
 
 
 <br/>

@@ -39,7 +39,7 @@ yes,
 GraphQL is more powerful.
 
 But,
-from the perspective of your frontend development,
+from the perspective of frontend development,
 things are different.
 
 While developing your frontend,
@@ -65,15 +65,15 @@ endpoints.iHavePower();
 
 The whole power of your backend is at your disposal while developing your frontend.
 For example,
-you can use any NoSQL/SQL/ORM query to retrieve and mutate data.
+you can use any SQL/ORM query to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
-(The distinctive difference is that,
+The distinctive difference is that,
 from the perspective of a third party,
 your custom API is set in stone
 but,
 from your perspective,
-your custom API can be modified at will while developing your frontend.)
+your custom API can be modified at will while developing your frontend.
 
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 
@@ -91,8 +91,9 @@ Wildcard is just a little tool that takes care of:
 
 If you want control over these things,
 then don't use Wildcard.
+
 But beaware that these things less trivial than you might think.
-(For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.)
+For example we use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
 
 !INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
 

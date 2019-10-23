@@ -5,16 +5,26 @@
 
 <br/>
 
-- [What is Wildcard](#what-is-wildcard)
-- [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
-- Usage
-  - [Getting Started](#getting-started)
-  - [Authentication](#authentication)
-  - [Permissions](#permissions)
-  - [Error Handling](#error-handling)
-  - [SSR](#ssr)
-  - [Options](#options)
-- [More Resources](#more-resources)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[What is Wildcard](#what-is-wildcard)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[More Resources](#more-resources)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Usage
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Getting Started](#getting-started)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Authentication](#authentication)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Permissions](#permissions)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Error Handling](#error-handling)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[SSR](#ssr)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Options](#options)
 
 <br/>
 
@@ -161,9 +171,9 @@ explain when RPC and REST/GraphQL should be used.
        body: req.body,
      };
 
-     // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add `req.headers` to `requestProps` to be
-     // able to access the HTTP headers in your endpoint functions at `this.headers`.
+     // The `requestProps` object is available in your endpoint functions
+     // as `this`; you can use `requestProps` to make further request information
+     // available to your endpoint functions, such as the HTTP headers:
      requestProps.headers = req.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -197,9 +207,9 @@ explain when RPC and REST/GraphQL should be used.
          body: request.payload,
        };
 
-       // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `req.headers` to `requestProps` to be
-       // able to access the HTTP headers in your endpoint functions at `this.headers`.
+       // The `requestProps` object is available in your endpoint functions
+       // as `this`; you can use `requestProps` to make further request information
+       // available to your endpoint functions, such as the HTTP headers:
        requestProps.headers = request.headers;
 
        const responseProps = await getApiResponse(requestProps);
@@ -240,9 +250,9 @@ explain when RPC and REST/GraphQL should be used.
        body: ctx.request.body,
      };
 
-     // The `requestProps` object is available in your endpoint functions as `this`.
-     // For example, you can add `req.headers` to `requestProps` to be
-     // able to access the HTTP headers in your endpoint functions at `this.headers`.
+     // The `requestProps` object is available in your endpoint functions
+     // as `this`; you can use `requestProps` to make further request information
+     // available to your endpoint functions, such as the HTTP headers:
      requestProps.headers = ctx.request.headers;
 
      const responseProps = await getApiResponse(requestProps);
@@ -286,9 +296,9 @@ explain when RPC and REST/GraphQL should be used.
          body: req.body, // The HTTP request body
        };
 
-       // The `requestProps` object is available in your endpoint functions as `this`.
-       // For example, you can add `ctx.request.headers` to `requestProps` to be
-       // able to access it in your endpoint functions as `this.headers`.
+       // The `requestProps` object is available in your endpoint functions
+       // as `this`; you can use `requestProps` to make further request information
+       // available to your endpoint functions, such as the HTTP headers:
        requestProps.headers = req.headers;
 
        // We get the HTTP response body, HTTP status code, and the body's content type.
@@ -313,9 +323,7 @@ explain when RPC and REST/GraphQL should be used.
    const {endpoints} = require('wildcard-api');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `requestProps` object we passed to `getApiResponse`. Because
-     // the headers are set on `requestProps.headers`, we can access them over `this.headers`.
-     // You can then, for example, use the headers for authentication.
+     // The `this` object is the `requestProps` object we passed to `getApiResponse`
      console.log('The HTTP request headers:', this.headers);
 
      return {msg: 'hello from my first Wildcard endpoint';
@@ -705,7 +713,7 @@ This section collects further information about Wildcard.
    <br/>
    High level discussion about Wildcard, RPC APIs, GraphQL, and REST.
 
- - [To-do List Example](/example#readme)
+ - [Example - A Todo List](/example#readme)
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
