@@ -131,7 +131,7 @@ This allows Wildcard to have a simple design and to be super easy to use.
 
 Wildcard's simplicity and flexibility fits rapid prototyping like a glove.
 When a prototype's API matures to a stable API with an increasing number of consumers,
-RPC is then usually replaced with REST/GraphQL in a progressive way.
+RPC is then usually replaced with REST/GraphQL, in a progressive way.
 
 You can learn more about RPC at
 [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
