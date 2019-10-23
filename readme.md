@@ -169,7 +169,7 @@ endpoints.createTodoItem = async function(text) {
 
 Wildcard is new but already used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
-its author is responsive, and issues are fixed within 1-2 days.
+its author is responsive and issues are fixed within 1-2 days.
 
 
 <br/>
@@ -201,27 +201,39 @@ We enjoy talking with our users.
 
 ## Wildcard compared to REST, GraphQL, and other RPCs
 
-Wildcard is an [RPC](/docs/rpc.md#what-is-rpc) tool. While REST and GraphQL shine for APIs that are meant to consumed by third parties,
-RPC is increasingly used for internal APIs, prototypes, and apps with a frontend and backend developed hand-in-hand.
+REST and GraphQL are wonderful tools to create an API that is meant to be consumed by third parties.
+Facebook's API, for example, is consumed by ~200k third parties.
+It is no surprise that Facebook is using (and invented) GraphQL;
+a GraphQL API enables
+third parties
+to extensively access Facebook's social graph
+and build all kinds of applications.
+For an API with that many consumers, GraphQL is an astonishing tool.
+
+But, to create an internal API
+(that is an API that is consumed only by yourself or only by your organization),
+[RPC](/docs/rpc.md#what-is-rpc) offers an increasingly popular alternative.
 
 Large companies,
-[such as Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why) and [Google](https://grpc.io/faq/#who-s-using-this-and-why),
+such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why), [Google](https://grpc.io/faq/#who-s-using-this-and-why) and [Facebook](https://github.com/facebook/fbthrift),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
-Most notably with [gRPC](https://grpc.io/) which is increasingly popular in the industry.
+Most notably with [gRPC](https://grpc.io/) which is getting popular in the industry.
 
 Both gRPC and Wildcard are RPC tools.
 While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
-This allows Wildcard to have a simple design (with a mere 1.1K-LOCs) and to be super easy to use.
+This allows Wildcard to have a simple design and to be super easy to use.
+(Wildcard is a mere 1.1K-LOCs.)
 
-Wildcard's simplicity and flexibility excel for prototypes that quickly evolve.
+Wildcard's simplicity and flexibility fits like a glove an environment of quick prototyping with full-stack JavaScript.
+When a prototype's API matures to a stable API with an increasing number of conusmers,
+RPC is then often replaced with REST/GraphQL.
 
-If you are a full-stack JavaScript developer and your frontend is the only consumer of your backend's API,
-then Wildcard is, compared to REST/GraphQL, superior in virtually every way.
-
-If you are unfamiliar with RPC,
-then check out [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
+At
+[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
+we elaborate more on RPC and
+explain when RPC and REST/GraphQL should be used.
 
 
 <br/>

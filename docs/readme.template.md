@@ -100,8 +100,8 @@ its author is responsive and issues are fixed within 1-2 days.
 ## Wildcard compared to REST, GraphQL, and other RPCs
 
 REST and GraphQL are wonderful tools to create an API that is meant to be consumed by third parties.
-For example, Facebook's API is consumed by ~200k third parties.
-It is not a surprise that Facebook is using (and invented) GraphQL;
+Facebook's API, for example, is consumed by ~200k third parties.
+It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third parties
 to extensively access Facebook's social graph
@@ -124,14 +124,14 @@ Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 (Wildcard is a mere 1.1K-LOCs.)
 
-Wildcard's simplicity and flexibility fits quick prototyping with full-stack JavaScript like a glove.
-Once a prototype matures to a full-fledged product with an API with an increasing number of conusmers,
+Wildcard's simplicity and flexibility fits like a glove an environment of quick prototyping with full-stack JavaScript.
+When a prototype's API matures to a stable API with an increasing number of conusmers,
 RPC is then often replaced with REST/GraphQL.
 
 At
 [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
 we elaborate more on RPC and
-explain when RPC or/and REST/GraphQL should be used.
+explain when RPC and REST/GraphQL should be used.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
