@@ -111,8 +111,8 @@ It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third parties
 to extensively access Facebook's social graph
-and build all kinds of applications.
-For an API with that many consumers, GraphQL is an astonishing tool.
+allowing them to build all kinds of applications.
+For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
 (that is an API that is consumed only by yourself or only by your organization),
@@ -128,16 +128,15 @@ Both gRPC and Wildcard are RPC tools.
 While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
-(Wildcard is a mere 1.1K-LOCs.)
 
-Wildcard's simplicity and flexibility fits like a glove an environment of quick prototyping with full-stack JavaScript.
-When a prototype's API matures to a stable API with an increasing number of conusmers,
-RPC is then often replaced with REST/GraphQL.
+Wildcard's simplicity and flexibility fits rapid prototyping like a glove.
+When a prototype's API matures to a stable API with an increasing number of consumers,
+RPC is then usually replaced with REST/GraphQL in a progressive way.
 
-At
+You can learn more about RPC at
 [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
-we elaborate more on RPC and
-explain when RPC and REST/GraphQL should be used.
+which explains RPC and
+in what situations REST/GraphQL or RPC should be used.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
