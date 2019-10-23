@@ -693,7 +693,7 @@ async function callEndpoint() {
 
 This section collects further information about Wildcard.
 
- - [Example - A Todo List](/example#example--a-todo-list)
+ - [Example - A Todo List](/example#example---a-todo-list)
    <br/>
    An example of a to-do list app implemented with Wildcard.
 
