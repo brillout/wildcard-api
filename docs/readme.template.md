@@ -602,8 +602,8 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
 
 > :information_source:
 > If you need an option that Wildcard is missing, then
-> [open a new GitHub issue](https://github.com/reframejs/wildcard-api/issues/new).
-> We usually implement new options within 1-2 days.
+> [open a ticket](https://github.com/reframejs/wildcard-api/issues/new).
+> We implement new options within usually 1-2 days.
 
 List of all options:
 
@@ -611,10 +611,10 @@ List of all options:
 import wildcardClient from 'wildcard-api/client';
 
 // The URL of the Node.js server that serves the API
-wildcardClient.serverUrl = null; // Default value
+wildcardClient.serverUrl = 'https://api.example.org';
 
 // Whether the endpoint arguments are always passed in the HTTP body
-wildcardClient.argumentsAlwaysInHttpBody = false; // Default value
+wildcardClient.argumentsAlwaysInHttpBody = true;
 ~~~
 
 More details about each option:
@@ -626,15 +626,13 @@ More details about each option:
 
 ### `serverUrl`
 
-Wildcard automatically determines the address of the server and you
-don't need to provide `serverUrl`.
-
-But if the Node.js server that serves the API is not the same server that serves your browser-side assets,
-then you need to provide `serverUrl`.
+You usually don't need to provide any `serverUrl`.
+But if your API and your browser-side assets are not served by the same server,
+then you need to provide a `serverUrl`.
 
 `serverUrl` can be one of the following:
 - `null`
-- The HTTP origin URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
+- The URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
 - The IP address of the server, for example `92.194.249.32`.
 
 For example:
@@ -643,7 +641,7 @@ For example:
 import wildcardClient, {endpoints} from 'wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.serverUrl = 'https://api.example.com:1337';
+wildcardClient.serverUrl = 'https://api.example.com:1337'; // Default value is `null`
 
 callEndpoint();
 
@@ -651,12 +649,11 @@ async function callEndpoint() {
   await endpoints.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
-
-  // Normally, Wildcard makes HTTP requests to the same origin:
+  // Normally, Wildcard would make the HTTP request to the same origin:
   //   POST https://example.com/wildcard/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Wildcard makes
-  // the HTTP requests to `https://api.example.com:1337`:
+  // the HTTP request to `https://api.example.com:1337`:
   //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
 };
 ~~~
@@ -665,7 +662,7 @@ async function callEndpoint() {
 
 ### `argumentsAlwaysInHttpBody`
 
-`argumentsAlwaysInHttpBody` is about configuring whether
+This is about configuring whether
 arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
@@ -674,18 +671,18 @@ For example:
 ~~~js
 import wildcardClient, {endpoints} from 'wildcard-api/client';
 
-wildcardClient.argumentsAlwaysInHttpBody = true;
+wildcardClient.argumentsAlwaysInHttpBody = true; // Default value is `false`
 
 callEndpoint();
 
 async function callEndpoint() {
   await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
 
-  // Normally, Wildcard passes the arguments in the HTTP request URL:
+  // Normally, Wildcard would pass the arguments in the HTTP request URL:
   //   POST /wildcard/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `argumentsAlwaysInHttpBody` to `true`,
-  // Wildcard passes the arguments in the HTTP request body instead:
+  // Wildcard passes the arguments in the HTTP request body:
   //   POST /wildcard/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
