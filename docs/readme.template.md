@@ -390,7 +390,7 @@ endpoints.getLoggedInUser = async function() {
 
 If you do SSR,
 an additional step needs to be done in order to make authentication work,
-see [SSR & Authentication](/docs/ssr-auth.md#readme).
+see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -590,7 +590,7 @@ The Wildcard client is isomorphic (aka universal) and works in the browser as we
 
 If you don't need authentication, then SSR works out of the box.
 
-Otherwise read [SSR & Authentication](/docs/ssr-auth.md#readme).
+Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -706,7 +706,7 @@ This section collects further information about Wildcard.
    <br/>
    High level discussion about Wildcard, RPC APIs, GraphQL and REST.
 
- - [SSR & Authentication](/docs/ssr-auth.md#readme)
+ - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
    <br/>
    How to use Wildcard with SSR and Authentication.
 
