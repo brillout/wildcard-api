@@ -6,6 +6,8 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Learning Material](#learning-material)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -19,8 +21,6 @@ Usage
 [SSR](#ssr)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Options](#options)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[More Resources](#more-resources)
 
 <br/>
 
@@ -61,7 +61,7 @@ that are defined on your Node.js server,
 Nothing more, nothing less.
 
 How you retrieve and mutate data is up to you;
-you can use any SQL/ORM query:
+you can, for example, directly use SQL/ORM queries:
 
 ~~~js
 // Node.js server
@@ -76,7 +76,7 @@ endpoints.createTodoItem = async function(text) {
   if( !user ) {
     // The user is not logged-in. We abort.
     // (This is basically how you define permissions with Wildcard
-    // which we will talk more about later.)
+    // which we talk more about in the "Permissions" section.)
     return;
   }
 
@@ -100,6 +100,7 @@ every release is assailed against a heavy suit of automated tests,
 its author is responsive,
 and issues are fixed within 1-2 days.
 
+
 ## Wildcard compared to REST, GraphQL, and other RPCs
 
 REST and GraphQL are wonderful tools to create an API that is meant to be consumed by third parties.
@@ -113,7 +114,7 @@ For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
 (that is an API that is consumed by yourself / your organization),
-[RPC](/docs/rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
+[RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
 such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
@@ -128,16 +129,13 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-RPC is also used to create the API between backend and frontend.
-Most backend APIs are internal: the frontend is usually the only API consumer
+RPC is also increasinlgy used to create the API between backend and frontend.
+Most backend APIs are internal: the frontend is often the only API consumer
 and both the backend and frontend are usually developed within the same organization.
 
 In general,
-REST and GraphQL are the right tools to create an API consumed by third parties and
-RPC is the right tool for an API consumed by yourself / your organization.
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
+REST and GraphQL are the right tools if you want to create an API consumed by third parties and
+RPC is the right tool if you want to create an API consumed by yourself / your organization.
 
 
 ## Getting Started
@@ -340,7 +338,6 @@ RPC is the right tool for an API consumed by yourself / your organization.
 
 
 
-
 ## Authentication
 
 Authentication usually uses HTTP headers
@@ -386,7 +383,6 @@ an additional step needs to be done in order to make authentication work,
 see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
-
 
 
 
@@ -463,8 +459,6 @@ In general, your endpoint functions should not deliberately throw execptions, se
 See the [to-do list app example](/example/) for further permission examples.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
 
 
 
@@ -575,8 +569,6 @@ import 'handli'; // npm install handli
 
 
 
-
-
 ## SSR
 
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
@@ -586,8 +578,6 @@ If you don't need authentication, then SSR works out of the box.
 Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
 
 
 
@@ -685,23 +675,30 @@ async function callEndpoint() {
 
 
 
+## Learning Material
 
+Material to learn more about RPC and Wildcard. Create a Pull Request to add yours.
 
-## More Resources
-
-This section collects further information about Wildcard.
-
- - [Example - A Todo List](/example#example---a-todo-list)
-   <br/>
-   An example of a to-do list app implemented with Wildcard.
-
- - [Conceptual FAQ](/docs/conceptual-faq.md#conceptual-faq)
-   <br/>
-   High level discussion about Wildcard, RPC APIs, GraphQL and REST.
-
- - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
-   <br/>
-   How to use Wildcard with SSR and Authentication.
+- [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
+  <br/>
+  Explains what RPC is.
+- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+  <br/>
+  Talks about the technologies Wildcard uses under the hood.
+- [FAQ](/docs/faq.md#faq)
+  <br/>
+  FAQ about RPC and Wildcard.
+- [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
+  <br/>
+  Compares RPC with REST/GraphQL, in depth.
+  Covers all pros and cons of RPC allowing
+  you to decide in what situations whether RPC or REST/GraphQL should be used.
+- [Example - A Todo List](/example#example---a-todo-list)
+  <br/>
+  Showcases a to-do list app built with RPC/Wildcard.
+- [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
+  <br/>
+  How to use Wildcard with SSR and Authentication.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
