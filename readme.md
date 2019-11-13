@@ -86,6 +86,8 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Learning Material](#learning-material)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -99,8 +101,6 @@ Usage
 [SSR](#ssr)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Options](#options)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[More Resources](#more-resources)
 
 <br/>
 
@@ -141,7 +141,7 @@ that are defined on your Node.js server,
 Nothing more, nothing less.
 
 How you retrieve and mutate data is up to you;
-you can use any SQL/ORM query:
+you can, for example, directly use SQL/ORM queries:
 
 ~~~js
 // Node.js server
@@ -156,7 +156,7 @@ endpoints.createTodoItem = async function(text) {
   if( !user ) {
     // The user is not logged-in. We abort.
     // (This is basically how you define permissions with Wildcard
-    // which we will talk more about later.)
+    // which we talk more about in the "Permissions" section.)
     return;
   }
 
@@ -175,36 +175,10 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production at several projects,
+Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
-its author is responsive and issues are fixed within 1-2 days.
-
-
-<br/>
-
-<p align="center">
-
-<sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
-</sup>
-
-<br/>
-
-<sup>
-<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
-</sup>
-
-</p>
-
-<br/>
-<br/>
-
+its author is responsive,
+and issues are fixed within 1-2 days.
 
 
 ## Wildcard compared to REST, GraphQL, and other RPCs
@@ -219,11 +193,13 @@ allowing them to build all kinds of applications.
 For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
-(that is an API that is consumed only by yourself or only by your organization),
-[RPC](/docs/rpc.md#what-is-rpc) offers an increasingly popular alternative.
+(that is an API that is consumed by yourself / your organization),
+[RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
-such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why), [Google](https://grpc.io/faq/#who-s-using-this-and-why) and [Facebook](https://github.com/facebook/fbthrift),
+such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
+[Google](https://grpc.io/faq/#who-s-using-this-and-why) and
+[Facebook](https://github.com/facebook/fbthrift),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is getting popular in the industry.
@@ -233,41 +209,13 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-Wildcard's simplicity and flexibility fits rapid prototyping like a glove.
-When a prototype's API matures to a stable API with an increasing number of consumers,
-RPC is then usually replaced with REST/GraphQL, in a progressive way.
+RPC is also increasinlgy used to create the API between backend and frontend.
+Most backend APIs are internal: the frontend is often the only API consumer
+and both the backend and frontend are usually developed within the same organization.
 
-You can learn more about RPC at
-[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
-which explains RPC and
-in what situations REST/GraphQL or RPC should be used.
-
-
-<br/>
-
-<p align="center">
-
-<sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
-</sup>
-
-<br/>
-
-<sup>
-<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
-</sup>
-
-</p>
-
-<br/>
-<br/>
-
+In general,
+REST and GraphQL are the right tools if you want to create an API consumed by third parties and
+RPC is the right tool if you want to create an API consumed by yourself / your organization.
 
 
 ## Getting Started
@@ -494,7 +442,6 @@ We enjoy talking with our users.
 
 
 
-
 ## Authentication
 
 Authentication usually uses HTTP headers
@@ -564,7 +511,6 @@ We enjoy talking with our users.
 
 <br/>
 <br/>
-
 
 
 
@@ -665,8 +611,6 @@ We enjoy talking with our users.
 
 <br/>
 <br/>
-
-
 
 
 
@@ -801,8 +745,6 @@ We enjoy talking with our users.
 
 
 
-
-
 ## SSR
 
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
@@ -836,8 +778,6 @@ We enjoy talking with our users.
 
 <br/>
 <br/>
-
-
 
 
 
@@ -959,23 +899,30 @@ We enjoy talking with our users.
 
 
 
+## Learning Material
 
+Material to learn more about RPC and Wildcard. Create a Pull Request to add yours.
 
-## More Resources
-
-This section collects further information about Wildcard.
-
- - [Example - A Todo List](/example#example---a-todo-list)
-   <br/>
-   An example of a to-do list app implemented with Wildcard.
-
- - [Conceptual FAQ](/docs/conceptual-faq.md#conceptual-faq)
-   <br/>
-   High level discussion about Wildcard, RPC APIs, GraphQL and REST.
-
- - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
-   <br/>
-   How to use Wildcard with SSR and Authentication.
+- [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
+  <br/>
+  Explains what RPC is.
+- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+  <br/>
+  Talks about the technologies Wildcard uses under the hood.
+- [FAQ](/docs/faq.md#faq)
+  <br/>
+  FAQ about RPC and Wildcard.
+- [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
+  <br/>
+  Compares RPC with REST/GraphQL, in depth.
+  Covers all pros and cons of RPC allowing
+  you to decide in what situations whether RPC or REST/GraphQL should be used.
+- [Example - A Todo List](/example#example---a-todo-list)
+  <br/>
+  Showcases a to-do list app built with RPC/Wildcard.
+- [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
+  <br/>
+  How to use Wildcard with SSR and Authentication.
 
 
 <br/>
