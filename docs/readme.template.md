@@ -95,13 +95,10 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is new but already used in production at several projects,
+Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
-its author is responsive and issues are fixed within 1-2 days.
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
+its author is responsive,
+and issues are fixed within 1-2 days.
 
 ## Wildcard compared to REST, GraphQL, and other RPCs
 
@@ -115,11 +112,13 @@ allowing them to build all kinds of applications.
 For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
-(that is an API that is consumed only by yourself or only by your organization),
-[RPC](/docs/rpc.md#what-is-rpc) offers an increasingly popular alternative.
+(that is an API that is consumed by yourself / your organization),
+[RPC](/docs/rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
-such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why), [Google](https://grpc.io/faq/#who-s-using-this-and-why) and [Facebook](https://github.com/facebook/fbthrift),
+such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
+[Google](https://grpc.io/faq/#who-s-using-this-and-why) and
+[Facebook](https://github.com/facebook/fbthrift),
 are starting to replace REST/GraphQL with RPC
 for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is getting popular in the industry.
@@ -129,14 +128,13 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-Wildcard's simplicity and flexibility fits rapid prototyping like a glove.
-When a prototype's API matures to a stable API with an increasing number of consumers,
-RPC is then usually replaced with REST/GraphQL, in a progressive way.
+RPC is also used to create the API between backend and frontend.
+Most backend APIs are internal: the frontend is usually the only API consumer
+and both the backend and frontend are usually developed within the same organization.
 
-You can learn more about RPC at
-[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql)
-which explains RPC and
-in what situations REST/GraphQL or RPC should be used.
+In general,
+REST and GraphQL are the right tools to create an API consumed by third parties and
+RPC is the right tool for an API consumed by yourself / your organization.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
