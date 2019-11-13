@@ -516,14 +516,32 @@ We enjoy talking with our users.
 
 ## Permissions
 
-Permissions are defined by code. For example:
+It is crucial that you define permissions. You shouldn't do this:
+
+~~~js
+endpoints.run = async function(query) {
+  await db.query(query);
+};
+~~~
+
+That's a bad idea since anyone can go on your website and call:
+
+~~~js
+const users = await endpoints.run('SELECT login, passowrd FROM users;');
+users.forEach(({login, password}) => {
+  // W00t — I have all passwords ｡^‿^｡
+  console.log(login, password);
+});
+~~~
+
+Instead, you should define permissions:
 
 ~~~js
 // Node.js server
 
 const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
-const db = require('./path/to/your/db/handler');
+const db = require('./path/to/your/db/code');
 
 // The following endpoint showcases how to implement permissions with Wildcard.
 // The endpoint only allows the author of a todo-item to modify it.
@@ -556,7 +574,40 @@ endpoints.updateTodoText = async function(todoId, newText) {
 };
 ~~~
 
-Note that you shouldn't throw exceptions:
+You may wonder why when aborting we return `undefined`:
+
+~~~js
+  // If the user is not logged-in, we abort.
+  if( !user ){
+    // Why do we return `undefined`?
+    // Why don't we return something like `return {error: 'Permission denied'}`
+    return;
+  }
+~~~
+
+The reason is simple:
+we assume that it is the frontend knows the that calls. Either a bug in your frontend or someone is trying to hack your system. If someone's trying to hack you, you want to give him the least amount of information. If an attacker runs `
+
+That said,
+if it is expected that a permission may fail,
+then you may want to return a value:
+
+~~~js
+endpoints.getTodoList = function() {
+  const user = getLoggedUser(this.headers)
+  if( !user ) {
+    // The frontend redirects to the login page.
+    // Instead of returning `undefined` we return `isNotLoggedIn: true` so that
+    // the frontend knows that the user should be redirected to the login page.
+    return {
+      isNotLoggedIn: true,
+    };
+  }
+  /* ... */
+}
+~~~
+
+You should return a JavaScript value and you shouldn't purposely throw exceptions:
 
 ~~~js
 // Don't do this:
@@ -575,14 +626,15 @@ endpoints.updateTodoText = async function(todoId, newText) {
   if (todo.authorId !== user.id ){
     return {
       notAllowed: true,
-      reason: user '+user.authorId+' is not the author of todo item '+todoId),
+      reason: user '+user.authorId+' is not the author of todo item '+todoId,
     };
   }
   /*...*/
 };
 ~~~
 
-In general, your endpoint functions should not deliberately throw execptions, see [Error Handling](#error-handling).
+In general, your endpoint functions should not deliberately throw execptions,
+see [Error Handling](#error-handling) for an explanation.
 
 See the [to-do list app example](/example/) for further permission examples.
 
