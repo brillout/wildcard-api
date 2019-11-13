@@ -127,7 +127,7 @@ We enjoy talking with our users.
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
 </sup>
 
 </p>
@@ -200,7 +200,7 @@ We enjoy talking with our users.
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
 </sup>
 
 </p>
@@ -245,7 +245,7 @@ We enjoy talking with our users.
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
 </sup>
 
 </p>
@@ -323,7 +323,7 @@ We enjoy talking with our users.
 <br/>
 
 <sup>
-<a href="#conceptual-faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
 </sup>
 
 </p>

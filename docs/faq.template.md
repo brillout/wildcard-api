@@ -28,7 +28,7 @@ then Wildcard offers a simple alternative.
 We explain this in more depth at
 [RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
 
-!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
@@ -77,7 +77,7 @@ but,
 from your perspective,
 your API can be modified at will while developing your frontend.
 
-!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
@@ -98,7 +98,7 @@ But beaware that these things less trivial than you might think.
 We for example use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
 And SSR is particularly tricky to pull off.
 
-!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
@@ -152,7 +152,7 @@ But sadly,
 their success casted a shadow over RPC,
 even though RPC is (and always was) a great way of communicating between two remote processes.
 
-!INLINE ./snippets/section-footer.md #conceptual-faq --hide-source-path
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
