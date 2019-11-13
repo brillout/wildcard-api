@@ -137,11 +137,11 @@ import {endpoints} from 'wildcard-api/client';
 That's all Wildcard does:
 it makes functions,
 that are defined on your Node.js server,
-"callable" in the browser.
+callable in the browser.
 Nothing more, nothing less.
 
-How you retrieve and mutate data is up to you;
-you can, for example, directly use SQL/ORM queries:
+How you retrieve and mutate data is up to you.
+You can, for example, directly use SQL/ORM queries:
 
 ~~~js
 // Node.js server
@@ -163,6 +163,7 @@ endpoints.createTodoItem = async function(text) {
   // With an ORM:
   const newTodo = new Todo({text, authorId: user.id});
   await newTodo.save();
+
   /* Or with SQL:
   const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
@@ -189,7 +190,7 @@ It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third parties
 to extensively access Facebook's social graph
-allowing them to build all kinds of applications.
+enabling them to build all kinds of applications.
 For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
@@ -209,8 +210,8 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-RPC is also increasinlgy used to create the API between backend and frontend.
-Most backend APIs are internal: the frontend is often the only API consumer
+RPC is increasingly used to create the API between backend and frontend.
+Most backend APIs are internal: the frontend is often the only consumer of the backend's API
 and both the backend and frontend are usually developed within the same organization.
 
 In general,
@@ -516,18 +517,20 @@ We enjoy talking with our users.
 
 ## Permissions
 
-It is crucial that you define permissions. You shouldn't do this:
+It is crucial that you define permissions.
+You shouldn't do this:
 
 ~~~js
 endpoints.run = async function(query) {
-  await db.query(query);
+  const result = await db.run(query);
+  return result;
 };
 ~~~
 
-That's a bad idea since anyone can go on your website and call:
+That's a bad idea since anyone in the world can go on your website and call:
 
 ~~~js
-const users = await endpoints.run('SELECT login, passowrd FROM users;');
+const users = await endpoints.run('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
   // W00t — I have all passwords ｡^‿^｡
   console.log(login, password);
@@ -569,31 +572,33 @@ endpoints.updateTodoText = async function(todoId, newText) {
   }
 
   // The user is logged-in and is the author of the todo.
-  // We commit the new to-do text.
+  // We proceed: we commit the new to-do text.
   await db.updateTodoText(todoId, newText);
 };
 ~~~
 
-You may wonder why when aborting we return `undefined`:
+You may wonder why we return `undefined` when aborting:
 
 ~~~js
   // If the user is not logged-in, we abort.
   if( !user ){
     // Why do we return `undefined`?
-    // Why don't we return something like `return {error: 'Permission denied'}`
+    // Why don't we return something like `return {error: 'Permission denied'}`?
     return;
   }
 ~~~
 
 The reason is simple:
-we assume that it is the frontend knows the that calls. Either a bug in your frontend or someone is trying to hack your system. If someone's trying to hack you, you want to give him the least amount of information. If an attacker runs `
+when we develop the frontend we know what is allowed and the frontend always calls endpoints in an authorized way.
+If an endpoint call isn't allowed, either there is a bug in our frontend or an attacker is trying to hack our backend.
+If someone is trying to hack us, we want to provide him with the least amount of information and we just return `undefined`.
 
 That said,
-if it is expected that a permission may fail,
-then you may want to return a value:
+there are situations where it is expected that a permission may fail.
+We may want to return a value then:
 
 ~~~js
-endpoints.getTodoList = function() {
+endpoints.getTodoList = async function() {
   const user = getLoggedUser(this.headers)
   if( !user ) {
     // The frontend redirects to the login page.
@@ -607,10 +612,11 @@ endpoints.getTodoList = function() {
 }
 ~~~
 
-You should return a JavaScript value and you shouldn't purposely throw exceptions:
+Note that, in general, you shouldn't purposely throw exceptions:
 
 ~~~js
 // Don't do this:
+// (Because Wildcard treats exceptions as bugs, see the "Error Handling" section.)
 endpoints.updateTodoText = async function(todoId, newText) {
   /*...*/
   if (todo.authorId !== user.id ){
@@ -618,9 +624,12 @@ endpoints.updateTodoText = async function(todoId, newText) {
   }
   /*...*/
 };
+~~~
 
-// Do this instead:
+Return a JavaScript value instead:
 
+~~~js
+// We return a JavaScript value instead of throwing an exception.
 endpoints.updateTodoText = async function(todoId, newText) {
   /*...*/
   if (todo.authorId !== user.id ){
@@ -633,10 +642,8 @@ endpoints.updateTodoText = async function(todoId, newText) {
 };
 ~~~
 
-In general, your endpoint functions should not deliberately throw execptions,
-see [Error Handling](#error-handling) for an explanation.
-
-See the [to-do list app example](/example/) for further permission examples.
+Your endpoint functions shouldn't deliberately throw exceptions,
+see [Error Handling](#error-handling).
 
 
 <br/>
@@ -669,8 +676,8 @@ We enjoy talking with our users.
 ## Error Handling
 
 Calling an endpoint throws an error when:
- - The browser cannot connect to the server. (The user is offline or your server is down.)
- - The endpoint function throws an uncaught error.
+- The browser cannot connect to the server. (The user is offline or your server is down.)
+- The endpoint function throws an uncaught error.
 
 If you use a library that is expected to throws errors, then catch them:
 
@@ -967,7 +974,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
-  Covers all pros and cons of RPC allowing
+  Talks about all pros and cons of RPC enabling
   you to decide in what situations whether RPC or REST/GraphQL should be used.
 - [Example - A Todo List](/example#example---a-todo-list)
   <br/>
