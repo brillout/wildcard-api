@@ -82,7 +82,7 @@
 </p>
 &nbsp;
 
-# Conceptual FAQ
+# FAQ
 
 - [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
 - [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)

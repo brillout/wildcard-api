@@ -11,8 +11,6 @@ This document explains: (a) what RPC is; and (b) how RPC compares to REST/GraphQ
 > you will know in what situations whether RPC or REST/GraphQL should be used.
 
 - [What is RPC](#what-is-rpc)
-- [High-level Differences]()
-- [Low-level Differences]()
 - [Schema vs Schemaless](#schema-vs-schemaless)
 - [Case Studies](#case-studies)
 - [Conclusion](#conclusion)
