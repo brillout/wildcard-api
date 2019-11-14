@@ -10,8 +10,6 @@
 
 !VAR OLD RPC is old, why is it being used again?
 
-!VAR CUSTOM I can create custom endpoints myself, why do I need Wildcard?
-
 &nbsp;
 
 # FAQ
@@ -26,7 +24,6 @@
 !VAR|LINK TIGHT_COUPLING
 
 ###### Curiosity
-!VAR|LINK CUSTOM
 !VAR|LINK OLD
 
 <br/>
@@ -97,27 +94,6 @@ your API is set in stone
 but,
 from your perspective,
 your API can be modified at will while developing your frontend.
-
-!INLINE ./snippets/section-footer.md #faq --hide-source-path
-
-
-
-### !VAR CUSTOM
-
-Instead of Wildcard,
-you can create an API yourself by manually adding HTTP routes to your web server.
-
-Wildcard is just a little tool that takes care of:
- - Serialization
- - Caching
- - SSR
-
-If you want control over these things,
-then don't use Wildcard.
-
-But beaware that these things less trivial than you might think.
-We for example use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
-And SSR is particularly tricky to pull off.
 
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
