@@ -114,7 +114,7 @@ enabling them to build all kinds of applications.
 For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
-(that is an API that is consumed by yourself / your organization),
+(an API consumed by yourself / your organization),
 [RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
@@ -126,7 +126,7 @@ for their internal APIs.
 Most notably with [gRPC](https://grpc.io/) which is getting popular in the industry.
 
 Both gRPC and Wildcard are RPC tools.
-While gRPC focuses on cross-platform support (Go, Python, Java, C++, etc.),
+While gRPC focuses on cross-platform support (Go, Python, Java, C++, ...),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
@@ -141,7 +141,7 @@ RPC is the right tool if you want to create an API consumed by yourself / your o
 
 ## Getting Started
 
-1. Install Wildcard on your Node.js server.
+1. Install Wildcard.
 
    With Express:
    ~~~js
@@ -306,8 +306,7 @@ RPC is the right tool if you want to create an API consumed by yourself / your o
    ~~~
    </details>
 
-2. Define an endpoint function
-   in Node.js:
+2. Define an endpoint function `endpoints.myFirstEndpoint`:
 
    ~~~js
    // Node.js server
@@ -315,14 +314,14 @@ RPC is the right tool if you want to create an API consumed by yourself / your o
    const {endpoints} = require('wildcard-api');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `requestProps` object we passed to `getApiResponse`
+     // The `this` object is the `requestProps` object we passed to `getApiResponse`.
      console.log('The HTTP request headers:', this.headers);
 
      return {msg: 'hello from my first Wildcard endpoint';
    };
    ~~~
 
-3. The enpdoint function `myFirstEndpoint` can be remotely called from the browser:
+3. You can now use `wildcard-api/client` to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
 
    ~~~js
    // Browser
@@ -334,6 +333,8 @@ RPC is the right tool if you want to create an API consumed by yourself / your o
      console.log(msg);
    })();
    ~~~
+
+That's it.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -645,7 +646,7 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 > :information_source:
 > If you need an option that Wildcard is missing, then
 > [open a ticket](https://github.com/reframejs/wildcard-api/issues/new).
-> We implement new options within usually 1-2 days.
+> We usually implement new options within 1-2 days.
 
 List of options:
 
@@ -741,12 +742,15 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
   <br/>
   Explains what RPC is.
+- [FAQ](/docs/faq.md#faq)
+  <br/>
+  Covers high-level questions such as "Isn't GraphQL more powerful than RPC?"
+  as well as low-level questions such as
+  "How can I do versioning with RPC?" or
+  "Doesn't RPC tightly couple frontend with backend?".
 - [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
   <br/>
   Talks about the technologies Wildcard uses under the hood.
-- [FAQ](/docs/faq.md#faq)
-  <br/>
-  FAQ about RPC and Wildcard.
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
