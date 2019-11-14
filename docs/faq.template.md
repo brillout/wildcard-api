@@ -1,31 +1,22 @@
 !INLINE ./header.md --hide-source-path
 
 !VAR COMPARISON How does RPC compare to GraphQL/REST?
-!VAR POWER Which is more powerful, GraphQL or RPC?
-
-!VAR TIGHT_COUPLING Does RPC tightly couple frontend with backend?
-!VAR DEPLOY Should I deploy frontend and backend at the same time?
-!VAR DEVELOP Do I need to develop the frontend hand-in-hand with the backend?
+!VAR MORE_POWER Which is more powerful, GraphQL or RPC?
+!VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
+!VAR SYNC_DEPLOY Should I deploy frontend and backend at the same time?
+!VAR SYNC_DEV Should I develop frontend and backend hand-in-hand?
 !VAR VERSIONING How can I do versioning?
-
-!VAR OLD RPC is old, why is it being used again?
 
 &nbsp;
 
 # FAQ
 
-###### High-level
 !VAR|LINK COMPARISON
-!VAR|LINK POWER
-
-###### Low-level
+!VAR|LINK MORE_POWER
 !VAR|LINK TIGHT_COUPLING
-!VAR|LINK DEPLOY
-!VAR|LINK DEVELOP
+!VAR|LINK SYNC_DEPLOY
+!VAR|LINK SYNC_DEV
 !VAR|LINK VERSIONING
-
-###### Curiosity
-!VAR|LINK OLD
 
 <br/>
 
@@ -51,18 +42,18 @@ We explain this in more depth at
 
 
 
-### !VAR POWER
+### !VAR MORE_POWER
 
 Depends.
 
 From the perspective of a third party,
 GraphQL is more powerful.
 
-From the perspective of your frontend development,
+From the perspective of frontend development,
 RPC is more powerful.
 
 With Wildcard,
-while developing your frontend,
+while developing the frontend,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
@@ -71,7 +62,7 @@ everything the backend can do is only one JavaScript function away:
 const endpoints = require('wildcard-api');
 
 endpoints.iHavePower = function() {
-  // I can do anything the Node.js server can do
+  // I can do everything the Node.js server can do
 };
 ~~~
 ~~~js
@@ -83,17 +74,19 @@ const endpoints = require('wildcard-api/client');
 endpoints.iHavePower();
 ~~~
 
-The whole power of your backend is at your disposal while developing your frontend.
+The whole power of the backend is at disposal while developing the frontend.
 For example,
-you can use any SQL/ORM query to retrieve and mutate data.
+any SQL/ORM query can be used to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
 The distinctive difference is that,
 from the perspective of a third party,
-your API is set in stone
+the API is set in stone
 but,
-from your perspective,
-your API can be modified at will while developing your frontend.
+from the frontend development perspective,
+the API can be modified at will.
+(Note that RPC assumes that the API can be modified and re-deployed at the whim of the frontend development,
+which we talk about at !VAR|LINK SYNC_DEPLOY)
 
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
@@ -101,31 +94,117 @@ your API can be modified at will while developing your frontend.
 
 ### !VAR TIGHT_COUPLING
 
-Yes, RPC induces a tight coupling between frontend and backend.
+Yes it does.
+RPC indeed induces a tighter coupling between frontend and backend.
+More precisely, RPC increases the need for synchronized frontend-backend deployements.
 
 For example:
 
 ~~~js
-// This API endpoint is tailored to the frontend: It returns exactly (and only) what the landing page needs
+// This API endpoint is tightly coupled to the frontend:
+// it returns exactly (and only) what the landing page needs.
 endpoints.getLandingPageData = async function() {
   const user = await getLoggedUser(this.headers);
+  if( !user ){
+    return {isNotLoggedIn: true};
+  }
   const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
   return {user, todos};
 };
 ~~~
 
-This endpoint tightly couples API development with frontend development:
-If changes are made to the frontend that require the todos' creation date,
-then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, text, created_at`.
+If changes are made to the frontend that require the todo items' creation,
+then the SQL query of the `getLandingPageData` API endpoint needs to be changed from `SELECT id, text FROM` to `SELECT id, text, created_at FROM`.
+This means that the API needs to be modified and the backend re-deployed.
 
-More precisely, RPC increases the frontend deployement dependency on the backend: in order to re-deploy the frontend, we need to re-deploy the backend more frequently.
+In general (and regardless whether you use RPC or REST/GraphQL)
+we recommand to synchronize your backend and frontend deployment.
+Which we talk about in the next querstion
+!VAR|LINK SYNC_DEPLOY.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+### !VAR SYNC_DEPLOY
+
+Yes, we recommend synchronized deployements, that is to deploy frontend and backend at the same time.
+
+We also recommend to put the frontend and backend code a monorepo.
+(A monorepo is a repository that holds the codebase of all different components of a system, instead of having a multitude of repositories each holding the codebase of a single component.
+Monorepos are increasingly popular; it makes it easy to perform changes across system components and removes the need to manage dependency between system components.)
+
+A monorepo with synchronized deployment setup
+lends itself well in a full-stack JavaScript app. For example:
+
+~~~js
+// Our backend's Node.js server
+const express = require('express');
+const server = express();
+
+// We serve and deploy our frontend over the Node.js server:
+server.use(express.static('/path/to/frontend/dist/'));
+~~~
+
+This ensures that frontend and backend are always deployed synchronously.
+The backends serves only one API version and the served API is always the correct one.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+### !VAR SYNC_DEV
+
+You can, but you don't have to.
+
+Although,
+since more and more frontend engineers are full-stack engineers,
+it makes sense to hire full-stack engineers and develop frontend and backend hand-in-hand.
+
+You can still have separation of concerns:
+- Backend code concerned about the frontend, which includes the API endpoints that run SQL/ORM queries on behalf of the frontend, is developed by frontend developers.
+- The rest of the backend, that is agnostic to the frontend, is developed by backend developers.
+
+The strict separation between browser-side code and server-side code makes less and less sense.
+Nowadays, most frontend engineers are comfortable and eager to write server-side code.
+To a full-stack engineer, RPC is a boon:
+it gives him the power to use any SQL/ORM query and any server-side tool he wants.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+### !VAR VERSIONING
+
+As explained in
+!VAR|LINK SYNC_DEPLOY,
+we recommend to deploy frontend and backend synchronously.
+You then don't need
+versioning: the backend always serves a single version (the correct one) of the API.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
 
-No you don't.
-As discussed in the previous section, RPC tightly couples frontend and backend merely in the sense that it increases frontend deployement deployement on the backend. That's it:
-the backend can still be indepedently developed from the frontend. The backend code has then two parts:
+
+
+
+
+
+
+
+
+As discussed in the previous section,
+RPC tightly couples frontend and backend in the sense that it increases frontend deployement deployement on the backend.
+But that's it:
+
+The time were desginers would by write HTML, and CSS are over.
+
+Such modern Frontend Engineer is amply capable of writing SQL/ORM queries.
+In a full-stack JavaScript monorepo
+
+don't make sense for a modern frontend
 
 that is mostly static and non-interactive.
 
@@ -146,8 +225,6 @@ The API consumer is mostly likely a Software Engineer who writes JavaScript and 
 For such an Engineer, the frontend-backend separation doesn't make sense.
 That's why most JavaScript developers are full-stack developers.
 If you are able to implement the frontend complex web apps then you are very much able to implement complex backends.
-
-For such JavaScript developer RPC is a boon: it gives him the power to use any SQL/ORM query and any server-side tool he wants.
 
 The concerns of a backend with a modern frontend are:
 - View Aesthetics (mostly CSS)
@@ -187,10 +264,19 @@ But things are different today. Continous deployment is now wildely accepted as 
 !INLINE ./snippets/section-footer.md #contents --hide-source-path
 
 
-### !VAR DEPLOY
 
-Yes, we recommend to deploy frontend and backend at the same time.
-We also recommend to put the frontend and backend code in the same repository.
+
+make ensure
+Monorepos are convenient
+and they hold many advantages cross-change can be a single commit ensure the correct dependency
+Putting services that are deployed 
+More and more
+
+They have many advantages 
+you always know the dependency codebase depends.
+
+More monorepo strategy: code lives in a single repository but deployed deploy to sever
+the ease of a single codebase and scability of micro-services.
 
 In a monoreploy deploy at the same time.
 
@@ -203,20 +289,6 @@ It just that with RPC has more frequent API changes.
 and if have situations.
 
 , when using RPC, it's best to deploy your frontend and backend at the same time.
-
-In a full-stack JavaScript setup,
-this can easily be achieved by using a full-stack monorepo and deploying the frontend through the backend:
-
-~~~js
-// Our backend
-const express = require('express');
-const server = express();
-
-// We serve our frontend assets (HTML, CSS, JS, images, etc.) with our backend:
-server.use(express.static('/path/to/your/browser/assets/dist/', {extensions: ['html']}));
-~~~
-
-This ensures that frontend and backend are deployed hand-in-hand.
 
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
@@ -254,17 +326,12 @@ you should use REST or GraphQL instead of RPC.
 
 
 
-### !VAR VERSIONING
-
-Don't do versioning,
-instead deploy your frontend and backend at the same time as described. You then don't need versioning as the backend always only serves a single version of the API.
-
-In a full-stack JavaScript setup, this can be easily achieved as described in
-!VAR|LINK DEPLOY.
-
-!INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
+
+
+
+!VAR OLD RPC is old, why is it being used again?
 
 ### !VAR OLD
 
