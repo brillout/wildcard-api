@@ -80,18 +80,22 @@
     <img src="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-with-text.svg?sanitize=true" height=106 alt="Wildcard API"/>
   </a>
 </p>
+
+
 &nbsp;
 
 # FAQ
 
-- [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
-- [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)
-- [I can create custom endpoints myself, why do I need Wildcard?](#i-can-create-custom-endpoints-myself-why-do-i-need-wildcard)
-- [RPC is old, why today?](#rpc-is-old-why-today)
+<a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
+<a href=#which-is-more-powerful-graphql-or-rpc>Which is more powerful, GraphQL or RPC?</a>
+<a href=#doesnt-rpc-tightly-couple-frontend-with-backend>Doesn't RPC tightly couple frontend with backend?</a>
+<a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>
+<a href=#should-i-develop-frontend-and-backend-hand-in-hand>Should I develop frontend and backend hand-in-hand?</a>
+<a href=#how-can-i-do-versioning>How can I do versioning?</a>
 
 <br/>
 
-### How does Wildcard compare to GraphQL/REST?
+### How does RPC compare to GraphQL/REST?
 
 They have different goals.
 
@@ -101,13 +105,13 @@ enabling third parties to build applications on top of your data.
 If your goal is to have an ecosystem of third-party applications,
 then you need a generic API and you'll have to use something like REST/GraphQL.
 
-With Wildcard you create a *custom API*:
+With RPC you create a *custom API*:
 an API that fulfills the data requirements of your clients and your clients only.
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
 We explain this in more depth at
-[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
+[RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql).
 
 
 <br/>
@@ -137,19 +141,18 @@ We enjoy talking with our users.
 
 
 
-### Isn't GraphQL more powerful than Wildcard?
+### Which is more powerful, GraphQL or RPC?
 
-Yes and no.
+Depends.
 
 From the perspective of a third party,
-yes,
 GraphQL is more powerful.
 
-But,
-from the perspective of your frontend development,
-things are different.
+From the perspective of frontend development,
+RPC is more powerful.
 
-While developing your frontend,
+With Wildcard,
+while developing the frontend,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
@@ -158,7 +161,7 @@ everything the backend can do is only one JavaScript function away:
 const endpoints = require('wildcard-api');
 
 endpoints.iHavePower = function() {
-  // I can do anything the Node.js server can do
+  // I can do everything the Node.js server can do
 };
 ~~~
 ~~~js
@@ -170,17 +173,19 @@ const endpoints = require('wildcard-api/client');
 endpoints.iHavePower();
 ~~~
 
-The whole power of your backend is at your disposal while developing your frontend.
+The whole power of the backend is at disposal while developing the frontend.
 For example,
-you can use any SQL/ORM query to retrieve and mutate data.
+any SQL/ORM query can be used to retrieve and mutate data.
 That's arguably more powerful than GraphQL.
 
 The distinctive difference is that,
 from the perspective of a third party,
-your API is set in stone
+the API is set in stone
 but,
-from your perspective,
-your API can be modified at will while developing your frontend.
+from the frontend development perspective,
+the API can be modified at will.
+(Note that RPC assumes that the API can be modified and re-deployed at the whim of the frontend development,
+which we talk about at <a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>)
 
 
 <br/>
@@ -210,22 +215,35 @@ We enjoy talking with our users.
 
 
 
-### I can create custom endpoints myself, why do I need Wildcard?
+### Doesn't RPC tightly couple frontend with backend?
 
-Instead of Wildcard,
-you can create an API yourself by manually adding HTTP routes to your web server.
+Yes it does.
+RPC indeed induces a tighter coupling between frontend and backend.
+More precisely, RPC increases the need for synchronized frontend-backend deployements.
 
-Wildcard is just a little tool that takes care of:
- - Serialization
- - Caching
- - SSR
+For example:
 
-If you want control over these things,
-then don't use Wildcard.
+~~~js
+// This API endpoint is tightly coupled to the frontend:
+// it returns exactly (and only) what the landing page needs.
+endpoints.getLandingPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+  if( !user ){
+    return {isNotLoggedIn: true};
+  }
+  const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
+  return {user, todos};
+};
+~~~
 
-But beaware that these things less trivial than you might think.
-We for example use [JSON-S](https://github.com/brillout/json-s) instead of JSON.
-And SSR is particularly tricky to pull off.
+If changes are made to the frontend that require the todo items' creation,
+then the SQL query of the `getLandingPageData` API endpoint needs to be changed from `SELECT id, text FROM` to `SELECT id, text, created_at FROM`.
+This means that the API needs to be modified and the backend re-deployed.
+
+In general (and regardless whether you use RPC or REST/GraphQL)
+we recommand to synchronize your backend and frontend deployment.
+Which we talk about in the next querstion
+<a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>.
 
 
 <br/>
@@ -255,55 +273,109 @@ We enjoy talking with our users.
 
 
 
-### RPC is old, why today?
+### Should I deploy frontend and backend at the same time?
 
-Wildcard is basically
-[RPC](/docs/rpc.md#what-is-rpc)
-between your browser frontend and your Node.js server.
+Yes, we recommend synchronized deployements, that is to deploy frontend and backend at the same time.
 
-RPC existed long before REST.
-(Xerox PARC being among the first to implement RPC in the early 1980s
-while REST was introduced only in the early 2000s.)
+We also recommend to put the frontend and backend code a monorepo.
+(A monorepo is a repository that holds the codebase of all different components of a system, instead of having a multitude of repositories each holding the codebase of a single component.
+Monorepos are increasingly popular; it makes it easy to perform changes across system components and removes the need to manage dependency between system components.)
 
-So, why should one use RPC instead of REST/GraphQL today?
+A monorepo with synchronized deployment setup
+lends itself well in a full-stack JavaScript app. For example:
 
-When REST came out,
-it allowed internet companies
-to expose their data
-to third parties in a safe and standardized way.
-Large companies
-soon realized the potential:
-a RESTful API
-allowed them
-to become platforms with
-a flurishing ecosystem
-of third-party applications built on top of their RESTful API.
-REST soon became the de facto standard for public APIs.
+~~~js
+// Our backend's Node.js server
+const express = require('express');
+const server = express();
 
-GraphQL is a great step forward:
-it allows third parties to retrieve data that were previously difficult (or even not possible) to retrieve with a RESTful API.
-GraphQL allows for a even more prospereous ecosystem of third-party applications.
-Large companies,
-such as Facebook and GitHub,
-now expose their data as a GraphQL API,
-reinforcing their position as a platform.
+// We serve and deploy our frontend over the Node.js server:
+server.use(express.static('/path/to/frontend/dist/'));
+~~~
 
-If you want to enable an ecosystem of third-party applications built on top of your data,
-then setting up a RESTful/GraphQL API
-is an obligatory step.
+This ensures that frontend and backend are always deployed synchronously.
+The backends serves only one API version and the served API is always the correct one.
 
-This is not RPC's use case.
-An API created with RPC is meant to be consumed by your clients and your clients only.
-If your goal is simply to retrieve/mutate data from your frontend,
-then RPC
-offers a simple and powerful alternative.
 
-The advent of REST and GraphQL
-spur the rise of vast ecosystems of third-party apps.
-That's wonderful.
-But sadly,
-their success casted a shadow over RPC,
-even though RPC is (and always was) a great way of communicating between two remote processes.
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
+### Should I develop frontend and backend hand-in-hand?
+
+You can, but you don't have to.
+
+Although,
+since more and more frontend engineers are full-stack engineers,
+it makes sense to hire full-stack engineers and develop frontend and backend hand-in-hand.
+
+You can still have separation of concerns:
+- Backend code concerned about the frontend, which includes the API endpoints that run SQL/ORM queries on behalf of the frontend, is developed by frontend developers.
+- The rest of the backend, that is agnostic to the frontend, is developed by backend developers.
+
+The strict separation between browser-side code and server-side code makes less and less sense.
+Nowadays, most frontend engineers are comfortable and eager to write server-side code.
+To a full-stack engineer, RPC is a boon:
+it gives him the power to use any SQL/ORM query and any server-side tool he wants.
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
+<a href="https://discord.gg/kqXf65G">chat with us</a>
+if you have questions, feature requests, or if you just want to talk to us.
+</sup>
+
+<sup>
+We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
+### How can I do versioning?
+
+As explained in
+<a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>,
+we recommend to deploy frontend and backend synchronously.
+You then don't need
+versioning: the backend always serves a single version (the correct one) of the API.
 
 
 <br/>

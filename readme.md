@@ -966,15 +966,15 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
   <br/>
   Explains what RPC is.
+- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+  <br/>
+  Talks about the technologies Wildcard uses under the hood.
 - [FAQ](/docs/faq.md#faq)
   <br/>
   Covers high-level questions such as "Isn't GraphQL more powerful than RPC?"
   as well as low-level questions such as
   "How can I do versioning with RPC?" or
   "Doesn't RPC tightly couple frontend with backend?".
-- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
-  <br/>
-  Talks about the technologies Wildcard uses under the hood.
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
