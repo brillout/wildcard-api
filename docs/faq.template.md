@@ -1,16 +1,37 @@
 !INLINE ./header.md --hide-source-path
+
+!VAR COMPARISON How does RPC compare to GraphQL/REST?
+!VAR POWER Which is more powerful, GraphQL or RPC?
+
+!VAR DEPLOY Should I develop frontend and backend hand-in-hand?
+!VAR DEPLOY Should I deploy frontend and backend at the same time?
+!VAR VERSIONING How can I do versioning?
+!VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
+
+!VAR OLD RPC is old, why is it being used again?
+
+!VAR CUSTOM I can create custom endpoints myself, why do I need Wildcard?
+
 &nbsp;
 
 # FAQ
 
-- [How does Wildcard compare to GraphQL/REST?](#how-does-wildcard-compare-to-graphqlrest)
-- [Isn't GraphQL more powerful than Wildcard?](#isnt-graphql-more-powerful-than-wildcard)
-- [I can create custom endpoints myself, why do I need Wildcard?](#i-can-create-custom-endpoints-myself-why-do-i-need-wildcard)
-- [RPC is old, why today?](#rpc-is-old-why-today)
+###### High-level
+!VAR|LINK COMPARISON
+!VAR|LINK POWER
+
+###### Low-level
+!VAR|LINK DEPLOY
+!VAR|LINK VERSIONING
+!VAR|LINK TIGHT_COUPLING
+
+###### Curiosity
+!VAR|LINK CUSTOM
+!VAR|LINK OLD
 
 <br/>
 
-### How does Wildcard compare to GraphQL/REST?
+### !VAR COMPARISON
 
 They have different goals.
 
@@ -20,19 +41,19 @@ enabling third parties to build applications on top of your data.
 If your goal is to have an ecosystem of third-party applications,
 then you need a generic API and you'll have to use something like REST/GraphQL.
 
-With Wildcard you create a *custom API*:
+With RPC you create a *custom API*:
 an API that fulfills the data requirements of your clients and your clients only.
 If your goal is to retrieve and mutate data from your frontend,
 then Wildcard offers a simple alternative.
 
 We explain this in more depth at
-[RPC vs REST/GraphQL](/docs/rpc.md#rpc-vs-restgraphql).
+[RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql).
 
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
 
 
-### Isn't GraphQL more powerful than Wildcard?
+### !VAR POWER
 
 Yes and no.
 
@@ -81,7 +102,7 @@ your API can be modified at will while developing your frontend.
 
 
 
-### I can create custom endpoints myself, why do I need Wildcard?
+### !VAR CUSTOM
 
 Instead of Wildcard,
 you can create an API yourself by manually adding HTTP routes to your web server.
@@ -102,7 +123,7 @@ And SSR is particularly tricky to pull off.
 
 
 
-### RPC is old, why today?
+### !VAR OLD
 
 Wildcard is basically
 [RPC](/docs/rpc.md#what-is-rpc)
@@ -156,3 +177,70 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 
 
+### !VAR DEPLOY
+
+Yes, when using RPC, it's best to deploy your frontend and backend at the same time.
+
+In a full-stack JavaScript setup,
+this can easily be achieved by using a full-stack monorepo and deploying the frontend through the backend:
+
+~~~js
+// Our backend
+const express = require('express');
+const server = express();
+
+// We serve our frontend assets (HTML, CSS, JS, images, etc.) with our backend:
+server.use(express.static('/path/to/your/browser/assets/dist/', {extensions: ['html']}));
+~~~
+
+This ensures that frontend and backend are deployed hand-in-hand.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+
+### !VAR VERSIONING
+
+Don't do versioning,
+instead deploy your frontend and backend at the same time as described. You then don't need versioning as the backend always only serves a single version of the API.
+
+In a full-stack JavaScript setup, this can be easily achieved as described in
+!VAR|LINK DEPLOY.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+### !VAR TIGHT_COUPLING
+
+Yes, RPC tightly couples frontend with backend. (We explain)
+
+But that's okay.
+
+Back in the days when continous deployment wasn't common, tightly coupling backend and frontend was considered bad practice.
+This made sense since you had to wait weeks before the next version of the backend and frontend was deployed.
+Tightly coupling frontend and backend meant that the deployemnet had to happen at the same time.
+
+But the considered way to go and common practice.
+Systems are nowadays deployed several times a day. This makes tighly coupling not a problem.
+
+Seperation of concerns by business logic and not by technology.
+It is tempting to think. 
+
+And especially.
+
+Is easy, as explained in
+
+
+You may think "Ok yes I can deploy 
+
+Like React says: don't modularize by technologie but modularize by.
+
+Modularizing 
+Modularizing 
+
+That's precisely the reason why,
+if you want your API is to be consumed by third parties,
+you should use REST or GraphQL instead of RPC.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
