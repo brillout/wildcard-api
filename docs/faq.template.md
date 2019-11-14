@@ -3,10 +3,10 @@
 !VAR COMPARISON How does RPC compare to GraphQL/REST?
 !VAR POWER Which is more powerful, GraphQL or RPC?
 
-!VAR DEPLOY Should I develop frontend and backend hand-in-hand?
+!VAR TIGHT_COUPLING Does RPC tightly couple frontend with backend?
 !VAR DEPLOY Should I deploy frontend and backend at the same time?
+!VAR DEVELOP Do I need to develop the frontend hand-in-hand with the backend?
 !VAR VERSIONING How can I do versioning?
-!VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
 
 !VAR OLD RPC is old, why is it being used again?
 
@@ -19,9 +19,10 @@
 !VAR|LINK POWER
 
 ###### Low-level
-!VAR|LINK DEPLOY
-!VAR|LINK VERSIONING
 !VAR|LINK TIGHT_COUPLING
+!VAR|LINK DEPLOY
+!VAR|LINK DEVELOP
+!VAR|LINK VERSIONING
 
 ###### Curiosity
 !VAR|LINK OLD
@@ -98,6 +99,173 @@ your API can be modified at will while developing your frontend.
 
 
 
+### !VAR TIGHT_COUPLING
+
+Yes, RPC induces a tight coupling between frontend and backend.
+
+For example:
+
+~~~js
+// This API endpoint is tailored to the frontend: It returns exactly (and only) what the landing page needs
+endpoints.getLandingPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+  const todos = await db.query('SELECT id, text FROM todos WHERE authorId = ${user.id};');
+  return {user, todos};
+};
+~~~
+
+This endpoint tightly couples API development with frontend development:
+If changes are made to the frontend that require the todos' creation date,
+then the SQL query of `getLandingPageData` needs to be changed to `SELECT id, text, created_at`.
+
+More precisely, RPC increases the frontend deployement dependency on the backend: in order to re-deploy the frontend, we need to re-deploy the backend more frequently.
+
+
+
+
+No you don't.
+As discussed in the previous section, RPC tightly couples frontend and backend merely in the sense that it increases frontend deployement deployement on the backend. That's it:
+the backend can still be indepedently developed from the frontend. The backend code has then two parts:
+
+that is mostly static and non-interactive.
+
+But for a modern interactive frontend
+
+- The API endpoint functions developed by the frontend developers.
+- The rest developed by the backend developers.
+
+Separation of concerns should not happen on a technology basis.
+It should happen on a *concern* basis.
+In the old days people :
+- The frontend team. would be concerned about the aesthetics
+- The backend team.
+
+But now.
+
+The API consumer is mostly likely a Software Engineer who writes JavaScript and who is amply capable of writing backend code and writing SQL/ORM queries.
+For such an Engineer, the frontend-backend separation doesn't make sense.
+That's why most JavaScript developers are full-stack developers.
+If you are able to implement the frontend complex web apps then you are very much able to implement complex backends.
+
+For such JavaScript developer RPC is a boon: it gives him the power to use any SQL/ORM query and any server-side tool he wants.
+
+The concerns of a backend with a modern frontend are:
+- View Aesthetics (mostly CSS)
+- Frontend Business Logic (mostly JavaScript/React/Vue/API, frontend+backend!)
+- Backend Business Logic (backend)
+
+While in theory it would be possible to let designers write CSS it is for feasable in practice (for reasons that are out of the scope) and we end up with JavaScript Engineers that write the view logic as well as CSS.
+
+And that makes sense for trivial frontend that consists of mainly HTML/CSS which was the vast majority of frontend 10 years ago. Frontend uses to be developed by designers that would write HTML/CSS.
+But nowadays, this old dichotomy does hold anymore. Many frontend involve complex business logic with complex interactive views with intricated state management.
+
+We recommend to put all frontend and backend code in the same repository which we talk more about in the next section.
+
+
+
+
+The development itself
+
+
+Focus on backend
+
+
+A custom API works only when developed hand-in-hand with the frontend.
+
+Is tight coupling a bad thing?
+
+There are two aspects about tight coupling:
+- Deployment
+- Development
+
+Back in the days when continous deployment wasn't common, tightly coupling backend and frontend was considered bad practice.
+This made sense since you had to wait weeks before the next version of the backend and frontend was deployed.
+Tightly coupling frontend and backend meant that the deployemnet had to happen at the same time.
+
+But things are different today. Continous deployment is now wildely accepted as the way to go.
+
+!INLINE ./snippets/section-footer.md #contents --hide-source-path
+
+
+### !VAR DEPLOY
+
+Yes, we recommend to deploy frontend and backend at the same time.
+We also recommend to put the frontend and backend code in the same repository.
+
+In a monoreploy deploy at the same time.
+
+Even if you'd use REST or GraphQL your frontend and backend aren't indepedent and.
+It just that with RPC has more frequent API changes.
+- example RPC API chagne
+- example REST/GraphQL API change
+
+(In general, anytime the frontend needs a change in the API
+and if have situations.
+
+, when using RPC, it's best to deploy your frontend and backend at the same time.
+
+In a full-stack JavaScript setup,
+this can easily be achieved by using a full-stack monorepo and deploying the frontend through the backend:
+
+~~~js
+// Our backend
+const express = require('express');
+const server = express();
+
+// We serve our frontend assets (HTML, CSS, JS, images, etc.) with our backend:
+server.use(express.static('/path/to/your/browser/assets/dist/', {extensions: ['html']}));
+~~~
+
+This ensures that frontend and backend are deployed hand-in-hand.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+
+
+
+
+
+But the considered way to go and common practice.
+Systems are nowadays deployed several times a day. This makes tighly coupling not a problem.
+
+Seperation of concerns by business logic and not by technology.
+It is tempting to think. 
+
+And especially.
+
+Is easy, as explained in
+
+
+You may think "Ok yes I can deploy 
+
+Like React says: don't modularize by technologie but modularize by.
+
+Modularizing 
+Modularizing 
+
+That's precisely the reason why,
+if you want your API is to be consumed by third parties,
+you should use REST or GraphQL instead of RPC.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+
+### !VAR VERSIONING
+
+Don't do versioning,
+instead deploy your frontend and backend at the same time as described. You then don't need versioning as the backend always only serves a single version of the API.
+
+In a full-stack JavaScript setup, this can be easily achieved as described in
+!VAR|LINK DEPLOY.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
 ### !VAR OLD
 
 Wildcard is basically
@@ -152,70 +320,3 @@ even though RPC is (and always was) a great way of communicating between two rem
 
 
 
-### !VAR DEPLOY
-
-Yes, when using RPC, it's best to deploy your frontend and backend at the same time.
-
-In a full-stack JavaScript setup,
-this can easily be achieved by using a full-stack monorepo and deploying the frontend through the backend:
-
-~~~js
-// Our backend
-const express = require('express');
-const server = express();
-
-// We serve our frontend assets (HTML, CSS, JS, images, etc.) with our backend:
-server.use(express.static('/path/to/your/browser/assets/dist/', {extensions: ['html']}));
-~~~
-
-This ensures that frontend and backend are deployed hand-in-hand.
-
-!INLINE ./snippets/section-footer.md #faq --hide-source-path
-
-
-
-
-### !VAR VERSIONING
-
-Don't do versioning,
-instead deploy your frontend and backend at the same time as described. You then don't need versioning as the backend always only serves a single version of the API.
-
-In a full-stack JavaScript setup, this can be easily achieved as described in
-!VAR|LINK DEPLOY.
-
-!INLINE ./snippets/section-footer.md #faq --hide-source-path
-
-
-### !VAR TIGHT_COUPLING
-
-Yes, RPC tightly couples frontend with backend. (We explain)
-
-But that's okay.
-
-Back in the days when continous deployment wasn't common, tightly coupling backend and frontend was considered bad practice.
-This made sense since you had to wait weeks before the next version of the backend and frontend was deployed.
-Tightly coupling frontend and backend meant that the deployemnet had to happen at the same time.
-
-But the considered way to go and common practice.
-Systems are nowadays deployed several times a day. This makes tighly coupling not a problem.
-
-Seperation of concerns by business logic and not by technology.
-It is tempting to think. 
-
-And especially.
-
-Is easy, as explained in
-
-
-You may think "Ok yes I can deploy 
-
-Like React says: don't modularize by technologie but modularize by.
-
-Modularizing 
-Modularizing 
-
-That's precisely the reason why,
-if you want your API is to be consumed by third parties,
-you should use REST or GraphQL instead of RPC.
-
-!INLINE ./snippets/section-footer.md #faq --hide-source-path
