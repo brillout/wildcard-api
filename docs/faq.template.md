@@ -52,17 +52,16 @@ We explain this in more depth at
 
 ### !VAR POWER
 
-Yes and no.
+Depends.
 
 From the perspective of a third party,
-yes,
 GraphQL is more powerful.
 
-But,
-from the perspective of your frontend development,
-things are different.
+From the perspective of your frontend development,
+RPC is more powerful.
 
-While developing your frontend,
+With Wildcard,
+while developing your frontend,
 everything the backend can do is only one JavaScript function away:
 
 ~~~js
