@@ -130,9 +130,10 @@ While gRPC focuses on cross-platform support (Go, Python, Java, C++, ...),
 Wildcard only supports the Browser - Node.js stack.
 This allows Wildcard to have a simple design and to be super easy to use.
 
-RPC is increasingly used to create the API between backend and frontend.
-Most backend APIs are internal: the frontend is often the only consumer of the backend's API
-and both the backend and frontend are usually developed within the same organization.
+RPC is increasingly used to create backend APIs
+as most are internal:
+most of the time, a backend API is consumed only by frontends
+developed within the same organization.
 
 In general,
 REST and GraphQL are the right tools if you want to create an API consumed by third parties and
