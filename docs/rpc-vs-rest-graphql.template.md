@@ -1,3 +1,105 @@
+# RPC vs REST/GraphQL
+
+> :information_source:
+> Instead of reading this document, you can simply follow RPC's rule of thumb:
+> - Will your API be consumed by code written by third parties? Use REST/GraphQL.
+> - Will your API be consumed by code written by yourself / your organization? Use RPC.
+> But if you're curious, then read one &mdash; this document explain the rational behind this rule.
+
+> **TLDR;**
+> The schema of a REST/GraphQL API acts as a generic interface and as a rigid long-term contract which is necessary a third party that wants to access your data, but,
+> for an internal API, such shema is an uncessary and crippling indirection.
+
+RPC and REST/GraphQL have different goals and comparing them is, in many ways, like comparing apples with oranges.
+
+The fundamental difference between RPC and REST/GraphQL is that REST and GraphQL have a schema whereas RPC is schemaless.
+
+The schema of a REST/GraphQL API determines the entire interface with which the API consumer retrieves and mutates data.
+For example, the schema of a todo-list app would look like this:
+
+All access to data will go over this schema operations.
+
+This allows any third party *without* any and *independently*. This is the crucial aspect: being able to consume your API independently and wihtout you haveing. This, essentially, is the raison d'être of the schema and therefore the raison d'etre for REST and GraphQL.
+This is the fundamental essence of REST/GraphQL and the schema: it allows 
+
+In essense, the schema is a generic interface
+You *need* a contract acting as a long-term relationship between API provider and API consumer.
+
+
+RPC, in contrast, has no schema.
+To most web developers, a schema will feel natural to create an internal API because REST and GraphQL are so widespread.
+But, actually, RPC is the more natrual approach for an internal API.
+
+Imagine you'd want to print . No, you'd use an ORM/SQL query instead.
+
+Again no, you wouldn't.You'd directly use an ORM/SQL query instead:
+
+Again.
+
+What we are doing here, is that we are reproducing the the queries that a tipical todo-list app is doing.
+All that without a schema.
+That's the idea: you don't need a schema.
+Not only don't you need a schema, but the schema is actually crippling.
+
+Imagine, we'd want to set all todo list as complated (e.g. implement a toggle button, 
+
+~~~js
+~~~
+
+To achieve the same with a schema is cumbersome.
+Not only is a schema is an annoying and unecessary indirection,
+but there are situations where a schema makes things impossible
+that would normally easy to achieve wiht SQL/ORM.
+(Everything related to relationships, e.g. "Remove all attachements of all todo-list" is not feasible with a schema)
+
+That's the idea of RPC:
+we directly use SQL/ORM queries instead of using a schema.
+
+In the scenario described above, a schema doesn't add any value and is just an unecessary indirection.
+
+Note that, while developing and re-deploying the frontend,
+we need to be able to modify and re-deploy the endpoints of the RPC API.
+We talk about this tight coupling and
+about synchronised deployements in our [FAQ](/docs/faq.md#faq).
+
+For internal APIs,
+RPC is a simpler, more direct, more natural, more flexible, and more powerful approach.
+
+Third parties,
+on the other the hand,
+need a schema which provides a generic interface and ensures a long-term and stable contract.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
