@@ -114,7 +114,7 @@ enabling them to build all kinds of applications.
 For an API with that many consumers, GraphQL is the fitting tool.
 
 But, to create an internal API
-(an API consumed by yourself / your organization),
+(an API developed and consumed by code written by the same organization),
 [RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
@@ -136,8 +136,8 @@ most of the time, a backend API is consumed only by frontends
 developed within the same organization.
 
 In general,
-REST and GraphQL are the right tools if you want to create an API consumed by third parties and
-RPC is the right tool if you want to create an API consumed by yourself / your organization.
+REST and GraphQL are the right tools if you want to create an API consumed by code written by third parties and
+RPC is the right tool if you want to create an API consumed by code written by yourself / your organization.
 
 
 ## Getting Started
