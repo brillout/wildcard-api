@@ -61,7 +61,7 @@ callable in the browser.
 Nothing more, nothing less.
 
 How you retrieve and mutate data is up to you.
-You can, for example, directly use SQL/ORM queries:
+You can, for example, use SQL/ORM queries:
 
 ~~~js
 // Node.js server
