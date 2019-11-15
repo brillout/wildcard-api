@@ -19,7 +19,11 @@ For example, the schema of a todo-list app would look like this:
 
 All access to data will go over this schema operations.
 
-This allows any third party *without* any and *independently*. This is the crucial aspect: being able to consume your API independently and wihtout you haveing. This, essentially, is the raison d'être of the schema and therefore the raison d'etre for REST and GraphQL.
+This allows any third party to build all kinds of apps on top of these schema operation.
+And that independently and without require changes.
+In short, a schema provides a generic interface: to your data (so that all kinds of (generic a interface.
+
+This is the crucial aspect: being able to consume your API independently and wihtout you haveing. This, essentially, is the raison d'être of the schema and therefore the raison d'etre for REST and GraphQL.
 This is the fundamental essence of REST/GraphQL and the schema: it allows 
 
 In essense, the schema is a generic interface
