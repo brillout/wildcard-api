@@ -1,10 +1,173 @@
+The fundamental difference between RPC and REST or GraphQL is that RPC is schemaless whereas.
+We will now discuss the implication of the schema approach versus the schemaless approach.
+
+
+
+We illustrate the difference between RPC and REST/GraphQL using a to-do list application example.
+
+
+Let's imagine we have a database filled with to-do items:
+
+~~~SQL
+SELECT text FROM todo_items;
+
+     text
+--------------
+Buy milk
+Buy chocolate
+Buy bananas
+~~~
+
+If we'd want to list all to-do items, we'd use a SQL query like we just did or use an ORM or a SQL query builder.
+There is (obviously) no need for a REST/GraphQL API here.
+
+~~~js
+const connection = {
+  'postgres',
+  port: 3421,
+};
+// ORM or SQL query builder
+~~~
+
+Now let's imagine we want to build a CLI to interface with our to-do database.
+
+~~~shell
+$ todos list
+Your to-do list is:
+ - Buy milk
+ - Buy chocolate
+ - Buy bananas
+~~~
+
+~~~shell
+$ todos create 'Buy apples'
+New to-do successfuly created:
+ - Buy apples
+~~~
+
+Again here, a REST/GraphQL API would not bring much benefit;
+We can simply directly use ORM/SQL queries here.
+
+~~~js
+CLI source code
+~~~
+
+Directly using ORM/SQL queries is arguably simpler than using a REST/GraphQL API.
+
+Let's now imagine we want to build a frontend for our to-do list.
+
+Can we direcly use , just like for our CLI.
+
+~~~jsx
+CODE
+~~~
+
+We keep our and only deploy it locally at `localhost`.
+
+Now what if we want to make our to-do list app public and allow any arbitrary user to create a to-do list.
+Do we need a REST/GraphQL API then?
+Let's try with RPC again.
+
+~~~js
+// We need authentication
+getApiResponse({
+  user,
+});
+~~~
+
+~~~js
+// This time though, the RPC API is public we need to be careful about permission
+
+endpoints.
+~~~
+
+The RPC API is public but internal.
+It is public: anyone on the internet can make a call to our RPC API.
+It is internal: within the same organization.
+
+
+Now, let's imagine we want to offer an API for people to build applications on top of our data.
+For example, So that people can integrate their to-do list with their tools.
+
+A third party cannot change our API.
+But, as we have seen previously, this is required for RPC.
+
+
+That is the reason why REST or GraphQL is need for third parties.
+
+If have seen that for internal APIs,
+when an API can be modified at will,
+RPC is powerful while REST/GraphQL is crippling.
+But for third parties,
+for whom the API is set in stone,
+it is the exact opposite.
+
+So, if we want to give access to third parties,
+then we have no choice than to offer a RESTful or GraphQL API.
+
+
+
+
+
+
+
+
+
+You will never see a REST/GraphQL API used for inter-process communication.
+That would be silly.
+
+
+
+
+Should we use a REST/GraphQL API or
+
+To understand the,
+let's imagine we want to develop a CLI to a SQL database of a todo-list app.
+
+Our CLI should be able to print all
+~~~shell
+$ todo list
+~~~
+
+Our database as only one 
+the implication
+The rest o
+To understand the implication
+
+
+
+a CLI tool that uses a SQL database.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # RPC vs REST/GraphQL
 
 > :information_source:
 > Instead of reading this document, you can simply follow RPC's rule of thumb:
 > - Will your API be consumed by code written by third parties? Use REST/GraphQL.
 > - Will your API be consumed by code written by yourself / your organization? Use RPC.
-> But if you're curious, then read one &mdash; this document explains the rational behind this rule.
+> But if you're curious, then read one &mdash; this document explains the rational behind the RPC rule.
 
 > **TLDR;**
 > The schema of a REST/GraphQL API acts as a generic interface and as a rigid long-term contract.
