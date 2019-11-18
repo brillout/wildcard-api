@@ -4,24 +4,82 @@
 > Instead of reading this document, you can simply follow RPC's rule of thumb:
 > - Will your API be consumed by code written by third parties? Use REST/GraphQL.
 > - Will your API be consumed by code written by yourself / your organization? Use RPC.
-> But if you're curious, then read one &mdash; this document explain the rational behind this rule.
+> But if you're curious, then read one &mdash; this document explains the rational behind this rule.
 
 > **TLDR;**
-> The schema of a REST/GraphQL API acts as a generic interface and as a rigid long-term contract which is necessary a third party that wants to access your data, but,
-> for an internal API, such shema is an uncessary and crippling indirection.
+> The schema of a REST/GraphQL API acts as a generic interface and as a rigid long-term contract.
+> This is necessary for a third party API but unecessary and a crippling indirection for an internal API.
 
-RPC and REST/GraphQL have different goals and comparing them is, in many ways, like comparing apples with oranges.
+RPC and REST/GraphQL have different goals and comparing them is like comparing apples with oranges.
 
-The fundamental difference between RPC and REST/GraphQL is that REST and GraphQL have a schema whereas RPC is schemaless.
+The essential nature of REST and GraphQL is that they are based on a schema whereas RPC is schemaless.
 
-The schema of a REST/GraphQL API determines the entire interface with which the API consumer retrieves and mutates data.
+The schema of a REST/GraphQL API determines the entire interface between your backend and the API user.
 For example, the schema of a todo-list app would look like this:
 
-All access to data will go over this schema operations.
+Uses these schema operations.
+The schema fully abstracts the backend away:
+All data access are done by schema operations.
 
-This allows any third party to build all kinds of apps on top of these schema operation.
+This allows a third party to build all kinds of apps on top of your data simply by using these schema operations.
 And that independently and without require changes.
 In short, a schema provides a generic interface: to your data (so that all kinds of (generic a interface.
+
+This gives the API consumer the power of being able to use all these schema operations. Let's now compare this with RPC.
+
+Let's imagine we
+
+To this purpose we would create a single RPC endpoint `getTodoList`:
+
+~~~jsx
+function TodoList({todos}) {
+  return <div>
+    {todos.map}
+  </div>
+}
+~~~
+
+~~~js
+endpoints.getTodoList = function() {
+}
+~~~
+
+This means
+
+Our schema above is vastly more powerful than this mere single endpoint: the schema allows.
+But that's not really a fair comparison as RPC assumes that we can.
+
+That's why RPC is not used to create an API that will be consumed by code written by third parties.
+From the perspective of a third party, your API is set in stone.
+A third party needs something like a schema that provides him a generic interface to your data.
+
+This is the essential feature of the schema and of REST/GraphQL:
+It 
+to be able.
+That's why REST and GraphQL are used to create an API that is meant to be used by third parties.
+
+> :bulb:
+> If the API is set in stone, then REST/GraphQL is vastly more powerful than RPC.
+
+If, however, we assume that the API can be modified at will then it's the exact opposite and it is
+RPC that is vastly more powerful.
+
+> :bulb:
+> If the API can be modified at will, then RPC is vastly more powerful than REST/GraphQL.
+
+> :bulb: RPC assumes that the developer using the API is able to modify the RPC API at will.
+
+That is why RPC is only used to create an internal API,
+that is an API that is consumed by code developed within the same organization.
+
+To conclude,
+REST and GraphQL are the right tools to create an API that is meant to be used by third parties.
+otherwise RPC is the right tool.
+
+
+
+
+
 
 This is the crucial aspect: being able to consume your API independently and wihtout you haveing. This, essentially, is the raison d'être of the schema and therefore the raison d'etre for REST and GraphQL.
 This is the fundamental essence of REST/GraphQL and the schema: it allows 
@@ -32,7 +90,8 @@ You *need* a contract acting as a long-term relationship between API provider an
 
 RPC, in contrast, has no schema.
 To most web developers, a schema will feel natural to create an internal API because REST and GraphQL are so widespread.
-But, actually, RPC is the more natrual approach for an internal API.
+But, actually, RPC is the more natural approach for an internal API.
+Not only is it the more natural and intuitive but it is also more powerful as we will now see.
 
 Imagine you'd want to print . No, you'd use an ORM/SQL query instead.
 
