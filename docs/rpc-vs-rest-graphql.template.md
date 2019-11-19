@@ -1,5 +1,12 @@
+# RPC vs REST/GraphQL
 
+> :information_source:
+> Instead of reading this document, you can simply follow RPC's rule of thumb:
+> - Will your API be consumed by code written by third parties? Use REST/GraphQL.
+> - Will your API be consumed by code written by yourself / your organization? Use RPC.
+> But if you're curious, then read one &mdash; this document explains the rational behind the RPC rule.
 
+RPC and REST/GraphQL have different goals and comparing them is like comparing apples with oranges.
 This document
 illustrates the differences between RPC and REST/GraphQL
 by discussing a to-do list implementation.
@@ -16,25 +23,27 @@ Buy chocolate
 Buy bananas
 ~~~
 
-If we'd want to list the to-do items saved in the database in our terminal,
-we'd use a SQL query like we just did or an ORM.
-There is (obviously) no need for a REST/GraphQL API here.
+Let's imagine
+If we'd want to list the to-do items saved in the database in our terminal from our backend code,
+we'd use a SQL query like we just did, and
+there is (obviously) no need for a REST/GraphQL API for that:
 
 ~~~js
 // server/print-todo-list.js
 
-const connection = {
-  'postgres',
-  port: 3421,
-};
-// ORM or SQL query builder
+// We 
+const db = require('your-favorite-sql-query-builder');
 
+(async () => {
+  const todos = await db.query('SELECT text FROM todo_items;');
+  console.log(todos);
+})();
 ~~~
 ~~~shell
 $ node server/print-todo-list.js
 ~~~
 
-Now let's imagine we want to build a CLI to interface with our to-do database.
+Now, let's imagine we want to build a CLI to interface with our to-do database.
 
 ~~~shell
 $ todos list
@@ -365,20 +374,6 @@ a CLI tool that uses a SQL database.
 
 
 
-
-# RPC vs REST/GraphQL
-
-> :information_source:
-> Instead of reading this document, you can simply follow RPC's rule of thumb:
-> - Will your API be consumed by code written by third parties? Use REST/GraphQL.
-> - Will your API be consumed by code written by yourself / your organization? Use RPC.
-> But if you're curious, then read one &mdash; this document explains the rational behind the RPC rule.
-
-> **TLDR;**
-> The schema of a REST/GraphQL API acts as a generic interface and as a rigid long-term contract.
-> This is necessary for a third party API but unecessary and a crippling indirection for an internal API.
-
-RPC and REST/GraphQL have different goals and comparing them is like comparing apples with oranges.
 
 The essential nature of REST and GraphQL is that they are based on a schema whereas RPC is schemaless.
 
