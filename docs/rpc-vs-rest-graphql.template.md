@@ -164,7 +164,7 @@ Instead, we simply wrap our SQL queries in RPC endpoints that ensure that only p
 
 Not only is RPC a simple solution for our problem, but it is also a powerful one.
 
-Imagine we want to a button "Mark all to-dos as completed" to our frontend. For that, we simply add a new RPC endpoint:
+Imagine we want to implement a button "Mark all to-dos as completed" to our frontend. For that, we simply add a new RPC endpoint:
 
 ~~~js
   const {endpoints} = require('wildcard-api');
@@ -188,7 +188,7 @@ Many such queries are notoriously difficult,
 and even sometimes,
 to achieve.
 SQL, on the hand, is known to be powerful.
-Actually that's the powerful tool you can use to retrieve and mutate data.
+Actually, for a SQL database, SQL is the powerful tool you can use to retrieve and mutate data.
 RPC gives while developing a frontend.
 Even GraphQL, which is more powerful than REST, is still vastly inferior to SQL.
 Not only, makes any
@@ -199,14 +199,60 @@ RPC is vastly more powerful than REST here!
 Even though GraphQL all
 REST (and even GraphQL) is crippling.
 
-Note throughout our journey we modified our RPC endpoints at will.
-Imagine our RPC endpoints would be set in stone:
-we couldn't evolve our frontend.
-mere two RPC endpoints would be limiting
-This means that RPC enduces our.
-This is called the RPC constraint.
+Note that throughout our journey we repeatedly modified our RPC endpoints.
+This ability to change the endpoints at will is crucial for RPC.
+If our two basic RPC endpoints of the beginning were fixed and unchangeable,
+we wouldn't have been able to evolve our frontend like we did.
+In general, RPC endpoints that are set in stone prevent any further frontend development.
 
-> :bulb: The RPC constraint: 
+> :bulb: The RPC constraint: RPC requires that endpoints can be created and modified at the whim of the frontend development.
+
+This constraint of RPC is usually not a problem:
+most frontend developers are nowadays comfortable and eager to write endpoints for themselves, and
+continous hand-in-hand deployment of frontend and backend is now considered best practice.
+We elaborate more on these points in our [FAQ](/docs/faq.md#faq).
+
+But, there is one situation were RPC's constraint is problematic.
+Is a show stopper.
+But a third party cannot modify our RPC endpoints: from the perspective of a third party, our RPC endpoints are set in stone.
+Now, we developed our endpoints hand-in-hand with our frontend: our endpoints are tailored and only useful to our frontend.
+
+While RPC is schemaless,
+a RESTful/GraphQL API has a schema that essentially is a generic interface to your data:
+any third party can use any arbitrary CRUD operation on any schema model.
+The schemaless approach of RPC only fulfills the data requirement of the frontend
+whereas REST and GraphQL can fulfill all kinds of data requirements.
+
+In our to-do list app,
+on top of our database
+if we want to enable third parties to build applications on top of our database,
+then we'd need to offer a RESTful/GraphQL API.
+We would still use and develop our RPC API for our own frontend.
+
+To conclude,
+we have seen that
+RPC is simpler and more powerful than REST/GraphQL
+if API endpoints can be modified at the whim of the frontend.
+Which is typically the case for internal code,
+and definitely not the case for third party code.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+and separation of concern is nowadays between Frontend Aesthetics (e.g. HTML/JSX/CSS), Frontend Logic (JavaScript / State Management / Server-side API endpoints / Server-Side Rendering / Backend code related to Frontend), and Backend code that is agnostic to frontend (the old separation of concern browser-side has become obsolete). The best done on and between browser-side code and server-side code.
+
+This is precisely the reason why RPC cannot be used for APIs meant to be consumed by third party code.
+
 
 you choose:
 - RPC constraint
@@ -808,7 +854,7 @@ In short, if your API is consumed by third parties, then you have no choice than
 However, having two APIs can be a successful strategy:
 a RESTful/GraphQL API for third parties and
 an RPC API for your own frontend.
-Giving your frontend the super power to be able to use any SQL/ORM query for data requirements that your REST/GraphQL API cannot fullfill.
+Giving your frontend the super power to be able to use any SQL/ORM query for data requirements that your REST/GraphQL API cannot fulfill.
 
 **Hand-in-hand development**
 
