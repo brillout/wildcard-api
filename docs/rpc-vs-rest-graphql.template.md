@@ -1,11 +1,8 @@
-The fundamental difference between RPC and REST or GraphQL is that RPC is schemaless whereas.
-We will now discuss the implication of the schema approach versus the schemaless approach.
 
 
-
-We illustrate the difference between RPC and REST/GraphQL
-by discussing when
-REST/GraphQL is required for a to-do list implementation.
+This document
+illustrates the differences between RPC and REST/GraphQL
+by discussing a to-do list implementation.
 
 Let's imagine we have a database filled with to-do items:
 
@@ -205,17 +202,17 @@ If our two basic RPC endpoints of the beginning were fixed and unchangeable,
 we wouldn't have been able to evolve our frontend like we did.
 In general, RPC endpoints that are set in stone prevent any further frontend development.
 
-> :bulb: The RPC constraint: RPC requires that endpoints can be created and modified at the whim of the frontend development.
+> :bulb: RPC requires that endpoints can be created and modified at the whim of the frontend development.
 
 This constraint of RPC is usually not a problem:
 most frontend developers are nowadays comfortable and eager to write endpoints for themselves, and
 continous hand-in-hand deployment of frontend and backend is now considered best practice.
 We elaborate more on these points in our [FAQ](/docs/faq.md#faq).
 
-But, there is one situation were RPC's constraint is problematic.
-Is a show stopper.
-But a third party cannot modify our RPC endpoints: from the perspective of a third party, our RPC endpoints are set in stone.
+But, there is one situation were RPC's constraint is problematic: third parties.
+A third party cannot modify our RPC endpoints: from the perspective of a third party, our RPC endpoints are set in stone.
 Now, we developed our endpoints hand-in-hand with our frontend: our endpoints are tailored and only useful to our frontend.
+In short, RPC's constraint is a show stopper for a third party that wants to develop an application on top of our data.
 
 While RPC is schemaless,
 a RESTful/GraphQL API has a schema that essentially is a generic interface to your data:
@@ -225,16 +222,16 @@ whereas REST and GraphQL can fulfill all kinds of data requirements.
 
 In our to-do list app,
 on top of our database
-if we want to enable third parties to build applications on top of our database,
+if we want to enable third parties to build applications on top of our data,
 then we'd need to offer a RESTful/GraphQL API.
 We would still use and develop our RPC API for our own frontend.
 
 To conclude,
 we have seen that
 RPC is simpler and more powerful than REST/GraphQL
-if API endpoints can be modified at the whim of the frontend.
-Which is typically the case for internal code,
-and definitely not the case for third party code.
+if API endpoints can be modified at the whim of the frontend,
+which is typically the case for APIs used by code written by ourself,
+and definitely not the case for APIs used by third party code.
 
 
 
