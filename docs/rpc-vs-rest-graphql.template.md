@@ -1,15 +1,13 @@
 # RPC vs REST/GraphQL
 
 > :information_source:
-> Instead of reading this document, you can simply follow RPC's rule of thumb:
+> Instead of reading this document, you can follow RPC's rule of thumb:
 > - Will your API be consumed by code written by third parties? Use REST/GraphQL.
 > - Will your API be consumed by code written by yourself / your organization? Use RPC.
 > But if you're curious, then read one &mdash; this document explains the rational behind the RPC rule.
 
 RPC and REST/GraphQL have different goals and comparing them is like comparing apples with oranges.
-This document
-illustrates the differences between RPC and REST/GraphQL
-by discussing a to-do list implementation.
+We explain in which situations whether RPC or REST/GraphQL should be used by discussing a to-do list JavaScript implementation.
 
 Let's imagine we have a database filled with to-do items:
 
@@ -23,15 +21,13 @@ Buy chocolate
 Buy bananas
 ~~~
 
-Let's imagine
-If we'd want to list the to-do items saved in the database in our terminal from our backend code,
+If we'd want to print the to-do items in our terminal from our backend code,
 we'd use a SQL query like we just did, and
-there is (obviously) no need for a REST/GraphQL API for that:
+there is (obviously) no need for a REST/GraphQL API.
 
 ~~~js
-// server/print-todo-list.js
+// print-todos.js
 
-// We 
 const db = require('your-favorite-sql-query-builder');
 
 (async () => {
@@ -40,10 +36,15 @@ const db = require('your-favorite-sql-query-builder');
 })();
 ~~~
 ~~~shell
-$ node server/print-todo-list.js
+$ node ./print-todos.js
+[
+  { text: 'Buy milk' },
+  { text: 'Buy chocolate' },
+  { text: 'Buy bananas' }
+]
 ~~~
 
-Now, let's imagine we want to build a CLI to interface with our to-do database.
+Now, let's imagine we want to build a CLI to interface with our to-do list.
 
 ~~~shell
 $ todos list
@@ -52,22 +53,52 @@ Your to-do list is:
  - Buy chocolate
  - Buy bananas
 ~~~
-
 ~~~shell
 $ todos create 'Buy apples'
 New to-do successfuly created:
  - Buy apples
 ~~~
 
-Here again, a REST/GraphQL API wouldn't bring much benefit;
-We can simply directly use ORM/SQL queries instead:
+Here again, a REST/GraphQL API wouldn't bring any benefit;
+we can simply use SQL queries instead.
 
 ~~~js
-CLI source code
+cli.command('list').action(async () => {
+  const todos = await db.query('SELECT text FROM todo_items;');
+  console.log('Your to-do list is:');
+  console.log(todos.map(({text}) => ' - '+text).join('\n'));
+});
+
+cli.command('create <text>').action(async text => {
+  await db.query("INSERT INTO todo_items VALUES (:text);", {text});
+  console.log('New to-do successfuly created:');
+  console.log(' - '+text);
+});
 ~~~
 
 Now, let's imagine we want to build a private frontend with the same functionallity than our CLI.
-Do we need REST/GraphQL? Let's try without and see what happens.
+Do we need REST/GraphQL? Let's try with RPC instead and see how far we get.
+
+~~~js
+// Node.js server
+
+// We use RPC by creating a Wildcard API.
+const {endpoints} = require('wildcard-api');
+
+const db = require('your-favorite-sql-query-builder');
+
+// We wrap our SQL queries in RPC endpoints to be able to call
+// them from the browser.
+
+endpoints.getTodoList = async function() {
+  const todos = await db.query("SELECT id, text FROM todo_items;");
+  return todos;
+};
+
+endpoints.createTodo = async function({text}) {
+  await db.query("INSERT INTO todo_items VALUES (:text);", {text});
+};
+~~~
 
 ~~~jsx
 // Browser
@@ -115,31 +146,15 @@ function NewTodo({setTodos}) {
 }
 ~~~
 
-~~~js
-// We do RPC by using Wildcard
-const {endpoints} = require('wildcard-api');
+RPC does the trick: our private frontend merely needs our two RPC endpoints `getTodoList` and `createTodo` and doesn't need anything else.
 
-const db = require('your-favorite-sql-query-builder');
-
-// We simply wrap our SQL queries in RPC endpoints in order to call
-// the SQL queries from the browser.
-
-endpoints.getTodoList = async function() {
-  return await db.query("SELECT id, text FROM todo_items;");
-};
-
-endpoints.createTodo = async function({text}) {
-  await db.query("INSERT INTO todo_items VALUES (:text);", {text});
-};
-~~~
-
-Our implementation is based on our API endpoints `getTodoList` and `createTodo`. That's it &mdash; we still don't need REST/GraphQL.
-
-Let's now make our frontend public and allow any arbitrary user to create a to-do list.
+Now let's make our frontend public and let's allow any arbitrary user to create a to-do list.
 Do we need REST/GraphQL?
-Let's try with RPC first.
+Again, let's try with RPC first.
 
 ~~~diff
+  // Node.js server
+
   const {endpoints} = require('wildcard-api');
 
   const db = require('your-favorite-sql-query-builder');
@@ -157,38 +172,58 @@ Let's try with RPC first.
 
   endpoints.createTodo = async function({text}) {
 +   const user = getLoggedUser(this.headers);
++   // Permission: only a logged-in user is allowed to create a to-do item.
 +   if( !user ) return;
 +   await db.query("INSERT INTO todo_items VALUES (:text, :userId);", {text, userId: user.id});
 -   await db.query("INSERT INTO todo_items VALUES (:text);", {text});
   };
 ~~~
 
-That's basically how our RPC endpoints would now look like.
-Again, RPC works out for us and.
-That's neat &mdash; we still have no RESTful/GraphQL API and everything works!
-Instead, we simply wrap our SQL queries in RPC endpoints that ensure that only permitted SQL queries are being exectuted.
-
-Not only is RPC a simple solution for our problem, but it is also a powerful one.
-
-Imagine we want to implement a button "Mark all to-dos as completed" to our frontend. For that, we simply add a new RPC endpoint:
-
 ~~~js
-  const {endpoints} = require('wildcard-api');
+// Browser
 
-  const db = require('your-favorite-sql-query-builder');
-
-  const getLoggedUser = require('./path/to/your/auth/code');
-
-  endpoints.markAllCompleted = async function() {
-    const user = getLoggedUser(this.headers);
-    if( !user ) return;
-    await db.query("UPDATE todo_items SET is_completed = TRUE WHERE userId = :userId;', {userId: user.id});
-  };
+// Our `TodoList` React component stays the same but
+// we only show `<TodoList />` to logged-in users and
+// we add a login/signup page.
 ~~~
 
-Again here we simply wrap our SQL query in safe RPC endpoints.
-The 
-The whole power of SQL is at our disposal.
+RPC still works out!
+we just have to be careful,
+since the frontend is now public,
+to make our RPC endpoints safe by adding permission code.
+
+Our frontend still only needs our two RPC endpoints `getTodoList` and `createTodo` and we still don't need REST/GraphQL.
+We simply wrap our SQL queries in safe RPC endpoints.
+
+Not only is RPC simple, but it is also powerful:
+RPC enables the frontend to use any SQL query, any ORM query, or any other server-side tool.
+
+Imagine we want to add a button "Mark all to-dos as completed" to our frontend.
+To that purpose, we would simply use a new SQL query and wrap it in a safe RPC endpoint:
+
+~~~js
+endpoints.markAllCompleted = async function() {
+  const user = getLoggedUser(this.headers);
+  // Only a logged-in user is allowed to do this.
+  if( !user ) return;
+  await db.query("UPDATE todo_items SET is_completed = TRUE WHERE userId = :userId;', {userId: user.id});
+};
+~~~
+
+Such operation is notoriously problematic with REST.
+(This problem is commonly called the N+1 problem.)
+Whereas with RPC we can simply use SQL.
+
+There are a whole range of queries that are not feasible with REST.
+RPC doesn't have such limitation.
+GraphQL is more powerful than REST but there still many types of queries that are only possible
+
+In a sense
+
+That said, there is a caveat here that explains the raison d'être of REST and GraphQL.
+
+The whole power of SQL is at the frontend's disposal.
+
 is notoriously difficult.
 Many such queries are notoriously difficult,
 and even sometimes,
