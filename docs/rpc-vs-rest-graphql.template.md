@@ -255,21 +255,20 @@ A third party cannot modify our RPC endpoints.
 From the perspective of a third party, our RPC endpoints are set in stone.
 
 Imagine we'd want to enable third parties to build applications on top of our to-do list data.
-So that, for example, someone can integrate his to-do list with his favorite calendar app.
-But our RPC endpoints `getTodoList` and `createTodo`are tailored and only useful for our frontend.
-For a third party our RPC endpoints are virtually useless.
-A third party that wants access our data, needs a RESTful/GraphQL API.
-We would end up for two APIs:
-a RESTful (or GraphQL) API and an RPC API.
-The RESTful API is used by third party apps while
-we use RPC for our own frontend.
+So that, for example, to enable someone to integrate his to-do list with his favorite calendar app.
+But our RPC endpoints `getTodoList` and `createTodo` are tailored and only useful to our frontend.
+For a third party our two endpoints are virtually useless.
+We need to offer a RESTful or GraphQL API,
+to enable third party to access our data.
+We then have two APIs:
+a RESTful (or GraphQL) API used by third parties and an RPC API used by our frontend.
 
-RPC's schemaless nature makes sense: Theit's goal is to .
-On
-a RESTful/GraphQL API has a schema that essentially is a generic interface to your data:
+Whereas RPC is schemaless,
+a RESTful/GraphQL API has a schema that essentially is a generic interface to our data:
 any third party can use any arbitrary CRUD operation on any schema model.
-The schemaless approach of RPC only fulfills the data requirement of the frontend
-whereas REST and GraphQL can fulfill all kinds of data requirements.
+This makes sense,
+since the goal of RPC is to fulfill the data requirement of only our frontend,
+and the goal of REST and GraphQL is to a maximum number of data requirements.
 
 **Conclusion**
 
