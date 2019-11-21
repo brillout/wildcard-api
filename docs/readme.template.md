@@ -111,10 +111,11 @@ a GraphQL API enables
 third parties
 to extensively access Facebook's social graph
 enabling them to build all kinds of applications.
-For an API with that many third party users, GraphQL is the fitting tool.
+For an API used by that many third party developers,
+GraphQL is the fitting tool.
 
 But, to create an internal API
-(an API consumed by code written within the same organization),
+(an API developed and used by developers working within a same organization),
 [RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
 
 Large companies,
@@ -132,10 +133,11 @@ This allows Wildcard to have a simple design and to be super easy to use.
 
 RPC is increasingly used to create backend APIs
 as they are most of the time internal:
-A backend API is usually only used by frontends developed within the same organization.
+A backend API and its frontends are usually
+developed within the same organization.
 
 In general,
-REST and GraphQL are the right tools to create an API that is meant to be used by third parties,
+REST and GraphQL are the right tools to create an API that is meant to be used by third party developers,
 otherwise RPC is the right tool.
 
 
