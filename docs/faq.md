@@ -87,10 +87,15 @@
 # FAQ
 
 <a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
+<br/>
 <a href=#which-is-more-powerful-graphql-or-rpc>Which is more powerful, GraphQL or RPC?</a>
+<br/>
 <a href=#doesnt-rpc-tightly-couple-frontend-with-backend>Doesn't RPC tightly couple frontend with backend?</a>
+<br/>
 <a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>
+<br/>
 <a href=#should-i-develop-frontend-and-backend-hand-in-hand>Should I develop frontend and backend hand-in-hand?</a>
+<br/>
 <a href=#how-can-i-do-versioning>How can I do versioning?</a>
 
 <br/>
