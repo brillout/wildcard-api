@@ -2,15 +2,15 @@
 
 > :information_source:
 > Instead of reading this document, you can follow RPC's rule of thumb:
-> - Is your API meant to be consumed by code written by third parties? Use REST/GraphQL.
-> - Is your API meant to be consumed by code written by yourself / your organization? Use RPC.
+> Do you want to create an API that will be consumed
+> - by code written by third parties? Then use REST/GraphQL.
+> - by code written by yourself / your organization? Then use RPC.
 > However, if you're curious, read one &mdash; this document explains the rationale behind the RPC rule.
 
-RPC and REST/GraphQL have different goals and comparing them is like comparing apples with oranges.
+RPC and REST/GraphQL have different goals and comparing them is like comparing apples to oranges.
 We explain in which situations whether RPC or REST/GraphQL should be used by discussing the JavaScript implementation of a to-do list app.
 
 Let's imagine we have a database filled with to-do items:
-
 ~~~sql
 SELECT text FROM todo_items;
 
@@ -21,7 +21,7 @@ Buy chocolate
 Buy bananas
 ~~~
 
-If we'd want to print the to-do items in our terminal from within our backend code,
+If we'd want to print the list of to-do items in our terminal from within our backend code,
 we'd use a SQL query like we just did, and
 there is (obviously) no need for a REST/GraphQL API.
 
@@ -76,7 +76,7 @@ cli.command('create <text>').action(async text => {
 });
 ~~~
 
-Now, let's imagine we want to implement a private frontend with that has same functionallity than our CLI.
+Now, let's imagine we want to implement a private frontend that has same functionallity than our CLI.
 Do we need REST/GraphQL? Let's try with RPC and see how far we get.
 
 ~~~js
@@ -129,26 +129,26 @@ function NewTodo() {
   const [text, setText] = useState('');
 
   return (
-    <form onSubmit={createTodo}>
+    <form onSubmit={addTodo}>
       <input type="text" onChange={ev => setText(ev.target.value)} value={text}/>
-      <button type="submit">New To-do</button>
+      <button type="submit">Add</button>
     </form>
   );
 
-  async function createTodo(ev) {
+  async function addTodo(ev) {
     setText('');
     await endpoints.createTodo({text});
-    // A proper implementation would refresh the to-do list
-    // to include the newly created to-do item.
+    // (A proper implementation would refresh the to-do list
+    // to include the newly created to-do item.)
   }
 }
 ~~~
 
-RPC works out for us;
+RPC works out here:
 our private frontend merely needs our two RPC endpoints `getTodoList` and `createTodo` and doesn't need anything else.
 
-Now let's make our frontend public and allow any arbitrary user to create a to-do list.
-Do we need REST/GraphQL?
+Let's make our frontend public and let's allow any arbitrary user to create a to-do list.
+Do we now need REST/GraphQL?
 Let's try with RPC again.
 
 ~~~diff
@@ -187,21 +187,27 @@ Let's try with RPC again.
 ~~~
 
 RPC still works out!
-we just have to be careful,
-since the frontend is now public,
+We just have to be careful,
+now that the frontend is public,
 to make our RPC endpoints safe by adding permission.
 
 Our frontend still only needs our two RPC endpoints `getTodoList` and `createTodo` and we still don't need REST/GraphQL.
 We simply wrap our SQL queries in safe RPC endpoints.
-That's a simple solution!
+RPC offers a simple solution even for public frontends!
+
+RPC, however, has one constraint which we will talk abut later.
+There is one constraint with RPC which we will talk about later.
+But, before we do, let's look at how powerful RPC is.
 
 **RPC Power**
 
-Not only is RPC simple, but it is also powerful:
-RPC enables the frontend to use any SQL query, any ORM/ODM query, or any other server-side tool.
+Not only is RPC simple but it is also powerful:
+RPC enables the frontend to use any SQL query, any ORM/ODM query, and any other server-side tool.
 
-For exampe, imagine we want to add a button "Mark all to-dos as completed" to our frontend.
-With RPC, we would simply use a new SQL query and wrap it in a safe RPC endpoint:
+For exampe,
+if we'd want to add a button "Mark all to-dos as completed" to our frontend,
+with RPC,
+we would simply write a new SQL query and wrap it in a safe RPC endpoint:
 
 ~~~js
 endpoints.markAllCompleted = async function() {
@@ -213,7 +219,7 @@ endpoints.markAllCompleted = async function() {
 ~~~
 
 Such operation is notoriously problematic with REST.
-(Which is commonly called the N+1 problem.)
+(It's commonly called the N+1 problem.)
 Whereas with RPC we can simply use SQL.
 
 There are a whole range of SQL queries that are not feasible with REST.
@@ -226,8 +232,8 @@ than RESTful and GraphQL queries.
 
 In general,
 using database native queries is always more powerful
-than REST and GraphQL.
-In the end,
+than REST and GraphQL:
+in the end,
 a RESTful/GraphQL API
 does nothing more than execute native database queries.
 
@@ -245,26 +251,27 @@ RPC endpoints that are set in stone prevent any further frontend development.
 
 This constraint of RPC is usually not a problem:
 most frontend developers are nowadays comfortable and eager to write endpoints for themselves, and
-hand-in-hand deployment of frontend and backend is now considered best practice.
+hand-in-hand deployment of frontend and backend is nowadays considered best practice.
 We elaborate more on these points in our [FAQ](/docs/faq.md#faq).
+
+The RPC constraint is, however, problematic for third parties.
 
 **Third parties**
 
-The RPC constraint is, however, problematic for third parties.
 A third party cannot modify our RPC endpoints.
 From the perspective of a third party, our RPC endpoints are set in stone.
 
-Imagine we'd want to enable third parties to build applications on top of our to-do list data.
+Imagine we'd want to enable third parties to build applications on top of our to-do lists database.
 So that someone could, for example, integrate his to-do list with his favorite calendar app.
-But our RPC endpoints `getTodoList` and `createTodo` are tailored and only useful to our frontend.
-For a third party our two endpoints are virtually useless
-and we need to offer a RESTful or GraphQL API.
+But our RPC endpoints `getTodoList` and `createTodo` are tailored and only useful to our frontend;
+for a third party our two endpoints are virtually useless &mdash;
+we need to offer a RESTful or GraphQL API.
 We then have two APIs:
 a RESTful (or GraphQL) API used by third parties and an RPC API used by our frontend.
 
 Whereas RPC is schemaless,
-a RESTful/GraphQL API has a schema which is, in essence, a generic interface to our data:
-any third party can use any arbitrary CRUD operation on any schema model.
+a RESTful/GraphQL API has a schema which, in essence, is a generic interface to our data:
+any third party can arbitrarily use any CRUD operation on any schema model.
 This makes sense:
 the goal of RPC is to fulfill the data requirements of only our frontend whereas
 the goal of REST and GraphQL is to be able to fulfill a maximum number of data requirements.
