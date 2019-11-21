@@ -94,7 +94,6 @@ We explain in which situations whether RPC or REST/GraphQL should be used by dis
 Let's imagine we have a database filled with to-do items:
 ~~~sql
 SELECT text FROM todo_items;
-
      text
 --------------
 Buy milk
