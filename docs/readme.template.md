@@ -6,7 +6,7 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Learn More](#learn-more)
+[Learning Material](#learning-material)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -735,9 +735,9 @@ async function callEndpoint() {
 
 
 
-## Learn More
+## Learning Material
 
-Learning material about RPC and Wildcard. Create a Pull Request to add yours.
+Material to learn more about RPC and Wildcard. Create a Pull Request to add yours.
 
 - [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
   <br/>
