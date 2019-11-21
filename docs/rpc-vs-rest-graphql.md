@@ -79,9 +79,11 @@
 
 > :information_source:
 > Instead of reading this document, you can follow RPC's rule of thumb:
+> <br/>
 > Do you want to create an API that will be consumed
 > - by code written by third parties? Then use REST/GraphQL.
 > - by code written by yourself / your organization? Then use RPC.
+> <br/>
 > However, if you're curious, read one &mdash; this document explains the rationale behind the RPC rule.
 
 RPC and REST/GraphQL have different goals and comparing them is like comparing apples to oranges.
