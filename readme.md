@@ -209,7 +209,7 @@ Most notably with [gRPC](https://grpc.io/) which is getting popular in the indus
 Both gRPC and Wildcard are RPC tools.
 While gRPC focuses on cross-platform support (Go, Python, Java, C++, ...),
 Wildcard only supports the Browser - Node.js stack.
-This allows Wildcard to have a simple design and to be super easy to use.
+This allows Wildcard to have a simple design and to be very easy to use.
 
 RPC is increasingly used to create backend APIs
 as they are most of the time internal:
