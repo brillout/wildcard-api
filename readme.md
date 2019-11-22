@@ -424,13 +424,9 @@ That's it.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -496,13 +492,9 @@ see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -654,13 +646,9 @@ see [Error Handling](#error-handling).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -785,13 +773,9 @@ import 'handli'; // npm install handli
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -821,13 +805,9 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -939,13 +919,9 @@ async function callEndpoint() {
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -993,13 +969,9 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>

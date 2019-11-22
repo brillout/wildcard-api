@@ -125,13 +125,9 @@ We explain this in more depth at
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -197,13 +193,9 @@ you can modify your own API at will.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -256,13 +248,9 @@ which we talk about in the next querstion
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -308,13 +296,9 @@ This ensures that frontend and backend are deployed synchronously.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -355,13 +339,9 @@ it gives him the power to use any SQL/ORM query and any server-side tool he want
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
@@ -391,13 +371,9 @@ versioning: your backend always serves a single and the correct version of your 
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a ticket</a> or
-<a href="https://discord.gg/kqXf65G">chat with us</a>
-if you have questions, feature requests, or if you just want to talk to us.
-</sup>
-
-<sup>
-We enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
 </sup>
 
 <br/>
