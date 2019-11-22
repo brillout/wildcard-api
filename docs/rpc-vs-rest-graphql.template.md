@@ -117,7 +117,7 @@ function TodoList() {
 
   if( !todos ) return <div>Loading...</div>;
 
-  return <>
+  return <div>
     Your to-do list is:
     <ul>
       {todos.map(todo =>
@@ -125,7 +125,7 @@ function TodoList() {
       )}
     </ul>
     <NewTodo/>
-  </>;
+  </div>;
 }
 
 function NewTodo() {
@@ -152,7 +152,7 @@ our private frontend merely needs our two RPC endpoints `getTodoList` and `creat
 
 Let's make our frontend public and let's allow any arbitrary user to create a to-do list.
 Do we now need REST/GraphQL?
-Let's try with RPC again.
+Let's try with RPC by modifying our RPC endpoints like the following.
 
 ~~~diff
   // Node.js server
@@ -168,7 +168,7 @@ Let's try with RPC again.
 +   const user = getLoggedUser(this.headers);
 +   // We add permission: only a logged-in user can get his to-do list.
 +   if( !user ) return;
-+   return await db.query("SELECT id, text FROM todo_items WHERE userId = :userId;", {userId: user.id});
++   return await db.query("SELECT id, text FROM todo_items WHERE userId = :userId;",{userId: user.id});
 -   return await db.query("SELECT id, text FROM todo_items;");
   };
 
@@ -189,7 +189,7 @@ Let's try with RPC again.
 // and we add a login/signup page.
 ~~~
 
-RPC still works out!
+RPC still works for us!
 We just have to be careful,
 now that the frontend is public,
 to make our RPC endpoints safe by adding permission.
@@ -217,7 +217,9 @@ endpoints.markAllCompleted = async function() {
   const user = getLoggedUser(this.headers);
   // Only a logged-in user is allowed to do this.
   if( !user ) return;
-  await db.query("UPDATE todo_items SET is_completed = TRUE WHERE userId = :userId;', {userId: user.id});
+  await (
+    db.query("UPDATE todo_items SET is_completed = TRUE WHERE userId = :userId;', {userId: user.id})
+  );
 };
 ~~~
 
