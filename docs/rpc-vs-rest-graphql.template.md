@@ -117,15 +117,17 @@ function TodoList() {
 
   if( !todos ) return <div>Loading...</div>;
 
-  return <div>
-    Your to-do list is:
-    <ul>
-      {todos.map(todo =>
-        <li key={todo.id}>{todo.text}</li>
-      )}
-    </ul>
-    <NewTodo/>
-  </div>;
+  return (
+    <div>
+      Your to-do list is:
+      <ul>
+        {todos.map(todo =>
+          <li key={todo.id}>{todo.text}</li>
+        )}
+      </ul>
+      <NewTodo/>
+    </div>
+  );
 }
 
 function NewTodo() {
@@ -168,16 +170,16 @@ Let's try with RPC by modifying our RPC endpoints like the following.
 +   const user = getLoggedUser(this.headers);
 +   // We add permission: only a logged-in user can get his to-do list.
 +   if( !user ) return;
-+   return await db.query("SELECT id, text FROM todo_items WHERE userId = :userId;",{userId: user.id});
--   return await db.query("SELECT id, text FROM todo_items;");
++   return await db.query("SELECT id, text FROM todo_items WHERE userId = :userId",{userId: user.id});
+-   return await db.query("SELECT id, text FROM todo_items");
   };
 
   endpoints.createTodo = async function({text}) {
 +   const user = getLoggedUser(this.headers);
 +   // Permission: only a logged-in user is allowed to create a to-do item.
 +   if( !user ) return;
-+   await db.query("INSERT INTO todo_items VALUES (:text, :userId);", {text, userId: user.id});
--   await db.query("INSERT INTO todo_items VALUES (:text);", {text});
++   await db.query("INSERT INTO todo_items VALUES (:text, :userId)", {text, userId: user.id});
+-   await db.query("INSERT INTO todo_items VALUES (:text)", {text});
   };
 ~~~
 
