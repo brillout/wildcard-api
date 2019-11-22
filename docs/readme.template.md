@@ -104,11 +104,11 @@ and issues are fixed within 1-2 days.
 
 ## Wildcard compared to REST, GraphQL, and other RPCs
 
-REST and GraphQL are wonderful tools to create an API that is meant to be used by third parties.
+REST and GraphQL are wonderful tools to create an API that is meant to be used by third party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
-third parties
+third party developers
 to extensively access Facebook's social graph
 enabling them to build all kinds of applications.
 For an API used by that many third party developers,
@@ -128,17 +128,17 @@ Most notably with [gRPC](https://grpc.io/) which is getting popular in the indus
 
 Both gRPC and Wildcard are RPC tools.
 While gRPC focuses on cross-platform support (Go, Python, Java, C++, ...),
-Wildcard only supports the Browser - Node.js stack.
+Wildcard only supports JavaScript (Browser & Node.js).
 This allows Wildcard to have a simple design and to be very easy to use.
 
-RPC is increasingly used to create backend APIs
+RPC is also increasingly used to create backend APIs
 as they are most of the time internal:
-a backend API and its frontends are usually
+the backend API and its frontends are usually
 developed within the same organization.
 
 In general,
-REST and GraphQL are the right tools to create an API that is meant to be used by third party developers,
-otherwise RPC is the right tool.
+REST and GraphQL are the right tools to create an API that is meant to be used by third party developers.
+Otherwise, RPC tools are the way to go.
 
 
 ## Getting Started
