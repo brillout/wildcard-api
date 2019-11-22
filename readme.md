@@ -973,15 +973,13 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
   Talks about the technologies Wildcard uses under the hood.
 - [FAQ](/docs/faq.md#faq)
   <br/>
-  Covers high-level questions such as "Isn't GraphQL more powerful than RPC?"
+  Covers high-level questions such as "Which is more powerful, GraphQL or RPC?"
   as well as low-level questions such as
   "How can I do versioning with RPC?" or
   "Doesn't RPC tightly couple frontend with backend?".
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
-  Talks about all pros and cons of RPC enabling
-  you to decide in what situations whether RPC or REST/GraphQL should be used.
 - [Example - A Todo List](/example#example---a-todo-list)
   <br/>
   Showcases a to-do list app built with RPC/Wildcard.
