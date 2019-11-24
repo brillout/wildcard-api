@@ -97,6 +97,8 @@
 <a href=#should-i-develop-frontend-and-backend-hand-in-hand>Should I develop frontend and backend hand-in-hand?</a>
 <br/>
 <a href=#how-can-i-do-versioning-with-rpc>How can I do versioning with RPC?</a>
+<br/>
+<a href=#how-should-i-structure-my-rpc-endpoints>How should I structure my RPC endpoints?</a>
 
 <br/>
 
@@ -364,6 +366,144 @@ As explained in
 we recommend to deploy frontend and backend synchronously.
 You then don't need
 versioning: your backend always serves a single and the correct version of your API.
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
+if you have questions, feature requests, or ideas.
+We enjoy talking with our users :-).
+</sup>
+
+<br/>
+
+<sup>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
+### How should I structure my RPC endpoints?
+
+RPC brings frontend and backend together in a seamless fashion.
+RPC is agnostic to structure; how you structure your code is entirely up to you.
+
+You may therefore ask yourself "How should I structure my endpoints?".
+
+**The short answer**
+
+Don't worry about it &mdash; you'll figure it out as you go.
+(The structure of your code will be determined mostly by your business logic and only marginally by RPC.)
+
+**The long answer**
+
+For example, should one do this:
+
+~~~js
+// We have one generic mutation endpoint.
+endpoints.updateTodo = async function({id, text, completed}) {
+  const todo = await Todo.findOne({id});
+  if( text!==undefined ) todo.text = text;
+  if( completed!==undefined ) todo.completed = completed;
+  await todo._save();
+};
+~~~
+
+Or this:
+
+~~~js
+// We create a mutation endpoint for each action.
+endpoints.updateTodoText = async function({id, text}) {
+  await updateTodo({id, text});
+};
+endpoints.updateTodoCompleted = async function({id, completed}) {
+  await updateTodo({id, completed});
+};
+
+async function updateTodo({id, text}) {
+  const todo = await Todo.findOne({id});
+  if( text!==undefined ) todo.text = text;
+  if( completed!==undefined ) todo.completed = completed;
+  await todo._save();
+}
+~~~
+
+The answer is that it doesn't make a difference.
+And that's the whole point:
+your code structure will be determined more by your business logic and less by your RPC endpoints.
+
+That said,
+you can simply start to create
+one endpoint per need:
+
+~~~js
+// We create endpoints for each page.
+
+// Get data for https://example.com
+endpoints.getLandingPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+
+  const todos = await Todo.find({userId: user.id, completed: false});
+
+  return {
+    user: {
+      name: user.name,
+    },
+    todos,
+  };
+};
+// Get data for https://example.com/account
+endpoints.getUserAccountPageData = async function() {
+  const user = await getLoggedUser(this.headers);
+  return {
+    user: {
+      name: user.name,
+      email: user.email,
+      isPaidAccount: user.isPaidAccount,
+      /* ... */
+    }
+  }
+};
+
+// We create endpoints for each user action:
+
+endpoints.toggleTodoCompleted = async function(id) {
+  const todo = Todo.findOne({id});
+  todo.completed = !todo.completed;
+  await todo._save();
+};
+endpoints.createNewTodo = async function (text) {
+  const todo = new Todo({text});
+  await todo._save();
+  return todo.id;
+};
+endpoints.updateTodoText = async function({id, text}) {
+  const todo = Todo.findOne({id});
+  todo.text = text;
+  await todo._save();
+};
+~~~
+
+That is, each endpoint call will occur exactly once in the frontend code.
+
+This works for most uses cases.
+In doubt,
+use your best judgement.
+
+Bear in mind that, in general, it's best to create few structures and abstractions.
+Too many structures are dangerously counter-productive.
+
+To conclude,
+how you strucutre your code has less to do with RPC and more to do with your business logic.
+There are more crucial and interesting questions such as "How can I structure my code to isolate business logic in order to scale from 3 developers to 7 developers?".
 
 
 <br/>
