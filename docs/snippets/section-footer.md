@@ -4,9 +4,8 @@
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>

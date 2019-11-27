@@ -138,7 +138,7 @@ developed within the same organization.
 
 In general,
 REST and GraphQL are the right tools to create an API that is meant to be used by third party developers.
-Otherwise, RPC tools are the way to go.
+Otherwise, RPC is the way to go.
 
 
 ## Getting Started

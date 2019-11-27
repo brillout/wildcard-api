@@ -218,7 +218,7 @@ developed within the same organization.
 
 In general,
 REST and GraphQL are the right tools to create an API that is meant to be used by third party developers.
-Otherwise, RPC tools are the way to go.
+Otherwise, RPC is the way to go.
 
 
 ## Getting Started
@@ -424,9 +424,8 @@ That's it.
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -492,9 +491,8 @@ see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -646,9 +644,8 @@ see [Error Handling](#error-handling).
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -773,9 +770,8 @@ import 'handli'; // npm install handli
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -805,9 +801,8 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -919,9 +914,8 @@ async function callEndpoint() {
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
@@ -969,9 +963,8 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub issue</a>
-if you have questions, feature requests, or ideas.
-We enjoy talking with our users :-).
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
 <br/>
