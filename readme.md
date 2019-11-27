@@ -424,7 +424,7 @@ That's it.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -491,7 +491,7 @@ see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -644,7 +644,7 @@ see [Error Handling](#error-handling).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -770,7 +770,7 @@ import 'handli'; // npm install handli
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -801,7 +801,7 @@ Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -914,7 +914,7 @@ async function callEndpoint() {
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
@@ -963,7 +963,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 

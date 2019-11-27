@@ -4,7 +4,7 @@
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
 if you have questions or if something is not clear. We enjoy talking with our users.
 </sup>
 
