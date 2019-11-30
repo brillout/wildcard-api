@@ -4,7 +4,7 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Wildcard compared to REST, GraphQL, and other RPCs](#wildcard-compared-to-REST-GraphQL-and-other-RPCs)
+[Wildcard compared to REST, GraphQL, and gRPC](#wildcard-compared-to-REST-GraphQL-and-gRPC)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Learning Material](#learning-material)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -102,7 +102,7 @@ its author is responsive,
 and issues are fixed within 1-2 days.
 
 
-## Wildcard compared to REST, GraphQL, and other RPCs
+## Wildcard compared to REST, GraphQL, and gRPC
 
 REST and GraphQL are wonderful tools to create an API that is meant to be used by third party developers.
 Facebook's API, for example, is used by ~200k third parties.
