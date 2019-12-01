@@ -156,7 +156,7 @@ cli.command('create <text>').action(async text => {
 });
 ~~~
 
-Now, let's imagine we want to implement a private frontend that has same functionallity than our CLI.
+Now, let's imagine we want to implement a private frontend that has same functionallity as our CLI.
 Do we need REST/GraphQL? Let's try with RPC and see how far we get.
 
 ~~~js

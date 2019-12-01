@@ -84,7 +84,7 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Wildcard compared to REST, GraphQL, and gRPC](#wildcard-compared-to-REST-GraphQL-and-gRPC)
+[Wildcard compared to REST and GraphQL](#wildcard-compared-to-REST-and-GraphQL)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Learning Material](#learning-material)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -182,43 +182,32 @@ its author is responsive,
 and issues are fixed within 1-2 days.
 
 
-## Wildcard compared to REST, GraphQL, and gRPC
+## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful tools to create an API that is meant to be used by third party developers.
+REST and GraphQL are wonderful tools to create an API for large projects with many third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
-third party developers
+third-party developers
 to extensively access Facebook's social graph
-enabling them to build all kinds of applications.
-For an API used by that many third party developers,
+and build all kinds of applications.
+For an API used by that many third parties,
 GraphQL is the fitting tool.
 
-But, to create an internal API
-(an API developed and used by developers working within a same organization),
-[RPC](/docs/what-is-rpc.md#what-is-rpc) offers a simpler and more powerful alternative.
+But
+for small to medium-sized projects
+[RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is often enough.
 
-Large companies,
-such as [Netflix](https://grpc.io/about/#cases-who-s-using-it-and-why),
-[Google](https://grpc.io/faq/#who-s-using-this-and-why) and
-[Facebook](https://github.com/facebook/fbthrift),
-are starting to replace REST/GraphQL with RPC
-for their internal APIs.
-Most notably with [gRPC](https://grpc.io/) which is getting popular in the industry.
+RPC especially excels in prototyping.
+A prototype usually needs only few API endpoints &mdash; RPC enables you to quickly implement, deliver, and evolve an MVP.
+As you scale, you progressively replace your RPC endpoints with a RESTful or GraphQL API.
 
-Both gRPC and Wildcard are RPC tools.
-While gRPC focuses on cross-platform support (Go, Python, Java, C++, ...),
-Wildcard only supports JavaScript (Browser & Node.js).
-This allows Wildcard to have a simple design and to be very easy to use.
+And, once you have scaled, you will know better whether you should go for REST or GraphQL.
+Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
+You can start with RPC today and decide later whether to use REST or GraphQL.
 
-RPC is also increasingly used to create backend APIs
-as they are most of the time internal:
-the backend API and its frontends are usually
-developed within the same organization.
-
-In general,
-REST and GraphQL are the right tools to create an API that is meant to be used by third party developers.
-Otherwise, RPC is the way to go.
+In short,
+use [RPC as default](/docs/rpc-as-default.md#rpc-as-default).
 
 
 ## Getting Started
@@ -403,7 +392,7 @@ Otherwise, RPC is the way to go.
    };
    ~~~
 
-3. You can now use `wildcard-api/client` to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
+3.  Use the `wildcard-api/client` package to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
 
    ~~~js
    // Browser
