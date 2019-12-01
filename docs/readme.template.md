@@ -4,7 +4,7 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Wildcard compared to REST, GraphQL, and gRPC](#wildcard-compared-to-REST-GraphQL-and-gRPC)
+[Wildcard compared to REST and GraphQL](#wildcard-compared-to-REST-and-GraphQL)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Learning Material](#learning-material)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -102,8 +102,32 @@ its author is responsive,
 and issues are fixed within 1-2 days.
 
 
-## Wildcard compared to REST, GraphQL, and gRPC
+## Wildcard compared to REST and GraphQL
 
+REST and GraphQL are wonderful tools to create an API for large projects with many third-party developers.
+Facebook's API, for example, is used by ~200k third parties.
+It is no surprise that Facebook is using (and invented) GraphQL;
+a GraphQL API enables
+third-party developers
+to extensively access Facebook's social graph
+and build all kinds of applications.
+For an API used by that many third parties,
+GraphQL is the fitting tool.
+
+But
+for small to medium-sized projects
+[RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is often enough.
+
+RPC especially excels in prototyping.
+A prototype usually needs only few API endpoints &mdash; RPC enables you to quickly implement, deliver, and evolve an MVP.
+As you scale, you progressively replace your RPC endpoints with a RESTful or GraphQL API.
+
+And, once you have scaled, you will know better whether you should go for REST or GraphQL.
+Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
+You can start with RPC today and decide later whether to use REST or GraphQL.
+
+In short,
+use [RPC as default](/docs/rpc-as-default.md#rpc-as-default).
 
 
 ## Getting Started
@@ -288,7 +312,7 @@ and issues are fixed within 1-2 days.
    };
    ~~~
 
-3. You can now use `wildcard-api/client` to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
+3.  Use the `wildcard-api/client` package to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
 
    ~~~js
    // Browser
