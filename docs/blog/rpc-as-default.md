@@ -37,7 +37,8 @@ In short,
 use RPC as default.
 
 RPC tools:
-- [JavaScript] [Wildcard API]()
+- [JavaScript] [Wildcard API](https://github.com/reframejs/wildcard-api)
+- TODO
 - Is an RPC tool missing? Create a pull request.
 
 (Note that [gRPC](https://grpc.io/) is better suited for microservices and less suited for backend APIs.)

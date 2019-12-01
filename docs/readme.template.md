@@ -126,8 +126,8 @@ And, once you have scaled, you will know better whether you should go for REST o
 Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
 You can start with RPC today and decide later whether to use REST or GraphQL.
 
-In short,
-use [RPC as default](/docs/rpc-as-default.md#rpc-as-default).
+You can use [RPC as default](/docs/rpc-as-default.md#rpc-as-default) and
+use REST and GraphQL only after the need arises.
 
 
 ## Getting Started
