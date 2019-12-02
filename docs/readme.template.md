@@ -124,8 +124,8 @@ RPC allows you to quickly deliver, modify, and evolve an MVP.
 As you scale from prototype
 to a large application,
 it will become clear if you need REST or GraphQL and which one fits best your application.
-Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
-RPC allows you to decide whether to use REST or GraphQL later as you scale.
+Deciding whether to use REST or GraphQL for an application that does not yet exist is difficult at best, if not impossible.
+RPC allows you to implement your application without REST and GraphQL first and decide later as you scale whether to use REST or GraphQL.
 You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 Use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
