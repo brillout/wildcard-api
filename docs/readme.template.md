@@ -117,14 +117,16 @@ GraphQL is the fitting tool.
 But
 for small to medium-sized projects
 [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is often enough.
+RPC is especially well suited for prototypes
+which usually need only few API endpoints.
+RPC allows you to quickly deliver, modify, and evolve an MVP.
 
-RPC is especially well suited for prototyping.
-A prototype usually needs only few API endpoints; RPC enables you to quickly implement and modify an MVP.
-As you scale, you progressively replace your RPC endpoints with a RESTful or GraphQL API.
-
-And, once you have scaled, you will know better whether you should go for REST or GraphQL.
+As you scale from prototype
+to a large application,
+it will become clear if you need REST or GraphQL and which one fits best your application.
 Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
-You can start with RPC today and decide later whether to use REST or GraphQL.
+RPC allows you to decide whether to use REST or GraphQL later as you scale.
+You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 Use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
