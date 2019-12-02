@@ -184,30 +184,32 @@ and issues are fixed within 1-2 days.
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful tools to create an API for large projects with many third-party developers.
+REST and GraphQL are wonderful tools to create an API for a large project with many developers and many third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
 and build all kinds of applications.
-For an API used by that many third parties,
+For an API used by that many developers,
 GraphQL is the fitting tool.
 
 But
 for small to medium-sized projects
 [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is often enough.
+RPC is especially well suited for prototypes
+which usually need only few API endpoints.
+RPC allows you to quickly deliver, modify, and evolve an MVP.
 
-RPC especially excels in prototyping.
-A prototype usually needs only few API endpoints &mdash; RPC enables you to quickly implement, deliver, and evolve an MVP.
-As you scale, you progressively replace your RPC endpoints with a RESTful or GraphQL API.
-
-And, once you have scaled, you will know better whether you should go for REST or GraphQL.
+As you scale from prototype
+to a large application,
+it will become clear if you need REST or GraphQL and which one fits best your application.
 Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
-You can start with RPC today and decide later whether to use REST or GraphQL.
+RPC allows you to decide whether to use REST or GraphQL later as you scale.
+You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
-You can use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
-use REST and GraphQL only after the need arises.
+Use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
+switch to REST or GraphQL when and if the need arises.
 
 
 ## Getting Started
