@@ -191,8 +191,8 @@ a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
 and build all kinds of applications.
-For an API used by that many developers,
-GraphQL is the fitting tool.
+For an API used by that many (third-party) developers,
+GraphQL is the right tool.
 
 But
 for small to medium-sized projects
@@ -201,11 +201,13 @@ RPC is especially well suited for prototypes
 which usually need only few API endpoints.
 RPC allows you to quickly deliver, modify, and evolve an MVP.
 
-As you scale from prototype
-to a large application,
-it will become clear if you need REST or GraphQL and which one fits best your application.
-Deciding whether to use REST or GraphQL for an architecture that doesn't exist yet is difficult at best, if not impossible.
-RPC allows you to decide whether to use REST or GraphQL later as you scale.
+Deciding whether to use REST or GraphQL for an application that does not yet exist
+[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer)
+at best, if not impossible.
+RPC allows you to implement your application without REST and GraphQL at first and later decide,
+as it becomes clear what you need,
+whether RPC is enough and
+whether either REST or GraphQL best fits your application.
 You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 Use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
