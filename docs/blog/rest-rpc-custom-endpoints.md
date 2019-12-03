@@ -48,7 +48,7 @@ endpoints.hello = function(name) {
 import {endpoints} from 'wildcard-api/client';
 
 (async () => {
-  // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC).
+  // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC)
   const {message} = await endpoints.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
@@ -104,7 +104,7 @@ Python Example
 </summary>
 
 ~~~python
-// RPC-like API with Python and FastAPI
+# RPC-like API with Python and FastAPI
 
 from fastapi import FastAPI
 from .database import db, models
@@ -113,9 +113,9 @@ from .auth import AuthMiddleware
 app = FastAPI()
 app.add_middleware(AuthMiddleware)
 
-// RPC-like API: we don't create CRUD endpoints, instead we
-// create endpoints as the need arises — in an ad-hoc fashion.
-// Similarly to what we would do with RPC.
+# RPC-like API: we don't create CRUD endpoints, instead we
+# create endpoints as the need arises — in an ad-hoc fashion.
+# Similarly to what we would do with RPC.
 
 @app.get("/get-todo-items")
 def get_todo_items(user_id):

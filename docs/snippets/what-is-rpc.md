@@ -27,7 +27,7 @@ endpoints.hello = function(name) {
 import {endpoints} from 'wildcard-api/client';
 
 (async () => {
-  // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC).
+  // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC)
   const {message} = await endpoints.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
