@@ -39,7 +39,7 @@ use RPC (or
 as default.
 
 For JavaScript and Node.js you can use the RPC implementation
-[Wildcard API](https://github.com/reframejs/wildcard-api).
+[Wildcard API](https://github.com/reframejs/wildcard-api)
 and for other server frameworks
-you can get achieve similar by using [custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints).
+you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints).
 
