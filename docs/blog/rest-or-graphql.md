@@ -26,3 +26,4 @@ RPC is often enough for small to medium-sized applications.
 In short,
 use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
+

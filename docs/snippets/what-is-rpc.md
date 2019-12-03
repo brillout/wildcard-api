@@ -1,13 +1,18 @@
 The [Wikipedia article](https://en.wikipedia.org/wiki/Remote_procedure_call) explains it well:
 
-> [...] A **r**emote **p**rocedure **c**all (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
+> [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
 
-For example a frontend with a Node.js backend and Wildcard:
+This is a strict definition of RPC;
+the term RPC is often used loosely to denote an RPC-like unstructured and schemaless approach,
+such as
+[custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints) or
+[REST level 0](/docs/blog/rest-rpc-custom-endpoints.md#rest-level-5).
+
+Example of RPC between frontend and backend:
 
 ~~~js
 // Node.js server
 
-// We use Wildcard to create an RPC API
 const {endpoints} = require('wildcard-api');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
@@ -22,17 +27,17 @@ endpoints.hello = function(name) {
 import {endpoints} from 'wildcard-api/client';
 
 (async () => {
-  // We call `hello` remotely from the browser.
+  // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC).
   const {message} = await endpoints.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
 
-What we are doing here is RPC:
+This is RPC:
 our function `hello` is executed on the Node.js server but called remotely in the browser.
 
 In the context of web development,
-RPC can be used with SQL/ORM queries in order to retrieve/mutate data.
+RPC is usually used with SQL/ORM queries to retrieve/mutate data.
 For example:
 
 ~~~js

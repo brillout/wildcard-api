@@ -25,8 +25,8 @@ you create a RESTful or GraphQL API
 and progressively replace your RPC endpoints with your newly created RESTful/GraphQL API.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist [is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer) at best, if not impossible.
-RPC enables you to deliver and evolve an MVP
-while progressively gathering information about the requirements of your business before deciding between REST and GraphQL.
+RPC enables you to quickly deliver and evolve an MVP
+while progressively gathering information about your business' requirements before deciding between REST and GraphQL.
 
 With RPC,
 you can get to your seed funding round faster
@@ -34,36 +34,12 @@ and, as you rise your series A and hire more developers,
 you progressively replace RPC with REST or GraphQL.
 
 In short,
-use RPC as default.
+use RPC (or
+[RPC-like](/docs/blog/rest-rpc-custom-endpoints.md#readme))
+as default.
 
 For JavaScript and Node.js you can use the RPC implementation
 [Wildcard API](https://github.com/reframejs/wildcard-api).
-For other server frameworks,
-you can achieve something like RPC by implementing custom routes.
-~~~python
-// RPC-like API with Python and FastAPI
+and for other server frameworks
+you can get achieve similar by using [custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints).
 
-from fastapi import FastAPI
-from .database import db, models
-from .auth import AuthMiddleware
-
-app = FastAPI()
-app.add_middleware(AuthMiddleware)
-
-// RPC-like API: we don't create CRUD endpoints, instead we
-// create endpoints as the need arises in an ad-hoc fashion.
-// On a high level, this is the same as RPC.
-
-@app.get("/get-todo-items")
-def get_todo_items(user_id):
-		todos = db.query(models.Todo).all()
-    return todos
-
-@app.post("/create-todo-item/{text}")
-def create_todo_item(text, user_id):
-    db_item = models.Item(text=text, author_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-~~~
