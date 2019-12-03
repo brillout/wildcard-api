@@ -82,11 +82,13 @@ app.use(AuthMiddleware);
 // create endpoints as the need arises — in an ad-hoc fashion.
 // Similarly to what we would do with RPC.
 
-app.get('/get-todo-items', function (req, res) {
-  res.send({test: 'bla'})
+app.get('/get-todo-items', async (req, res) => {
+  const {user} = req;
+  const todos = await Todo.findAll({authorId: user.id});
+  return todos;
 });
 
-app.get('/create-todo-item/:text', function (req, res) {
+app.get('/create-todo-item/:text', async (req, res) => {
   const {user} = req;
   const {text} = req.params;
   const newTodo = new Todo({text, authorId: user.id});
