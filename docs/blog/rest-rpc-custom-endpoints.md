@@ -22,7 +22,7 @@ Let's now have a look at the meaning of these terms.
 
 ##### RPC
 
-Strictly speaking, RPC denotes the practice of calling a procedure that is defined on a remote computer/process
+RPC denotes the practice of calling a procedure that is defined on a remote computer/process
 as if it were defined locally on the same computer/process.
 A more elaborate definition can be found [here](/docs/what-is-rpc.md#what-is-rpc).
 
@@ -58,10 +58,10 @@ import {endpoints} from 'wildcard-api/client';
 
 ##### Custom JSON endpoints
 
-With *custom JSON endpoints* we denote the practice of creating new and modifying custom server routes as the need arises &mdash; in an ad-hoc fashion.
-Usually, HTTP is used to transport and JSON to serialize the data.
-
-An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
+With *custom JSON endpoints* we denote the practice of creating and modifying server routes as the need arises &mdash; in an ad-hoc fashion.
+Usually,
+JSON is used to serialize the data and
+HTTP to transport it.
 
 <details>
 <summary>
@@ -133,6 +133,8 @@ def create_todo_item(text, user_id):
     return db_item
 ~~~
 </details>
+
+An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
 
 
 ##### REST level 0

@@ -5,9 +5,10 @@ REST and GraphQL are the default choice to create an API.
 [RPC](/docs/what-is-rpc.md#what-is-rpc)
 is rarely considered as the default choice.
 
-For a large project with many developers and many third-party developers,
-ignoring RPC makes sense:
-you need a structured API and RPC's schemaless nature is no fit.
+If you want to build an API
+for a large project that has many developers and many third-party developers,
+then it makes sense to ignore RPC:
+you need an API that has structure and RPC's schemaless nature is no fit.
 
 But,
 for a prototype that needs only few API endpoints,
@@ -38,7 +39,7 @@ use RPC (or
 [RPC-like](/docs/blog/rest-rpc-custom-endpoints.md#readme))
 as default.
 
-For JavaScript and Node.js you can use the RPC implementation
+For a Node.js backend you can use the RPC implementation
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other server frameworks
 you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints).
