@@ -1,7 +1,7 @@
 !INLINE ./header.md --hide-source-path
 &nbsp;
 
-# What is RPC
+# What is RPC?
 
 !INLINE ./snippets/what-is-rpc.md --hide-source-path
 
