@@ -210,7 +210,8 @@ whether RPC is enough and
 whether either REST or GraphQL best fits your application.
 You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
-Use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
+In short,
+use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
 
 
@@ -474,9 +475,7 @@ endpoints.getLoggedInUser = async function() {
 };
 ~~~
 
-If you do SSR,
-an additional step needs to be done in order to make authentication work,
-see [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 
 <br/>
@@ -505,7 +504,6 @@ if you have questions or if something is not clear. We enjoy talking with our us
 
 It is crucial that you define permissions.
 You shouldn't do this:
-
 ~~~js
 endpoints.run = async function(query) {
   const result = await db.run(query);
@@ -513,8 +511,8 @@ endpoints.run = async function(query) {
 };
 ~~~
 
-That's a bad idea since anyone in the world can go on your website and call:
-
+That's a bad idea since anyone in the world can go to your website,
+open the browser's web dev console, and call:
 ~~~js
 const users = await endpoints.run('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
@@ -523,8 +521,7 @@ users.forEach(({login, password}) => {
 });
 ~~~
 
-Instead, you should define permissions:
-
+Instead, you should define permissions, for example:
 ~~~js
 // Node.js server
 
@@ -532,33 +529,21 @@ const {endpoints} = require('wildcard-api');
 const getLoggedUser = require('./path/to/your/auth/code');
 const db = require('./path/to/your/db/code');
 
-// The following endpoint showcases how to implement permissions with Wildcard.
-// The endpoint only allows the author of a todo-item to modify it.
+// The following endpoint allows a to-do item's text to be modified only by its author.
 
 endpoints.updateTodoText = async function(todoId, newText) {
   const user = getLoggedUser(this.headers);
-  if( !user ){
-    // The user is not logged-in.
-    // We abort.
-    return;
-  }
+  // The user is not logged-in — we abort.
+  if( !user ) return;
 
   const todo = await db.getTodo(todoId);
+  // There is no to-do item in the database with the ID `todoId` — we abort.
+  if( !todo ) return;
 
-  if( !todo ){
-    // `todoId` didn't match any todo.
-    // We abort.
-    return;
-  }
+  // The user is not the author of the to-do item — we abort.
+  if( todo.authorId !== user.id ) return;
 
-  if( todo.authorId !== user.id ){
-    // The user is not the author of the to-do item.
-    // We abort.
-    return;
-  }
-
-  // The user is logged-in and is the author of the todo.
-  // We proceed: we commit the new to-do text.
+  // The user is logged-in and is the author of the todo — we proceed.
   await db.updateTodoText(todoId, newText);
 };
 ~~~
@@ -566,28 +551,28 @@ endpoints.updateTodoText = async function(todoId, newText) {
 You may wonder why we return `undefined` when aborting:
 
 ~~~js
-  // If the user is not logged-in, we abort.
-  if( !user ){
-    // Why do we return `undefined`?
-    // Why don't we return something like `return {error: 'Permission denied'}`?
-    return;
-  }
+// The user is not logged-in — we abort.
+if( !user ){
+  // Why do we return `undefined`?
+  // Why don't we return something like `return {error: 'Permission denied'}`?
+  return;
+}
 ~~~
 
 The reason is simple:
-when we develop the frontend we know what is allowed and the frontend always calls endpoints in an authorized way.
+when we develop the frontend we know what is allowed and we can
+develop the frontend to always call endpoints in an authorized way.
 If an endpoint call isn't allowed, either there is a bug in our frontend or an attacker is trying to hack our backend.
-If someone is trying to hack us, we want to provide him with the least amount of information and we just return `undefined`.
+If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
 
 That said,
 there are situations where it is expected that a permission may fail.
-We may want to return a value then:
-
+We return a value then:
 ~~~js
 endpoints.getTodoList = async function() {
-  const user = getLoggedUser(this.headers)
+  const user = getLoggedUser(this.headers);
+  // When the user is not logged in, the frontend redirects the user to the login page.
   if( !user ) {
-    // The frontend redirects to the login page.
     // Instead of returning `undefined` we return `isNotLoggedIn: true` so that
     // the frontend knows that the user should be redirected to the login page.
     return {
@@ -595,41 +580,36 @@ endpoints.getTodoList = async function() {
     };
   }
   /* ... */
-}
+};
 ~~~
 
-Note that, in general, you shouldn't purposely throw exceptions:
-
+Note that, in general, you should not purposely throw exceptions:
 ~~~js
-// Don't do this:
-// (Because Wildcard treats exceptions as bugs, see the "Error Handling" section.)
-endpoints.updateTodoText = async function(todoId, newText) {
-  /*...*/
-  if (todo.authorId !== user.id ){
-    throw new Error('Permissen denied: user '+user.authorId+' is not the author of todo item '+todoId);
+endpoints.getTodoList = async function() {
+  const user = getLoggedUser(this.headers);
+  if( !user ) {
+    // Don't do this:
+    throw new Error('Permissen denied: user is not logged in.');
   }
-  /*...*/
+  /* ... */
 };
 ~~~
 
 Return a JavaScript value instead:
-
 ~~~js
-// We return a JavaScript value instead of throwing an exception.
-endpoints.updateTodoText = async function(todoId, newText) {
-  /*...*/
-  if (todo.authorId !== user.id ){
+endpoints.getTodoList = async function() {
+  if( !user ) {
     return {
-      notAllowed: true,
-      reason: user '+user.authorId+' is not the author of todo item '+todoId,
+      isNotLoggedIn: true,
     };
   }
-  /*...*/
+  /* ... */
 };
 ~~~
 
-Your endpoint functions shouldn't deliberately throw exceptions,
-see [Error Handling](#error-handling).
+Your endpoint functions should not deliberately throw exceptions because
+Wildcard treats exceptions as bugs,
+which we explain in the next section [Error Handling](#error-handling).
 
 
 <br/>
@@ -660,7 +640,7 @@ Calling an endpoint throws an error when:
 - The browser cannot connect to the server. (The user is offline or your server is down.)
 - The endpoint function throws an uncaught error.
 
-If you use a library that is expected to throws errors, then catch them:
+If you use a library that is expected to throw errors, then catch them:
 
 ~~~js
 // Node.js server
@@ -701,7 +681,7 @@ endpoints.createAccount = async function({email, password}) {
   }
   */
 
-  // Instead, return a JavaScript value, e.g. a JavaScript object:
+  // Instead, return a JavaScript value:
   if( !isStrongPassword(password) ){
     return {validationError: "Password is too weak."};
   }
@@ -727,7 +707,7 @@ async function() {
   }
 
   if( err.isServerError ){
-    // Your endpoint function throwed an uncaught error: there is a bug in your server code.
+    // Your endpoint function threw an uncaught error: there is a bug in your server code.
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
@@ -785,8 +765,7 @@ if you have questions or if something is not clear. We enjoy talking with our us
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
 If you don't need authentication, then SSR works out of the box.
-
-Otherwise read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 
 <br/>
@@ -813,12 +792,7 @@ if you have questions or if something is not clear. We enjoy talking with our us
 
 ## Options
 
-> :information_source:
-> If you need an option that Wildcard is missing, then
-> [open a ticket](https://github.com/reframejs/wildcard-api/issues/new).
-> We usually implement new options within 1-2 days.
-
-List of options:
+Overview:
 
 ~~~js
 import wildcardClient from 'wildcard-api/client';
@@ -830,7 +804,7 @@ wildcardClient.serverUrl = 'https://api.example.org';
 wildcardClient.argumentsAlwaysInHttpBody = true;
 ~~~
 
-More details about each option:
+Details:
 
 - [`serverUrl`](#serverurl)
 - [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
