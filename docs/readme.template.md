@@ -175,6 +175,7 @@ switch to REST or GraphQL when and if the need arises.
 
      res.status(responseProps.statusCode);
      res.type(responseProps.contentType);
+     res.set({'ETag': responseProps.etag});
      res.send(responseProps.body);
    });
    ~~~
@@ -210,6 +211,7 @@ switch to REST or GraphQL when and if the need arises.
        const response = h.response(responseProps.body);
        response.code(responseProps.statusCode);
        response.type(responseProps.contentType);
+       response.etag(responseProps.etag);
        return response;
      }
    });
@@ -250,6 +252,7 @@ switch to REST or GraphQL when and if the need arises.
      ctx.status = responseProps.statusCode;
      ctx.body = responseProps.body;
      ctx.type = responseProps.contentType;
+     ctx.etag = responseProps.etag;
    });
 
    app.use(router.routes());

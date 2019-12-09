@@ -3,6 +3,7 @@ const defaultSerializer = require('@brillout/json-s');
 const chalk = require('chalk');
 const docsUrl = require('./package.json').repository;
 const getUrlProps = require('@brillout/url-props');
+const computeEtag = require('./computeEtag');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';
 
@@ -40,6 +41,21 @@ function WildcardApi(options={}) {
       return null;
     }
 
+    const respObj = await getRespObj({method, pathname, body, context});
+    assert.internal(respObj.contentType);
+    assert.internal(respObj.statusCode);
+    assert.internal(respObj.body);
+
+    const etag = computeEtag(respObj.body);
+    assert.internal(etag);
+
+    return {
+      ...respObj,
+      etag,
+    };
+  }
+
+  async function getRespObj({method, pathname, body, context}) {
     // `pathname` is the base pathname `/wildcard`
     if( isPathanameBase({pathname}) && isDev() && isHumanReadableMode({method}) ){
       return {

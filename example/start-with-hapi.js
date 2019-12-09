@@ -37,6 +37,7 @@ async function startServer() {
       const response = h.response(responseProps.body);
       response.code(responseProps.statusCode);
       response.type(responseProps.contentType);
+      response.etag(responseProps.etag);
       return response;
     },
   });

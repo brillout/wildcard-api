@@ -35,6 +35,7 @@ router.all('/wildcard/*', async ctx => {
   ctx.status = responseProps.statusCode;
   ctx.body = responseProps.body;
   ctx.type = responseProps.contentType;
+  ctx.etag = responseProps.etag;
 });
 
 app.use(router.routes());

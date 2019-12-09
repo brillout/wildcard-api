@@ -28,6 +28,7 @@ app.all('/wildcard/*' , async (req, res) => {
 
   res.status(responseProps.statusCode);
   res.type(responseProps.contentType);
+  res.set({'ETag': responseProps.etag});
   res.send(responseProps.body);
 });
 
