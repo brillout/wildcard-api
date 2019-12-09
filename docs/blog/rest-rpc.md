@@ -1,4 +1,4 @@
-# What is the difference between a RESTful API and an RPC-like API?
+# What do REST and RPC-like mean?
 
 There is a lot of confusion in API terminology.
 The term REST, for example, is often wrongly used to denote an RPC-like API.

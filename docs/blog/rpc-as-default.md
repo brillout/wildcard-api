@@ -42,5 +42,5 @@ as default.
 For a Node.js backend you can use the RPC implementation
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other server frameworks
-you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints).
+you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
 

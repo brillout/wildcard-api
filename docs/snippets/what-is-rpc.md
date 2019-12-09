@@ -6,7 +6,7 @@ This is the formal definition;
 the term RPC is often used loosely to denote RPC-like approaches,
 such as
 [custom JSON endpoints](/docs/blog/rest-and-rpc.md#custom-json-endpoints) or
-[REST level 0](/docs/blog/rest-rpc-custom-endpoints.md#rest-level-0).
+[REST level 0](/docs/blog/rest-rpc.md#rest-level-0).
 (Essentially any API that is schemaless, in contrast to a RESTful and GraphQL API that is based on schema.)
 
 **Example**
