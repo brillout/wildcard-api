@@ -1,24 +1,9 @@
-# What exactly does REST mean? How does it compare to RPC and custom JSON endpoints?
+# What is the difference between a RESTful API and an RPC-like API?
 
 There is a lot of confusion in API terminology.
 The term REST, for example, is often wrongly used to denote an RPC-like API.
 
-This document clarifies the API terminology.
-
-In general,
-APIs in can be classified by whether they have a schema or not.
-
-Schemaless (aka RPC-like):
-- RPC
-- Custom JSON endpoints
-- REST level 0
-
-Schema:
-- REST level 5 (aka REST)
-- GraphQL
-
-Let's now have a look at the meaning of these terms.
-
+This document clarifies the terminology.
 
 ##### RPC
 
@@ -154,8 +139,17 @@ For an API to be called REST, it needs to follow *all* the principles of all the
 A REST level 5 API, in a nutshell, is an API that consists of CRUD operations on schema models;
 a REST level 5 API has a schema (whereas a REST level 0 API is schemaless).
 
-To sum up:
-- REST level 5 ⇔ REST
-- REST level 0 ⇔ RPC-like
+##### RPC-like
 
+APIs can be classified by whether they have a schema or not.
 
+Schemaless:
+- RPC
+- Custom JSON endpoints
+- REST level 0
+
+Schema:
+- REST level 5
+- GraphQL
+
+The term RPC-like is commonly used to denote a schemaless API.
