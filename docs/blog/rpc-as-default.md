@@ -36,7 +36,7 @@ you progressively replace RPC with REST or GraphQL.
 
 In short,
 use RPC (or
-[RPC-like](/docs/blog/rest-rpc-custom-endpoints.md#readme))
+[RPC-like](/docs/blog/rest-and-rpc-like.md#rpc-like))
 as default.
 
 For a Node.js backend you can use the RPC implementation

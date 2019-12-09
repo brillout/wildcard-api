@@ -88,12 +88,12 @@ The [Wikipedia article](https://en.wikipedia.org/wiki/Remote_procedure_call) exp
 
 > [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
 
-This is the formal definition of RPC;
+This is the formal definition;
 the term RPC is often used loosely to denote RPC-like approaches,
 such as
-[custom JSON endpoints](/docs/blog/rest-rpc-custom-endpoints.md#custom-json-endpoints) or
+[custom JSON endpoints](/docs/blog/rest-and-rpc.md#custom-json-endpoints) or
 [REST level 0](/docs/blog/rest-rpc-custom-endpoints.md#rest-level-0).
-(Essentially any API that is schemaless, in contrast to RESTful and GraphQL APIs that are based on schema.)
+(Essentially any API that is schemaless, in contrast to a RESTful and GraphQL API that is based on schema.)
 
 **Example**
 
@@ -127,7 +127,7 @@ Our function `hello` is executed on the Node.js server but called remotely in th
 **RPC & web dev**
 
 In the context of web development,
-RPC is used in order to retrieve and mutate data with SQL or ORM queries.
+RPC is most often used in order to retrieve and mutate data with SQL or ORM queries.
 For example:
 
 ~~~js
