@@ -1,0 +1,12 @@
+{
+  "name": "@wildcard-api/client",
+  "version": "0.1.0",
+  "main": "index.js",
+  "dependencies": {
+    "@brillout/json-s": "^0.1.0",
+    "@brillout/assert": "^0.1.0",
+    "@brillout/fetch": "^0.1.2"
+  },
+  "description": "JavaScript Functions as API.",
+  "repository": "https://github.com/reframejs/wildcard-api"
+}

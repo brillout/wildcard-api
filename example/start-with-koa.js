@@ -2,7 +2,7 @@ const assert = require('@brillout/assert');
 const Koa = require('koa');
 const Router = require('koa-router');
 const Static = require('koa-static');
-const {getApiResponse} = require('wildcard-api');
+const {getApiResponse} = require('@wildcard-api/server');
 const bodyParser = require('koa-bodyparser');
 
 require('./api/endpoints');

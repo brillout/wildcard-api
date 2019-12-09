@@ -1,6 +1,6 @@
 import './common';
 import React from 'react';
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 import renderPage from './renderPage';
 import LoadingWrapper from './LoadingWrapper';
 import Todo from './Todo';

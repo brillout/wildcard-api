@@ -1,4 +1,4 @@
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 
 // A simple endpoint to test Wildcard
 endpoints.mirror = async function(str) {

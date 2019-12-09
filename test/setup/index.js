@@ -3,8 +3,8 @@ process.on('unhandledRejection', err => {throw err});
 const assert = require('@brillout/assert');
 global.assert = assert;
 
-const WildcardApi = require('../../server/WildcardApi');
-const WildcardClient = require('../../client/WildcardClient');
+const WildcardApi = require('@wildcard-api/server/WildcardApi');
+const WildcardClient = require('@wildcard-api/client/WildcardClient');
 
 const bundle = require('./browser/bundle');
 const launchBrowser = require('./browser/launchBrowser');

@@ -1,7 +1,7 @@
 const assert = require('@brillout/assert');
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
-const {getApiResponse} = require('wildcard-api');
+const {getApiResponse} = require('@wildcard-api/server');
 require('./api/endpoints');
 
 startServer();
