@@ -106,7 +106,7 @@ Usage
 
 ## What is Wildcard
 
-Wildcard is a JavaScript library to create an API between your Node.js server and your frontend.
+Wildcard is a JavaScript library to create a backend API for your Node.js server.
 
 With Wildcard,
 creating an API endpoint is as easy as creating a JavaScript function:
@@ -141,7 +141,7 @@ callable in the browser.
 Nothing more, nothing less.
 
 How you retrieve and mutate data is up to you.
-You can, for example, use SQL/ORM queries:
+You can, for example, use SQL or ORM queries:
 
 ~~~js
 // Node.js server
@@ -184,7 +184,7 @@ and issues are fixed within 1-2 days.
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful tools to create an API for a large project with many developers and many third-party developers.
+REST and GraphQL are wonderful tools to create an API that is used by many developers and many third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
@@ -198,14 +198,13 @@ But
 for small to medium-sized projects
 [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is often enough.
 RPC is especially well suited for prototypes
-which usually need only few API endpoints.
+which usually only need only API endpoints.
 RPC allows you to quickly deliver, modify, and evolve an MVP.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist
-[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer)
-at best, if not impossible.
+[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer).
 RPC allows you to implement your application without REST and GraphQL at first and later decide,
-as it becomes clear what you need,
+as you scale and as it becomes clear what you need,
 whether RPC is enough and
 whether either REST or GraphQL best fits your application.
 You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
