@@ -9,5 +9,6 @@
     "chalk": "^2.4.2"
   },
   "description": "JavaScript Functions as API.",
-  "repository": "https://github.com/reframejs/wildcard-api"
+  "repository": "https://github.com/reframejs/wildcard-api",
+  "publishConfig": {"access": "public"}
 }

@@ -1,7 +1,7 @@
 {
-  "private": true,
   "name": "example",
-  "version": "0.1.0",
+  "version": "0.0.1-never-published",
+  "private": true,
   "scripts": {
     "start": "yarn run build && yarn run server",
     "server": "node ./start-with-express.js",
@@ -9,8 +9,6 @@
   },
   "dependencies": {
     "@hapi/inert": "^5.2.1",
-    "@wildcard-api/client": "0.1.0",
-    "@wildcard-api/server": "0.1.0",
     "babel-polyfill": "^6.26.0",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",

@@ -1,7 +1,7 @@
 const assert = require('@brillout/assert');
 const defaultSerializer = require('@brillout/json-s');
 const chalk = require('chalk');
-const docsUrl = require('../package.json').repository;
+const docsUrl = require('./package.json').repository;
 const getUrlProps = require('@brillout/url-props');
 
 const DEFAULT_API_URL_BASE = '/wildcard/';

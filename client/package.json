@@ -8,5 +8,6 @@
     "@brillout/fetch": "^0.1.2"
   },
   "description": "JavaScript Functions as API.",
-  "repository": "https://github.com/reframejs/wildcard-api"
+  "repository": "https://github.com/reframejs/wildcard-api",
+  "publishConfig": {"access": "public"}
 }

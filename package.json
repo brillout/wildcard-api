@@ -2,7 +2,7 @@
   "scripts": {
     "test": "cd test/ && yarn run-tests",
     "example": "cd example/ && yarn start",
-    "release": "(cd client/ && npm run publish) && (cd server/ && npm run publish)",
+    "release": "(cd client/ && npm publish) && (cd server/ && npm publish)",
     "docs": "mdocs",
     "clean": "git clean -Xdf"
   },
