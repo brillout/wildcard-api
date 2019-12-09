@@ -68,7 +68,7 @@ everything the backend can do is only one JavaScript function away:
 ~~~js
 // Your Node.js server
 
-const endpoints = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 
 endpoints.iHavePower = function() {
   // I can do everything the Node.js server can do
@@ -77,7 +77,7 @@ endpoints.iHavePower = function() {
 ~~~js
 // Your browser frontend
 
-const endpoints = require('wildcard-api/client');
+import {endpoints} from '@wildcard-api/client';
 
 // The entire backend power is one JavaScript function away
 endpoints.iHavePower();
@@ -111,7 +111,7 @@ For example:
 // This API endpoint is tightly coupled to the frontend:
 // it returns exactly and only what the landing page needs.
 endpoints.getLandingPageData = async function() {
-  const user = await getLoggedUser(this.headers);
+  const {user} = this;
   if( !user ){
     return {isNotLoggedIn: true};
   }
@@ -255,20 +255,18 @@ one endpoint per need:
 
 // Get data for https://example.com
 endpoints.getLandingPageData = async function() {
-  const user = await getLoggedUser(this.headers);
-
-  const todos = await Todo.find({userId: user.id, completed: false});
+  const todos = await Todo.find({userId: this.user.id, completed: false});
 
   return {
     user: {
-      name: user.name,
+      name: this.user.name,
     },
     todos,
   };
 };
 // Get data for https://example.com/account
 endpoints.getUserAccountPageData = async function() {
-  const user = await getLoggedUser(this.headers);
+  const {user} = this;
   return {
     user: {
       name: user.name,

@@ -396,7 +396,7 @@ switch to REST or GraphQL when and if the need arises.
    };
    ~~~
 
-3.  Use the `wildcard-api/client` package to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
+3. Use the `wildcard-api/client` package to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
 
    ~~~js
    // Browser

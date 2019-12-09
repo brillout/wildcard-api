@@ -16,20 +16,18 @@ once to HTML in Node.js and then again to the DOM in the browser.
 SSR works out of the box.
 But with one exception:
 when calling an endpoint in Node.js,
-you need to manually provide any HTTP request information
-your endpoint function may need.
+you need to manually bind the `context` object.
 
 For example:
 
 ~~~js
 // Node.js
 
-const {endpoints} = require('wildcard-api');
-const getUser = require('./path/to/our/auth-code/getUser');
+const {endpoints} = require('@wildcard-api/server');
 
+// Our endpoint function `whoAmI` needs the name of the logged-in user.
 endpoints.whoAmI = async function() {
-  // Our endpoint function `whoAmI` needs the HTTP headers.
-  const user = await getUser(this.headers.cookie);
+  const {user} = this;
   return 'You are '+user.name;
 };
 ~~~
@@ -37,72 +35,63 @@ endpoints.whoAmI = async function() {
 ~~~js
 // Browser & Node.js (this code runs in the browser as well as in Node.js)
 
-const {endpoints} = require('wildcard-api/client');
+const {endpoints} = require('@wildcard-api/client');
 
 // Whether the code runs in the browser or in Node.js
 function isNodejs() {
   return typeof window === "undefined";
 }
 
-// `req` is the HTTP request object provided by Express/Koa/Hapi/...
+// `req` is the HTTP request object provided by your server
+// framework (Express/Koa/Hapi/...).
 async function(req) {
   let {whoAmI} = endpoints;
 
   if( isNodejs() ){
-    // When we call `whoAmI` in Node.js we need
-    // to manually provide any HTTP request information that
-    // `whoAmI` needs.
+    // When we call `whoAmI` in Node.js we need to manually
+    // provide any HTTP request information that `whoAmI` needs.
 
-    // For example here, we provide the HTTP headers to our
-    // endpoint function `whoAmI` by binding `headers`
-    // to it.
-    // The `whoAmI` endpoint function can then
-    // access the HTTP headers at `this.headers`.
-    const {headers} = req;
-    whoAmI = whoAmI.bind({headers});
+    // We provide information about the logged-in user to our
+    // endpoint function `whoAmI` by binding `req.user`:
+    const {user} = req;
+    whoAmI = whoAmI.bind({user});
   }
 
-  await whoAmI();
+  const userName = await whoAmI();
+  console.log("I am "+userName);
 }
 ~~~
 
-We now showcase an authentication example that:
-- Illustrates where `req` comes from.
-  <br/>
-  Where `req` comes from depends on what SSR tool you are using.
-  (Or if you don't use any SSR tool, how you implement SSR.)
-  If you know where to get `req` from then you can skip reading the example.
-- Explains why Wildcard requires you to manually provide `req`.
-  <br/>
-  You may wonder why Wildcard requires you to provide `req` when calling an endpoint
-  in Node.js but doesn't require you to do so when calling an endpoint in Node.js.
-  If you are curious why that is, then read on.
-  Otherwise you can skip reading the example.
+We now dissect an authentication example in order to showcase and explain:
+- Where `req` comes from.
+- Why Wildcard requires you to manually provide `req`.
 
-# Example
+Feel free to skip the example dissection if you already know where to get `req` from &mdash;
+just remember to manually `bind` the context when doing SSR.
 
-Let's re-consider the endpoint `whoAmI` from above:
+**Example Dissection**
+
+Let's consider the endpoint `whoAmI` from above:
 
 ~~~js
 // Node.js
 
-const {endpoints} = require('wildcard-api');
-const getUser = require('./path/to/our/auth-code/getUser');
+const {endpoints} = require('@wildcard-api/server');
 
+// Our endpoint function `whoAmI` needs the name of the logged-in user.
 endpoints.whoAmI = async function() {
-  // Our endpoint function `whoAmI` needs the HTTP headers.
-  const user = await getUser(this.headers.cookie);
+  const {user} = this;
   return 'You are '+user.name;
 };
 ~~~
 
-Let's now dissect what happens when we call `whoAmI` in the browser:
+And let's now dissect what happens when we call `whoAmI` in the browser:
 
 ~~~js
 // Browser
 
 // We use the Wildcard client in the browser
-const {endpoints} = require('wildcard-api/client');
+const {endpoints} = require('@wildcard-api/client');
 
 (async () => {
   // Because we are on the browser, the Wildcard client makes an HTTP request to our Node.js server
@@ -112,26 +101,24 @@ const {endpoints} = require('wildcard-api/client');
 })();
 ~~~
 
-The HTTP request that the Wildcard client made is then handled by the following function `wildcardHandler`:
+The HTTP request that the Wildcard client made is handled by the following function `wildcardHandler`:
 
 ~~~js
 // Node.js
 
-const {getApiResponse} = require('wildcard-api');
+const {getApiResponse} = require('@wildcard-api/server');
 
 app.all('/wildcard/*', wildcardHandler);
 
 async function wildcardHandler(req, res) {
-  const requestProps = {
-    url: req.url,
-    method: req.method,
-    body: req.body,
-
-    // We pass the HTTP headers to `getApiResponse`.
-    // Our endpoint function `whoAmI` can then access the headers at `this.headers`.
-    headers: req.headers,
+  // The context object is available to endpoint functions as `this`.
+  const context = {
+    // Authentication middlewares usually make user information available at `req.user`
+    user: req.user,
   };
-  const responseProps = await getApiResponse(requestProps);
+
+  const {url, method, body} = req;
+  const responseProps = await getApiResponse({url, method, body}, context);
 
   res.status(responseProps.statusCode);
   res.type(responseProps.contentType);
@@ -143,36 +130,35 @@ What happens here is:
 - We call `whoAmI` in the browser.
 - Wildcard makes an HTTP request to our Node.js server.
 - Our `wildcardHandler` function is called.
-- We add `req.headers` to `requestProps`.
-- We pass `requestProps` to `getApiResponse`.
-- Wildcard binds `requestProps` to our endpoint function `whoAmI` (in other words `this===requestProps` in the `whoAmI` function).
-- The endpoint function `whoAmI` can access the HTTP headers at `this.headers`.
+- We add `req.user` to `context`.
+- Wildcard binds `context` to our endpoint function `whoAmI` (in other words `this===context` in the `whoAmI` function).
+- The endpoint function `whoAmI` can access information about the logged-in user at `this.user`.
 
-The key take away here is that it is our `wildcardHandler` function that provides `req.headers`.
+The key take away here is that it is our `wildcardHandler` function that provides `req.user`.
 
 But when we call the endpoint `whoAmI` in Node.js,
 our endpoint function `whoAmI` is directly called: no HTTP request is made.
 This means that `getApiResponse` is never called.
 
-There is no way for Wildcard to get the HTTP headers &mdash; we have to manually `bind()` the headers:
+There is no way for Wildcard to get `req.user` &mdash; we have to manually `bind()` the `req.user` object:
 
 ~~~js
 // Node.js
 
 // We use the Wildcard client in Node.js
-const {endpoints} = require('wildcard-api/client');
+const {endpoints} = require('@wildcard-api/client');
 
 module.exports = getGreeting;
 
-async function getGreeting({
-  // We see later where `headers` comes from.
-  headers,
-}) {
+async function getGreeting(
+  // We see later where `req` comes from.
+  req
+) {
 
   // Because we are in Node.js, the Wildcard client directly calls
-  // the endpoint function `whoAmI`.
-  // Wildcard doesn't have access to any HTTP headers and we need to bind some `headers` ourselves:
-  let whoAmI = endpoints.whoAmI.bind({headers});
+  // the endpoint function `whoAmI`. Wildcard doesn't have access to
+  // `req.user` and we need to bind it ourselves:
+  let whoAmI = endpoints.whoAmI.bind({user: req.user});
 
   const userName = await whoAmI();
 
@@ -180,10 +166,10 @@ async function getGreeting({
 }
 ~~~
 
-You may now wonder where does `headers` come from.
-The `headers` should be provided by your SSR tool.
-And, when you implement SSR yourself,
-the `headers` comes from Express/Koa/Hapi/...
+You may wonder where `req` comes from.
+The `req` object should be provided by your SSR tool
+or, if you implemented SSR yourself,
+by your server framework (Express/Koa/Hapi/...)
 which we now showcase.
 
 In a custom SSR implementation,
@@ -200,11 +186,10 @@ const getGreeting = require('../common/getGreeting');
 const app = express();
 
 app.get('/hello' , async (req, res) => {
-  // The `headers` object is provided by Express
-  const {headers} = req;
+  // The `req` object is provided by Express
 
-  // We pass `headers` to `getGreeting`
-  const message = await getGreeting({headers});
+  // We pass `req` to `getGreeting`
+  const message = await getGreeting({req});
 
   res.send(`
     <html>
@@ -228,12 +213,13 @@ import ReactDOM from 'react-dom';
 import getGreeting from '../common/getGreeting';
 
 (async () => {
-  // We don't have to pass `headers` here.
-  // (And actually, the HTTP request doesn't even exist yet.
-  // Wildcard is about to make the HTTP request to our Node.js server,
-  // which will be handled by `wildcardHandler` that will pass the
-  // `headers` object to `getApiResponse`.)
-  const message = await getGreeting();
+  // We don't have to pass `req` when calling `getGreeting` on the browser-side.
+  const messagePromise = getGreeting();
+
+  // There is no HTTP request yet; Wildcard is about to make an HTTP request to our
+  // Node.js server which will be handled by `wildcardHandler`. The `context.user`
+  // object is passed to `getApiResponse`.
+  const message = await messagePromise;
 
   ReactDOM.hydrate(
     <div>{message}</div>,
@@ -242,23 +228,20 @@ import getGreeting from '../common/getGreeting';
 })();
 ~~~
 
-That way, `whoAmI` has always access to the headers:
+That way, `whoAmI` has always access to the `req.user`:
 when the client runs in the browser,
-`headers` originates from `getApiResponse`,
-and when the client run in Node.js,
-`headers` originates from our `bind` call.
+`this.user` originates from `getApiResponse`,
+and when the client runs in Node.js,
+`this.user` originates from our `bind` call.
 
-
-To sum up,
-we show the
-isomorphic (aka universal) usage of the Wildcard client:
+The isomorphic (aka universal) usage of the Wildcard client looks this:
 
 ~~~js
 // Browser + Node.js
 
 // /common/getGreeting.js
 
-const {endpoints} = require('wildcard-api/client');
+const {endpoints} = require('@wildcard-api/client');
 const assert = require('assert');
 
 module.exports = getGreeting;
@@ -268,19 +251,19 @@ function isNodejs() {
   return typeof window === "undefined";
 }
 
-async function getGreeting ({headers}) {
+async function getGreeting ({req}) {
   let {whoAmI} = endpoints;
 
   if( isNodejs() ) {
-    // We should pass the HTTP headers to `getGreeting` when run in Node.js.
-    assert(headers);
+    // We need `req` when calling the endpoint in Node.js.
+    assert(req);
 
-    // We use `Function.prototype.bind()` to make the headers
+    // We use `Function.prototype.bind()` to make `req.user`
     // available to the `whoAmI` endpoint function.
-    whoAmI = whoAmI.bind({headers});
+    whoAmI = whoAmI.bind({user: req.user});
   } else {
-    // When run in the browser, there is no `headers` (yet).
-    assert(!headers);
+    // When run in the browser, there is no HTTP request yet.
+    assert(!req);
   }
 
   const userName = await whoAmI();

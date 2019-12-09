@@ -86,7 +86,7 @@ Do we need REST/GraphQL? Let's try with RPC and see how far we get.
 // Node.js server
 
 // We use RPC by creating a Wildcard API.
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 
 const db = require('your-favorite-sql-query-builder');
 
@@ -108,7 +108,7 @@ endpoints.createTodo = async function({text}) {
 
 import React, {useState} from 'react';
 import usePromise from './react-hooks/usePromise.js';
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 
 export default TodoList;
 
@@ -157,17 +157,30 @@ Do we now need REST/GraphQL?
 Let's try with RPC by modifying our RPC endpoints like the following.
 
 ~~~diff
+  server.all('/wildcard/*' , async (req, res) => {
+    const {url, method, body} = req;
+
+    const context = {
++     // Authentication middlewares usually make user information available at `req.user`
++     user: req.user
+    };
+
+    const responseProps = await getApiResponse({url, method, body}, context);
+
+    res.status(responseProps.statusCode);
+    res.type(responseProps.contentType);
+    res.send(responseProps.body);
+  });
+~~~
+~~~diff
   // Node.js server
 
-  const {endpoints} = require('wildcard-api');
+  const {endpoints} = require('@wildcard-api/server');
 
   const db = require('your-favorite-sql-query-builder');
 
-+ // We add user authentication
-+ const getLoggedUser = require('./path/to/your/auth/code');
-
   endpoints.getTodoList = async function() {
-+   const user = getLoggedUser(this.headers);
++   const {user} = this;
 +   // We add permission: only a logged-in user can get his to-do list.
 +   if( !user ) return;
 +   return await db.query("SELECT id, text FROM todo_items WHERE userId = :userId",{userId: user.id});
@@ -175,7 +188,7 @@ Let's try with RPC by modifying our RPC endpoints like the following.
   };
 
   endpoints.createTodo = async function({text}) {
-+   const user = getLoggedUser(this.headers);
++   const {user} = this;
 +   // Permission: only a logged-in user is allowed to create a to-do item.
 +   if( !user ) return;
 +   await db.query("INSERT INTO todo_items VALUES (:text, :userId)", {text, userId: user.id});
@@ -216,7 +229,7 @@ we would simply write a new SQL query and wrap it in a safe RPC endpoint:
 
 ~~~js
 endpoints.markAllCompleted = async function() {
-  const user = getLoggedUser(this.headers);
+  const {user} = this;
   // Only a logged-in user is allowed to do this.
   if( !user ) return;
   await (
