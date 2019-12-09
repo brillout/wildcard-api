@@ -203,7 +203,7 @@ RPC allows you to quickly deliver, modify, and evolve an MVP.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist
 [is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer).
-RPC allows you to implement your application without REST and GraphQL at first and later decide,
+RPC allows you to implement your application without REST nor GraphQL at first and later decide,
 as you scale and as it becomes clear what you need,
 whether RPC is enough and
 whether either REST or GraphQL best fits your application.
