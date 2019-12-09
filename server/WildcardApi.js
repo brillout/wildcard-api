@@ -29,9 +29,8 @@ function WildcardApi(options={}) {
 
   return options;
 
-  async function getApiResponse(requestProps) {
-    const reqInfos = getReqInfos(requestProps);
-    const {method, pathname, body} = reqInfos;
+  async function getApiResponse(requestProps, context) {
+    const {method, pathname, body} = parseRequestProps(requestProps);
 
     // URL is not a Wildcard URL
     if( ! ['GET', 'POST'].includes(method) ) {
@@ -65,7 +64,7 @@ function WildcardApi(options={}) {
       };
     }
 
-    const resultObject = await runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall: false});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
     compute_response_object({resultObject, method});
 
     if( resultObject.endpointError ) {
@@ -94,7 +93,7 @@ function WildcardApi(options={}) {
     }
   }
 
-  async function __directCall({endpointName, endpointArgs, requestProps}) {
+  async function __directCall({endpointName, endpointArgs, context}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
 
@@ -103,7 +102,7 @@ function WildcardApi(options={}) {
       getNoEndpointError({endpointName, calledInBrowser: false}),
     );
 
-    const resultObject = await runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall: true});
+    const resultObject = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
 
     const {endpointResult, endpointError} = resultObject;
 
@@ -272,11 +271,11 @@ function WildcardApi(options={}) {
     }
   }
 
-  function getReqInfos(requestProps) {
+  function parseRequestProps(requestProps) {
     const correctUsage = [
       "Usage:",
       "",
-      "  `const apiResponse = await getApiResponse({method, url, body, ...req});`",
+      "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
       "",
       "where",
       "  - `method` is the HTTP method of the request",
@@ -338,7 +337,7 @@ function WildcardApi(options={}) {
     return {method, pathname, body};
   }
 
-  async function runEndpoint({endpointName, endpointArgs, requestProps, isDirectCall}) {
+  async function runEndpoint({endpointName, endpointArgs, context, isDirectCall}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
     assert.internal([true, false].includes(isDirectCall));
@@ -347,7 +346,7 @@ function WildcardApi(options={}) {
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    const requestProps_proxy = create_requestProps_proxy({requestProps, endpointName, isDirectCall});
+    const requestProps_proxy = create_requestProps_proxy({context, endpointName, isDirectCall});
 
     let endpointResult;
     let endpointError;
@@ -363,7 +362,7 @@ function WildcardApi(options={}) {
 
     // TODO - remove onEndpointCall
     const resultObject = {
-      req: requestProps,
+      context,
       endpointName,
       endpointArgs,
       endpointError,
@@ -656,16 +655,16 @@ function getEndpointsObject() {
   return new Proxy({}, {set: validateEndpoint});
 }
 
-function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
-  const requestProps_proxy = new Proxy(requestProps||{}, {get, set});
+function create_requestProps_proxy({context, endpointName, isDirectCall}) {
+  const requestProps_proxy = new Proxy(context||{}, {get, set});
   return requestProps_proxy;
 
   function set(_, prop, newVal) {
-    requestProps[prop] = newVal;
+    context[prop] = newVal;
     return true;
   }
   function get(_, prop) {
-    if( !requestProps ) {
+    if( !context ) {
       assert.internal(isDirectCall===true);
       console.log('pp', prop, 'pe');
       const propNameIsNormal = isPropNameNormal(prop);
@@ -682,15 +681,15 @@ function create_requestProps_proxy({requestProps, endpointName, isDirectCall}) {
           propNameIsNormal ? (
             "Make sure to provide `"+prop+"` by using `bind({"+prop+"})` when calling your `"+endpointName+"` endpoint in Node.js."
           ) : (
-            "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `requestProps`/`this`."
+            "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `context`/`this`."
           )
         ),
         "",
         "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
       );
     }
-    assert.internal(requestProps);
-    return requestProps[prop];
+    assert.internal(context);
+    return context[prop];
   }
 }
 

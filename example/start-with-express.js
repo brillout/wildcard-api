@@ -18,10 +18,13 @@ app.all('/wildcard/*' , async (req, res) => {
     url: req.url,
     method: req.method,
     body: req.body,
+  };
+
+  const context = {
     headers: req.headers,
   };
 
-  const responseProps = await getApiResponse(requestProps);
+  const responseProps = await getApiResponse(requestProps, context);
 
   res.status(responseProps.statusCode);
   res.type(responseProps.contentType);

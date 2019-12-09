@@ -24,10 +24,13 @@ router.all('/wildcard/*', async ctx => {
     url: ctx.url,
     method: ctx.method,
     body: ctx.request.body,
+  };
+
+  const context = {
     headers: ctx.request.headers,
   };
 
-  const responseProps = await getApiResponse(requestProps);
+  const responseProps = await getApiResponse(requestProps, context);
 
   ctx.status = responseProps.statusCode;
   ctx.body = responseProps.body;

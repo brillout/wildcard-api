@@ -27,7 +27,7 @@ function WildcardClient() {
     wildcardApiArgs = wildcardApiArgs || {};
     endpointArgs = endpointArgs || [];
 
-    const {requestProps} = wildcardApiArgs;
+    const {context} = wildcardApiArgs;
 
     const wildcardApiFound = options.__INTERNAL__wildcardApi || typeof global !== "undefined" && global && global.__globalWildcardApi;
     const runDirectlyWithoutHTTP = !!wildcardApiFound;
@@ -36,16 +36,16 @@ function WildcardClient() {
 
     if( runDirectlyWithoutHTTP ) {
       assert.internal(isNodejs());
-      return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps});
+      return callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, context});
     } else {
-      assert.internal(!requestProps);
+      assert.internal(!context);
       assert_serverUrl(options.serverUrl);
       return callEndpointOverHttp({endpointName, endpointArgs});
     }
   }
 
-  function callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, requestProps}) {
-    return wildcardApiFound.__directCall({endpointName, endpointArgs, requestProps});
+  function callEndpointDirectly({endpointName, endpointArgs, wildcardApiFound, context}) {
+    return wildcardApiFound.__directCall({endpointName, endpointArgs, context});
   }
 
   function callEndpointOverHttp({endpointName, endpointArgs}) {
@@ -74,7 +74,7 @@ function WildcardClient() {
       endpointArgs.constructor===Array,
       restArgs.length===0,
       wildcardApiArgs.constructor===Object &&
-      Object.keys(wildcardApiArgs).every(arg => ['requestProps', IS_CALLED_BY_PROXY].includes(arg))
+      Object.keys(wildcardApiArgs).every(arg => ['context', IS_CALLED_BY_PROXY].includes(arg))
     );
 
     if( wildcardApiArgs[IS_CALLED_BY_PROXY] ) {
@@ -87,12 +87,12 @@ function WildcardClient() {
         fetchEndpoint__validArgs,
         "Usage:"+
         "",
-        "  `fetchEndpoint(endpointName, endpointArgs, {requestProps})`",
+        "  `fetchEndpoint(endpointName, endpointArgs, {context})`",
         "",
         "    Where:",
         "      - `endpointName` is the name of the endpoint (required string)",
         "      - `endpointArgs` is the argument list of the endpoint (optional array)",
-        "      - `requestProps` is the HTTP request object (optional object)",
+        "      - `context` is the HTTP request object (optional object)",
         "",
         "    Examples:",
         "      `fetchEndpoint('getTodos')`",
@@ -101,7 +101,7 @@ function WildcardClient() {
       */
     }
 
-    const {requestProps} = wildcardApiArgs;
+    const {context} = wildcardApiArgs;
     if( runDirectlyWithoutHTTP ) {
       const errorIntro = [
         "You are trying to run an endpoint directly.",
@@ -120,13 +120,13 @@ function WildcardClient() {
       );
     } else {
       assert.usage(
-        Object.keys(requestProps||{}).length===0,
+        Object.keys(context||{}).length===0,
         "Wrong SSR usage.",
         "You are:",
         "  - Using the Wildcard client on the browser-side",
-        "  - Providing `requestProps`",
-        "But you should provide `requestProps` only while doing server-side rendering.",
-        "(Providing `requestProps` doesn't make sense on browser-side.)",
+        "  - Providing `context`",
+        "But you should provide `context` only while doing server-side rendering.",
+        "(Providing `context` doesn't make sense on browser-side.)",
       );
     }
   }
@@ -202,8 +202,8 @@ function WildcardClient() {
           typeof window !== "undefined" && this===window ||
           typeof global !== "undefined" && this===global
         );
-        const requestProps = noBind ? undefined : this;
-        return fetchEndpoint(prop, endpointArgs, {requestProps, [IS_CALLED_BY_PROXY]: true});
+        const context = noBind ? undefined : this;
+        return fetchEndpoint(prop, endpointArgs, {context, [IS_CALLED_BY_PROXY]: true});
       };
     }
 

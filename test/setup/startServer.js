@@ -18,9 +18,11 @@ async function startServer(wildcardApiHolder) {
         url: request.url,
         method: request.method,
         body: request.payload,
+      };
+      const context = {
         headers: request.headers,
       };
-      const responseProps = await wildcardApiHolder.wildcardApi.getApiResponse(requestProps);
+      const responseProps = await wildcardApiHolder.wildcardApi.getApiResponse(requestProps, context);
       const response = h.response(responseProps.body);
       response.code(responseProps.statusCode);
       response.type(responseProps.contentType);

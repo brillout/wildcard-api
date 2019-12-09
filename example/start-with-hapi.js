@@ -26,10 +26,13 @@ async function startServer() {
         url: request.url,
         method: request.method,
         body: request.payload,
+      };
+
+      const context = {
         headers: request.headers,
       };
 
-      const responseProps = await getApiResponse(requestProps);
+      const responseProps = await getApiResponse(requestProps, context);
 
       const response = h.response(responseProps.body);
       response.code(responseProps.statusCode);
