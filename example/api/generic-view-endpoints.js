@@ -3,12 +3,12 @@ const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
 endpoints.getUser = async function() {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   return user;
 };
 
 endpoints.getTodos = async function(completed) {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   if( ! user ) return;
 
   if( ![true, false].includes(completed) ) return;

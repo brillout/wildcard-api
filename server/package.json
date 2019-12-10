@@ -6,6 +6,9 @@
     "@brillout/json-s": "^0.1.0",
     "@brillout/assert": "^0.1.0",
     "@brillout/url-props": "^0.1.1",
+    "@universal-adapter/express": "^0.5.0",
+    "@universal-adapter/hapi": "^0.5.0",
+    "@universal-adapter/koa": "^0.5.0",
     "chalk": "^2.4.2"
   },
   "description": "JavaScript Functions as API.",

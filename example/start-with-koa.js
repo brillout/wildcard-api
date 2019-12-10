@@ -1,47 +1,23 @@
-const assert = require('@brillout/assert');
 const Koa = require('koa');
-const Router = require('koa-router');
 const Static = require('koa-static');
-const {getApiResponse} = require('@wildcard-api/server');
 const bodyParser = require('koa-bodyparser');
-
+const wildcard = require('@wildcard-api/server/koa');
 require('./api/endpoints');
 
 const app = new Koa();
 
 app.use(bodyParser());
 
-const router = new Router();
+// Server our API endpoints
+app.use(wildcard(async ctx => {
+  const {headers} = ctx.request;
+  const context = {headers};
+  return context;
+}));
 
-router.all('/wildcard/*', async ctx => {
-  assert.internal(ctx.url);
-  assert.internal(ctx.method);
-  assert.internal('body' in ctx.request);
-  assert.internal(ctx.method!=='POST' || ctx.request.body.constructor===Array);
-  assert.internal(ctx.request.headers.constructor===Object);
-
-  const requestProps = {
-    url: ctx.url,
-    method: ctx.method,
-    body: ctx.request.body,
-  };
-
-  const context = {
-    headers: ctx.request.headers,
-  };
-
-  const responseProps = await getApiResponse(requestProps, context);
-
-  ctx.status = responseProps.statusCode;
-  ctx.body = responseProps.body;
-  ctx.type = responseProps.contentType;
-  ctx.etag = responseProps.etag;
-});
-
-app.use(router.routes());
-
+// Serve our frontend
 app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 
-console.log('Server is running, go to http://localhost:3000')
+console.log('Koa server is running, go to http://localhost:3000')

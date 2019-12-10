@@ -911,6 +911,41 @@
   resolved "https://registry.npmjs.org/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
+"@universal-adapter/express@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/express/-/express-0.5.0.tgz#edd9975e53ca7acd963ffbb03283db352ad13d00"
+  integrity sha512-siVK2FOH/bLG9VuQadDYD70oLk4Njv6tsReqU0qrVumBMgiXo5yI39KLtNLf/IYvo/YTauP/XuwNGBE2e7Buuw==
+  dependencies:
+    "@brillout/reassert" "^0.1.1"
+    "@universal-adapter/server" "0.5.0"
+
+"@universal-adapter/hapi@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/hapi/-/hapi-0.5.0.tgz#ead33a6f22335cf90b6239986bb98f9422e501be"
+  integrity sha512-zRqGDhHMvP/m0b2o31qm7UKoEWvH76kdCfemkC99a7S/3iy5INB/Vz67JNpL4+xeyshSx0bObXR0kuPwFH79GA==
+  dependencies:
+    "@brillout/reassert" "^0.1.1"
+    "@universal-adapter/server" "0.5.0"
+    boom "^7.2.0"
+    hapi-url "^1.0.2"
+
+"@universal-adapter/koa@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/koa/-/koa-0.5.0.tgz#6910fae3dd3707a46b8d455520e5f23adca8a935"
+  integrity sha512-QjNj7EgkhBP8EW/wPSECnhAIqtsNTPQgkKEK0Y3KAmYfKlUQhfzCXJYRQ46VTJtwtqI5Au26Na3Yy/2Z7H+M/Q==
+  dependencies:
+    "@brillout/reassert" "^0.1.1"
+    "@universal-adapter/server" "0.5.0"
+    koa-router "^7.4.0"
+
+"@universal-adapter/server@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/server/-/server-0.5.0.tgz#e0e60288d6d86a87ea5f64d6e6c56751c2fa1e98"
+  integrity sha512-00e1cPTqOXr9awBoa0h42J0FFKZesnqpIHZ4WvHmfLznpYXF/pKisItx11yKFXH42M05GdF3JzbicJAbDayl4w==
+  dependencies:
+    "@brillout/reassert" "^0.1.1"
+    "@brillout/url-props" "^0.1.1"
+
 abab@^2.0.0:
   version "2.0.3"
   resolved "https://registry.npmjs.org/abab/-/abab-2.0.3.tgz#623e2075e02eb2d3f2475e49f99c91846467907a"
@@ -1288,7 +1323,7 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-boom@7.x.x:
+boom@7.x.x, boom@^7.2.0:
   version "7.3.0"
   resolved "https://registry.npmjs.org/boom/-/boom-7.3.0.tgz#733a6d956d33b0b1999da3fe6c12996950d017b9"
   integrity sha512-Swpoyi2t5+GhOEGw8rEsKvTxFLIDiiKoUc2gsoV6Lyr43LHBIzch3k2MvYUs8RTROrIkVJ3Al0TkaOGjnb+B6A==
@@ -2960,6 +2995,13 @@ grapheme-breaker@^0.3.2:
   dependencies:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
+
+hapi-url@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/hapi-url/-/hapi-url-1.0.2.tgz#49b094d1f90f80fa510bc74396b907d39ab84db1"
+  integrity sha512-utw3jeg9IWiHuK0X+9vlVDyjpfgbca3Q/uXQZHslXicEyoVdc6xHWXvfCgWY4ATeFw2aKXowIwzJUcViDh87yA==
+  dependencies:
+    url "^0.11.0"
 
 hapi@^17.8.1:
   version "17.8.5"

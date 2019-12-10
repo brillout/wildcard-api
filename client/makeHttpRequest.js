@@ -9,9 +9,13 @@ async function makeHttpRequest({url, parse, ...args}) {
       () => fetch(
         url,
         {
-          method: 'POST',
           credentials: 'same-origin',
+          /*
+          method: 'GET',
+          /*/
+          method: 'POST',
           ...args,
+          //*/
           headers:{
             'Content-Type': 'application/json',
             ...(args||{}).headers,

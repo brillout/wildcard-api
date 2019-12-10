@@ -7,7 +7,7 @@ const {getLoggedUser} = require('../auth');
 
 endpoints.getLandingPageData = async function () {
   // `this` holds request information such as HTTP headers
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(
@@ -20,7 +20,7 @@ endpoints.getLandingPageData = async function () {
 };
 
 endpoints.getCompletedPageData = async function () {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(

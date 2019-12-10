@@ -5,7 +5,7 @@ const {getLoggedUser} = require('../auth');
 // We tailor mutation endpoints to the frontend as well
 
 endpoints.toggleComplete = async function(todoId) {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   // Do nothing if user is not logged in
   if( !user ) return;
 

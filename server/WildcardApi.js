@@ -89,7 +89,7 @@ function WildcardApi(options={}) {
       console.error('');
       console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
       console.error('Error is printed above.');
-      // console.error("Your endpoint function `"+endpointName+"` should not throw errors. This error should be a bug. Read the \"Error Handling\" section of Wildcard's GitHub Readme for more infos.");
+      console.error('Read the "Error Handling" documentation for how to handle errors.');
       console.error('');
     }
 
@@ -288,22 +288,26 @@ function WildcardApi(options={}) {
   }
 
   function parseRequestProps(requestProps) {
-    const correctUsage = [
-      "Usage:",
-      "",
-      "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
-      "",
-      "where",
-      "  - `method` is the HTTP method of the request",
-      "  - `url` is the HTTP URL of the request",
-      "  - `body` is the HTTP body of the request",
-      "  - `req` are optional additional request information such as HTTP headers.",
-      "",
-    ].join('\n');
+    const correctUsage = (
+      requestProps.isUniversalAdapter ? [] : [
+        [
+          "Usage:",
+          "",
+          "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
+          "",
+          "where",
+          "  - `method` is the HTTP method of the request",
+          "  - `url` is the HTTP URL of the request",
+          "  - `body` is the HTTP body of the request",
+          "  - `req` are optional additional request information such as HTTP headers.",
+          "",
+        ].join('\n')
+      ]
+    );
 
     assert.usage(
       requestProps.url,
-      correctUsage,
+      ...correctUsage,
       colorizeError("`url` is missing."),
       "(`url=="+requestProps.url+"`)",
       '',
@@ -313,44 +317,66 @@ function WildcardApi(options={}) {
 
     assert.usage(
       requestProps.method,
-      correctUsage,
+      ...correctUsage,
       colorizeError("`method` is missing."),
       "(`method==="+requestProps.method+"`)",
       '',
     );
     const method = requestProps.method.toUpperCase();
 
-    const bodyUsageInfo = [
-      "If you are using Express: Make sure to parse the body. For Express v4.16 and above: `app.use(express.json())`.",
-      "If you are using Hapi: No plugin is required and the body is available at `request.payload`.",
-      "If you are using Koa: Make sure to parse the body, for example: `app.use(require('koa-bodyparser')())`.",
-    ].join('\n');
-    const {body} = requestProps;
+    const bodyUsageNote = getBodyUsageNote(requestProps);
+    let {body} = requestProps;
     const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
     assert.usage(
       !(method==='POST' && !body),
-      correctUsage,
+      ...correctUsage,
       colorizeError(bodyErrMsg),
-      bodyUsageInfo,
+      bodyUsageNote,
       '',
     );
     assert.usage(
       'body' in requestProps,
-      correctUsage,
+      ...correctUsage,
       colorizeError(bodyErrMsg),
       "Note that `requestProps.body` can be `null` or `undefined` but make sure to define it on the `requestProps`, e.g. `requestProps.body = null;`, i.e. make sure that `'body' in requestProps`.",
       '',
     );
     assert.usage(
       !body || [Array, String].includes(body.constructor),
-      correctUsage,
+      {body},
+      '',
+      ...correctUsage,
       colorizeError("Unexpected `body` type: `body` should be a string or an array."),
-      "(`body.constructor==="+(body && body.constructor)+"`)",
-      bodyUsageInfo,
+      '',
+      "`body.constructor==="+(body && body.constructor.name)+"`",
+      '',
+      bodyUsageNote,
       '',
     );
 
     return {method, pathname, body};
+  }
+
+  function getBodyUsageNote(requestProps) {
+    const expressNote = 'make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.';
+    const koaNote = 'make sure to parse the body, for example: `app.use(require(\'koa-bodyparser\')())`.';
+    if( requestProps.isExpressFramework ){
+      return 'You seem to be using Express; '+expressNote;
+    }
+    if( requestProps.isKoaFramework ){
+      return 'You seem to be using Koa; '+expressNote;
+    }
+    if( requestProps.isHapiFramework ){
+      assert.internal('body' in requestProps);
+      return;
+    }
+    return (
+      [
+        'If you are using Express: '+expressNote,
+        'If you are using Hapi: no plugin is required and the body is available at `request.payload`.',
+        'If you are using Koa: '+koaNote,
+      ].join('\n')
+    );
   }
 
   async function runEndpoint({endpointName, endpointArgs, context, isDirectCall}) {
