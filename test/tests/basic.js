@@ -1,6 +1,6 @@
 module.exports = [
-  basic_serverSideUse,
   basic_clientSideUse,
+  basic_serverSideUse,
   basic_clientSideUse_requestObjectIsAvailbe,
   basic_serverSideUse_withoutRequestProps,
 ];

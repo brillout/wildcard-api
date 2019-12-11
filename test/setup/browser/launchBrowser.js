@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
 const assert = require('@brillout/assert');
-const getTestPort = require('../getTestPort');
 
 module.exports = launchBrowser;
 
@@ -21,8 +20,6 @@ async function launchBrowser() {
 	});
 	*/
 
-  await page.goto('http://localhost:'+getTestPort());
-
   let _onHttpRequest;
   page.on('request', async request => {
     if( _onHttpRequest ){
@@ -36,7 +33,13 @@ async function launchBrowser() {
     browserEval,
   };
 
-  async function browserEval(fn, {offlineMode=false, args, onHttpRequest}={}) {
+  var httpPort__current;
+  async function browserEval(httpPort, fn, {offlineMode=false, args, onHttpRequest}={}) {
+    if( httpPort!==httpPort__current ){
+      await page.goto('http://localhost:'+httpPort);
+      httpPort__current = httpPort;
+    }
+
     // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestcontinueoverrides
     _onHttpRequest = onHttpRequest;
     await page.setRequestInterception(!!onHttpRequest);

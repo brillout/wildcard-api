@@ -1,13 +1,12 @@
 const Hapi = require('hapi');
 const Inert = require('inert');
-const getTestPort = require('./getTestPort');
 const assert = require('@brillout/assert');
 
 module.exports = startServer;
 
-async function startServer(wildcardApiHolder) {
+async function startServer({wildcardApiHolder, httpPort, staticDir}) {
   const server = Hapi.Server({
-    port: getTestPort(),
+    port: httpPort,
     debug: {request: ['internal']},
   });
 
@@ -45,12 +44,12 @@ async function startServer(wildcardApiHolder) {
     path: '/{param*}',
     handler: {
       directory: {
-        path: __dirname+'/browser/dist/',
+        path: staticDir,
       }
     }
   });
 
   await server.start();
 
-  return server;
+  return () => server.stop();
 }

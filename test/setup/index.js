@@ -9,7 +9,7 @@ const WildcardClient = require('@wildcard-api/client/WildcardClient');
 const bundle = require('./browser/bundle');
 const launchBrowser = require('./browser/launchBrowser');
 
-const startServer = require('./startServer');
+const startAllServers = require('./servers/startAllServers');
 
 const {symbolSuccess, symbolError, colorError} = require('@brillout/cli-theme');
 const chalk = require('chalk');
@@ -26,36 +26,36 @@ const DEBUG = false;
   const log_suppressor = new LogSupressor();
 
   const wildcardApiHolder = {};
-  const server = await startServer(wildcardApiHolder);
+  const servers = await startAllServers(wildcardApiHolder);
 
-  const {browserEval, browser} = await launchBrowser();
+  const {browserEval: browserEval_org, browser} = await launchBrowser();
   for(let {test, file} of getTests()) {
     const wildcardApi = new WildcardApi();
-
-    Object.assign(wildcardApiHolder, {wildcardApi});
-
+    wildcardApiHolder.wildcardApi = wildcardApi;
     const wildcardClient = new WildcardClient();
     wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
+    for(let {serverFramework, httpPort} of servers) {
+      let browserEval = browserEval_org.bind(null, httpPort);
+      const testName = '['+serverFramework+'] '+test.name+' ('+file+')';
 
-    const testName = test.name+' ('+file+')';
-
-    !DEBUG && log_suppressor.enable();
-    try {
-      await test({wildcardApi, wildcardClient, WildcardClient, browserEval});
-    } catch(err) {
-      !DEBUG && log_suppressor.flush();
+      !DEBUG && log_suppressor.enable();
+      try {
+        await test({wildcardApi, wildcardClient, WildcardClient, browserEval, httpPort});
+      } catch(err) {
+        !DEBUG && log_suppressor.flush();
+        !DEBUG && log_suppressor.disable();
+        console.log(colorError(symbolError+'Failed test: '+testName));
+        throw err;
+      }
       !DEBUG && log_suppressor.disable();
-      console.log(colorError(symbolError+'Failed test: '+testName));
-      throw err;
-    }
-    !DEBUG && log_suppressor.disable();
 
-    console.log(symbolSuccess+testName);
+      console.log(symbolSuccess+testName);
+    }
   }
 
   await browser.close();
 
-  await server.stop();
+  await Promise.all(servers.map(({stop}) => stop()));
 
   console.log(chalk.bold.green('All tests successfully passed.'));
 })();
