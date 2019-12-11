@@ -2,11 +2,11 @@ module.exports = MiddlewareFactory;
 
 function MiddlewareFactory(ServerAdapter, opts) {
   return (
-    (contextGetter, {wildcardApi}) => {
-      wildcardApi = wildcardApi || require('@wildcard-api/server');
+    (contextGetter, args) => {
       return (
         ServerAdapter(
           [ async (requestObject, {requestProps}) => {
+            const wildcardApi = args.wildcardApi || require('@wildcard-api/server');
             const context = await contextGetter(requestObject);
             const responseProps = await wildcardApi.getApiResponse(requestProps, context);
             return responseProps;
