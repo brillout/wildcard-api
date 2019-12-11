@@ -8,7 +8,7 @@ const IS_CALLED_BY_PROXY = Symbol();
 module.exports = WildcardClient;
 
 function WildcardClient() {
-  forbidArgs(arguments);
+  const options = this;
 
   Object.assign(
     this,
@@ -18,8 +18,6 @@ function WildcardClient() {
       argumentsAlwaysInHttpBody: false,
     }
   );
-
-  const options = this;
 
   return this;
 
@@ -218,26 +216,6 @@ function WildcardClient() {
       );
     }
   }
-}
-
-function forbidArgs(args) {
-  if( args.length===0 ) return;
-
-  const prop = args[0] && Object.keys(args[0]) || 'someOption';
-  let val = args[0][prop];
-  if( val && val.constructor===String ) {
-    val = "'"+val+"'";
-  } else if( [null, undefined, true, false].includes(val) || val && val.constructor===Number ){
-    val = ''+val;
-  } else {
-    val = 'someValue';
-  }
-
-  assert.usage(
-    false,
-    "Don't do `const wildcardClient = new WildcardClient({"+prop+": "+val+"});`.",
-    "Instead, do `const wildcardClient = new WildcardClient(); wildcardClient."+prop+" = "+val+";",
-  );
 }
 
 function isNodejs() {
