@@ -152,4 +152,4 @@ Schema:
 - REST level 5
 - GraphQL
 
-The term RPC-like is commonly used to denote a schemaless API.
+The term *RPC-like* is used to denote a schemaless API.
