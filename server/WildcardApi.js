@@ -347,11 +347,7 @@ function WildcardApi(options={}) {
       '',
       ...correctUsage,
       colorizeError("Unexpected `body` type: `body` should be a string or an array."),
-      '',
       "`body.constructor==="+(body && body.constructor.name)+"`",
-      '',
-      bodyUsageNote,
-      '',
     );
 
     return {method, pathname, body};

@@ -3,22 +3,21 @@ const assert = require('@brillout/assert');
 
 module.exports = makeHttpRequest;
 
-async function makeHttpRequest({url, parse, ...args}) {
+async function makeHttpRequest({url, parse, body}) {
   const makeRequest = (
     addHandli(
       () => fetch(
         url,
         {
-          credentials: 'same-origin',
           /*
           method: 'GET',
           /*/
           method: 'POST',
-          ...args,
+          body,
           //*/
+          credentials: 'same-origin',
           headers:{
             'Content-Type': 'application/json',
-            ...(args||{}).headers,
           },
         },
       )
@@ -48,7 +47,7 @@ async function makeHttpRequest({url, parse, ...args}) {
     assert.internal(err.isNetworkError===true);
     throw err;
   }
-  const body = await response.text();
+  const responseBody = await response.text();
   const contentType = response.headers.get('content-type');
   const isOk = response.ok;
   assert.internal([true, false].includes(isOk));
@@ -59,9 +58,9 @@ async function makeHttpRequest({url, parse, ...args}) {
   const value = (
     // TODO use mime type instead
     contentType.includes('application/json') ? (
-      parse(body)
+      parse(responseBody)
     ) : (
-      body
+      responseBody
     )
   );
 
@@ -73,7 +72,7 @@ async function makeHttpRequest({url, parse, ...args}) {
         isNetworkError,
         isServerError,
         response: {
-          body,
+          responseBody,
           value,
           statusCode,
         },
