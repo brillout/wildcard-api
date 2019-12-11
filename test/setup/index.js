@@ -29,13 +29,14 @@ const DEBUG = false;
   const servers = await startAllServers(wildcardApiHolder);
 
   const {browserEval: browserEval_org, browser} = await launchBrowser();
-  for(let {test, file} of getTests()) {
-    const wildcardApi = new WildcardApi();
-    wildcardApiHolder.wildcardApi = wildcardApi;
-    const wildcardClient = new WildcardClient();
-    wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
-    for(let {serverFramework, httpPort} of servers) {
-      let browserEval = browserEval_org.bind(null, httpPort);
+  for(let {serverFramework, httpPort} of servers) {
+    let browserEval = browserEval_org.bind(null, httpPort);
+    for(let {test, file} of getTests()) {
+      const wildcardApi = new WildcardApi();
+      wildcardApiHolder.wildcardApi = wildcardApi;
+      const wildcardClient = new WildcardClient();
+      wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
+
       const testName = '['+serverFramework+'] '+test.name+' ('+file+')';
 
       !DEBUG && log_suppressor.enable();
