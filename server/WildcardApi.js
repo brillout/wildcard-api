@@ -394,19 +394,19 @@ function RequestInfo({requestProps, context, endpointsObject}) {
     pathname__prettified,
   } = parsePathname({pathname});
 
+  if( pathname__malformationError ){
+    return {
+      malformationError: pathname__malformationError,
+      isHumanMode,
+    };
+  }
+
   if( ! endpointExists({endpointName, endpointsObject}) ) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
         text: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
       },
-      isHumanMode,
-    };
-  }
-
-  if( pathname__malformationError ){
-    return {
-      malformationError: pathname__malformationError,
       isHumanMode,
     };
   }
