@@ -1,11 +1,10 @@
 const assert = require('@brillout/assert');
-const defaultSerializer = require('@brillout/json-s');
+const {stringify, parse} = require('@brillout/json-s');
 const chalk = require('chalk');
 const docsUrl = require('./package.json').repository;
 const getUrlProps = require('@brillout/url-props');
-const computeEtag = require('./computeEtag');
 
-const DEFAULT_API_URL_BASE = '/wildcard/';
+const API_URL_BASE = '/wildcard/';
 
 assert.usage(
   isNodejs(),
@@ -16,97 +15,60 @@ assert.usage(
 
 module.exports = WildcardApi;
 
-function WildcardApi(options={}) {
+function WildcardApi() {
+  const options = this;
+
   const endpointsObject = getEndpointsObject();
 
   Object.assign(
-    options,
+    this,
     {
       endpoints: endpointsObject,
       getApiResponse,
+      disableEtag: false,
       __directCall,
     },
   );
 
-  return options;
+  return this;
 
   async function getApiResponse(requestProps, context) {
-    const {method, pathname, body} = parseRequestProps(requestProps);
+    const {
+      endpointName,
+      endpointArgs,
+      malformationError,
+      isIntrospection,
+      isNotWildcardRequest,
+      isHumanReadableMode,
+    } = RequestInfo({requestProps, context, endpointsObject});
 
-    // URL is not a Wildcard URL
-    if( ! ['GET', 'POST'].includes(method) ) {
+    if( reqInfo.isNotWildcardRequest ){
       return null;
     }
-    if( !isPathanameBase({pathname}) && !pathname.startsWith(getPathnameBase()) ){
-      return null;
+    if( malformationError ){
+      return HttpMalformationResponse({malformationError});
+    }
+    if( isIntrospection ){
+      return HttpIntrospectionResponse({endpointsObject});
     }
 
-    const respObj = await getRespObj({method, pathname, body, context});
-    assert.internal(respObj.contentType);
-    assert.internal(respObj.statusCode);
-    assert.internal(respObj.body);
+    const {endpointResult, endpointError} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
 
-    const etag = computeEtag(respObj.body);
-    assert.internal(etag);
-
-    return {
-      ...respObj,
-      etag,
-    };
-  }
-
-  async function getRespObj({method, pathname, body, context}) {
-    // `pathname` is the base pathname `/wildcard`
-    if( isPathanameBase({pathname}) && isDev() && isHumanReadableMode({method}) ){
-      return {
-        statusCode: 200,
-        contentType: 'text/html',
-        body: getListOfEndpoints(),
-      };
+    if( endpointError ){
+      logError({endpointError, endpointName});
+      return HttpErrorResponse({endpointError, isHumanReadableMode});
     }
 
-    const {isInvalidUrl, invalidReason, errorStatusCode, endpointName, endpointArgs} = parseRequest({method, pathname, body});
+    const responseProps = await HttpResponse({endpointResult, isHumanReadableMode});
 
-    // URL is invalid
-    assert.internal([true, false].includes(isInvalidUrl));
-    assert.internal(invalidReason!==undefined);
-    if( isInvalidUrl ) {
-      assert.internal(invalidReason);
-      assert.internal(errorStatusCode);
-      return {
-        statusCode: errorStatusCode,
-        contentType: 'text/plain',
-        body: invalidReason,
-      };
+    if( !options.disableEtag ){
+      const computeEtag = require('./computeEtag');
+      const etag = computeEtag(responseProps.body);
+      assert.internal(etag);
+      responseProps.etag = etag;
     }
 
-    const resultObject = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
-    compute_response_object({resultObject, method});
-
-    if( resultObject.endpointError ) {
-      console.error('');
-      console.error(resultObject.endpointError);
-      console.error('');
-      console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
-      console.error('Error is printed above.');
-      console.error('Read the "Error Handling" documentation for how to handle errors.');
-      console.error('');
-    }
-
-    const {respObject} = resultObject;
-    assert.internal(respObject.body.constructor===String);
-    assert.internal(respObject.statusCode);
-    assert.internal(respObject.contentType);
-    return respObject;
-  }
-
-  function getHumanReadableBody(resultObject) {
-    const {endpointError} = resultObject;
-    if( endpointError ) {
-      return getHtml_error(resultObject);
-    } else {
-      return getHtml_body(resultObject);
-    }
+    return responseProps;
   }
 
   async function __directCall({endpointName, endpointArgs, context}) {
@@ -127,252 +89,6 @@ function WildcardApi(options={}) {
     } else {
       return endpointResult;
     }
-  }
-
-  function parseRequest({method, pathname, body}) {
-    const {isInvalidSyntax, pathname__prettified} = parsePathname(pathname);
-    if( isInvalidSyntax ) {
-      return {
-        isInvalidUrl: true,
-        errorStatusCode: 400,
-        invalidReason: [
-          'Malformatted API URL `'+pathname__prettified+'`',
-          'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
-        ].join('\n'),
-      };
-    }
-
-    const endpointName = getEndpointName({pathname});
-    const endpointArgs = getEndpointArgs({method, pathname, body});
-
-    assert.internal(endpointArgs.isInvalidUrl===true || endpointArgs.constructor===Array);
-    if( endpointArgs.isInvalidUrl ){
-      return endpointArgs;
-    }
-
-    if( ! endpointExists(endpointName) ) {
-      return {
-        isInvalidUrl: true,
-        errorStatusCode: 404,
-        invalidReason: getNoEndpointError({endpointName, calledInBrowser: true}),
-      };
-    }
-
-    return {
-      isInvalidUrl: false,
-      invalidReason: null,
-      endpointName,
-      endpointArgs,
-    };
-  }
-
-  function getEndpointName({pathname}){
-    const {endpointName} = parsePathname(pathname);
-    return endpointName;
-  }
-
-  function getEndpointArgs({method, pathname, body}){
-    const {urlArgs, pathname__prettified} = parsePathname(pathname);
-    assert.internal(['GET', 'POST'].includes(method));
-    assert.internal(!(method==='GET' && body));
-    assert.internal(!(method==='POST' && !body));
-    assert.internal(!body || [Array, String].includes(body.constructor));
-    let endpointArgsString = urlArgs || JSON.stringify(body);
-    let endpointArgs;
-    if( endpointArgsString ){
-      const parse = options.parse || defaultSerializer.parse;
-      try {
-        endpointArgs = parse(endpointArgsString);
-      } catch(err_) {
-        return {
-          isInvalidUrl: true,
-          errorStatusCode: 400,
-          invalidReason: (
-            [
-              'Malformatted API URL `'+pathname__prettified+'`.',
-              "JSON Parse Error:",
-              err_.message,
-              "Argument string:",
-              endpointArgsString,
-              "Couldn't JSON parse the argument string.",
-              "Is the argument string a valid JSON?",
-            ].join('\n')
-          ),
-        };
-      }
-    }
-
-    endpointArgs = endpointArgs || [];
-
-    if( endpointArgs.constructor!==Array ) {
-      return {
-        isInvalidUrl: true,
-        errorStatusCode: 400,
-        invalidReason: (
-          [
-            'Malformatted API URL `'+pathname__prettified+'`.',
-            'API URL arguments (i.e. endpoint arguments) should be an array.',
-            "Instead we got `"+endpointArgs.constructor+"`.",
-            'API URL arguments: `'+endpointArgsString+'`',
-          ].join('\n')
-        ),
-      };
-    }
-
-    return endpointArgs;
-  }
-
-  function parsePathname(pathname){
-    const pathnameBase = getPathnameBase();
-
-    assert.internal(pathname.startsWith(pathnameBase));
-    const urlParts = pathname.slice(pathnameBase.length).split('/');
-
-    const isInvalidSyntax = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
-    const endpointName = urlParts[0];
-    const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
-    const pathname__prettified = isInvalidSyntax ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
-
-    return {
-      isInvalidSyntax,
-      endpointName,
-      urlArgs,
-      pathname__prettified,
-    };
-  }
-
-  function compute_response_object({resultObject, method}) {
-    const {endpointResult, respObject} = resultObject;
-    let {endpointError} = resultObject;
-
-    let body;
-    if( !endpointError ) {
-      // TODO be able to stringify undefined instead of null
-      const valueToStringify = endpointResult===undefined ? null : endpointResult;
-      const stringify = options.stringify || defaultSerializer.stringify;
-      try {
-        body = stringify(valueToStringify);
-      } catch(err_) {
-        console.error(err_);
-        console.log('\n');
-        console.log('Returned value');
-        console.log(valueToStringify);
-        console.log('\n');
-        assert.internal(err_);
-        endpointError = err_;
-        assert.warning(
-          false,
-          "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
-          "The returned value in question and the serialization error are printed above.",
-        );
-      }
-    }
-
-    if( endpointError ) {
-      respObject.body = respObject.body || 'Internal Server Error';
-      respObject.statusCode = respObject.statusCode || 500;
-      respObject.contentType = respObject.contentType || 'text/plain';
-    } else {
-      assert.internal(body.constructor===String);
-      respObject.body = respObject.body || body;
-      respObject.statusCode = respObject.statusCode || 200;
-      respObject.contentType = respObject.contentType || 'application/json';
-    }
-
-    if( isHumanReadableMode({method}) ){
-      const humanReadableBody = getHumanReadableBody(resultObject);
-      respObject.body = humanReadableBody;
-      respObject.contentType = 'text/html';
-      respObject.statusCode = 200;
-    }
-  }
-
-  function parseRequestProps(requestProps) {
-    const correctUsage = (
-      requestProps.isUniversalAdapter ? [] : [
-        [
-          "Usage:",
-          "",
-          "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
-          "",
-          "where",
-          "  - `method` is the HTTP method of the request",
-          "  - `url` is the HTTP URL of the request",
-          "  - `body` is the HTTP body of the request",
-          "  - `req` are optional additional request information such as HTTP headers.",
-          "",
-        ].join('\n')
-      ]
-    );
-
-    assert.usage(
-      requestProps.url,
-      ...correctUsage,
-      colorizeError("`url` is missing."),
-      "(`url=="+requestProps.url+"`)",
-      '',
-    );
-    const {pathname} = getUrlProps(requestProps.url);
-    assert.internal(pathname.startsWith('/'));
-
-    assert.usage(
-      requestProps.method,
-      ...correctUsage,
-      colorizeError("`method` is missing."),
-      "(`method==="+requestProps.method+"`)",
-      '',
-    );
-    const method = requestProps.method.toUpperCase();
-
-    const bodyUsageNote = getBodyUsageNote(requestProps);
-    let {body} = requestProps;
-    const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
-    assert.usage(
-      !(method==='POST' && !body),
-      ...correctUsage,
-      colorizeError(bodyErrMsg),
-      bodyUsageNote,
-      '',
-    );
-    assert.usage(
-      'body' in requestProps,
-      ...correctUsage,
-      colorizeError(bodyErrMsg),
-      "Note that `requestProps.body` can be `null` or `undefined` but make sure to define it on the `requestProps`, e.g. `requestProps.body = null;`, i.e. make sure that `'body' in requestProps`.",
-      '',
-    );
-    assert.usage(
-      !body || [Array, String].includes(body.constructor),
-      {body},
-      '',
-      ...correctUsage,
-      colorizeError("Unexpected `body` type: `body` should be a string or an array."),
-      "`body.constructor==="+(body && body.constructor.name)+"`",
-    );
-
-    return {method, pathname, body};
-  }
-
-  function getBodyUsageNote(requestProps) {
-    const expressNote = 'make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.';
-    const koaNote = 'make sure to parse the body, for example: `app.use(require(\'koa-bodyparser\')())`.';
-    if( requestProps.isExpressFramework ){
-      return 'You seem to be using Express; '+expressNote;
-    }
-    if( requestProps.isKoaFramework ){
-      return 'You seem to be using Koa; '+expressNote;
-    }
-    if( requestProps.isHapiFramework ){
-      assert.internal('body' in requestProps);
-      return;
-    }
-    return (
-      [
-        'If you are using Express: '+expressNote,
-        'If you are using Hapi: no plugin is required and the body is available at `request.payload`.',
-        'If you are using Koa: '+koaNote,
-      ].join('\n')
-    );
   }
 
   async function runEndpoint({endpointName, endpointArgs, context, isDirectCall}) {
@@ -398,43 +114,14 @@ function WildcardApi(options={}) {
       endpointError = err;
     }
 
-    const resultObject = {
-      context,
-      endpointName,
-      endpointArgs,
-      endpointError,
-      endpointResult,
-      overwriteResult: val => {
-        resultObject.endpointResult = val;
-      },
-      respObject: {},
-      overwriteResponse: respObject__overwritten => {
-        assert.usage(
-          respObject__overwritten instanceof Object,
-          "Wrong argument `resp` when calling `overwriteResponse(resp)`.",
-          "`resp` needs to be an object. (I.e. `resp instanceof Object`.)",
-        );
-        resultObject.respObject = respObject__overwritten;
-      },
-    };
-
-    return resultObject;
+    return {endpointResult, endpointError};
   }
+
   function endpointExists(endpointName) {
     const endpoint = endpointsObject[endpointName];
     return !!endpoint;
   }
 
-  function isPathanameBase({pathname}) {
-    const urlBase = getPathnameBase();
-    if( pathname===urlBase ) {
-      return true;
-    }
-    if( urlBase.endsWith('/') && pathname===urlBase.slice(0, -1) ) {
-      return true;
-    }
-    return false;
-  }
   function getEndpointNames() {
     return Object.keys(endpointsObject);
   }
@@ -477,14 +164,14 @@ Endpoints:
 ${
   getEndpointNames()
   .map(endpointName => {
-    const endpointURL = getPathnameBase()+endpointName;
+    const endpointURL = API_URL_BASE+endpointName;
     return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
   })
   .join('\n')
 }
 </ul>
 `;
-    return getHtmlWrapper(
+    return get_html_response(
       htmlBody,
       [
         "This page exists only in development.",
@@ -493,9 +180,6 @@ ${
     );
   }
 
-  function getPathnameBase() {
-    return options.apiUrlBase || DEFAULT_API_URL_BASE;
-  }
 }
 
 function isNodejs() {
@@ -581,47 +265,44 @@ function isDev() {
 }
 
 // TODO - improve this
-function getHtml_body(resultObject) {
-  const {endpointResult, respObject: {contentType, body, statusCode}} = resultObject;
-
+function get_human_response({responseProps, endpointResult}) {
   const text = (
-    contentType==='application/json' ? (
+    responseProps.contentType==='application/json' ? (
       JSON.stringify(
         (
           (endpointResult && endpointResult instanceof Object) ? (
             endpointResult
           ) : (
-            JSON.parse(body)
+            JSON.parse(responseProps.body)
           )
         ),
         null, 2
       )
     ) : (
-      body
+      responseProps.body
     )
   );
 
-  return getHtmlWrapper(
+  return get_html_response(
 `<h1>API Response</h1>
 <pre>
 ${text}
 </pre>
 <br/>
 <br/>
-Status code: <b>${statusCode}</b>
+Status code: <b>${responseProps.statusCode}</b>
 `
   );
 }
 
-function getHtml_error(resultObject) {
-  const {endpointError, respObject: {statusCode, body}} = resultObject;
+function get_human_error_response({responseProps, endpointError}) {
   let html__error = (
 `<h1>Error</h1>
 <h3>Response Body</h3>
-${body}
+${responseProps.body}
 <br/>
 <br/>
-Status code: <b>${statusCode}</b>`
+Status code: <b>${responseProps.statusCode}</b>`
   );
 
   if( isDev() ) {
@@ -638,16 +319,16 @@ ${endpointError && endpointError.stack || endpointError}
     );
   }
 
-  return getHtmlWrapper(html__error);
+  return get_html_response(html__error);
 }
 
-function getHtmlWrapper(htmlBody, note) {
+function get_html_response(htmlBody, note) {
   note = note || [
     "(Showing HTML version because the request's method is <code>GET</code>.",
     "Make a <code>POST</code> request to get JSON instead.)",
   ].join('\n');
 
-  return (
+  const body = (
 `<html><body>
 <style>
   code {
@@ -671,6 +352,14 @@ ${note.split('\n').join('<br/>\n')}
 </body></html>
 `
   );
+
+  const responseProps = {
+    body,
+    contentType: 'text/html',
+    statusCode: 200,
+  };
+
+  return responseProps;
 }
 
 function getEndpointsObject() {
@@ -729,4 +418,291 @@ function colorizeError(text) {
 }
 function colorizeEmphasis(text) {
   return chalk.cyan(text);
+}
+
+function isPathanameBase({pathname}) {
+  return (
+    [
+      API_URL_BASE,
+      API_URL_BASE.slice(0, -1)
+    ].includes(pathname)
+  );
+}
+
+function RequestInfo({requestProps, context, endpointsObject}) {
+  assert_request({requestProps});
+
+  const urlProps = getUrlProps(requestProps.url)
+  assert.internal(urlProps.pathname.startsWith('/'));
+
+  const {pathname} = urlProps;
+  const {method, body} = requestProps;
+  const isHumanReadableMode = isHumanReadableMode({method});
+
+  if(
+    ! ['GET', 'POST'].includes(method) ||
+    !isPathanameBase({pathname}) && !pathname.startsWith(API_URL_BASE)
+  ){
+    return {isNotWildcardRequest: true};
+  }
+  if( isPathanameBase({pathname}) && isDev() && isHumanReadableMode ){
+    return {isIntrospection: true};
+  }
+
+  const {
+    pathname__isInvalid,
+    endpointName,
+    urlArgs,
+    pathname__prettified,
+  } = parsePathname({pathname});
+
+  if( ! endpointExists(endpointName) ) {
+    return {
+      malformationError: {
+        endpointDoesNotExist: true,
+        text: getNoEndpointError({endpointName, calledInBrowser: true}),
+      },
+    };
+  }
+
+  if( pathname__isInvalid ){
+    return {
+      malformationError: {
+        text: [
+          'Malformatted API URL `'+pathname__prettified+'`',
+          'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
+        ].join('\n'),
+      }
+    };
+  }
+
+  const {endpointArgs, malformationError} = getEndpointArgs({method, pathname, body});
+  if( malformationError ){
+    {malformationError};
+  }
+  assert.internal(endpointArgs.constructor===Array);
+
+  return {endpointArgs, endpointName};
+}
+
+function getEndpointArgs({method, pathname, body}){
+  const {urlArgs, pathname__prettified} = parsePathname(pathname);
+  assert.internal(['GET', 'POST'].includes(method));
+  assert.internal(!(method==='GET' && body));
+  assert.internal(!(method==='POST' && !body));
+  assert.internal(!body || [Array, String].includes(body.constructor));
+  let endpointArgsString = urlArgs || JSON.stringify(body);
+  let endpointArgs;
+  if( endpointArgsString ){
+    try {
+      endpointArgs = parse(endpointArgsString);
+    } catch(err_) {
+      return {
+        isInvalidUrl: true,
+        errorStatusCode: 400,
+        invalidReason: (
+          [
+            'Malformatted API URL `'+pathname__prettified+'`.',
+            "JSON Parse Error:",
+            err_.message,
+            "Argument string:",
+            endpointArgsString,
+            "Couldn't JSON parse the argument string.",
+            "Is the argument string a valid JSON?",
+          ].join('\n')
+        ),
+      };
+    }
+  }
+
+  endpointArgs = endpointArgs || [];
+
+  if( endpointArgs.constructor!==Array ) {
+    return {
+      isInvalidUrl: true,
+      errorStatusCode: 400,
+      invalidReason: (
+        [
+          'Malformatted API URL `'+pathname__prettified+'`.',
+          'API URL arguments (i.e. endpoint arguments) should be an array.',
+          "Instead we got `"+endpointArgs.constructor+"`.",
+          'API URL arguments: `'+endpointArgsString+'`',
+        ].join('\n')
+      ),
+    };
+  }
+
+  return endpointArgs;
+}
+
+
+
+
+
+function HttpIntrospectionResponse({endpointsObject}) {
+  return {
+    statusCode: 200,
+    contentType: 'text/html',
+    body: getListOfEndpoints({endpointsObject}),
+  };
+} 
+function HttpErrorResponse({endpointError}) {
+  responseProps.body = 'Internal Server Error';
+  responseProps.statusCode = 500;
+  responseProps.contentType = 'text/plain';
+  if( isHumanReadableMode() ){
+    return get_human_error_response({responseProps, endpointError});
+  } else {
+    return responseProps;
+  }
+}
+function HttpResponse() {
+  assert.internal(body.constructor===String);
+  responseProps.statusCode = 200;
+  responseProps.contentType = 'application/json';
+    let body;
+    if( !endpointError ) {
+      // TODO be able to stringify undefined instead of null
+      const valueToStringify = endpointResult===undefined ? null : endpointResult;
+      try {
+        body = stringify(valueToStringify);
+      } catch(err_) {
+        console.error(err_);
+        console.log('\n');
+        console.log('Returned value');
+        console.log(valueToStringify);
+        console.log('\n');
+        assert.internal(err_);
+        endpointError = err_;
+        assert.warning(
+          false,
+          "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
+          "The returned value in question and the serialization error are printed above.",
+        );
+      }
+    }
+  if( isHumanReadableMode() ){
+    return get_human_response({responseProps});
+  } else {
+    return responseProps;
+  }
+}
+
+function HttpMalformationResponse({malformationError}) {
+  return {
+    statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
+    contentType: 'text/plain',
+    body: malformationError.text,
+  };
+}
+
+
+function parsePathname({pathname}){
+  assert.internal(pathname.startsWith(API_URL_BASE));
+  const urlParts = pathname.slice(API_URL_BASE.length).split('/');
+
+  const pathname__isInvalid = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
+  const endpointName = urlParts[0];
+  const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
+  const pathname__prettified = pathname__isInvalid ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
+
+  return {
+    pathname__isInvalid,
+    endpointName,
+    urlArgs,
+    pathname__prettified,
+  };
+}
+
+function assert_request({requestProps}) {
+  const correctUsage = (
+    requestProps.isUniversalAdapter ? [] : [
+      [
+        "Usage:",
+        "",
+        "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
+        "",
+        "where",
+        "  - `method` is the HTTP method of the request",
+        "  - `url` is the HTTP URL of the request",
+        "  - `body` is the HTTP body of the request",
+        "  - `req` are optional additional request information such as HTTP headers.",
+        "",
+      ].join('\n')
+    ]
+  );
+
+  assert.usage(
+    requestProps.url,
+    ...correctUsage,
+    colorizeError("`url` is missing."),
+    "(`url=="+requestProps.url+"`)",
+    '',
+  );
+
+  assert.usage(
+    requestProps.method,
+    ...correctUsage,
+    colorizeError("`method` is missing."),
+    "(`method==="+requestProps.method+"`)",
+    '',
+  );
+
+  const method = requestProps.method.toUpperCase();
+  const bodyUsageNote = getBodyUsageNote(requestProps);
+  let {body} = requestProps;
+  const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
+  assert.usage(
+    !(method==='POST' && !body),
+    ...correctUsage,
+    colorizeError(bodyErrMsg),
+    bodyUsageNote,
+    '',
+  );
+  assert.usage(
+    'body' in requestProps,
+    ...correctUsage,
+    colorizeError(bodyErrMsg),
+    "Note that `requestProps.body` can be `null` or `undefined` but make sure to define it on the `requestProps`, e.g. `requestProps.body = null;`, i.e. make sure that `'body' in requestProps`.",
+    '',
+  );
+  assert.usage(
+    !body || [Array, String].includes(body.constructor),
+    {body},
+    '',
+    ...correctUsage,
+    colorizeError("Unexpected `body` type: `body` should be a string or an array."),
+    "`body.constructor==="+(body && body.constructor.name)+"`",
+  );
+}
+function getBodyUsageNote(requestProps) {
+  const expressNote = 'make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.';
+  const koaNote = 'make sure to parse the body, for example: `app.use(require(\'koa-bodyparser\')())`.';
+  if( requestProps.isExpressFramework ){
+    return 'You seem to be using Express; '+expressNote;
+  }
+  if( requestProps.isKoaFramework ){
+    return 'You seem to be using Koa; '+expressNote;
+  }
+  if( requestProps.isHapiFramework ){
+    assert.internal('body' in requestProps);
+    return;
+  }
+  return (
+    [
+      'If you are using Express: '+expressNote,
+      'If you are using Hapi: no plugin is required and the body is available at `request.payload`.',
+      'If you are using Koa: '+koaNote,
+    ].join('\n')
+  );
+}
+
+function logError({endpointError, endpointName}) {
+  console.error('');
+  console.error(endpointError);
+  console.error('');
+  console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
+  console.error('Error is printed above.');
+  console.error('Read the "Error Handling" documentation for how to handle errors.');
+  console.error('');
 }
