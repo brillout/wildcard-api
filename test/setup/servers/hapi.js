@@ -24,15 +24,13 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
       };
       const responseProps = await wildcardApiHolder.wildcardApi.getApiResponse(requestProps, context);
       {
-        const {body, statusCode, contentType, etag} = responseProps;
+        const {body, statusCode, contentType} = responseProps;
         assert.internal(body);
         assert.internal(statusCode);
         assert.internal(contentType);
-        assert.internal(etag);
         const response = h.response(body);
         response.code(statusCode);
         response.type(contentType);
-        response.etag(etag);
         return response;
       }
     }

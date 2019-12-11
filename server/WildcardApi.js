@@ -39,10 +39,10 @@ function WildcardApi() {
       malformationError,
       isIntrospection,
       isNotWildcardRequest,
-      isHumanReadableMode,
+      isHumanMode,
     } = RequestInfo({requestProps, context, endpointsObject});
 
-    if( reqInfo.isNotWildcardRequest ){
+    if( isNotWildcardRequest ){
       return null;
     }
     if( malformationError ){
@@ -56,10 +56,10 @@ function WildcardApi() {
 
     if( endpointError ){
       logError({endpointError, endpointName});
-      return HttpErrorResponse({endpointError, isHumanReadableMode});
+      return HttpErrorResponse({endpointError, isHumanMode});
     }
 
-    const responseProps = await HttpResponse({endpointResult, isHumanReadableMode});
+    const responseProps = await HttpResponse({endpointResult, isHumanMode});
 
     if( !options.disableEtag ){
       const computeEtag = require('./computeEtag');
@@ -76,8 +76,8 @@ function WildcardApi() {
     assert.internal(endpointArgs.constructor===Array);
 
     assert.usage(
-      endpointExists(endpointName),
-      getNoEndpointError({endpointName, calledInBrowser: false}),
+      endpointExists({endpointName, endpointsObject}),
+      getNoEndpointError({endpointName, endpointsObject, calledInBrowser: false}),
     );
 
     const resultObject = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
@@ -115,69 +115,6 @@ function WildcardApi() {
     }
 
     return {endpointResult, endpointError};
-  }
-
-  function endpointExists(endpointName) {
-    const endpoint = endpointsObject[endpointName];
-    return !!endpoint;
-  }
-
-  function getEndpointNames() {
-    return Object.keys(endpointsObject);
-  }
-  function noEndpointsDefined() {
-    return getEndpointNames().length===0;
-  }
-  function getNoEndpointError({endpointName, calledInBrowser}) {
-    assert.internal([true, false].includes(calledInBrowser));
-
-    if( noEndpointsDefined() ) {
-      const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
-      const invalidReason__part2 = "You didn't define any endpoint function.";
-      const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
-      console.error(invalidReason__part1);
-      console.error(colorizeError(invalidReason__part2));
-      console.error(invalidReason__part3);
-      return [
-        invalidReason__part1,
-        invalidReason__part2,
-        invalidReason__part3,
-      ].join('\n');
-    } else {
-      return (
-        'Endpoint `'+endpointName+"` doesn't exist." + (
-          (calledInBrowser && !isDev()) ? '' : (
-            '\n\nEndpoints: ' +
-            getEndpointNames().map(endpointName => '\n - '+endpointName).join('') +
-            "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)" + (
-              !calledInBrowser ? '' : '\n\n(The list of endpoints is only shown in development.)'
-            )
-          )
-        )
-      );
-    }
-  }
-  function getListOfEndpoints() {
-    const htmlBody = `
-Endpoints:
-<ul>
-${
-  getEndpointNames()
-  .map(endpointName => {
-    const endpointURL = API_URL_BASE+endpointName;
-    return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
-  })
-  .join('\n')
-}
-</ul>
-`;
-    return get_html_response(
-      htmlBody,
-      [
-        "This page exists only in development.",
-        "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
-      ].join('\n')
-    );
   }
 
 }
@@ -249,7 +186,7 @@ function isArrowFunction(fn) {
 }
 
 function isHumanReadableMode({method}) {
-  assert.internal(method);
+  assert.internal(method && method.toUpperCase()===method);
   if( method==='GET' ){
     return true;
   } else {
@@ -377,7 +314,6 @@ function create_requestProps_proxy({context, endpointName, isDirectCall}) {
   function get(_, prop) {
     if( !context ) {
       assert.internal(isDirectCall===true);
-      console.log('pp', prop, 'pe');
       const propNameIsNormal = isPropNameNormal(prop);
       assert.usage(false,
         colorizeError("Wrong usage of the Wildcard client in Node.js."),
@@ -430,63 +366,61 @@ function isPathanameBase({pathname}) {
 }
 
 function RequestInfo({requestProps, context, endpointsObject}) {
-  assert_request({requestProps});
+  const method = requestProps.method.toUpperCase();
+
+  assert_request({requestProps, method});
 
   const urlProps = getUrlProps(requestProps.url)
   assert.internal(urlProps.pathname.startsWith('/'));
 
   const {pathname} = urlProps;
-  const {method, body} = requestProps;
-  const isHumanReadableMode = isHumanReadableMode({method});
+  const {body} = requestProps;
+  const isHumanMode = isHumanReadableMode({method});
 
   if(
-    ! ['GET', 'POST'].includes(method) ||
+    !['GET', 'POST'].includes(method) ||
     !isPathanameBase({pathname}) && !pathname.startsWith(API_URL_BASE)
   ){
-    return {isNotWildcardRequest: true};
+    return {isNotWildcardRequest: true, isHumanMode};
   }
-  if( isPathanameBase({pathname}) && isDev() && isHumanReadableMode ){
-    return {isIntrospection: true};
+  if( isPathanameBase({pathname}) && isDev() && isHumanMode ){
+    return {isIntrospection: true, isHumanMode};
   }
 
   const {
-    pathname__isInvalid,
+    pathname__malformationError,
     endpointName,
     urlArgs,
     pathname__prettified,
   } = parsePathname({pathname});
 
-  if( ! endpointExists(endpointName) ) {
+  if( ! endpointExists({endpointName, endpointsObject}) ) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
-        text: getNoEndpointError({endpointName, calledInBrowser: true}),
+        text: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
       },
+      isHumanMode,
     };
   }
 
-  if( pathname__isInvalid ){
+  if( pathname__malformationError ){
     return {
-      malformationError: {
-        text: [
-          'Malformatted API URL `'+pathname__prettified+'`',
-          'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
-        ].join('\n'),
-      }
+      malformationError: pathname__malformationError,
+      isHumanMode,
     };
   }
 
-  const {endpointArgs, malformationError} = getEndpointArgs({method, pathname, body});
+  const {endpointArgs, malformationError} = getEndpointArgs({urlArgs, body, method, pathname__prettified});
   if( malformationError ){
-    {malformationError};
+    return {malformationError, isHumanMode};
   }
   assert.internal(endpointArgs.constructor===Array);
 
-  return {endpointArgs, endpointName};
+  return {endpointArgs, endpointName, isHumanMode};
 }
 
-function getEndpointArgs({method, pathname, body}){
-  const {urlArgs, pathname__prettified} = parsePathname(pathname);
+function getEndpointArgs({urlArgs, body, method, pathname__prettified}){
   assert.internal(['GET', 'POST'].includes(method));
   assert.internal(!(method==='GET' && body));
   assert.internal(!(method==='POST' && !body));
@@ -498,10 +432,8 @@ function getEndpointArgs({method, pathname, body}){
       endpointArgs = parse(endpointArgsString);
     } catch(err_) {
       return {
-        isInvalidUrl: true,
-        errorStatusCode: 400,
-        invalidReason: (
-          [
+        malformationError: {
+          text: [
             'Malformatted API URL `'+pathname__prettified+'`.',
             "JSON Parse Error:",
             err_.message,
@@ -509,8 +441,8 @@ function getEndpointArgs({method, pathname, body}){
             endpointArgsString,
             "Couldn't JSON parse the argument string.",
             "Is the argument string a valid JSON?",
-          ].join('\n')
-        ),
+          ].join('\n'),
+        },
       };
     }
   }
@@ -519,24 +451,19 @@ function getEndpointArgs({method, pathname, body}){
 
   if( endpointArgs.constructor!==Array ) {
     return {
-      isInvalidUrl: true,
-      errorStatusCode: 400,
-      invalidReason: (
-        [
+      malformationError: {
+        text: [
           'Malformatted API URL `'+pathname__prettified+'`.',
           'API URL arguments (i.e. endpoint arguments) should be an array.',
           "Instead we got `"+endpointArgs.constructor+"`.",
           'API URL arguments: `'+endpointArgsString+'`',
-        ].join('\n')
-      ),
+        ].join('\n'),
+      },
     };
   }
 
-  return endpointArgs;
+  return {endpointArgs};
 }
-
-
-
 
 
 function HttpIntrospectionResponse({endpointsObject}) {
@@ -545,43 +472,73 @@ function HttpIntrospectionResponse({endpointsObject}) {
     contentType: 'text/html',
     body: getListOfEndpoints({endpointsObject}),
   };
-} 
-function HttpErrorResponse({endpointError}) {
-  responseProps.body = 'Internal Server Error';
-  responseProps.statusCode = 500;
-  responseProps.contentType = 'text/plain';
-  if( isHumanReadableMode() ){
+}
+function getListOfEndpoints({endpointsObject}) {
+  const htmlBody = `
+Endpoints:
+<ul>
+${
+getEndpointNames({endpointsObject})
+.map(endpointName => {
+  const endpointURL = API_URL_BASE+endpointName;
+  return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
+})
+.join('\n')
+}
+</ul>
+`;
+  return get_html_response(
+    htmlBody,
+    [
+      "This page exists only in development.",
+      "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
+    ].join('\n')
+  );
+}
+function getEndpointNames({endpointsObject}) {
+  return Object.keys(endpointsObject);
+}
+
+function HttpErrorResponse({endpointError, isHumanMode}) {
+  const responseProps = {
+    body: 'Internal Server Error',
+    statusCode: 500,
+    contentType: 'text/plain',
+  };
+  if( isHumanMode ){
     return get_human_error_response({responseProps, endpointError});
   } else {
     return responseProps;
   }
 }
-function HttpResponse() {
-  assert.internal(body.constructor===String);
-  responseProps.statusCode = 200;
-  responseProps.contentType = 'application/json';
-    let body;
-    if( !endpointError ) {
-      // TODO be able to stringify undefined instead of null
-      const valueToStringify = endpointResult===undefined ? null : endpointResult;
-      try {
-        body = stringify(valueToStringify);
-      } catch(err_) {
-        console.error(err_);
-        console.log('\n');
-        console.log('Returned value');
-        console.log(valueToStringify);
-        console.log('\n');
-        assert.internal(err_);
-        endpointError = err_;
-        assert.warning(
-          false,
-          "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
-          "The returned value in question and the serialization error are printed above.",
-        );
-      }
-    }
-  if( isHumanReadableMode() ){
+function HttpResponse({endpointResult, isHumanMode}) {
+  const responseProps = {
+    statusCode: 200,
+    contentType: 'application/json',
+  };
+  let endpointError;
+  // TODO be able to stringify undefined instead of null
+  const valueToStringify = endpointResult===undefined ? null : endpointResult;
+  try {
+    responseProps.body = stringify(valueToStringify);
+  } catch(err_) {
+    console.error(err_);
+    console.log('\n');
+    console.log('Returned value');
+    console.log(valueToStringify);
+    console.log('\n');
+    assert.internal(err_);
+    endpointError = err_;
+    assert.warning(
+      false,
+      "Couldn't serialize value returned by endpoint function `"+endpointName+"`.",
+      "The returned value in question and the serialization error are printed above.",
+    );
+  }
+  if( endpointError ){
+    return HttpErrorResponse({endpointError, isHumanMode});
+  }
+  if( isHumanMode ){
     return get_human_response({responseProps});
   } else {
     return responseProps;
@@ -596,25 +553,34 @@ function HttpMalformationResponse({malformationError}) {
   };
 }
 
-
 function parsePathname({pathname}){
   assert.internal(pathname.startsWith(API_URL_BASE));
   const urlParts = pathname.slice(API_URL_BASE.length).split('/');
 
-  const pathname__isInvalid = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
+  const isMalformatted = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
+
   const endpointName = urlParts[0];
   const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
-  const pathname__prettified = pathname__isInvalid ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
+  const pathname__prettified = isMalformatted ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
+  let pathname__malformationError;
+  if( isMalformatted ){
+    pathname__malformationError = {
+      text: [
+        'Malformatted API URL `'+pathname__prettified+'`',
+        'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
+      ].join('\n'),
+    };
+  }
 
   return {
-    pathname__isInvalid,
+    pathname__malformationError,
     endpointName,
     urlArgs,
     pathname__prettified,
   };
 }
 
-function assert_request({requestProps}) {
+function assert_request({requestProps, method}) {
   const correctUsage = (
     requestProps.isUniversalAdapter ? [] : [
       [
@@ -648,7 +614,6 @@ function assert_request({requestProps}) {
     '',
   );
 
-  const method = requestProps.method.toUpperCase();
   const bodyUsageNote = getBodyUsageNote(requestProps);
   let {body} = requestProps;
   const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
@@ -705,4 +670,41 @@ function logError({endpointError, endpointName}) {
   console.error('Error is printed above.');
   console.error('Read the "Error Handling" documentation for how to handle errors.');
   console.error('');
+}
+
+function endpointExists({endpointName, endpointsObject}) {
+  const endpoint = endpointsObject[endpointName];
+  return !!endpoint;
+}
+
+function getNoEndpointError({endpointName, endpointsObject, calledInBrowser}) {
+  assert.internal([true, false].includes(calledInBrowser));
+
+  const endpointNames = getEndpointNames({endpointsObject});
+  const noEndpointsDefined = endpointNames.length===0;
+  if( noEndpointsDefined ) {
+    const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
+    const invalidReason__part2 = "You didn't define any endpoint function.";
+    const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
+    console.error(invalidReason__part1);
+    console.error(colorizeError(invalidReason__part2));
+    console.error(invalidReason__part3);
+    return [
+      invalidReason__part1,
+      invalidReason__part2,
+      invalidReason__part3,
+    ].join('\n');
+  } else {
+    return (
+      'Endpoint `'+endpointName+"` doesn't exist." + (
+        (calledInBrowser && !isDev()) ? '' : (
+          '\n\nEndpoints: ' +
+          endpointNames.map(endpointName => '\n - '+endpointName).join('') +
+          "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)" + (
+            !calledInBrowser ? '' : '\n\n(The list of endpoints is only shown in development.)'
+          )
+        )
+      )
+    );
+  }
 }
