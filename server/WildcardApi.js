@@ -398,7 +398,6 @@ function WildcardApi(options={}) {
       endpointError = err;
     }
 
-    // TODO - remove onEndpointCall
     const resultObject = {
       context,
       endpointName,
@@ -418,21 +417,6 @@ function WildcardApi(options={}) {
         resultObject.respObject = respObject__overwritten;
       },
     };
-
-    if( options.onEndpointCall ){
-      const retVal = (
-        await options.onEndpointCall.call(
-          null,
-          resultObject,
-        )
-      );
-      assert.usage(
-        retVal===undefined,
-        "The `onEndpointCall` function should always return `undefined`.",
-        "Instead it returned `"+retVal+"`.",
-        "If you want to overwrite the endpoint result then use the `overwriteResult` function instead."
-      );
-    }
 
     return resultObject;
   }
