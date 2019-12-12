@@ -11,17 +11,16 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
   app.use(bodyParser());
 
   app.use(wildcard(
-    async req => {
-      const {headers} = req;
+    async ctx => {
+      const {headers} = ctx.request;
       const context = {headers};
       return context;
     },
     wildcardApiHolder,
   ));
 
-  app.use(Static('client/dist', {extensions: ['.html']}));
+  app.use(Static(staticDir, {extensions: ['.html']}));
 
-  app.listen(httpPort);
-
-  return () => app.stop();
+  const server = app.listen(httpPort);
+  return () => server.close();
 };

@@ -8,9 +8,9 @@ async function startAllServers(wildcardApiHolder) {
     await Promise.all(
       [
         {serverFramework: 'getApiResponse', httpPort: 3441},
-        {serverFramework: 'hapi', httpPort: 3442},
+        {serverFramework: 'express', httpPort: 3442},
         {serverFramework: 'koa', httpPort: 3443},
-        {serverFramework: 'express', httpPort: 3444},
+        {serverFramework: 'hapi', httpPort: 3444},
       ]
       .map(async ({serverFramework, httpPort}) => {
         const startServer = require('./'+serverFramework);

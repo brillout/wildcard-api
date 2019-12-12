@@ -12,8 +12,8 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
   });
 
   server.register(wildcard(
-    async req => {
-      const {headers} = req;
+    async request => {
+      const {headers} = request;
       const context = {headers};
       return context;
     },
