@@ -9,7 +9,7 @@ async function makeHttpRequest({url, parse, body}) {
       () => fetch(
         url,
         {
-          /*
+          /* Also enable `DEBUG_CACHE` flag on server-side.
           method: 'GET',
           /*/
           method: 'POST',

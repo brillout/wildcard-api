@@ -6,6 +6,14 @@ const getUrlProps = require('@brillout/url-props');
 
 const API_URL_BASE = '/wildcard/';
 
+const DEBUG_CACHE = (
+  /*/
+  true
+  /*/
+  false
+  //*/
+);
+
 assert.usage(
   isNodejs(),
   "You are loading the module `wildcard-api` in the browser.",
@@ -188,6 +196,9 @@ function isArrowFunction(fn) {
 
 function isHumanReadableMode({method}) {
   assert.internal(method && method.toUpperCase()===method);
+  if( DEBUG_CACHE ){
+    return false;
+  }
   if( method==='GET' ){
     return true;
   } else {
