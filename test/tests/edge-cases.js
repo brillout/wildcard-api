@@ -14,7 +14,7 @@ async function bigPayloads({wildcardApi, browserEval}) {
   await browserEval(async ({_bigArg, _bigResult}) => {
     const bigResult = await window.endpoints.bigEndpoint({bigArg: _bigArg});
     assert(bigResult===_bigResult);
-  }, {args: {_bigResult, _bigArg}});
+  }, {browserArgs: {_bigResult, _bigArg}});
 }
 
 function gen_big_string() {

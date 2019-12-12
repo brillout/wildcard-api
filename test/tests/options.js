@@ -86,7 +86,7 @@ async function option_serverUrl({wildcardApi, wildcardClient, browserEval, httpP
       failed = true;
     }
     assert(failed===true, {failed});
-  }, {onHttpRequest, args: {wrongHttpPort}});
+  }, {onHttpRequest, browserArgs: {wrongHttpPort}});
 
   assert(endpointCalled===false && onHttpRequestCalled===true, {endpointCalled, onHttpRequestCalled});
 

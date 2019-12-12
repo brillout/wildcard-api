@@ -34,7 +34,7 @@ async function launchBrowser() {
   };
 
   var httpPort__current;
-  async function browserEval(httpPort, fn, {offlineMode=false, args, onHttpRequest}={}) {
+  async function browserEval(httpPort, fn, {offlineMode=false, browserArgs, onHttpRequest}={}) {
     if( httpPort!==httpPort__current ){
       await page.goto('http://localhost:'+httpPort);
       httpPort__current = httpPort;
@@ -48,7 +48,7 @@ async function launchBrowser() {
 
     let ret;
     try {
-      ret = await page.evaluate(fn, args);
+      ret = await page.evaluate(fn, browserArgs);
     } catch(err) {
       /*
       // Non-helpful error "Evaluation failed: [object Object]" is a bug:
