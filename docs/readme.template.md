@@ -98,15 +98,15 @@ every release is assailed against a heavy suit of automated tests,
 issues are fixed promptly,
 and it features:
 <br/> &nbsp;&nbsp;
+:heavy_check_mark: Automatic Caching
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Server Framework Agnostic
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Dev Tools
+<br/> &nbsp;&nbsp;
 :heavy_check_mark: Permission by Code
 <br/> &nbsp;&nbsp;
 :heavy_check_mark: Simple Error Handling
-<br/> &nbsp;&nbsp;
-:heavy_check_mark: Automatic Caching
-<br/> &nbsp;&nbsp;
-:heavy_check_mark: Debugging & Introspection
-<br/> &nbsp;&nbsp;
-:heavy_check_mark: Server Framework Agnostic
 <br/> &nbsp;&nbsp;
 :heavy_check_mark: SSR Support
 

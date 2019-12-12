@@ -1,6 +1,7 @@
 const Hapi = require('hapi');
 const Inert = require('inert');
 const assert = require('@brillout/assert');
+const wildcard = require('@wildcard-api/server/hapi');
 
 module.exports = startServer;
 
@@ -10,31 +11,14 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
     debug: {request: ['internal']},
   });
 
-  server.route({
-    method: '*',
-    path: '/wildcard/{param*}',
-    handler: async (request, h) => {
-      const requestProps = {
-        url: request.url,
-        method: request.method,
-        body: request.payload,
-      };
-      const context = {
-        headers: request.headers,
-      };
-      const responseProps = await wildcardApiHolder.wildcardApi.getApiResponse(requestProps, context);
-      {
-        const {body, statusCode, contentType} = responseProps;
-        assert.internal(body);
-        assert.internal(statusCode);
-        assert.internal(contentType);
-        const response = h.response(body);
-        response.code(statusCode);
-        response.type(contentType);
-        return response;
-      }
-    }
-  });
+  server.register(wildcard(
+    async req => {
+      const {headers} = req;
+      const context = {headers};
+      return context;
+    },
+    wildcardApiHolder,
+  ));
 
   await server.register(Inert);
   server.route({
