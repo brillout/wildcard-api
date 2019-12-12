@@ -201,7 +201,6 @@ function isDev() {
   return false;
 }
 
-// TODO - improve this
 function get_human_response({responseProps, endpointResult}) {
   const text = (
     responseProps.contentType==='application/json' ? (
@@ -368,13 +367,15 @@ function isPathanameBase({pathname}) {
 function RequestInfo({requestProps, context, endpointsObject}) {
   const method = requestProps.method.toUpperCase();
 
+  /* TODO
   assert_request({requestProps, method});
+  */
 
   const urlProps = getUrlProps(requestProps.url)
   assert.internal(urlProps.pathname.startsWith('/'));
 
   const {pathname} = urlProps;
-  const {body} = requestProps;
+  const {body: requestBody} = requestProps;
   const isHumanMode = isHumanReadableMode({method});
 
   if(
@@ -390,7 +391,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
   const {
     pathname__malformationError,
     endpointName,
-    urlArgs,
+    urlArgs__string,
     pathname__prettified,
   } = parsePathname({pathname});
 
@@ -411,7 +412,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
     };
   }
 
-  const {endpointArgs, malformationError} = getEndpointArgs({urlArgs, body, method, pathname__prettified});
+  const {endpointArgs, malformationError} = getEndpointArgs({urlArgs__string, requestBody, method, pathname__prettified});
   if( malformationError ){
     return {malformationError, isHumanMode};
   }
@@ -420,31 +421,46 @@ function RequestInfo({requestProps, context, endpointsObject}) {
   return {endpointArgs, endpointName, isHumanMode};
 }
 
-function getEndpointArgs({urlArgs, body, method, pathname__prettified}){
+function getEndpointArgs({urlArgs__string, requestBody, method, pathname__prettified}){
   assert.internal(['GET', 'POST'].includes(method));
-  assert.internal(!(method==='GET' && body));
-  assert.internal(!(method==='POST' && !body));
-  assert.internal(!body || [Array, String].includes(body.constructor));
-  let endpointArgsString = urlArgs || JSON.stringify(body);
+  assert.internal(!requestBody || [Array].includes(requestBody.constructor));
+
+  let endpointArgs__string;
+  const ARGS_IN_BODY = 'args-in-body';
+  if( urlArgs__string === ARGS_IN_BODY ){
+    endpointArgs__string = JSON.stringify(requestBody);
+  } else {
+    endpointArgs__string = urlArgs__string;
+  }
+
+  /* TODO
+  assert.internal(
+    urlArgs__string && (urlArgs__string===ARGS_IN_BODY || urlArgs__string.startsWith('[')),
+    {urlArgs__string},
+  );
+  assert.internal(
+    urlArgs__string===ARGS_IN_BODY && requestBody || urlArgs__string && !requestBody,
+    {requestBody, urlArgs__string},
+  );
+  */
+
   let endpointArgs;
-  if( endpointArgsString ){
-    try {
-      endpointArgs = parse(endpointArgsString);
-    } catch(err_) {
-      return {
-        malformationError: {
-          text: [
-            'Malformatted API URL `'+pathname__prettified+'`.',
-            "JSON Parse Error:",
-            err_.message,
-            "Argument string:",
-            endpointArgsString,
-            "Couldn't JSON parse the argument string.",
-            "Is the argument string a valid JSON?",
-          ].join('\n'),
-        },
-      };
-    }
+  try {
+    endpointArgs = parse(endpointArgs__string);
+  } catch(err_) {
+    return {
+      malformationError: {
+        text: [
+          'Malformatted API URL `'+pathname__prettified+'`.',
+          "JSON Parse Error:",
+          err_.message,
+          "Argument string:",
+          endpointArgs__string,
+          "Couldn't JSON parse the argument string.",
+          "Is the argument string a valid JSON?",
+        ].join('\n'),
+      },
+    };
   }
 
   endpointArgs = endpointArgs || [];
@@ -456,7 +472,7 @@ function getEndpointArgs({urlArgs, body, method, pathname__prettified}){
           'Malformatted API URL `'+pathname__prettified+'`.',
           'API URL arguments (i.e. endpoint arguments) should be an array.',
           "Instead we got `"+endpointArgs.constructor+"`.",
-          'API URL arguments: `'+endpointArgsString+'`',
+          'API URL arguments: `'+endpointArgs__string+'`',
         ].join('\n'),
       },
     };
@@ -464,6 +480,33 @@ function getEndpointArgs({urlArgs, body, method, pathname__prettified}){
 
   return {endpointArgs};
 }
+function parsePathname({pathname}){
+  assert.internal(pathname.startsWith(API_URL_BASE));
+  const urlParts = pathname.slice(API_URL_BASE.length).split('/');
+
+  const isMalformatted = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
+
+  const endpointName = urlParts[0];
+  const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
+  const pathname__prettified = isMalformatted ? pathname : '/wildcard/'+endpointName+'/'+urlArgs__string;
+  let pathname__malformationError;
+  if( isMalformatted ){
+    pathname__malformationError = {
+      text: [
+        'Malformatted API URL `'+pathname__prettified+'`',
+        'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
+      ].join('\n'),
+    };
+  }
+
+  return {
+    pathname__malformationError,
+    endpointName,
+    urlArgs__string,
+    pathname__prettified,
+  };
+}
+
 
 
 function HttpIntrospectionResponse({endpointsObject}) {
@@ -539,7 +582,7 @@ function HttpResponse({endpointResult, isHumanMode}) {
     return HttpErrorResponse({endpointError, isHumanMode});
   }
   if( isHumanMode ){
-    return get_human_response({responseProps});
+    return get_human_response({responseProps, endpointResult});
   } else {
     return responseProps;
   }
@@ -550,33 +593,6 @@ function HttpMalformationResponse({malformationError}) {
     statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
     contentType: 'text/plain',
     body: malformationError.text,
-  };
-}
-
-function parsePathname({pathname}){
-  assert.internal(pathname.startsWith(API_URL_BASE));
-  const urlParts = pathname.slice(API_URL_BASE.length).split('/');
-
-  const isMalformatted = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
-
-  const endpointName = urlParts[0];
-  const urlArgs = urlParts[1] && decodeURIComponent(urlParts[1]);
-  const pathname__prettified = isMalformatted ? pathname : '/wildcard/'+endpointName+'/'+urlArgs;
-  let pathname__malformationError;
-  if( isMalformatted ){
-    pathname__malformationError = {
-      text: [
-        'Malformatted API URL `'+pathname__prettified+'`',
-        'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
-      ].join('\n'),
-    };
-  }
-
-  return {
-    pathname__malformationError,
-    endpointName,
-    urlArgs,
-    pathname__prettified,
   };
 }
 

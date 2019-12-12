@@ -47,18 +47,25 @@ function WildcardClient() {
   }
 
   function callEndpointOverHttp({endpointName, endpointArgs}) {
-    let url = getEndpointUrl({endpointName, endpointArgs});
-    let body = stringify([]);
-
-    // Add arguments
+    let body;
+    let urlArgs__string;
+    const ARGS_IN_BODY = 'args-in-body';
     let endpointArgsStr = serializeArgs({endpointArgs, endpointName, stringify});
     if( endpointArgsStr ){
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
       if( endpointArgsStr.length >= 1000 || options.argumentsAlwaysInHttpBody){
         body = endpointArgsStr;
+        urlArgs__string = ARGS_IN_BODY;
       } else {
-        url += '/'+encodeURIComponent(endpointArgsStr);
+        urlArgs__string = endpointArgsStr;
+        assert.internal(urlArgs__string.startsWith('['));
+        assert.internal(!urlArgs__string.startsWith(ARGS_IN_BODY));
       }
+    }
+
+    let url = getEndpointUrl({endpointName, endpointArgs});
+    if( urlArgs__string ){
+      url += '/'+encodeURIComponent(urlArgs__string);
     }
 
     return makeHttpRequest({url, parse, body});
