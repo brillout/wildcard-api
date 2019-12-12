@@ -46,6 +46,7 @@ function WildcardApi() {
       return null;
     }
     if( malformationError ){
+      logError({err: malformationError.text, endpointName});
       return HttpMalformationResponse({malformationError});
     }
     if( isIntrospection ){
@@ -55,7 +56,7 @@ function WildcardApi() {
     const {endpointResult, endpointError} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
 
     if( endpointError ){
-      logError({endpointError, endpointName});
+      logError({err: endpointError, endpointName});
       return HttpErrorResponse({endpointError, isHumanMode});
     }
 
@@ -367,9 +368,7 @@ function isPathanameBase({pathname}) {
 function RequestInfo({requestProps, context, endpointsObject}) {
   const method = requestProps.method.toUpperCase();
 
-  /* TODO
   assert_request({requestProps, method});
-  */
 
   const urlProps = getUrlProps(requestProps.url)
   assert.internal(urlProps.pathname.startsWith('/'));
@@ -389,15 +388,16 @@ function RequestInfo({requestProps, context, endpointsObject}) {
   }
 
   const {
-    pathname__malformationError,
+    malformationError: malformationError__pathname,
     endpointName,
     urlArgs__string,
     pathname__prettified,
   } = parsePathname({pathname});
 
-  if( pathname__malformationError ){
+  if( malformationError__pathname ){
     return {
-      malformationError: pathname__malformationError,
+      malformationError: malformationError__pathname,
+      endpointName,
       isHumanMode,
     };
   }
@@ -408,76 +408,109 @@ function RequestInfo({requestProps, context, endpointsObject}) {
         endpointDoesNotExist: true,
         text: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
       },
+      endpointName,
       isHumanMode,
     };
   }
 
-  const {endpointArgs, malformationError} = getEndpointArgs({urlArgs__string, requestBody, method, pathname__prettified});
+  const {endpointArgs, malformationError} = getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, requestProps});
   if( malformationError ){
-    return {malformationError, isHumanMode};
+    return {
+      malformationError,
+      endpointName,
+      isHumanMode,
+    };
   }
-  assert.internal(endpointArgs.constructor===Array);
 
-  return {endpointArgs, endpointName, isHumanMode};
+  assert.internal(endpointArgs.constructor===Array);
+  return {
+    endpointArgs,
+    endpointName,
+    isHumanMode,
+  };
 }
 
-function getEndpointArgs({urlArgs__string, requestBody, method, pathname__prettified}){
-  assert.internal(['GET', 'POST'].includes(method));
-  assert.internal(!requestBody || [Array].includes(requestBody.constructor));
+function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, requestProps}){
+  const ARGS_IN_BODY = 'args-in-body';
+  const args_are_in_body = urlArgs__string === ARGS_IN_BODY;
 
   let endpointArgs__string;
-  const ARGS_IN_BODY = 'args-in-body';
-  if( urlArgs__string === ARGS_IN_BODY ){
-    endpointArgs__string = JSON.stringify(requestBody);
+  if( args_are_in_body ){
+    if( !requestBody ){
+      return {
+        malformationError: {
+          text: [
+            urlArgs__string.comesFromUniversalAdapter ? (
+              colorizeError('Your '+urlArgs__string.comesFromUniversalAdapter+' server does not provide the HTTP request body.')
+            ) : (
+              [
+                getApiResponse__usageNote({requestProps}),
+                colorizeError('`body` is missing.'),
+              ].join('\n')
+            ),
+            colorizeEmphasis('You need to provide the HTTP request body when calling an endpoint with arguments serialized to >=2000 characters.'),
+            getBodyUsageNote({requestProps}),
+          ].join('\n'),
+        },
+      };
+    }
+    const bodyIsValid = requestBody.constructor===Array || requestBody.startsWith && requestBody.startsWith('[');
+    if( !bodyIsValid ){
+      return {
+        malformationError: {
+          text: [
+            JSON.stringify({httpRequestBody: requestBody}),
+            'Malformatted API request `'+pathname__prettified+'`.',
+            colorizeError('HTTP request body should be a JSON array.'),
+          ].join('\n'),
+        },
+      };
+    }
+    endpointArgs__string = (
+      requestBody.constructor===Array ? (
+        JSON.stringify(requestBody)
+      ) : (
+        requestBody
+      )
+    );
   } else {
+    if( !urlArgs__string ){
+      return {
+        endpointArgs: [],
+      };
+    }
+    if( !urlArgs__string.startsWith('[') ){
+      return {
+        malformationError: {
+          text: [
+            JSON.stringify({requestBody}),
+            'Malformatted API request `'+pathname__prettified+'`.',
+            colorizeError('The URL arguments should be a JSON array.'),
+            '`'+urlArgs__string+'` is not a JSON array',
+          ].join('\n'),
+        },
+      };
+    }
     endpointArgs__string = urlArgs__string;
   }
-
-  /* TODO
-  assert.internal(
-    urlArgs__string && (urlArgs__string===ARGS_IN_BODY || urlArgs__string.startsWith('[')),
-    {urlArgs__string},
-  );
-  assert.internal(
-    urlArgs__string===ARGS_IN_BODY && requestBody || urlArgs__string && !requestBody,
-    {requestBody, urlArgs__string},
-  );
-  */
 
   let endpointArgs;
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch(err_) {
+    assert.internal(endpointArgs__string.startsWith('['));
     return {
       malformationError: {
         text: [
-          'Malformatted API URL `'+pathname__prettified+'`.',
-          "JSON Parse Error:",
+          'Malformatted API request `'+pathname__prettified+'`: Wildcard cannot deserialize the endpoint arguments.',
+          colorizeError("JSON Parse Error:"),
           err_.message,
-          "Argument string:",
+          colorizeEmphasis("Endpoint arguments JSON string:"),
           endpointArgs__string,
-          "Couldn't JSON parse the argument string.",
-          "Is the argument string a valid JSON?",
         ].join('\n'),
       },
     };
   }
-
-  endpointArgs = endpointArgs || [];
-
-  if( endpointArgs.constructor!==Array ) {
-    return {
-      malformationError: {
-        text: [
-          'Malformatted API URL `'+pathname__prettified+'`.',
-          'API URL arguments (i.e. endpoint arguments) should be an array.',
-          "Instead we got `"+endpointArgs.constructor+"`.",
-          'API URL arguments: `'+endpointArgs__string+'`',
-        ].join('\n'),
-      },
-    };
-  }
-
   return {endpointArgs};
 }
 function parsePathname({pathname}){
@@ -489,9 +522,9 @@ function parsePathname({pathname}){
   const endpointName = urlParts[0];
   const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
   const pathname__prettified = isMalformatted ? pathname : '/wildcard/'+endpointName+'/'+urlArgs__string;
-  let pathname__malformationError;
+  let malformationError;
   if( isMalformatted ){
-    pathname__malformationError = {
+    malformationError = {
       text: [
         'Malformatted API URL `'+pathname__prettified+'`',
         'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
@@ -500,7 +533,7 @@ function parsePathname({pathname}){
   }
 
   return {
-    pathname__malformationError,
+    malformationError,
     endpointName,
     urlArgs__string,
     pathname__prettified,
@@ -589,34 +622,24 @@ function HttpResponse({endpointResult, isHumanMode}) {
 }
 
 function HttpMalformationResponse({malformationError}) {
+  const stripAnsi = require('strip-ansi');
   return {
     statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
     contentType: 'text/plain',
-    body: malformationError.text,
+    body: stripAnsi(malformationError.text),
   };
 }
 
 function assert_request({requestProps, method}) {
-  const correctUsage = (
-    requestProps.isUniversalAdapter ? [] : [
-      [
-        "Usage:",
-        "",
-        "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
-        "",
-        "where",
-        "  - `method` is the HTTP method of the request",
-        "  - `url` is the HTTP URL of the request",
-        "  - `body` is the HTTP body of the request",
-        "  - `req` are optional additional request information such as HTTP headers.",
-        "",
-      ].join('\n')
+  const correctUsageNote = (
+    requestProps.comesFromUniversalAdapter ? [] : [
+      getApiResponse__usageNote({requestProps})
     ]
   );
 
   assert.usage(
     requestProps.url,
-    ...correctUsage,
+    ...correctUsageNote,
     colorizeError("`url` is missing."),
     "(`url=="+requestProps.url+"`)",
     '',
@@ -624,50 +647,39 @@ function assert_request({requestProps, method}) {
 
   assert.usage(
     requestProps.method,
-    ...correctUsage,
+    ...correctUsageNote,
     colorizeError("`method` is missing."),
-    "(`method==="+requestProps.method+"`)",
+    "(`method=="+requestProps.method+"`)",
     '',
-  );
-
-  const bodyUsageNote = getBodyUsageNote(requestProps);
-  let {body} = requestProps;
-  const bodyErrMsg = "`body` is missing but it should be the HTTP request body.";
-  assert.usage(
-    !(method==='POST' && !body),
-    ...correctUsage,
-    colorizeError(bodyErrMsg),
-    bodyUsageNote,
-    '',
-  );
-  assert.usage(
-    'body' in requestProps,
-    ...correctUsage,
-    colorizeError(bodyErrMsg),
-    "Note that `requestProps.body` can be `null` or `undefined` but make sure to define it on the `requestProps`, e.g. `requestProps.body = null;`, i.e. make sure that `'body' in requestProps`.",
-    '',
-  );
-  assert.usage(
-    !body || [Array, String].includes(body.constructor),
-    {body},
-    '',
-    ...correctUsage,
-    colorizeError("Unexpected `body` type: `body` should be a string or an array."),
-    "`body.constructor==="+(body && body.constructor.name)+"`",
   );
 }
-function getBodyUsageNote(requestProps) {
+function getApiResponse__usageNote() {
+  return (
+    [
+      "Usage:",
+      "",
+      "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
+      "",
+      "where",
+      "  - `method` is the HTTP method of the request",
+      "  - `url` is the HTTP URL of the request",
+      "  - `body` is the HTTP body of the request",
+      "  - `context` is the context passed to your endpoint functions as `this`.",
+      "",
+    ].join('\n')
+  );
+}
+function getBodyUsageNote({requestProps}) {
   const expressNote = 'make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.';
   const koaNote = 'make sure to parse the body, for example: `app.use(require(\'koa-bodyparser\')())`.';
-  if( requestProps.isExpressFramework ){
+  if( requestProps.comesFromUniversalAdapter==='express' ){
     return 'You seem to be using Express; '+expressNote;
   }
-  if( requestProps.isKoaFramework ){
+  if( requestProps.comesFromUniversalAdapter==='koa' ){
     return 'You seem to be using Koa; '+expressNote;
   }
-  if( requestProps.isHapiFramework ){
+  if( requestProps.comesFromUniversalAdapter==='hapi' ){
     assert.internal('body' in requestProps);
-    return;
   }
   return (
     [
@@ -678,11 +690,11 @@ function getBodyUsageNote(requestProps) {
   );
 }
 
-function logError({endpointError, endpointName}) {
+function logError({err, endpointName}) {
   console.error('');
-  console.error(endpointError);
+  console.error(err);
   console.error('');
-  console.error(colorizeError('Error thrown by endpoint function `'+endpointName+'`.'))+
+  console.error(colorizeError('Error thrown by endpoint function'+(!endpointName?'':' `'+endpointName+'`')+'.'))+
   console.error('Error is printed above.');
   console.error('Read the "Error Handling" documentation for how to handle errors.');
   console.error('');

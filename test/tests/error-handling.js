@@ -17,11 +17,27 @@ async function bugHandling({wildcardApi, browserEval}) {
       err = err_;
     }
     assert(err);
-    assert('isNetworkError' in err, 'Internal error in Wildcard client', {errMessage: err.message});
-    assert(err.isServerError===true);
-    assert(err.isNetworkError===false);
-    assert(err.response.statusCode===500);
-    assert(err.response.value==='Internal Server Error');
+    const {isServerError, isNetworkError} = err;
+    assert(
+      'isNetworkError' in err && 'isServerError' in err,
+      {err, isNetworkError, isServerError},
+    );
+    assert(
+      err.isServerError===true,
+      {err, isNetworkError, isServerError},
+    );
+    assert(
+      err.isNetworkError===false,
+      {err, isNetworkError, isServerError},
+    );
+    assert(
+      err.response.statusCode===500,
+      {err, isNetworkError, isServerError},
+    );
+    assert(
+      err.response.value==='Internal Server Error',
+      {err, isNetworkError, isServerError},
+    );
   });
 }
 

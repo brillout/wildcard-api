@@ -61,9 +61,8 @@ async function wrongUrl2({wildcardApi, browserEval}) {
     const text = await resp.text();
     console.log(text);
     assert(resp.status===400, resp.status);
-    assert(text.includes('Malformatted API URL `/wildcard/hello/wrongArgSyntax`'), {text});
-    assert(text.includes("Couldn't JSON parse the argument string."), {text});
-    assert(text.includes('Is the argument string a valid JSON?'), {text});
+    assert(text.includes('Malformatted API request `/wildcard/hello/wrongArgSyntax`'), {text});
+    assert(text.includes('The URL arguments should be a JSON array.'), {text});
   });
 }
 
@@ -77,8 +76,8 @@ async function wrongUrl3({wildcardApi, browserEval}) {
     const text = await resp.text();
     console.log(text);
     assert(resp.status===400, resp.status);
-    assert(text.includes('Malformatted API URL `/wildcard/hello/{}`'), {text});
-    assert(text.includes('URL arguments') && text.includes('should be an array'), {text});
+    assert(text.includes('Malformatted API request `/wildcard/hello/{}`'), {text});
+    assert(text.includes('The URL arguments should be a JSON array.'), {text});
   });
 }
 

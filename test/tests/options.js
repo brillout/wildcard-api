@@ -19,8 +19,12 @@ async function option_argumentsAlwaysInHttpBody_1({wildcardApi, browserEval, htt
   assert(execCount===2, {execCount});
 
   function onHttpRequest(request) {
-    assert(request._url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody/%5B%22just%20some%20args%22%5D', request._url);
-    assert(request._postData==='[]', request._postData);
+    const {_url, _postData} = request;
+    assert(
+      _url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody/%5B%22just%20some%20args%22%5D',
+      {_url},
+    );
+    assert(_postData===undefined, {_postData});
 
     execCount++;
   }
@@ -46,8 +50,15 @@ async function option_argumentsAlwaysInHttpBody_2({wildcardApi, browserEval, htt
   assert(endpointCalled && onHttpRequestCalled);
 
   function onHttpRequest(request) {
-    assert(request._url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody', request._url);
-    assert(request._postData==='["just some args"]', request._postData);
+    const {_url, _postData} = request;
+    assert(
+      _url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody/args-in-body',
+      {_url},
+    );
+    assert(
+      _postData==='["just some args"]',
+      {_postData},
+    );
 
     onHttpRequestCalled = true;
   }
