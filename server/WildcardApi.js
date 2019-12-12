@@ -513,11 +513,10 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
     return {
       malformationError: {
         text: [
-          'Malformatted API request `'+pathname__prettified+'`: Wildcard cannot deserialize the endpoint arguments.',
+          'Malformatted API request `'+pathname__prettified+'`.',
+          'Cannot JSON parse `'+endpointArgs__string+'`.',
           colorizeError("JSON Parse Error:"),
           err_.message,
-          colorizeEmphasis("Endpoint arguments JSON string:"),
-          endpointArgs__string,
         ].join('\n'),
       },
     };
@@ -554,13 +553,6 @@ function parsePathname({pathname}){
 
 
 function HttpIntrospectionResponse({endpointsObject}) {
-  return {
-    statusCode: 200,
-    contentType: 'text/html',
-    body: getListOfEndpoints({endpointsObject}),
-  };
-}
-function getListOfEndpoints({endpointsObject}) {
   const htmlBody = `
 Endpoints:
 <ul>
