@@ -4,8 +4,6 @@ require('./api/endpoints');
 
 const app = express();
 
-app.use(express.json());
-
 // Server our API endpoints
 app.use(wildcard(async req => {
   const {headers} = req;

@@ -1,12 +1,9 @@
 const Koa = require('koa');
 const Static = require('koa-static');
-const bodyParser = require('koa-bodyparser');
 const wildcard = require('@wildcard-api/server/koa');
 require('./api/endpoints');
 
 const app = new Koa();
-
-app.use(bodyParser());
 
 // Server our API endpoints
 app.use(wildcard(async ctx => {

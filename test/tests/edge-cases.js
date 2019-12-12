@@ -19,9 +19,10 @@ async function bigPayloads({wildcardApi, browserEval}) {
 
 function gen_big_string() {
   let str = '';
-  for(let i=0 ;i<100*10000; i++) {
+  for(let i=0 ;i<10*10000; i++) {
     const char = Math.round(Math.random()*10).toString()[0];
     str += char;
   }
+  console.log('ss', str);
   return str;
 }
