@@ -1,3 +1,5 @@
+// Example of unrecommended way of designing endpoints
+
 const {endpoints} = require('@wildcard-api/server');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');

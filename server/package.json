@@ -5,6 +5,7 @@
   "dependencies": {
     "@brillout/assert": "^0.1.0",
     "@brillout/json-s": "^0.1.0",
+    "@brillout/project-files": "^0.4.2",
     "@brillout/url-props": "^0.1.1",
     "@universal-adapter/express": "^0.5.1",
     "@universal-adapter/hapi": "^0.5.1",

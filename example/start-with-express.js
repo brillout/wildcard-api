@@ -1,6 +1,5 @@
 const express = require('express');
 const wildcard = require('@wildcard-api/server/express');
-require('./api/endpoints');
 
 const app = express();
 

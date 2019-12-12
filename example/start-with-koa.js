@@ -1,7 +1,6 @@
 const Koa = require('koa');
 const Static = require('koa-static');
 const wildcard = require('@wildcard-api/server/koa');
-require('./api/endpoints');
 
 const app = new Koa();
 
