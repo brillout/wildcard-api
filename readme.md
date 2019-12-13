@@ -98,6 +98,10 @@ Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Error Handling](#error-handling)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Dev Tools](#dev-tools)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Caching](#caching)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [SSR](#ssr)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Options](#options)
@@ -747,6 +751,62 @@ if you have questions or if something is not clear. We enjoy talking with our us
 
 
 
+## Caching
+
+Wildcard automatically caches your endpoint results by using the HTTP ETag header.
+You can disable caching by using the [`disableEtag` option](#disableetag).
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
+## Dev Tools
+
+You can browse your API by going to `/wildcard/`.
+For example, if your app is running at `http://localhost:3000` then go to `http://localhost:3000/wildcard/`.
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you have questions or if something is not clear. We enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
 ## SSR
 
 The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
@@ -788,13 +848,20 @@ import wildcardClient from '@wildcard-api/client';
 wildcardClient.serverUrl = 'https://api.example.org';
 
 // Whether the endpoint arguments are always passed in the HTTP body
-wildcardClient.argumentsAlwaysInHttpBody = true;
+wildcardClient.argumentsAlwaysInHttpBody = false;
+~~~
+~~~js
+import wildcardServer from '@wildcard-api/server';
+
+// Whether Wildcard generates an ETag header.
+wildcardServer.disableEtag = false;
 ~~~
 
 Details:
 
 - [`serverUrl`](#serverurl)
 - [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
+- [`disableEtag`](#disableetag)
 
 <br/>
 
@@ -836,7 +903,7 @@ async function callEndpoint() {
 
 ### `argumentsAlwaysInHttpBody`
 
-This is about configuring whether
+The `argumentsAlwaysInHttpBody` option is about configuring whether
 arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
@@ -861,6 +928,21 @@ async function callEndpoint() {
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
 ~~~
+
+<br/>
+
+### `disableEtag`
+
+The `disableEtag` option is about configuring whether Wildcard generates an HTTP ETag header.
+
+For example:
+
+~~~js
+import wildcardServer from '@wildcard-api/server';
+
+wildcardServer.disableEtag = false;
+~~~
+
 
 
 <br/>
