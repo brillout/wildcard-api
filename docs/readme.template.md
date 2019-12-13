@@ -99,19 +99,19 @@ and issues are fixed promptly.
 
 Features:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Easy Setup
+**Easy Setup**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Simple Permissions
+**Simple Permissions**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Simple Error Handling
+**Simple Error Handling**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Server Framework Agnostic
+**Server Framework Agnostic**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-SSR Support
+**SSR Support**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Automatic Caching
+**Automatic Caching**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Dev Tools
+**Dev Tools**
 
 
 ## Wildcard compared to REST and GraphQL
