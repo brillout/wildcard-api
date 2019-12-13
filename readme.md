@@ -190,7 +190,7 @@ Features
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 :shield:
 <b>Simple Permissions</b>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :boom:
 <b>Simple Error Handling</b>
 </p>
