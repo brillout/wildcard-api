@@ -116,7 +116,7 @@ Features:
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful and well-suited tools to create an API that is used by a high number of developers and third-party developers.
+REST and GraphQL are wonderful and well-suited tools to create an API that is used by a high number of developers and a high number of third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
@@ -138,7 +138,7 @@ Deciding whether to use REST or GraphQL for an application that does not yet exi
 RPC allows you to implement your application without REST nor GraphQL at first and later decide,
 as you scale and as it becomes clear what you need,
 whether RPC is enough and,
-if not,
+if RPC is not enough,
 whether either REST or GraphQL best fits your application.
 You can then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
@@ -168,7 +168,7 @@ switch to REST or GraphQL when and if the need arises.
    app.use(wildcard(async req => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
-     // Express authentication middlewares usually make user information available at `req.user`.
+     // Authentication middlewares usually make user information available at `req.user`.
      context.headers = req.headers;
      return context;
    }));
@@ -191,7 +191,7 @@ switch to REST or GraphQL when and if the need arises.
    await server.register(wildcard(async request => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
-     // Hapi authentication plugins usually make user information available at `request.auth.credentials`.
+     // Authentication plugins usually make user information available at `request.auth.credentials`.
      context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
      return context;
    }));
@@ -214,7 +214,7 @@ switch to REST or GraphQL when and if the need arises.
    app.use(wildcard(async ctx => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
-     // Koa authentication middlewares often make user information available at `ctx.state.user`.
+     // Authentication middlewares often make user information available at `ctx.state.user`.
      context.user = ctx.state.user;
      return context;
    }));

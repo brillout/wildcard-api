@@ -40,7 +40,7 @@ use RPC
 (or [RPC-like](/docs/blog/rest-rpc.md#rpc-like))
 as default.
 
-For a Node.js backend you can use RPC by using
+For a Node.js backend you can use RPC with
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other server environments
 you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
