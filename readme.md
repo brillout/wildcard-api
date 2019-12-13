@@ -183,18 +183,25 @@ and issues are fixed promptly.
 
 Features:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:sparkles:
 **Easy Setup**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:shield:
 **Simple Permissions**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:boom:
 **Simple Error Handling**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:wrench:
 **Server Framework Agnostic**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:desktop_computer:
 **SSR Support**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:zap:
 **Automatic Caching**
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+:eyes:
 **Dev Tools**
 
 
