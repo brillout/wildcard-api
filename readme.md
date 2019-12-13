@@ -182,6 +182,7 @@ every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
 Features
+<br/>
 :sparkles:
 **Easy Setup**
 &nbsp;&nbsp;&nbsp;&nbsp;
