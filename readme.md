@@ -181,29 +181,21 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-<p align="center">
-Features
-</p>
-<p align="left">
+Features:
 :sparkles:
-<b>Easy Setup</b>
-<br/>
+**Easy Setup**
 :shield:
-<b>Simple Permissions</b>
-<br/>
+**Simple Permissions**
 :boom:
-<b>Simple Error Handling</b>
-</p>
-<p align="right">
+**Simple Error Handling**
 :wrench:
-<b>Server Framework Agnostic</b>
-<br/>
+**Server Framework Agnostic**
 :desktop_computer:
-<b>SSR Support</b>
-<br/>
+**SSR Support**
+:zap:
+**Automatic Caching**
 :eyes:
-<b>Dev Tools</b>
-</p>
+**Dev Tools**
 
 
 ## Wildcard compared to REST and GraphQL
