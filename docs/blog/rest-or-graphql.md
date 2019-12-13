@@ -11,14 +11,14 @@ And so on and so forth.
 Deciding whether to use REST or GraphQL for an application that does not yet exist is difficult at best, if not impossible.
 For example,
 in the context of a startup,
-the requirements of your app may drastically change as your startup pivots and evolves making it unfeasible to reliably predict whether REST or GraphQL is the right choice.
+the requirements of your app may drastically change as your startup evolves and pivots making it unfeasible to reliably predict whether REST or GraphQL is the right choice.
 
 A solution is to use [RPC](/docs/what-is-rpc.md#what-is-rpc):
 you implement your prototype with RPC at first and later,
-as your prototype scales to a stable application,
+as your MVP scales to a stable application,
 it will become much clearer and much easier to decide
 whether either REST or GraphQL best fits your application.
-You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
+You then progressively replace your RPC endpoints with your newly created RESTful/GraphQL API.
 
 It may also happen that you won't even need REST nor GraphQL:
 RPC is often enough for small to medium-sized applications.
@@ -26,4 +26,9 @@ RPC is often enough for small to medium-sized applications.
 In short,
 use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
+
+For a Node.js backend you can use RPC by using
+[Wildcard API](https://github.com/reframejs/wildcard-api#readme)
+and for other server environments
+you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
 
