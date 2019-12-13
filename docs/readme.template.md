@@ -101,19 +101,25 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-Features:
+Features
 :sparkles:
 **Easy Setup**
+&nbsp;&nbsp;&nbsp;&nbsp;
 :shield:
 **Simple Permissions**
+&nbsp;&nbsp;&nbsp;&nbsp;
 :boom:
 **Simple Error Handling**
-:wrench:
-**Server Framework Agnostic**
-:desktop_computer:
-**SSR Support**
+<br/>
 :zap:
 **Automatic Caching**
+<br/>
+:wrench:
+**Server Framework Agnostic**
+&nbsp;&nbsp;&nbsp;&nbsp;
+:desktop_computer:
+**SSR Support**
+&nbsp;&nbsp;&nbsp;&nbsp;
 :eyes:
 **Dev Tools**
 
