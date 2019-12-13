@@ -157,28 +157,18 @@ switch to REST or GraphQL when and if the need arises.
    // Node.js server
 
    const express = require('express');
-   const {getApiResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
+   const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
    const app = express();
 
-   // Parse the HTTP request body
-   app.use(express.json());
-
-   app.all('/wildcard/*' , async (req, res) => {
+   // Install the Wildcard middleware
+   app.use(wildcard(async req => {
      // The context object is available to endpoint functions as `this`.
-     const context = {
-       // Authentication middlewares usually make user information available at `req.user`
-       user: req.user,
-     };
-
-     const {url, method, body} = req;
-     const responseProps = await getApiResponse({url, method, body}, context);
-
-     res.status(responseProps.statusCode);
-     res.type(responseProps.contentType);
-     res.set({'ETag': responseProps.etag});
-     res.send(responseProps.body);
-   });
+     const context = {};
+     // Express authentication middlewares usually make user information available at `req.user`.
+     context.headers = req.headers;
+     return context;
+   }));
    ~~~
    </details>
 
@@ -191,31 +181,17 @@ switch to REST or GraphQL when and if the need arises.
    // Node.js server
 
    const Hapi = require('hapi');
-   const {getApiResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
+   const wildcard = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
 
    const server = Hapi.Server();
 
-   server.route({
-     method: '*',
-     path: '/wildcard/{param*}',
-     handler: async (request, h) => {
-       // The context object is available to endpoint functions as `this`.
-       const context = {
-         // Authentication middlewares usually make user information available at `request.auth.credentials`
-         user: request.auth.isAuthenticated ? request.auth.credentials : null,
-       };
-
-       const {url, method} = request;
-       const body = request.payload;
-       const responseProps = await getApiResponse({url, method, body}, context);
-
-       const response = h.response(responseProps.body);
-       response.code(responseProps.statusCode);
-       response.type(responseProps.contentType);
-       response.etag(responseProps.etag);
-       return response;
-     }
-   });
+   await server.register(wildcard(async request => {
+     // The context object is available to endpoint functions as `this`.
+     const context = {};
+     // Hapi authentication plugins usually make user information available at `request.auth.credentials`.
+     context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
+     return context;
+   }));
    ~~~
    </details>
 
@@ -228,35 +204,17 @@ switch to REST or GraphQL when and if the need arises.
    // Node.js server
 
    const Koa = require('koa');
-   const Router = require('koa-router');
-   const bodyParser = require('koa-bodyparser');
-   const {getApiResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
+   const wildcard = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
 
    const app = new Koa();
 
-   // Parse the HTTP request body
-   app.use(bodyParser());
-
-   const router = new Router();
-
-   router.all('/wildcard/*', async ctx => {
+   app.use(wildcard(async ctx => {
      // The context object is available to endpoint functions as `this`.
-     const context = {
-       // Authentication middlewares usually make user information available at `req.state.user`
-       user: req.state.user,
-     };
-
-     const {url, method} = ctx;
-     const {body} = ctx.request;
-     const responseProps = await getApiResponse({url, method, body}, context);
-
-     ctx.status = responseProps.statusCode;
-     ctx.body = responseProps.body;
-     ctx.type = responseProps.contentType;
-     ctx.etag = responseProps.etag;
-   });
-
-   app.use(router.routes());
+     const context = {};
+     // Koa authentication middlewares often make user information available at `ctx.state.user`.
+     context.user = ctx.state.user;
+     return context;
+   }));
    ~~~
    </details>
 
@@ -265,9 +223,10 @@ switch to REST or GraphQL when and if the need arises.
    With other server frameworks
    </summary>
 
-   Wildcard can be used with any server framework.
-   All you have to do is to reply any HTTP request made to `/wildcard/*`
-   with `getApiResponse`:
+   The function `getApiResponse` allows you to use Wildcard with any
+   server framework. In fact, the Express/Koa/Hapi middlewares are tiny wrappers
+   on top of `getApiResponse`.
+   You use `getApiResponse` to build the response of any HTTP request made to `/wildcard/*`:
    ~~~js
    // Node.js server
 
@@ -286,7 +245,7 @@ switch to REST or GraphQL when and if the need arises.
      async ({req}) => {
        // The context object is available to endpoint functions as `this`.
        const context = {
-         user: req.user, // Information about the logged-in user
+         user: req.user, // Information about the logged-in user.
        };
 
        const {
@@ -305,7 +264,7 @@ switch to REST or GraphQL when and if the need arises.
    ~~~
    </details>
 
-2. Define an endpoint function `endpoints.myFirstEndpoint`:
+2. Define an endpoint function `endpoints.myFirstEndpoint` in a file called `endpoints.js`.
 
    ~~~js
    // Node.js server
@@ -313,12 +272,15 @@ switch to REST or GraphQL when and if the need arises.
    const {endpoints} = require('@wildcard-api/server');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `context` object we passed to `getApiResponse`.
+     // The `this` object is the `context` object we defined when we installed the Wildcard middlware.
      console.log('The logged-in user name is: ', this.user.username);
 
      return {msg: 'Hello , from my first Wildcard endpoint';
    };
    ~~~
+
+   > :information_source:
+   > Wildcard automatically loads any file named `endpoints.*` or `*.endpoints.*`.
 
 3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser:
 
@@ -341,28 +303,28 @@ That's it.
 
 ## Authentication
 
-You can use the `context` object to pass user information to your endpoint functions:
+You can use the `context` object to make
+information about the logged-in user and
+authentication operations
+available to your endpoint functions:
 
 ~~~js
 // Node.js server
 
-const {getApiResponse} = require('@wildcard-api/server');
-
-server.route('/wildcard/*' , async (req, res) => {
+// Install the Wildcard middleware
+app.use(wildcard(async req => {
   // The context object is available to endpoint functions as `this`.
-  const context = {
-    // Authentication middlewares usually make information about the logged-in
-    // user available at the request object, for example `req.user`.
-    user: req.user,
-  };
+  const context = {};
 
-  const {url, method, body} = req;
-  const responseProps = await getApiResponse({url, method, body}, context);
+  // Authentication middlewares usually make information about the logged-in
+  // user available on the request object, for example `req.user`.
+  context.headers = req.headers;
 
-  res.status(responseProps.statusCode);
-  res.type(responseProps.contentType);
-  res.send(responseProps.body);
-});
+  context.login = context.auth.login;
+  context.logout = context.auth.logout;
+
+  return context;
+}));
 ~~~
 
 Wildcard makes `context` available to your endpoint function as `this`:
@@ -376,6 +338,15 @@ endpoints.whoAmI = async function() {
   // Since `this===context`, `context.user` is available as `this.user`.
   const {user} = this;
   return user.name;
+};
+
+endpoints.login = async function(username, password) {
+  await this.login(username, password);
+  return this.user;
+};
+
+endpoints.logout = async function() {
+  await this.logout();
 };
 ~~~
 

@@ -157,20 +157,14 @@ Do we now need REST/GraphQL?
 Let's try with RPC by modifying our RPC endpoints like the following.
 
 ~~~diff
-  server.all('/wildcard/*' , async (req, res) => {
-    const {url, method, body} = req;
-
+  // Install the Wildcard middlware
+  app.use(wildcard(async req => {
     const context = {
 +     // Authentication middlewares usually make user information available at `req.user`
 +     user: req.user
     };
-
-    const responseProps = await getApiResponse({url, method, body}, context);
-
-    res.status(responseProps.statusCode);
-    res.type(responseProps.contentType);
-    res.send(responseProps.body);
-  });
+    return context;
+  }));
 ~~~
 ~~~diff
   // Node.js server

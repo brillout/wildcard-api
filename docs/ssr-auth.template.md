@@ -101,44 +101,40 @@ const {endpoints} = require('@wildcard-api/client');
 })();
 ~~~
 
-The HTTP request that the Wildcard client made is handled by the following function `wildcardHandler`:
+The HTTP request that the Wildcard client made is handled by the Wildcard middleware:
 
 ~~~js
 // Node.js
 
-const {getApiResponse} = require('@wildcard-api/server');
+const express = require('express');
+const wildcard = require('@wildcard-api/server/express');
 
-app.all('/wildcard/*', wildcardHandler);
+const app = express();
 
-async function wildcardHandler(req, res) {
+// Add the Wildcard middleware
+app.use(wildcard(async req => {
   // The context object is available to endpoint functions as `this`.
   const context = {
-    // Authentication middlewares usually make user information available at `req.user`
+    // Express authentication middlewares usually make user information available at `req.user`
     user: req.user,
   };
-
-  const {url, method, body} = req;
-  const responseProps = await getApiResponse({url, method, body}, context);
-
-  res.status(responseProps.statusCode);
-  res.type(responseProps.contentType);
-  res.send(responseProps.body);
-}
+  return context;
+}));
 ~~~
 
 What happens here is:
 - We call `whoAmI` in the browser.
 - Wildcard makes an HTTP request to our Node.js server.
-- Our `wildcardHandler` function is called.
-- We add `req.user` to `context`.
+- The Wildcard middleware is called.
+- Our context function adds `req.user` to `context`.
 - Wildcard binds `context` to our endpoint function `whoAmI` (in other words `this===context` in the `whoAmI` function).
 - The endpoint function `whoAmI` can access information about the logged-in user at `this.user`.
 
-The key take away here is that it is our `wildcardHandler` function that provides `req.user`.
+The key take away here is that it is the Wildcard middleware that provides `req.user` to our endpoint functions.
 
 But when we call the endpoint `whoAmI` in Node.js,
 our endpoint function `whoAmI` is directly called: no HTTP request is made.
-This means that `getApiResponse` is never called.
+This means that the Wildcard middleware is never called.
 
 There is no way for Wildcard to get `req.user` &mdash; we have to manually `bind()` the `req.user` object:
 
@@ -213,13 +209,12 @@ import ReactDOM from 'react-dom';
 import getGreeting from '../common/getGreeting';
 
 (async () => {
-  // We don't have to pass `req` when calling `getGreeting` on the browser-side.
-  const messagePromise = getGreeting();
-
-  // There is no HTTP request yet; Wildcard is about to make an HTTP request to our
-  // Node.js server which will be handled by `wildcardHandler`. The `context.user`
-  // object is passed to `getApiResponse`.
-  const message = await messagePromise;
+  // We don't have to pass `req` when calling `getGreeting` in the
+  // browser: Wildcard is about to make an HTTP request to our
+  // Node.js server and the Wildcard middleware will be called.
+  // The middleware passes `context.user` to our endpoint function
+  // `whoAmI`.
+  const message = await getGreeting();
 
   ReactDOM.hydrate(
     <div>{message}</div>,
@@ -230,7 +225,7 @@ import getGreeting from '../common/getGreeting';
 
 That way, `whoAmI` has always access to the `req.user`:
 when the client runs in the browser,
-`this.user` originates from `getApiResponse`,
+`this.user` originates from the Wildcard middleware,
 and when the client runs in Node.js,
 `this.user` originates from our `bind` call.
 
