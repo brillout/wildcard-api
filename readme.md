@@ -181,7 +181,7 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-Features:
+Features
 <br/>
 :sparkles:
 **Easy Setup**
@@ -198,7 +198,7 @@ Features:
 :wrench:
 **Server Framework Agnostic**
 <br/>
-:desktop_computer:
+:memo:
 **SSR Support**
 <br/>
 :eyes:
