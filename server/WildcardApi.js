@@ -54,7 +54,9 @@ function WildcardApi() {
       return null;
     }
     if( malformationError ){
+      console.error('');
       console.error(malformationError.errorText);
+      console.error('');
       return HttpMalformationResponse({malformationError});
     }
     if( isIntrospection ){
@@ -725,14 +727,14 @@ function getNoEndpointError({endpointName, endpointsObject, calledInBrowser}) {
   assert.internal([true, false].includes(calledInBrowser));
   if( !noEndpointsDefined && (!calledInBrowser || isDev()) ){
     errorText.push(
-      'Endpoints:',
+      'List of existing endpoints:',
       ...endpointNames.map(endpointName => ' - '+endpointName),
     );
   }
 
   errorText.push(
-    colorizeEmphasis('Make sure that the file that defines `'+endpointName+'` is named `endpoints.*` or `*.endpoints.*`: Wildcard automatically loads files with such name.'),
-    'Alternatively, you can manually load your endpoint files: `require(\'./path/to/file-that-defines-'+endpointName+'.js\')`',
+    colorizeEmphasis('Make sure that the file that defines `'+endpointName+'` is named `endpoints.*` or `*.endpoints.*`: Wildcard automatically loads any file with such a name.'),
+    'Alternatively, you can manually load your endpoint files: `require(\'./path/to/file-that-defines-'+endpointName+'.js\').`',
   );
 
   return errorText.join('\n');
