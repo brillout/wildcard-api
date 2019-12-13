@@ -54,7 +54,7 @@ function WildcardApi() {
       return null;
     }
     if( malformationError ){
-      logError({err: malformationError.text, endpointName});
+      console.error(malformationError.errorText);
       return HttpMalformationResponse({malformationError});
     }
     if( isIntrospection ){
@@ -417,7 +417,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
-        text: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
+        errorText: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
       },
       endpointName,
       isHumanMode,
@@ -450,7 +450,7 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
     if( !requestBody ){
       return {
         malformationError: {
-          text: [
+          errorText: [
             urlArgs__string.comesFromUniversalAdapter ? (
               colorizeError('Your '+urlArgs__string.comesFromUniversalAdapter+' server does not provide the HTTP request body.')
             ) : (
@@ -469,7 +469,7 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
     if( !bodyIsValid ){
       return {
         malformationError: {
-          text: [
+          errorText: [
             JSON.stringify({httpRequestBody: requestBody}),
             'Malformatted API request `'+pathname__prettified+'`.',
             colorizeError('HTTP request body should be a JSON array.'),
@@ -493,7 +493,7 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
     if( !urlArgs__string.startsWith('[') ){
       return {
         malformationError: {
-          text: [
+          errorText: [
             JSON.stringify({requestBody}),
             'Malformatted API request `'+pathname__prettified+'`.',
             colorizeError('The URL arguments should be a JSON array.'),
@@ -512,7 +512,7 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
     assert.internal(endpointArgs__string.startsWith('['));
     return {
       malformationError: {
-        text: [
+        errorText: [
           'Malformatted API request `'+pathname__prettified+'`.',
           'Cannot JSON parse `'+endpointArgs__string+'`.',
           colorizeError("JSON Parse Error:"),
@@ -535,7 +535,7 @@ function parsePathname({pathname}){
   let malformationError;
   if( isMalformatted ){
     malformationError = {
-      text: [
+      errorText: [
         'Malformatted API URL `'+pathname__prettified+'`',
         'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
       ].join('\n'),
@@ -629,7 +629,7 @@ function HttpMalformationResponse({malformationError}) {
   return {
     statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
     contentType: 'text/plain',
-    body: stripAnsi(malformationError.text),
+    body: stripAnsi(malformationError.errorText),
   };
 }
 
@@ -709,33 +709,31 @@ function endpointExists({endpointName, endpointsObject}) {
 }
 
 function getNoEndpointError({endpointName, endpointsObject, calledInBrowser}) {
-  assert.internal([true, false].includes(calledInBrowser));
-
   const endpointNames = getEndpointNames({endpointsObject});
   const noEndpointsDefined = endpointNames.length===0;
+
+  const errorText = [
+    colorizeError('Endpoint `'+endpointName+"` doesn't exist."),
+  ];
+
   if( noEndpointsDefined ) {
-    const invalidReason__part1 = 'Endpoint `'+endpointName+"` doesn't exist.";
-    const invalidReason__part2 = "You didn't define any endpoint function.";
-    const invalidReason__part3 = "Did you load your endpoint definitions? E.g. `require('./path/to/your/endpoint-functions.js')`.";
-    console.error(invalidReason__part1);
-    console.error(colorizeError(invalidReason__part2));
-    console.error(invalidReason__part3);
-    return [
-      invalidReason__part1,
-      invalidReason__part2,
-      invalidReason__part3,
-    ].join('\n');
-  } else {
-    return (
-      'Endpoint `'+endpointName+"` doesn't exist." + (
-        (calledInBrowser && !isDev()) ? '' : (
-          '\n\nEndpoints: ' +
-          endpointNames.map(endpointName => '\n - '+endpointName).join('') +
-          "\n\n(Make sure that the file that defines `"+endpointName+"` is loaded, i.e. does your code call `require('./path/to/file/defining-"+endpointName+".js'?)`.)" + (
-            !calledInBrowser ? '' : '\n\n(The list of endpoints is only shown in development.)'
-          )
-        )
-      )
+    errorText.push(
+      colorizeError("You didn't define any endpoint function."),
     );
   }
+
+  assert.internal([true, false].includes(calledInBrowser));
+  if( !noEndpointsDefined && (!calledInBrowser || isDev()) ){
+    errorText.push(
+      'Endpoints:',
+      ...endpointNames.map(endpointName => ' - '+endpointName),
+    );
+  }
+
+  errorText.push(
+    colorizeEmphasis('Make sure that the file that defines `'+endpointName+'` is named `endpoints.*` or `*.endpoints.*`: Wildcard automatically loads files with such name.'),
+    'Alternatively, you can manually load your endpoint files: `require(\'./path/to/file-that-defines-'+endpointName+'.js\')`',
+  );
+
+  return errorText.join('\n');
 }
