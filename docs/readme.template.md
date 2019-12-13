@@ -96,19 +96,22 @@ endpoints.createTodoItem = async function(text) {
 Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
-Key features:
+
+Features:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Automatic Caching
+Easy Setup
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Server Framework Agnostic
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Dev Tools
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Permission by Code
+Simple Permissions
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Simple Error Handling
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Server Framework Agnostic
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 SSR Support
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Automatic Caching
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Dev Tools
 
 
 ## Wildcard compared to REST and GraphQL
