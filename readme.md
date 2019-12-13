@@ -397,8 +397,8 @@ That's it.
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -471,8 +471,8 @@ If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentica
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -615,8 +615,8 @@ which we explain in the next section [Error Handling](#error-handling).
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -741,8 +741,8 @@ import 'handli'; // npm install handli
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -769,8 +769,8 @@ You can disable caching by using the [`disableEtag` option](#disableetag).
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -797,8 +797,8 @@ For example, if your app is running at `http://localhost:3000` then go to `http:
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -827,8 +827,8 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -957,8 +957,8 @@ wildcardServer.disableEtag = false;
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1006,8 +1006,8 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>

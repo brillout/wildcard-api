@@ -134,8 +134,8 @@ Run the following npm scripts to build and serve the example:
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -202,8 +202,8 @@ endpoints.getCompletedPageData = async function () {
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -327,8 +327,8 @@ console.log('Koa server is running, go to http://localhost:3000')
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -393,8 +393,8 @@ async function getTodo(todoId) {
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -482,8 +482,8 @@ function Todo({todo, updateTodo}) {
 <p align="center">
 
 <sup>
-Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you have questions or if something is not clear. We enjoy talking with our users.
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
