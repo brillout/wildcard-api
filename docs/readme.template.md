@@ -105,24 +105,22 @@ Features:
 <br/>
 :sparkles:
 **Easy Setup**
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :shield:
 **Simple Permissions**
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :boom:
 **Simple Error Handling**
-&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :zap:
 **Automatic Caching**
-&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :wrench:
 **Server Framework Agnostic**
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :desktop_computer:
 **SSR Support**
-&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :eyes:
 **Dev Tools**
 
