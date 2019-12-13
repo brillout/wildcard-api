@@ -184,27 +184,23 @@ and issues are fixed promptly.
 <p align="center">
 Features
 </p>
-<p align="center">
+<p align="left">
 :sparkles:
 <b>Easy Setup</b>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :shield:
 <b>Simple Permissions</b>
 <br/>
 :boom:
 <b>Simple Error Handling</b>
 </p>
-<p align="center">
-:zap:
-<b>Automatic Caching</b>
-</p>
-<p align="center">
+<p align="right">
 :wrench:
 <b>Server Framework Agnostic</b>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :desktop_computer:
 <b>SSR Support</b>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>
 :eyes:
 <b>Dev Tools</b>
 </p>
