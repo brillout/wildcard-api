@@ -92,7 +92,7 @@ This is the formal definition;
 the term RPC is often used loosely to denote RPC-like approaches,
 such as
 [custom JSON endpoints](/docs/blog/rest-and-rpc.md#custom-json-endpoints) or
-[REST level 0](/docs/blog/rest-rpc-custom-endpoints.md#rest-level-0).
+[REST level 0](/docs/blog/rest-rpc.md#rest-level-0).
 (Essentially any API that is schemaless, in contrast to a RESTful and GraphQL API that is based on schema.)
 
 **Example**
@@ -102,7 +102,7 @@ RPC example between frontend and backend using Wildcard:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
 endpoints.hello = function(name) {
@@ -113,7 +113,7 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 
 (async () => {
   // We call the procedure `hello` remotely from the browser — we do *R*emote *P*rocedure *C*all
@@ -133,14 +133,11 @@ For example:
 ~~~js
 // Node.js server
 
-const endpoints = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
+const endpoints = require('@wildcard-api/server');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
-  const user = await getLoggedUser(this.headers); // We explain `this` in Wildcard's documentation.
-
-  if( !user ) {
+  if( !this.user ) {
     // The user is not logged-in.
     // We abort.
     // (This is basically how you define permissions with RPC
@@ -149,14 +146,14 @@ endpoints.createTodoItem = async function(text) {
   }
 
   // With an ORM:
-  const newTodo = new Todo({text, authorId: user.id});
+  const newTodo = new Todo({text, authorId: this.user.id});
   await newTodo.save();
 
   /* Or with SQL:
   const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
-    {text, authorId: user.id}
+    {text, authorId: this.user.id}
   );
   */
 

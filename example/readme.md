@@ -159,9 +159,9 @@ This section highlights the interesting parts of the example.
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
-// ../example/api/view-endpoints
+// ../example/api/view.endpoints.js
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
@@ -170,7 +170,7 @@ const {getLoggedUser} = require('../auth');
 
 endpoints.getLandingPageData = async function () {
   // `this` holds request information such as HTTP headers
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(
@@ -183,7 +183,7 @@ endpoints.getLandingPageData = async function () {
 };
 
 endpoints.getCompletedPageData = async function () {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   if( ! user ) return {userIsNotLoggedIn: true};
 
   const todos = await db.query(
@@ -224,42 +224,24 @@ With Express:
 ~~~js
 // ../example/start-with-express
 
-const assert = require('@brillout/assert');
 const express = require('express');
-const {getApiResponse} = require('wildcard-api');
-require('./api/endpoints');
+const wildcard = require('@wildcard-api/server/express');
 
 const app = express();
 
-app.use(express.json());
-
-app.all('/wildcard/*' , async (req, res) => {
-  assert.internal(req.url);
-  assert.internal(req.method);
-  assert.internal('body' in req);
-  assert.internal(req.method!=='POST' || req.body.constructor===Array);
-  assert.internal(req.headers.constructor===Object);
-
-  const requestProps = {
-    url: req.url,
-    method: req.method,
-    body: req.body,
-    headers: req.headers,
-  };
-
-  const responseProps = await getApiResponse(requestProps);
-
-  res.status(responseProps.statusCode);
-  res.type(responseProps.contentType);
-  res.send(responseProps.body);
-});
+// Server our API endpoints
+app.use(wildcard(async req => {
+  const {headers} = req;
+  const context = {headers};
+  return context;
+}));
 
 // Serve our frontend
 app.use(express.static('client/dist', {extensions: ['html']}));
 
 app.listen(3000);
 
-console.log('Server is running, go to http://localhost:3000')
+console.log('Express server is running, go to http://localhost:3000')
 ~~~
 
 <details>
@@ -273,8 +255,7 @@ With Hapi
 const assert = require('@brillout/assert');
 const Hapi = require('hapi');
 const Inert = require('@hapi/inert');
-const {getApiResponse} = require('wildcard-api');
-require('./api/endpoints');
+const wildcard = require('@wildcard-api/server/hapi');
 
 startServer();
 
@@ -284,31 +265,11 @@ async function startServer() {
     debug: {request: ['internal']},
   });
 
-  server.route({
-    method: '*',
-    path: '/wildcard/{param*}',
-    handler: async (request, h) => {
-      assert.internal(request.url);
-      assert.internal(request.method);
-      assert.internal('payload' in request);
-      assert.internal(request.method!=='POST' || request.payload.constructor===Array);
-      assert.internal(request.headers.constructor===Object);
-
-      const requestProps = {
-        url: request.url,
-        method: request.method,
-        body: request.payload,
-        headers: request.headers,
-      };
-
-      const responseProps = await getApiResponse(requestProps);
-
-      const response = h.response(responseProps.body);
-      response.code(responseProps.statusCode);
-      response.type(responseProps.contentType);
-      return response;
-    },
-  });
+  await server.register(wildcard(async request => {
+    const {headers} = request;
+    const context = {headers};
+    return context;
+  }));
 
   await server.register(Inert);
   server.route({
@@ -324,7 +285,7 @@ async function startServer() {
 
   await server.start();
 
-  console.log('Server is running, go to http://localhost:3000')
+  console.log('Hapi server is running, go to http://localhost:3000')
 }
 ~~~
 </details>
@@ -337,49 +298,25 @@ With Koa
 ~~~js
 // ../example/start-with-koa
 
-const assert = require('@brillout/assert');
 const Koa = require('koa');
-const Router = require('koa-router');
 const Static = require('koa-static');
-const {getApiResponse} = require('wildcard-api');
-const bodyParser = require('koa-bodyparser');
-
-require('./api/endpoints');
+const wildcard = require('@wildcard-api/server/koa');
 
 const app = new Koa();
 
-app.use(bodyParser());
+// Server our API endpoints
+app.use(wildcard(async ctx => {
+  const {headers} = ctx.request;
+  const context = {headers};
+  return context;
+}));
 
-const router = new Router();
-
-router.all('/wildcard/*', async ctx => {
-  assert.internal(ctx.url);
-  assert.internal(ctx.method);
-  assert.internal('body' in ctx.request);
-  assert.internal(ctx.method!=='POST' || ctx.request.body.constructor===Array);
-  assert.internal(ctx.request.headers.constructor===Object);
-
-  const requestProps = {
-    url: ctx.url,
-    method: ctx.method,
-    body: ctx.request.body,
-    headers: ctx.request.headers,
-  };
-
-  const responseProps = await getApiResponse(requestProps);
-
-  ctx.status = responseProps.statusCode;
-  ctx.body = responseProps.body;
-  ctx.type = responseProps.contentType;
-});
-
-app.use(router.routes());
-
+// Serve our frontend
 app.use(Static('client/dist', {extensions: ['.html']}));
 
 app.listen(3000);
 
-console.log('Server is running, go to http://localhost:3000')
+console.log('Koa server is running, go to http://localhost:3000')
 ~~~
 </details>
 
@@ -410,16 +347,16 @@ if you have questions or if something is not clear. We enjoy talking with our us
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
-// ../example/api/mutation-endpoints
+// ../example/api/mutation.endpoints.js
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 const db = require('../db');
 const {getLoggedUser} = require('../auth');
 
 // We tailor mutation endpoints to the frontend as well
 
 endpoints.toggleComplete = async function(todoId) {
-  const user = await getLoggedUser(this.headers.cookie);
+  const user = await getLoggedUser(this.headers);
   // Do nothing if user is not logged in
   if( !user ) return;
 
@@ -483,7 +420,7 @@ and to update a todo.
 
 import './common';
 import React from 'react';
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 import renderPage from './renderPage';
 import LoadingWrapper from './LoadingWrapper';
 import Todo from './Todo';
@@ -519,7 +456,7 @@ function LandingPage() {
 // ../example/client/Todo
 
 import React from 'react';
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 import {TodoCheckbox, TodoText} from './TodoComponents';
 
 export default Todo;

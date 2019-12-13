@@ -60,7 +60,7 @@ This section highlights the interesting parts of the example.
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
-!INLINE ../example/api/view-endpoints
+!INLINE ../example/api/view.endpoints.js
 ~~~
 
 !INLINE ./snippets/section-footer.md #contents --hide-source-path
@@ -101,7 +101,7 @@ With Koa
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
-!INLINE ../example/api/mutation-endpoints
+!INLINE ../example/api/mutation.endpoints.js
 ~~~
 
 !INLINE ./snippets/section-footer.md #contents --hide-source-path

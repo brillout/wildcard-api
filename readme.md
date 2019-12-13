@@ -114,7 +114,7 @@ creating an API endpoint is as easy as creating a JavaScript function:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 
 // We define a `hello` function on the server
 endpoints.hello = function(name) {
@@ -125,7 +125,7 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
@@ -146,14 +146,11 @@ You can, for example, use SQL or ORM queries:
 ~~~js
 // Node.js server
 
-const endpoints = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
+const endpoints = require('@wildcard-api/server');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
-  const user = await getLoggedUser(this.headers); // We talk about `this` later.
-
-  if( !user ) {
+  if( !this.user ) {
     // The user is not logged-in. We abort.
     // (This is basically how you define permissions with Wildcard
     // which we talk more about in the "Permissions" section.)
@@ -161,14 +158,14 @@ endpoints.createTodoItem = async function(text) {
   }
 
   // With an ORM:
-  const newTodo = new Todo({text, authorId: user.id});
+  const newTodo = new Todo({text, authorId: this.user.id});
   await newTodo.save();
 
   /* Or with SQL:
   const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
-    {text, authorId: user.id}
+    {text, authorId: this.user.id}
   );
   */
 
@@ -178,13 +175,25 @@ endpoints.createTodoItem = async function(text) {
 
 Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
-its author is responsive,
-and issues are fixed within 1-2 days.
+issues are fixed promptly,
+and it features:
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Automatic Caching
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Server Framework Agnostic
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Dev Tools
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Permission by Code
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: Simple Error Handling
+<br/> &nbsp;&nbsp;
+:heavy_check_mark: SSR Support
 
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful tools to create an API that is used by a high number of developers and third-party developers.
+REST and GraphQL are wonderful and well-suited tools to create an API that is used by a high number of developers and third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
@@ -202,12 +211,13 @@ which usually need only few API endpoints &mdash;
 RPC allows you to quickly deliver, modify, and evolve an MVP.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist
-[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-and-unexpected-answer).
+[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer).
 RPC allows you to implement your application without REST nor GraphQL at first and later decide,
 as you scale and as it becomes clear what you need,
-whether RPC is enough and
+whether RPC is enough and,
+if not,
 whether either REST or GraphQL best fits your application.
-You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
+You can then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 In short,
 use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
@@ -218,37 +228,29 @@ switch to REST or GraphQL when and if the need arises.
 
 1. Install Wildcard.
 
-   With Express:
+   <details>
+   <summary>
+   With Express
+   </summary>
+
    ~~~js
    // Node.js server
 
    const express = require('express');
-   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
    const app = express();
 
-   // Parse the HTTP request body
-   app.use(express.json());
-
-   app.all('/wildcard/*' , async (req, res) => {
-     // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
-     const requestProps = {
-       url: req.url,
-       method: req.method,
-       body: req.body,
-     };
-
-     // The `requestProps` object is available in your endpoint functions
-     // as `this`; you can use `requestProps` to make further request information
-     // available to your endpoint functions, such as the HTTP headers:
-     requestProps.headers = req.headers;
-
-     const responseProps = await getApiResponse(requestProps);
-     res.status(responseProps.statusCode);
-     res.type(responseProps.contentType);
-     res.send(responseProps.body);
-   });
+   // Install the Wildcard middleware
+   app.use(wildcard(async req => {
+     // The context object is available to endpoint functions as `this`.
+     const context = {};
+     // Express authentication middlewares usually make user information available at `req.user`.
+     context.headers = req.headers;
+     return context;
+   }));
    ~~~
+   </details>
 
    <details>
    <summary>
@@ -259,33 +261,17 @@ switch to REST or GraphQL when and if the need arises.
    // Node.js server
 
    const Hapi = require('hapi');
-   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const wildcard = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
 
    const server = Hapi.Server();
 
-   server.route({
-     method: '*',
-     path: '/wildcard/{param*}',
-     handler: async (request, h) => {
-       // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
-       const requestProps = {
-         url: request.url,
-         method: request.method,
-         body: request.payload,
-       };
-
-       // The `requestProps` object is available in your endpoint functions
-       // as `this`; you can use `requestProps` to make further request information
-       // available to your endpoint functions, such as the HTTP headers:
-       requestProps.headers = request.headers;
-
-       const responseProps = await getApiResponse(requestProps);
-       const response = h.response(responseProps.body);
-       response.code(responseProps.statusCode);
-       response.type(responseProps.contentType);
-       return response;
-     }
-   });
+   await server.register(wildcard(async request => {
+     // The context object is available to endpoint functions as `this`.
+     const context = {};
+     // Hapi authentication plugins usually make user information available at `request.auth.credentials`.
+     context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
+     return context;
+   }));
    ~~~
    </details>
 
@@ -298,37 +284,17 @@ switch to REST or GraphQL when and if the need arises.
    // Node.js server
 
    const Koa = require('koa');
-   const Router = require('koa-router');
-   const bodyParser = require('koa-bodyparser');
-   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const wildcard = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
 
    const app = new Koa();
 
-   // Parse the HTTP request body
-   app.use(bodyParser());
-
-   const router = new Router();
-
-   router.all('/wildcard/*', async ctx => {
-     // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
-     const requestProps = {
-       url: ctx.url,
-       method: ctx.method,
-       body: ctx.request.body,
-     };
-
-     // The `requestProps` object is available in your endpoint functions
-     // as `this`; you can use `requestProps` to make further request information
-     // available to your endpoint functions, such as the HTTP headers:
-     requestProps.headers = ctx.request.headers;
-
-     const responseProps = await getApiResponse(requestProps);
-     ctx.status = responseProps.statusCode;
-     ctx.body = responseProps.body;
-     ctx.type = responseProps.contentType;
-   });
-
-   app.use(router.routes());
+   app.use(wildcard(async ctx => {
+     // The context object is available to endpoint functions as `this`.
+     const context = {};
+     // Koa authentication middlewares often make user information available at `ctx.state.user`.
+     context.user = ctx.state.user;
+     return context;
+   }));
    ~~~
    </details>
 
@@ -337,43 +303,40 @@ switch to REST or GraphQL when and if the need arises.
    With other server frameworks
    </summary>
 
-   Wildcard can be used with any server framework.
-   All you have to do is to reply all HTTP requests made to `/wildcard/*`
-   with `getApiResponse`:
+   The function `getApiResponse` allows you to use Wildcard with any
+   server framework. In fact, the Express/Koa/Hapi middlewares are tiny wrappers
+   on top of `getApiResponse`.
+   You use `getApiResponse` to build the response of any HTTP request made to `/wildcard/*`:
    ~~~js
    // Node.js server
 
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
-   const {getApiResponse} = require('wildcard-api'); // npm install wildcard-api
+   const {getApiResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
 
+   // A server framework usually provides a way to add a route and define an HTTP response.
    const {addRoute, HttpResponse} = require('your-favorite-server-framework');
 
    // Add a new route `/wildcard/*` to your server
    addRoute(
      '/wildcard/*',
+     // A server framework usually provides an object holding
+     // information about the request. We denote this object `req`.
      async ({req}) => {
-       // We assume that your server framework provides an object holding
-       // information about the request. We denote this object `req`.
-
-       // `getApiResponse` requires the HTTP request `url`, `method`, and `body`.
-       const requestProps = {
-         url: req.url, // The HTTP request url (or pathname)
-         method: req.method, // The HTTP request method (`GET`, `POST`, etc.)
-         body: req.body, // The HTTP request body
+       // The context object is available to endpoint functions as `this`.
+       const context = {
+         user: req.user, // Information about the logged-in user.
        };
 
-       // The `requestProps` object is available in your endpoint functions
-       // as `this`; you can use `requestProps` to make further request information
-       // available to your endpoint functions, such as the HTTP headers:
-       requestProps.headers = req.headers;
+       const {
+         url, // The HTTP request url (or pathname)
+         method, // The HTTP request method (`GET`, `POST`, etc.)
+         body, // The HTTP request body
+       } = req;
 
-       // We get the HTTP response body, HTTP status code, and the body's content type.
-       const responseProps = await getApiResponse(requestProps);
+       const responseProps = await getApiResponse({url, method, body}, context);
+
        const {body, statusCode, contentType} = responseProps;
-
-       // We assume that server framework provides a way to create an HTTP response
-       // upon `body`, `statusCode`, and `contentType`.
        const response = new HttpResponse({body, statusCode, contentType});
        return response;
      }
@@ -381,27 +344,30 @@ switch to REST or GraphQL when and if the need arises.
    ~~~
    </details>
 
-2. Define an endpoint function `endpoints.myFirstEndpoint`:
+2. Define an endpoint function `endpoints.myFirstEndpoint` in a file called `endpoints.js`.
 
    ~~~js
    // Node.js server
 
-   const {endpoints} = require('wildcard-api');
+   const {endpoints} = require('@wildcard-api/server');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `requestProps` object we passed to `getApiResponse`.
-     console.log('The HTTP request headers:', this.headers);
+     // The `this` object is the `context` object we defined when we installed the Wildcard middlware.
+     console.log('The logged-in user name is: ', this.user.username);
 
-     return {msg: 'hello from my first Wildcard endpoint';
+     return {msg: 'Hello , from my first Wildcard endpoint';
    };
    ~~~
 
-3. Use the `wildcard-api/client` package to remotely call the enpdoint `enpdoint.myFirstEndpoint` from the browser:
+   > :information_source:
+   > Wildcard automatically loads any file named `endpoints.*` or `*.endpoints.*`.
+
+3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser:
 
    ~~~js
    // Browser
 
-   import {endpoints} from 'wildcard-api/client'; // npm install wildcard-api
+   import {endpoints} from '@wildcard-api/client'; // npm install @wildcard-api/client
 
    (async () => {
      const {msg} = await endpoints.myFirstEndpoint();
@@ -436,41 +402,50 @@ if you have questions or if something is not clear. We enjoy talking with our us
 
 ## Authentication
 
-Authentication usually uses HTTP headers
-such as `Authorization: Bearer AbCdEf123456` or a cookie holding the user's session ID.
-
-You can access the HTTP request headers in your endpoint functions by passing the `headers` object to `getApiResponse`:
+You can use the `context` object to make
+information about the logged-in user and
+authentication operations
+available to your endpoint functions:
 
 ~~~js
 // Node.js server
 
-app.all('/wildcard/*' , async (req, res) => {
-  const requestProps = {
-    url: req.url,
-    method: req.method,
-    body: req.body,
-    // We pass the `headers` object
-    headers: req.headers,
-  };
-  const responseProps = await getApiResponse(requestProps);
-  res.status(responseProps.statusCode);
-  res.type(responseProps.contentType);
-  res.send(responseProps.body);
-});
+// Install the Wildcard middleware
+app.use(wildcard(async req => {
+  // The context object is available to endpoint functions as `this`.
+  const context = {};
+
+  // Authentication middlewares usually make information about the logged-in
+  // user available on the request object, for example `req.user`.
+  context.headers = req.headers;
+
+  context.login = context.auth.login;
+  context.logout = context.auth.logout;
+
+  return context;
+}));
 ~~~
 
-Wildcard makes `requestProps` available to your endpoint function as `this`:
+Wildcard makes `context` available to your endpoint function as `this`:
 
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
-const getUser = require('./path/to/your/auth-code/getUser');
+const {endpoints} = require('@wildcard-api/server');
 
-endpoints.getLoggedInUser = async function() {
-  // Since `this===requestProps`, `requestProps.headers` is available as `this.headers`.
-  const user = await getUser(this.headers.cookie);
-  return user;
+endpoints.whoAmI = async function() {
+  // Since `this===context`, `context.user` is available as `this.user`.
+  const {user} = this;
+  return user.name;
+};
+
+endpoints.login = async function(username, password) {
+  await this.login(username, password);
+  return this.user;
+};
+
+endpoints.logout = async function() {
+  await this.logout();
 };
 ~~~
 
@@ -501,8 +476,22 @@ if you have questions or if something is not clear. We enjoy talking with our us
 
 ## Permissions
 
+With Wildcard,
+you do *Permission by Code*:
+
+~~~js
+// We programmatically define permissions in our endpoint functions
+
+endpoints.removePost = async function(){
+  // Only admins are allow to remove a post
+  if( !user.isAdmin ) return;
+
+  /* ... */
+};
+~~~
+
 It is crucial that you define permissions.
-You shouldn't do this:
+You should never do this:
 ~~~js
 endpoints.run = async function(query) {
   const result = await db.run(query);
@@ -511,7 +500,7 @@ endpoints.run = async function(query) {
 ~~~
 
 That's a bad idea since anyone in the world can go to your website,
-open the browser's web dev console, and call:
+open the browser's web dev console, and call your endpoint.
 ~~~js
 const users = await endpoints.run('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
@@ -524,23 +513,21 @@ Instead, you should define permissions, for example:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
-const getLoggedUser = require('./path/to/your/auth/code');
+const {endpoints} = require('@wildcard-api/server');
 const db = require('./path/to/your/db/code');
 
 // The following endpoint allows a to-do item's text to be modified only by its author.
 
 endpoints.updateTodoText = async function(todoId, newText) {
-  const user = getLoggedUser(this.headers);
   // The user is not logged-in — we abort.
-  if( !user ) return;
+  if( !this.user ) return;
 
   const todo = await db.getTodo(todoId);
   // There is no to-do item in the database with the ID `todoId` — we abort.
   if( !todo ) return;
 
   // The user is not the author of the to-do item — we abort.
-  if( todo.authorId !== user.id ) return;
+  if( todo.authorId !== this.user.id ) return;
 
   // The user is logged-in and is the author of the todo — we proceed.
   await db.updateTodoText(todoId, newText);
@@ -551,7 +538,7 @@ You may wonder why we return `undefined` when aborting:
 
 ~~~js
 // The user is not logged-in — we abort.
-if( !user ){
+if( !this.user ){
   // Why do we return `undefined`?
   // Why don't we return something like `return {error: 'Permission denied'}`?
   return;
@@ -569,9 +556,8 @@ there are situations where it is expected that a permission may fail.
 We return a value then:
 ~~~js
 endpoints.getTodoList = async function() {
-  const user = getLoggedUser(this.headers);
   // When the user is not logged in, the frontend redirects the user to the login page.
-  if( !user ) {
+  if( !this.user ) {
     // Instead of returning `undefined` we return `isNotLoggedIn: true` so that
     // the frontend knows that the user should be redirected to the login page.
     return {
@@ -585,8 +571,7 @@ endpoints.getTodoList = async function() {
 Note that, in general, you should not purposely throw exceptions:
 ~~~js
 endpoints.getTodoList = async function() {
-  const user = getLoggedUser(this.headers);
-  if( !user ) {
+  if( !this.user ) {
     // Don't do this:
     throw new Error('Permissen denied: user is not logged in.');
   }
@@ -597,7 +582,7 @@ endpoints.getTodoList = async function() {
 Return a JavaScript value instead:
 ~~~js
 endpoints.getTodoList = async function() {
-  if( !user ) {
+  if( !this.user ) {
     return {
       isNotLoggedIn: true,
     };
@@ -644,7 +629,7 @@ If you use a library that is expected to throw errors, then catch them:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 const validatePhoneNumber = require('some-phone-number-validatation-library');
 
 endpoints.createAccount = async function({email, phoneNumber}) {
@@ -670,7 +655,7 @@ In particular, don't throw an error upon validation failure:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('wildcard-api');
+const {endpoints} = require('@wildcard-api/server');
 const isStrongPassword = require('./path/to/isStrongPassword');
 
 endpoints.createAccount = async function({email, password}) {
@@ -694,7 +679,7 @@ You can use `isServerError` and `isNetworkError` to handle errors more precisely
 ~~~js
 // Browser
 
-import {endpoints} from 'wildcard-api/client';
+import {endpoints} from '@wildcard-api/client';
 
 async function() {
   let data;
@@ -794,7 +779,7 @@ if you have questions or if something is not clear. We enjoy talking with our us
 Overview:
 
 ~~~js
-import wildcardClient from 'wildcard-api/client';
+import wildcardClient from '@wildcard-api/client';
 
 // The URL of the Node.js server that serves the API
 wildcardClient.serverUrl = 'https://api.example.org';
@@ -824,7 +809,7 @@ then you need to provide a `serverUrl`.
 For example:
 
 ~~~js
-import wildcardClient, {endpoints} from 'wildcard-api/client';
+import wildcardClient, {endpoints} from '@wildcard-api/client';
 import assert from 'assert';
 
 wildcardClient.serverUrl = 'https://api.example.com:1337'; // Default value is `null`
@@ -855,7 +840,7 @@ arguments are always passed in the HTTP request body.
 For example:
 
 ~~~js
-import wildcardClient, {endpoints} from 'wildcard-api/client';
+import wildcardClient, {endpoints} from '@wildcard-api/client';
 
 wildcardClient.argumentsAlwaysInHttpBody = true; // Default value is `false`
 
