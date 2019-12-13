@@ -106,27 +106,27 @@ Features
 </p>
 <p align="center">
 :sparkles:
-**Easy Setup**
+<b>Easy Setup</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 :shield:
-**Simple Permissions**
+<b>Simple Permissions</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 :boom:
-**Simple Error Handling**
+<b>Simple Error Handling</b>
 </p>
 <p align="center">
 :zap:
-**Automatic Caching**
+<b>Automatic Caching</b>
 </p>
 <p align="center">
 :wrench:
-**Server Framework Agnostic**
+<b>Server Framework Agnostic</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 :desktop_computer:
-**SSR Support**
+<b>SSR Support</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 :eyes:
-**Dev Tools**
+<b>Dev Tools</b>
 </p>
 
 
