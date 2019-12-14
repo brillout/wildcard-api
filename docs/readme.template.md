@@ -102,9 +102,9 @@ every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
 <p align="center">
+<p align="left">
   <b>Features</b>
-</p>
-<p align="center">
+  <br/>
   :sparkles:
   <b>Easy Setup</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -113,20 +113,21 @@ and issues are fixed promptly.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   :boom:
   <b>Simple Error Handling</b>
-</p>
-<p align="center">
-  :zap:
-  <b>Automatic Caching</b>
-</p>
-<p align="center">
+  <br/>
   :eyes:
   <b>Dev Tools</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   :desktop_computer:
   <b>SSR Support</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;
   :wrench:
   <b>Server Framework Agnostic</b>
+  <br/>
+  :zap:
+  <b>Automatic Caching</b>
+</p>
 </p>
 
 
