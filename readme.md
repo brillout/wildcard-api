@@ -984,14 +984,20 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
 Material to learn more about RPC and Wildcard. Create a Pull Request to add yours.
 
+###### Blog
+
+- [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
+- [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
+- [What do REST and RPC-like mean?](/docs/blog/rest-rpc.md#readme)
+
+###### RPC
+
 - [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
   <br/>
   Explains what RPC is.
-- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+- [RPC FAQ](/docs/faq.md#faq)
   <br/>
-  Talks about the technologies Wildcard uses under the hood.
-- [FAQ](/docs/faq.md#faq)
-  <br/>
+  FAQ about RPC.
   Covers high-level questions such as "Which is more powerful, GraphQL or RPC?"
   as well as low-level questions such as
   "How can I do versioning with RPC?" or
@@ -999,6 +1005,12 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
+
+###### Wildcard
+
+- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+  <br/>
+  Talks about the technologies Wildcard uses under the hood.
 - [Example - A Todo List](/example#example---a-todo-list)
   <br/>
   Showcases a to-do list app built with RPC/Wildcard.
