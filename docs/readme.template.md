@@ -76,8 +76,8 @@ const Todo = require('./path/to/your/data/model/Todo');
 endpoints.createTodoItem = async function(text) {
   if( !this.user ) {
     // The user is not logged-in. We abort.
-    // (This is basically how you define permissions with Wildcard
-    // which we talk more about in the "Permissions" section.)
+    // With Wildcard, you define permissions programmatically
+    // which we talk more about in the "Permissions" section.
     return;
   }
 
@@ -85,7 +85,7 @@ endpoints.createTodoItem = async function(text) {
   const newTodo = new Todo({text, authorId: this.user.id});
   await newTodo.save();
 
-  /* Or with SQL:
+  /* With SQL:
   const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
@@ -127,7 +127,7 @@ Features
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful and well-suited tools to create an API that is used by a high number of developers and a high number of third-party developers.
+REST and GraphQL are wonderful and well-suited tools to create an API used by a high number of developers and a high number of third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
@@ -373,10 +373,10 @@ If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentica
 ## Permissions
 
 With Wildcard,
-you do *Permission by Code*:
+permissions are defined programmatically:
 
 ~~~js
-// We programmatically define permissions in our endpoint functions
+// Node.js server
 
 endpoints.removePost = async function(){
   // Only admins are allow to remove a post
@@ -389,6 +389,8 @@ endpoints.removePost = async function(){
 It is crucial that you define permissions.
 You should never do this:
 ~~~js
+// Node.js server
+
 endpoints.run = async function(query) {
   const result = await db.run(query);
   return result;
@@ -398,6 +400,8 @@ endpoints.run = async function(query) {
 That's a bad idea since anyone in the world can go to your website,
 open the browser's web dev console, and call your endpoint.
 ~~~js
+// Browser
+
 const users = await endpoints.run('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
   // W00t — I have all passwords ｡^‿^｡
@@ -433,6 +437,8 @@ endpoints.updateTodoText = async function(todoId, newText) {
 You may wonder why we return `undefined` when aborting:
 
 ~~~js
+// Node.js server
+
 // The user is not logged-in — we abort.
 if( !this.user ){
   // Why do we return `undefined`?
