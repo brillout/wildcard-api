@@ -10,7 +10,7 @@
 
 &nbsp;
 
-# FAQ
+# RPC FAQ
 
 !VAR|LINK COMPARISON
 <br/>
