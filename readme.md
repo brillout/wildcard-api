@@ -572,8 +572,8 @@ If an endpoint call isn't allowed, either there is a bug in our frontend or an a
 If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
 
 That said,
-there are situations where it is expected that a permission may fail.
-You may then want to return the information that the permission failed, for example:
+there are situations where it is expected that a permission may fail and
+you may want to return the information that the permission failed, for example:
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
