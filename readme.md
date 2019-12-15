@@ -604,7 +604,7 @@ endpoints.getTodoList = async function() {
 };
 ~~~
 
-Note that you should not purposely throw exceptions:
+Note that you should not deliberately throw exceptions:
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
@@ -656,37 +656,40 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 ## Error Handling
 
 Calling an endpoint throws an error when:
-- The browser cannot connect to the server. (The user is offline or your server is down.)
-- The endpoint function throws an uncaught error.
-
-If you use a library that is expected to throw errors, then catch them:
+- The browser couldn't connect to the server. (The user is offline or your server is down.)
+- The endpoint function threw an error.
 
 ~~~js
-// Node.js server
+// Browser
 
-const {endpoints} = require('@wildcard-api/server');
-const validatePhoneNumber = require('some-phone-number-validatation-library');
+import {endpoints} from '@wildcard-api/client';
 
-endpoints.createAccount = async function({email, phoneNumber}) {
-  // `validatePhoneNumber` throws an error if `phoneNumber` is not a phone number.
+(async () => {
   let err;
   try {
-    validatePhoneNumber(phoneNumber);
-  } catch(err_) {
-    err = err_
-  }
-  if( err ) {
-    return {validationError: {phoneNumber: "Please enter a valid phone number."}};
+    await endpoints.myEndpoint();
+  } catch(_err) {
+    err = _err;
   }
 
-  // ..
-};
+  if( !err ){
+    // Success: the browser could connect to the server and
+    // the endpoint function `myEndpoint` didn't throw an error.
+  }
+  if( err.isNetworkError ){
+    // Error: the browser couldn't connect to the server
+  }
+  if( err.isServerError ){
+    // Error: the endpoint function `myEndpoint` threw an error.
+  }
+})();
 ~~~
 
-You should always catch expected errors: Wildcard treats any uncaught error as a bug in your code.
+Wildcard treats any uncaught error as a bug in your code.
+
+This means that you shouldn't deliberately throw exceptions.
 
 In particular, don't throw an error upon validation failure:
-
 ~~~js
 // Node.js server
 
@@ -710,19 +713,17 @@ endpoints.createAccount = async function({email, password}) {
 ~~~
 
 You can use `isServerError` and `isNetworkError` to handle errors more precisely:
-
 ~~~js
 // Browser
 
 import {endpoints} from '@wildcard-api/client';
 
-async function() {
-  let data;
-  let err;
+(async () => {
+  let data, err;
   try {
-    data = await endpoints.getData();
-  } catch(err_) {
-    err = err_;
+    data = await endpoints.getSomeData();
+  } catch(_err) {
+    err = _err;
   }
 
   if( err.isServerError ){
@@ -743,7 +744,7 @@ async function() {
   } else {
     return {success: true, data};
   }
-}
+})();
 ~~~
 
 You can also use [Handli](https://github.com/brillout/handli) which will automatically handle errors for you:
