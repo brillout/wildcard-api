@@ -175,12 +175,12 @@ switch to REST or GraphQL when and if the need arises.
 
    const app = express();
 
-   // Install the Wildcard middleware
+   // We install the Wildcard middleware
    app.use(wildcard(async req => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
      // Authentication middlewares usually make user information available at `req.user`.
-     context.headers = req.headers;
+     context.user = req.user;
      return context;
    }));
    ~~~
@@ -199,6 +199,7 @@ switch to REST or GraphQL when and if the need arises.
 
    const server = Hapi.Server();
 
+   // We install the Wildcard middleware
    await server.register(wildcard(async request => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
@@ -222,6 +223,7 @@ switch to REST or GraphQL when and if the need arises.
 
    const app = new Koa();
 
+   // We install the Wildcard middleware
    app.use(wildcard(async ctx => {
      // The context object is available to endpoint functions as `this`.
      const context = {};
@@ -286,10 +288,10 @@ switch to REST or GraphQL when and if the need arises.
    const {endpoints} = require('@wildcard-api/server');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `context` object we defined when we installed the Wildcard middlware.
+     // The `this` object is the `context` object we defined when we installed the Wildcard middleware.
      console.log('The logged-in user name is: ', this.user.username);
 
-     return {msg: 'Hello , from my first Wildcard endpoint';
+     return {msg: 'Hello, from my first Wildcard endpoint';
    };
    ~~~
 
@@ -317,22 +319,20 @@ That's it.
 
 ## Authentication
 
-You can use the `context` object to make
-information about the logged-in user and
-authentication operations
-available to your endpoint functions:
+You can use the `context` object to authentication available to your endpoint functions:
 
 ~~~js
 // Node.js server
 
-// Install the Wildcard middleware
+// We define the `context` object while installing the Wildcard middleware.
+
 app.use(wildcard(async req => {
   // The context object is available to endpoint functions as `this`.
   const context = {};
 
   // Authentication middlewares usually make information about the logged-in
   // user available on the request object, for example `req.user`.
-  context.headers = req.headers;
+  context.user = req.user;
 
   context.login = context.auth.login;
   context.logout = context.auth.logout;
@@ -341,7 +341,7 @@ app.use(wildcard(async req => {
 }));
 ~~~
 
-Wildcard makes `context` available to your endpoint function as `this`:
+The `context` object is available to your endpoint function as `this`:
 
 ~~~js
 // Node.js server
@@ -349,14 +349,14 @@ Wildcard makes `context` available to your endpoint function as `this`:
 const {endpoints} = require('@wildcard-api/server');
 
 endpoints.whoAmI = async function() {
-  // Since `this===context`, `context.user` is available as `this.user`.
+  // `this===context`; `context.user` is available as `this.user`.
   const {user} = this;
   return user.name;
 };
 
 endpoints.login = async function(username, password) {
-  await this.login(username, password);
-  return this.user;
+  const user = await this.login(username, password);
+  return user;
 };
 
 endpoints.logout = async function() {
@@ -378,7 +378,7 @@ permissions are defined programmatically:
 ~~~js
 // Node.js server
 
-endpoints.removePost = async function(){
+endpoints.deletePost = async function(){
   // Only admins are allow to remove a post
   if( !user.isAdmin ) return;
 
@@ -419,7 +419,7 @@ const db = require('./path/to/your/db/code');
 // The following endpoint allows a to-do item's text to be modified only by its author.
 
 endpoints.updateTodoText = async function(todoId, newText) {
-  // The user is not logged-in — we abort.
+  // The user is not logged in — we abort.
   if( !this.user ) return;
 
   const todo = await db.getTodo(todoId);
@@ -455,22 +455,21 @@ If someone is trying to hack us, we want to give him the least amount of informa
 
 That said,
 there are situations where it is expected that a permission may fail.
-We return a value then:
+You may then want to return the information that the permission failed, for example:
 ~~~js
+// When the user is not logged in, the frontend redirects the user to the login page.
+
 endpoints.getTodoList = async function() {
-  // When the user is not logged in, the frontend redirects the user to the login page.
   if( !this.user ) {
-    // Instead of returning `undefined` we return `isNotLoggedIn: true` so that
+    // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
     // the frontend knows that the user should be redirected to the login page.
-    return {
-      isNotLoggedIn: true,
-    };
+    return {isNotLoggedIn: true};
   }
   /* ... */
 };
 ~~~
 
-Note that, in general, you should not purposely throw exceptions:
+Note that you should not purposely throw exceptions:
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
@@ -485,9 +484,8 @@ Return a JavaScript value instead:
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
-    return {
-      isNotLoggedIn: true,
-    };
+    // Do this:
+    return {isNotLoggedIn: true};
   }
   /* ... */
 };
