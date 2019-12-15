@@ -70,7 +70,7 @@ You can, for example, use SQL or ORM queries:
 ~~~js
 // Node.js server
 
-const endpoints = require('@wildcard-api/server');
+const {endpoints} = require('@wildcard-api/server');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
