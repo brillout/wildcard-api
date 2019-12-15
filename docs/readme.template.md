@@ -102,9 +102,6 @@ every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
 <p align="center">
-  <b>Features</b>
-</p>
-<p align="center">
   :sparkles:
   <b>Easy Setup</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -141,6 +138,7 @@ and issues are fixed promptly.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </p>
+<br/>
 
 
 ## Wildcard compared to REST and GraphQL
