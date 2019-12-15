@@ -184,7 +184,7 @@ and issues are fixed promptly.
 <p align="center">
   <b>Features</b>
 </p>
-<p align="left">
+<p align="center">
   :sparkles:
   <b>Easy Setup</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -194,7 +194,6 @@ and issues are fixed promptly.
   :boom:
   <b>Simple Error Handling</b>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  |
   <br/>
   :eyes:
   <b>Dev Tools</b>
@@ -206,7 +205,6 @@ and issues are fixed promptly.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   :wrench:
   <b>Server Framework Agnostic</b>
-  |
   <br/>
   :zap:
   <b>Automatic Caching</b>
@@ -222,7 +220,6 @@ and issues are fixed promptly.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  |
 </p>
 
 
