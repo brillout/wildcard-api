@@ -500,7 +500,7 @@ endpoints.deletePost = async function(){
   // Only admins are allow to remove a post
   if( !user.isAdmin ) return;
 
-  /* ... */
+  // ...
 };
 ~~~
 
@@ -583,7 +583,7 @@ endpoints.getTodoList = async function() {
     // the frontend knows that the user should be redirected to the login page.
     return {isNotLoggedIn: true};
   }
-  /* ... */
+  // ...
 };
 ~~~
 
@@ -594,7 +594,7 @@ endpoints.getTodoList = async function() {
     // Don't do this:
     throw new Error('Permissen denied: user is not logged in.');
   }
-  /* ... */
+  // ...
 };
 ~~~
 
@@ -605,7 +605,7 @@ endpoints.getTodoList = async function() {
     // Do this:
     return {isNotLoggedIn: true};
   }
-  /* ... */
+  // ...
 };
 ~~~
 
@@ -662,7 +662,7 @@ endpoints.createAccount = async function({email, phoneNumber}) {
     return {validationError: {phoneNumber: "Please enter a valid phone number."}};
   }
 
-  /* ... */
+  // ..
 };
 ~~~
 
@@ -688,7 +688,7 @@ endpoints.createAccount = async function({email, password}) {
     return {validationError: "Password is too weak."};
   }
 
-  /* ... */
+  // ..
 };
 ~~~
 
