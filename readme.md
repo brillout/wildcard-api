@@ -435,7 +435,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
 ## Authentication
 
-You can use the `context` object to authentication available to your endpoint functions:
+You can use the `context` object to make authentication available to your endpoint functions.
 
 ~~~js
 // Node.js server
@@ -457,7 +457,7 @@ app.use(wildcard(async req => {
 }));
 ~~~
 
-The `context` object is available to your endpoint function as `this`:
+The `context` object is available to your endpoint function as `this`.
 
 ~~~js
 // Node.js server
