@@ -33,7 +33,7 @@ Usage
 Wildcard is a JavaScript library to create a backend API for your Node.js server.
 
 With Wildcard,
-creating an API endpoint is as easy as creating a JavaScript function:
+creating an API endpoint is as easy as creating a JavaScript function.
 
 ~~~js
 // Node.js server
@@ -65,7 +65,7 @@ callable in the browser.
 Nothing more, nothing less.
 
 How you retrieve and mutate data is up to you.
-You can, for example, use SQL or ORM queries:
+You can, for example, use SQL or ORM queries.
 
 ~~~js
 // Node.js server
@@ -259,7 +259,7 @@ switch to REST or GraphQL when and if the need arises.
    The function `getApiResponse` allows you to use Wildcard with any
    server framework. In fact, the Express/Koa/Hapi middlewares are tiny wrappers
    on top of `getApiResponse`.
-   You use `getApiResponse` to build the response of any HTTP request made to `/wildcard/*`:
+   You use `getApiResponse` to build the response of any HTTP request made to `/wildcard/*`.
    ~~~js
    // Node.js server
 
@@ -315,7 +315,7 @@ switch to REST or GraphQL when and if the need arises.
    > :information_source:
    > Wildcard automatically loads any file named `endpoints.*` or `*.endpoints.*`.
 
-3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser:
+3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
    ~~~js
    // Browser
@@ -390,7 +390,7 @@ If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentica
 ## Permissions
 
 With Wildcard,
-permissions are defined programmatically:
+permissions are defined programmatically.
 
 ~~~js
 // Node.js server
@@ -451,7 +451,7 @@ endpoints.updateTodoText = async function(todoId, newText) {
 };
 ~~~
 
-You may wonder why we return `undefined` when aborting:
+You may wonder why we return `undefined` when aborting.
 
 ~~~js
 // Node.js server
@@ -486,7 +486,7 @@ endpoints.getTodoList = async function() {
 };
 ~~~
 
-Note that you should not deliberately throw exceptions:
+Note that you should not deliberately throw exceptions.
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
@@ -497,7 +497,7 @@ endpoints.getTodoList = async function() {
 };
 ~~~
 
-Return a JavaScript value instead:
+Return a JavaScript value instead.
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
@@ -552,7 +552,7 @@ Wildcard treats any uncaught error as a bug in your code.
 
 This means that you shouldn't deliberately throw exceptions.
 
-In particular, don't throw an error upon validation failure:
+In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
 
@@ -560,14 +560,11 @@ const {endpoints} = require('@wildcard-api/server');
 const isStrongPassword = require('./path/to/isStrongPassword');
 
 endpoints.createAccount = async function({email, password}) {
-  /* Don't do this:
   if( !isStrongPassword(password) ){
+    /* Don't do this:
     throw new Error("Password is too weak.");
-  }
-  */
-
-  // Instead, return a JavaScript value:
-  if( !isStrongPassword(password) ){
+    */
+    // Instead, return a JavaScript value:
     return {validationError: "Password is too weak."};
   }
 
@@ -575,7 +572,7 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-You can use `isServerError` and `isNetworkError` to handle errors more precisely:
+You can use `isServerError` and `isNetworkError` to handle errors more precisely.
 ~~~js
 // Browser
 
@@ -610,13 +607,13 @@ import {endpoints} from '@wildcard-api/client';
 })();
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will automatically handle errors for you:
+You can also use [Handli](https://github.com/brillout/handli) which will automatically handle errors for you.
 
 ~~~js
 // Browser
 
 import 'handli'; // npm install handli
-// That's it: Wildcard will automatically use Handli.
+// That's it, Wildcard will automatically use Handli.
 // Errors are now handled by Handli.
 ~~~
 
@@ -655,8 +652,6 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 
 ## Options
 
-Overview:
-
 ~~~js
 import wildcardClient from '@wildcard-api/client';
 
@@ -672,8 +667,6 @@ import wildcardServer from '@wildcard-api/server';
 // Whether Wildcard generates an ETag header.
 wildcardServer.disableEtag = false;
 ~~~
-
-Details:
 
 - [`serverUrl`](#serverurl)
 - [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
