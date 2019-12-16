@@ -23,7 +23,7 @@ function MiddlewareFactory(ServerAdapter, opts) {
               {context},
               'Your context getter should return an object but it returns `context.constructor==='+context.constructor.name+'`.',
             );
-            const responseProps = await wildcardApi.getApiResponse(requestProps, context);
+            const responseProps = await wildcardApi.getApiHttpResponse(requestProps, context);
             return responseProps;
           } ],
           opts,

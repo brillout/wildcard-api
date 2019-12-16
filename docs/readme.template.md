@@ -256,16 +256,16 @@ switch to REST or GraphQL when and if the need arises.
    With other server frameworks
    </summary>
 
-   The function `getApiResponse` allows you to use Wildcard with any
+   The function `getApiHttpResponse` allows you to use Wildcard with any
    server framework.
-   In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiResponse`.
-   You use `getApiResponse` to build the HTTP response for any HTTP request made to `/wildcard/*`.
+   In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse`.
+   You use `getApiHttpResponse` to build the HTTP response for any HTTP request made to `/wildcard/*`.
    ~~~js
    // Node.js server
 
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
-   const {getApiResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
+   const {getApiHttpResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
 
    // A server framework usually provides a way to add a route and define an HTTP response.
    const {addRoute, HttpResponse} = require('your-favorite-server-framework');
@@ -287,7 +287,7 @@ switch to REST or GraphQL when and if the need arises.
          body, // The HTTP request body
        } = req;
 
-       const responseProps = await getApiResponse({url, method, body}, context);
+       const responseProps = await getApiHttpResponse({url, method, body}, context);
 
        const {body, statusCode, contentType} = responseProps;
        const response = new HttpResponse({body, statusCode, contentType});

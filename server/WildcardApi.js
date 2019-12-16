@@ -32,7 +32,7 @@ function WildcardApi() {
     this,
     {
       endpoints: endpointsObject,
-      getApiResponse,
+      getApiHttpResponse,
       disableEtag: false,
       __directCall,
     },
@@ -40,7 +40,7 @@ function WildcardApi() {
 
   return this;
 
-  async function getApiResponse(requestProps, context) {
+  async function getApiHttpResponse(requestProps, context) {
     const {
       endpointName,
       endpointArgs,
@@ -457,7 +457,7 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
               colorizeError('Your '+urlArgs__string.comesFromUniversalAdapter+' server does not provide the HTTP request body.')
             ) : (
               [
-                getApiResponse__usageNote({requestProps}),
+                getApiHttpResponse__usageNote({requestProps}),
                 colorizeError('`body` is missing.'),
               ].join('\n')
             ),
@@ -638,7 +638,7 @@ function HttpMalformationResponse({malformationError}) {
 function assert_request({requestProps, method}) {
   const correctUsageNote = (
     requestProps.comesFromUniversalAdapter ? [] : [
-      getApiResponse__usageNote({requestProps})
+      getApiHttpResponse__usageNote({requestProps})
     ]
   );
 
@@ -658,12 +658,12 @@ function assert_request({requestProps, method}) {
     '',
   );
 }
-function getApiResponse__usageNote() {
+function getApiHttpResponse__usageNote() {
   return (
     [
       "Usage:",
       "",
-      "  `const apiResponse = await getApiResponse({method, url, body}, context);`",
+      "  `const apiResponse = await getApiHttpResponse({method, url, body}, context);`",
       "",
       "where",
       "  - `method` is the HTTP method of the request",

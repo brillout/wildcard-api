@@ -22,7 +22,7 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
       const context = {
         headers: request.headers,
       };
-      const responseProps = await wildcardApiHolder.wildcardApi.getApiResponse(requestProps, context);
+      const responseProps = await wildcardApiHolder.wildcardApi.getApiHttpResponse(requestProps, context);
       {
         const {body, statusCode, contentType} = responseProps;
         assert.internal(body);
