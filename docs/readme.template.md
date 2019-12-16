@@ -257,9 +257,9 @@ switch to REST or GraphQL when and if the need arises.
    </summary>
 
    The function `getApiResponse` allows you to use Wildcard with any
-   server framework. In fact, the Express/Koa/Hapi middlewares are tiny wrappers
-   on top of `getApiResponse`.
-   You use `getApiResponse` to build the response of any HTTP request made to `/wildcard/*`.
+   server framework.
+   In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiResponse`.
+   You use `getApiResponse` to build the HTTP response for any HTTP request made to `/wildcard/*`.
    ~~~js
    // Node.js server
 
