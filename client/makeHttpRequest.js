@@ -35,13 +35,12 @@ async function makeHttpRequest({url, parse, body}) {
     networkError = err;
   }
   if( isNetworkError ){
-    const err = networkError;
+    const err = new Error('No Server Connection');
     Object.assign(
       err,
       {
         isNetworkError,
         isServerError,
-        response: null,
       },
     );
     assert.internal(err.isNetworkError===true);
@@ -65,17 +64,12 @@ async function makeHttpRequest({url, parse, body}) {
   );
 
   if( !isOk ) {
-    const err = new Error();
+    const err = new Error('Internal Server Error');
     Object.assign(
       err,
       {
         isNetworkError,
         isServerError,
-        response: {
-          responseBody,
-          value,
-          statusCode,
-        },
       },
     );
     assert.internal(err.isNetworkError===false);

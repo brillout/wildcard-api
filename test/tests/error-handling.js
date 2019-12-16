@@ -31,11 +31,7 @@ async function bugHandling({wildcardApi, browserEval}) {
       {err, isNetworkError, isServerError},
     );
     assert(
-      err.response.statusCode===500,
-      {err, isNetworkError, isServerError},
-    );
-    assert(
-      err.response.value==='Internal Server Error',
+      err.message==='Internal Server Error',
       {err, isNetworkError, isServerError},
     );
   });
@@ -55,10 +51,9 @@ async function networkHandling({wildcardApi, browserEval}) {
         err = err_;
       }
       assert(err);
-		  assert('isNetworkError' in err, 'Internal error in Wildcard client', {errMessage: err.message});
+      assert(err.message==='No Server Connection');
       assert(err.isNetworkError===true);
       assert(err.isServerError===null);
-      assert(err.response===null);
     },
     {offlineMode: true},
   );
