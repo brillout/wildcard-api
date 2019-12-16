@@ -1,6 +1,6 @@
 {
   "name": "@wildcard-api/client",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "index.js",
   "dependencies": {
     "@brillout/json-s": "^0.1.0",
