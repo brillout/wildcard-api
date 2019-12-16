@@ -663,6 +663,7 @@ Calling an endpoint throws an error when:
 // Browser
 
 import {endpoints} from '@wildcard-api/client';
+import assert from 'assert';
 
 (async () => {
   let err;
@@ -672,23 +673,25 @@ import {endpoints} from '@wildcard-api/client';
     err = _err;
   }
 
+  assert(err || err.isNetworkError || err.isServerError);
   if( !err ){
     // Success: the browser could connect to the server and
     // the endpoint function `myEndpoint` didn't throw an error.
   }
   if( err.isNetworkError ){
     // Error: the browser couldn't connect to the server
+    assert(err.message==='No Server Connection');
   }
   if( err.isServerError ){
     // Error: the endpoint function `myEndpoint` threw an error.
+    assert(err.message==='Internal Server Error');
   }
 })();
 ~~~
 
-Wildcard treats any uncaught error as a bug in your code.
+Wildcard considers an uncaught error as a bug in your code.
 
-This means that you shouldn't deliberately throw exceptions.
-
+You shouldn't deliberately throw exceptions.
 In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
@@ -744,7 +747,7 @@ import {endpoints} from '@wildcard-api/client';
 })();
 ~~~
 
-You can also use [Handli](https://github.com/brillout/handli) which will automatically handle errors for you.
+You can also use [Handli](https://github.com/brillout/handli) which will automatically and gracefully handle errors for you.
 
 ~~~js
 // Browser
