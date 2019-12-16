@@ -25,7 +25,7 @@ It may also happen that you won't even need REST nor GraphQL:
 RPC is often enough for small to medium-sized applications.
 
 In short,
-use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
+use [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
 
 For a Node.js backend you can use RPC with

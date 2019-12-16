@@ -250,7 +250,7 @@ whether either REST or GraphQL best fits your application.
 You can then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 In short,
-use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
+use [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and if the need arises.
 
 &nbsp;
@@ -1002,7 +1002,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 
 ###### Blog
 
-- [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
+- [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
 - [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
 - [What do REST and RPC-like mean?](/docs/blog/rest-rpc.md#readme)
 
