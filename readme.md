@@ -223,26 +223,27 @@ and issues are fixed promptly.
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are wonderful and well-suited tools to create an API used by a high number of developers and a high number of third-party developers.
+REST and GraphQL are well-suited tools to create an API that is meant to be used by a large number of developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
 and build all kinds of applications.
-For an API used by that many (third-party) developers,
+For such API used by so many diverse and numerous third parties,
 GraphQL is the right tool.
 
 But,
 for small to medium-sized projects,
-[RPC](/docs/what-is-rpc.md#what-is-rpc) such as Wildcard is often enough.
+[RPC](/docs/what-is-rpc.md#what-is-rpc)
+such as Wildcard is often enough.
 RPC is especially well suited for prototypes
 which usually need only few API endpoints &mdash;
 RPC allows you to quickly deliver, modify, and evolve an MVP.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist
 [is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer).
-RPC allows you to implement your application without REST nor GraphQL at first and later decide,
+RPC allows you to implement a prototype without REST nor GraphQL at first and later decide,
 as you scale and as it becomes clear what you need,
 whether RPC is enough and,
 if RPC is not enough,
