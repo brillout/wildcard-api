@@ -260,11 +260,7 @@ switch to REST or GraphQL when and if the need arises.
 
 1. Install Wildcard.
 
-   <details>
-   <summary>
-   With Express
-   </summary>
-
+   With Express:
    ~~~js
    // Node.js server
 
@@ -274,15 +270,18 @@ switch to REST or GraphQL when and if the need arises.
    const app = express();
 
    // We install the Wildcard middleware
-   app.use(wildcard(async req => {
-     // The context object is available to endpoint functions as `this`.
+   app.use(wildcard(getContext));
+
+   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `req` is Express' object that holds information about the HTTP request.
+   async function getContext(req) {
+     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication middlewares usually make user information available at `req.user`.
      context.user = req.user;
      return context;
-   }));
+   }
    ~~~
-   </details>
 
    <details>
    <summary>
@@ -298,13 +297,17 @@ switch to REST or GraphQL when and if the need arises.
    const server = Hapi.Server();
 
    // We install the Wildcard middleware
-   await server.register(wildcard(async request => {
-     // The context object is available to endpoint functions as `this`.
+   await server.register(wildcard(getContext));
+
+   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `request` is Hapi's object that holds information about the HTTP request.
+   async function getContext(request) {
+     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication plugins usually make user information available at `request.auth.credentials`.
      context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
      return context;
-   }));
+   }
    ~~~
    </details>
 
@@ -322,13 +325,17 @@ switch to REST or GraphQL when and if the need arises.
    const app = new Koa();
 
    // We install the Wildcard middleware
-   app.use(wildcard(async ctx => {
-     // The context object is available to endpoint functions as `this`.
+   app.use(wildcard(getContext));
+
+   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `ctx` is Koa's object that holds information about the HTTP request.
+   async function getContext(ctx) {
+     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication middlewares often make user information available at `ctx.state.user`.
      context.user = ctx.state.user;
      return context;
-   }));
+   }
    ~~~
    </details>
 
@@ -902,8 +909,6 @@ then you need to provide a `serverUrl`.
 - The URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
 - The IP address of the server, for example `92.194.249.32`.
 
-For example:
-
 ~~~js
 import wildcardClient, {endpoints} from '@wildcard-api/client';
 import assert from 'assert';
@@ -933,8 +938,6 @@ The `argumentsAlwaysInHttpBody` option is about configuring whether
 arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
-For example:
-
 ~~~js
 import wildcardClient, {endpoints} from '@wildcard-api/client';
 
@@ -960,8 +963,6 @@ async function callEndpoint() {
 ### `disableEtag`
 
 The `disableEtag` option is about configuring whether Wildcard generates an HTTP ETag header.
-
-For example:
 
 ~~~js
 import wildcardServer from '@wildcard-api/server';
