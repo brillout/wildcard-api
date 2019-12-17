@@ -273,9 +273,8 @@ switch to REST or GraphQL when and if the need arises.
    app.use(wildcard(getContext));
 
    // `getContext` is called on every API request and allows you to define the `context` object.
-   // `req` is Express' object that holds information about the HTTP request.
+   // `req` is Express' request object
    async function getContext(req) {
-     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication middlewares usually make user information available at `req.user`.
      context.user = req.user;
@@ -300,9 +299,8 @@ switch to REST or GraphQL when and if the need arises.
    await server.register(wildcard(getContext));
 
    // `getContext` is called on every API request and allows you to define the `context` object.
-   // `request` is Hapi's object that holds information about the HTTP request.
+   // `request` is Hapi's request object
    async function getContext(request) {
-     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication plugins usually make user information available at `request.auth.credentials`.
      context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
@@ -328,9 +326,7 @@ switch to REST or GraphQL when and if the need arises.
    app.use(wildcard(getContext));
 
    // `getContext` is called on every API request and allows you to define the `context` object.
-   // `ctx` is Koa's object that holds information about the HTTP request.
    async function getContext(ctx) {
-     // The `context` object is available to your endpoint functions as `this`.
      const context = {};
      // Authentication middlewares often make user information available at `ctx.state.user`.
      context.user = ctx.state.user;
@@ -393,7 +389,7 @@ switch to REST or GraphQL when and if the need arises.
    const {endpoints} = require('@wildcard-api/server');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `context` object we defined when we installed the Wildcard middleware.
+     // The `this` object is the `context` object we defined in `getContext`.
      console.log('The logged-in user name is: ', this.user.username);
 
      return {msg: 'Hello, from my first Wildcard endpoint';
