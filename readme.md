@@ -1026,7 +1026,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 
 - [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
 - [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
-- [What do REST and RPC-like mean?](/docs/blog/rest-rpc.md#readme)
+- [What do REST and RPC-like mean exactly?](/docs/blog/rest-rpc.md#readme)
 
 ###### RPC
 
