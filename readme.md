@@ -300,7 +300,7 @@ when and only if the need arises.
    // We install the Wildcard middleware
    app.use(wildcard(getContext));
 
-   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `getContext` is called on every API request to define the `context` object.
    // `req` is Express' request object
    async function getContext(req) {
      const context = {};
@@ -326,7 +326,7 @@ when and only if the need arises.
    // We install the Wildcard middleware
    await server.register(wildcard(getContext));
 
-   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `getContext` is called on every API request to define the `context` object.
    // `request` is Hapi's request object
    async function getContext(request) {
      const context = {};
@@ -353,7 +353,7 @@ when and only if the need arises.
    // We install the Wildcard middleware
    app.use(wildcard(getContext));
 
-   // `getContext` is called on every API request and allows you to define the `context` object.
+   // `getContext` is called on every API request to define the `context` object.
    async function getContext(ctx) {
      const context = {};
      // Authentication middlewares often make user information available at `ctx.state.user`.
