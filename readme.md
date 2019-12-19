@@ -91,12 +91,22 @@
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
+<br/>
+<sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Basics
+</sub>
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Authentication](#authentication)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Permissions](#permissions)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Error Handling](#error-handling)
+<br/>
+<sub>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Advanced
+</sub>
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Dev Tools](#dev-tools)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -184,62 +194,57 @@ and issues are fixed promptly.
 <p align="center">
   :sparkles:
   <b>Easy Setup</b>
-  <img src="/docs/images/blank.svg" height="0" width="85" align="middle"/>
+  <img src="/docs/images/blank.svg" height="1" width="85" align="middle"/>
   :shield:
   <b>Simple Permissions</b>
-  <img src="/docs/images/blank.svg" height="0" width="42" align="middle"/>
-  :boom:
+  <img src="/docs/images/blank.svg" height="1" width="42" align="middle"/>
+  :rotating_light:
   <b>Simple Error Handling</b>
-  <img src="/docs/images/blank.svg" height="0" width="38" align="middle"/>
+  <img src="/docs/images/blank.svg" height="1" width="38" align="middle"/>
   <br/>
-  :eyes:
+  :detective:
   <b>Dev Tools</b>
-  <img src="/docs/images/blank.svg" height="0" width="97" align="middle"/>
+  <img src="/docs/images/blank.svg" height="1" width="97" align="middle"/>
   :memo:
   <b>SSR Support</b>
-  <img src="/docs/images/blank.svg" height="0" width="94" align="middle"/>
+  <img src="/docs/images/blank.svg" height="1" width="94" align="middle"/>
   :wrench:
   <b>Server Framework Agnostic</b>
   <br/>
   :zap:
   <b>Automatic Caching</b>
-  <img src="/docs/images/blank.svg" height="0" width="492" align="middle"/>
+  <img src="/docs/images/blank.svg" height="1" width="492" align="middle"/>
 </p>
+<!--
+:microscope:
+<b>TypeScript Support</b>
+-->
 
 &nbsp;
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are well-suited tools to create an API that is meant to be used by a large number of developers.
+REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
 and build all kinds of applications.
-For such API used by so many diverse and numerous third parties,
-GraphQL is the right tool.
+For an API used by third parties with highly diverse uses cases, GraphQL is the right tool.
 
-But,
-for small to medium-sized projects,
-[RPC](/docs/what-is-rpc.md#what-is-rpc)
-such as Wildcard is often enough.
-RPC is especially well suited for prototypes
-which usually need only few API endpoints &mdash;
-RPC allows you to quickly deliver, modify, and evolve an MVP.
+However,
+if you want to create an API that is not meant to be used by third-party developers,
+then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
-Deciding whether to use REST or GraphQL for an application that does not yet exist
-[is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer).
-RPC allows you to implement a prototype without REST nor GraphQL at first and later decide,
-as you scale and as it becomes clear what you need,
-whether RPC is enough and,
-if RPC is not enough,
-whether either REST or GraphQL best fits your application.
-You can then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
-
-In short,
-use [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default) and
-switch to REST or GraphQL when and if the need arises.
+For a large API used by hundreds of internal developers,
+you may still want the structure of a RESTful or GraphQL API.
+This typically applies only for large companies and "Premature optimization is the root of all evil"
+&mdash;
+start with
+[RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
+and later switch to [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
+when and only if the need arises.
 
 &nbsp;
 
