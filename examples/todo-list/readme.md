@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -195,7 +195,7 @@ This section highlights the interesting parts of the example.
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
-// ../example/api/view.endpoints.js
+// ./api/view.endpoints.js
 
 const {endpoints} = require('@wildcard-api/server');
 const db = require('../db');
@@ -258,7 +258,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 With Express:
 
 ~~~js
-// ../example/start-with-express
+// ./start-with-express
 
 const express = require('express');
 const wildcard = require('@wildcard-api/server/express');
@@ -286,7 +286,7 @@ With Hapi
 </summary>
 
 ~~~js
-// ../example/start-with-hapi
+// ./start-with-hapi
 
 const assert = require('@brillout/assert');
 const Hapi = require('hapi');
@@ -332,7 +332,7 @@ With Koa
 </summary>
 
 ~~~js
-// ../example/start-with-koa
+// ./start-with-koa
 
 const Koa = require('koa');
 const Static = require('koa-static');
@@ -383,7 +383,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
-// ../example/api/mutation.endpoints.js
+// ./api/mutation.endpoints.js
 
 const {endpoints} = require('@wildcard-api/server');
 const db = require('../db');
@@ -452,7 +452,7 @@ the user todos,
 and to update a todo.
 
 ~~~js
-// ../example/client/LandingPage
+// ./client/LandingPage
 
 import './common';
 import React from 'react';
@@ -489,7 +489,7 @@ function LandingPage() {
 ~~~
 
 ~~~js
-// ../example/client/Todo
+// ./client/Todo
 
 import React from 'react';
 import {endpoints} from '@wildcard-api/client';
@@ -542,7 +542,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -557,7 +557,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -572,7 +572,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -587,7 +587,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 
@@ -602,7 +602,7 @@ if you want to discuss, have questions, or if something is not clear &mdash; we 
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Instead, edit `/docs/example.template.md` and run `npm run docs` (or `yarn docs`).
+    Instead, edit `/examples/todo-list/readme.template.md` and run `npm run docs` (or `yarn docs`).
 
 
 

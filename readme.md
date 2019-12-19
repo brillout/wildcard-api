@@ -1052,7 +1052,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
   <br/>
   Talks about the technologies Wildcard uses under the hood.
-- [Example - A Todo List](/example#example---a-todo-list)
+- [Example - A Todo List](/examples/todo-list#example---a-todo-list)
   <br/>
   Showcases a to-do list app built with RPC/Wildcard.
 - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)

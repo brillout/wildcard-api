@@ -1,5 +1,4 @@
-!OUTPUT ../example/readme.md
-!INLINE ./snippets/header.md --hide-source-path
+!INLINE /docs/snippets/header.md --hide-source-path
 &nbsp;
 
 # Example - A Todo List
@@ -48,7 +47,7 @@ Run the following npm scripts to build and serve the example:
    $ npm run server
    ~~~
 
-!INLINE ./snippets/section-footer.md #contents --hide-source-path
+!INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
 
 ## Code Highlights
@@ -60,17 +59,17 @@ This section highlights the interesting parts of the example.
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
 ~~~js
-!INLINE ../example/api/view.endpoints.js
+!INLINE ./api/view.endpoints.js
 ~~~
 
-!INLINE ./snippets/section-footer.md #contents --hide-source-path
+!INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
 ### Server Integration
 
 With Express:
 
 ~~~js
-!INLINE ../example/start-with-express
+!INLINE ./start-with-express
 ~~~
 
 <details>
@@ -79,7 +78,7 @@ With Hapi
 </summary>
 
 ~~~js
-!INLINE ../example/start-with-hapi
+!INLINE ./start-with-hapi
 ~~~
 </details>
 
@@ -89,22 +88,22 @@ With Koa
 </summary>
 
 ~~~js
-!INLINE ../example/start-with-koa
+!INLINE ./start-with-koa
 ~~~
 </details>
 
 
-!INLINE ./snippets/section-footer.md #contents --hide-source-path
+!INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
 ### Mutation Endpoints
 
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 
 ~~~js
-!INLINE ../example/api/mutation.endpoints.js
+!INLINE ./api/mutation.endpoints.js
 ~~~
 
-!INLINE ./snippets/section-footer.md #contents --hide-source-path
+!INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
 ### React Frontend
 
@@ -114,11 +113,11 @@ the user todos,
 and to update a todo.
 
 ~~~js
-!INLINE ../example/client/LandingPage
+!INLINE ./client/LandingPage
 ~~~
 
 ~~~js
-!INLINE ../example/client/Todo
+!INLINE ./client/Todo
 ~~~
 
-!INLINE ./snippets/section-footer.md #contents --hide-source-path
+!INLINE /docs/snippets/section-footer.md #contents --hide-source-path
