@@ -114,26 +114,25 @@ and issues are fixed promptly.
 <p align="center">
   :sparkles:
   <b>Easy Setup</b>
-  <img src="/docs/images/blank.svg" height="1" width="85" align="middle"/>
+  <br/>
   :shield:
   <b>Simple Permissions</b>
-  <img src="/docs/images/blank.svg" height="1" width="42" align="middle"/>
+  <br/>
   :rotating_light:
   <b>Simple Error Handling</b>
-  <img src="/docs/images/blank.svg" height="1" width="38" align="middle"/>
   <br/>
   :detective:
   <b>Dev Tools</b>
-  <img src="/docs/images/blank.svg" height="1" width="97" align="middle"/>
+  <br/>
   :memo:
   <b>SSR Support</b>
-  <img src="/docs/images/blank.svg" height="1" width="94" align="middle"/>
+  <br/>
   :wrench:
   <b>Server Framework Agnostic</b>
   <br/>
   :zap:
   <b>Automatic Caching</b>
-  <img src="/docs/images/blank.svg" height="1" width="492" align="middle"/>
+  <br/>
 </p>
 <!--
 :microscope:
