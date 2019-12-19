@@ -11,7 +11,7 @@ RPC to communicate between frontend and backend.
 - [Meteor Methods](https://guide.meteor.com/methods.html) - RPC between Node.js backend and browser frontend, requires Meteor.
 
 For backend envirornments other than Node.js (Java, Python, RoR, etc.),
-you can have an RPC-like API by creating
+you can create an RPC-like API by implementing
 [custom JSON endpoints](/docs/blog/rest-and-rpc.md#custom-json-endpoints).
 
 ###### Microservices
