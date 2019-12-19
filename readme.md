@@ -191,7 +191,8 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-<p align="center">
+<img src="/docs/images/blank.svg" height="175" align="left" width="338px" style="max-width:90;"/>
+<p align="left">
   :sparkles:
   <b>Easy Setup</b>
   <br/>
