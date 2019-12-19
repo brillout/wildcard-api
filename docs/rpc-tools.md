@@ -10,7 +10,7 @@ RPC to communicate between frontend and backend.
 - [Liason](https://github.com/liaisonjs/liaison#readme) - [Experimental] Isomorphic OOP.
 - [Meteor Methods](https://guide.meteor.com/methods.html) - RPC between Node.js backend and browser frontend, requires Meteor.
 
-For backend envirornments other than Node.js (Java, Python, RoR, etc.),
+For backend envirornments other than Node.js (Java, Python, RoR, etc.)
 you can create an RPC-like API by implementing
 [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
 

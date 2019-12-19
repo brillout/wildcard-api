@@ -3,12 +3,12 @@
 There is a lot of confusion in API terminology.
 The term REST, for example, is often wrongly used to denote an RPC-like API.
 
-This document clarifies the terminology.
+Let's clarify.
 
 ##### RPC
 
-RPC denotes the practice of calling a procedure that is defined on a remote computer/process
-as if it were defined locally on the same computer/process.
+RPC denotes the practice of calling a procedure that is defined on a remote computer(/process)
+as if it were defined locally on the same computer(/process).
 A more elaborate definition can be found [here](/docs/what-is-rpc.md#what-is-rpc).
 
 <details>
@@ -122,22 +122,22 @@ def create_todo_item(text, user_id):
 An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
 
 
-##### REST level 0
+##### REST level-0
 
 REST defines its methodology over 5 levels of principles.
 
-The first level, REST level 0, stipulates the usage of the HTTP protocl to transport data.
+The first level, REST level-0, stipulates the usage of the HTTP protocl to transport data.
 
-Any API that uses HTTP is a REST level 0 API;
-RPC and custom JSON endpoints are REST level 0 APIs.
+Any API that uses HTTP is a REST level-0 API;
+RPC and custom JSON endpoints are REST level-0 APIs.
 
 
-##### REST level 5
+##### REST level-5
 
-For an API to be called REST, it needs to follow *all* the principles of all the 5 levels of REST.
+For an API to be called REST, it needs to follow *all* the principles of REST level-5, REST level-4, etc.
 
-A REST level 5 API, in a nutshell, is an API that consists of CRUD operations on schema models;
-a REST level 5 API has a schema (whereas a REST level 0 API is schemaless).
+A REST level-5 API, in a nutshell, is an API that consists of CRUD operations on schema models;
+a REST level-5 API has a schema (whereas a REST level-0 API can be schemaless).
 
 ##### RPC-like
 
@@ -146,10 +146,10 @@ APIs can be classified by whether they have a schema or not.
 Schemaless:
 - RPC
 - Custom JSON endpoints
-- REST level 0
+- REST level-0
 
 Schema:
-- REST level 5
+- REST level-5
 - GraphQL
 
-The term *RPC-like* is used to denote a schemaless API.
+The term *RPC-like* is commonly used to denote a schemaless API.
