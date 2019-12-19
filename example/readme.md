@@ -85,7 +85,7 @@
   <sup>
     <a href="#top">
       <img
-        src="/images/star.svg"
+        src="/docs/images/star.svg"
         width="13"
         align="middle"
       />
@@ -96,7 +96,7 @@
     &nbsp;&nbsp;
     <a href="https://twitter.com/intent/tweet?text=Interesting%20alternative%20to%20REST%20and%20GraphQL.%0Ahttps%3A%2F%2Fgithub.com%2Freframejs%2Fwildcard-api" target="_blank">
       <img
-        src="/images/twitter.svg"
+        src="/docs/images/twitter.svg"
         width="15"
         align="middle"
       />
@@ -105,9 +105,9 @@
     &nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;
-    <a href="https://github.com/reframejs/wildcard/issues/new?title=I'd%20like%20to%20join&body=I'd%20like%20to%20contribute%2C%20how%20can%20I%20help%3F">
+    <a href="https://github.com/reframejs/wildcard-api/issues/new?title=I'd%20like%20to%20join&body=I'd%20like%20to%20contribute%2C%20how%20can%20I%20help%3F">
       <img
-        src="/images/biceps.svg"
+        src="/docs/images/biceps.svg"
         width="16"
         align="middle"
       />
