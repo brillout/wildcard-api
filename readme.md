@@ -81,6 +81,41 @@
   </a>
 </p>
 
+<p align="center">
+  <sup>
+    <a href="#top">
+      <img
+        src="/images/star.svg"
+        width="13"
+        align="middle"
+      />
+      Star if you like
+    </a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;
+    <a href="https://twitter.com/intent/tweet?text=Interesting%20alternative%20to%20REST%20and%20GraphQL.%0Ahttps%3A%2F%2Fgithub.com%2Freframejs%2Fwildcard-api" target="_blank">
+      <img
+        src="/images/twitter.svg"
+        width="15"
+        align="middle"
+      />
+      Tweet about Wildcard
+    </a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;
+    <a href="https://github.com/reframejs/wildcard/issues/new?title=I'd%20like%20to%20join&body=I'd%20like%20to%20contribute%2C%20how%20can%20I%20help%3F">
+      <img
+        src="/images/biceps.svg"
+        width="16"
+        align="middle"
+      />
+      Co-maintain Wildcard
+    </a>
+  </sup>
+</p>
+
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
