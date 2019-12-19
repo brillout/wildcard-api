@@ -7,7 +7,7 @@
 <p align="center">
   <sup>
     <a href="#top">
-      <img src="/docs/images/blank.svg" height="10px" align="middle" width="25px"/>
+      <img src="/docs/images/blank.svg" height="10px" align="middle" width="23px"/>
       <img
         src="/docs/images/star.svg"
         width="13"
