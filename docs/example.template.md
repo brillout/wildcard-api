@@ -1,5 +1,5 @@
 !OUTPUT ../example/readme.md
-!INLINE ./header.md --hide-source-path
+!INLINE ./snippets/header.md --hide-source-path
 &nbsp;
 
 # Example - A Todo List

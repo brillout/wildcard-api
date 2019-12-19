@@ -1,4 +1,4 @@
-!INLINE ./header.md --hide-source-path
+!INLINE ./snippets/header.md --hide-source-path
 &nbsp;
 
 # SSR & Authentication

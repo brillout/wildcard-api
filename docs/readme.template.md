@@ -1,5 +1,5 @@
 !OUTPUT ../readme.md
-!INLINE ./header.md --hide-source-path
+!INLINE ./snippets/header.md --hide-source-path
 
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
@@ -111,7 +111,7 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-<img src="/docs/images/blank.svg" height="175" align="left" width="338px" style="max-width:90;"/>
+<img src="/docs/images/blank.svg" height="175" align="left" width="300px" style="max-width:90;"/>
 <p align="left">
   :sparkles:
   <b>Easy Setup</b>

@@ -1,4 +1,4 @@
-!INLINE ./header.md --hide-source-path
+!INLINE ./snippets/header.md --hide-source-path
 &nbsp;
 
 # How Wildcard Works

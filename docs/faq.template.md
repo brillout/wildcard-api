@@ -1,4 +1,4 @@
-!INLINE ./header.md --hide-source-path
+!INLINE ./snippets/header.md --hide-source-path
 
 !VAR COMPARISON How does RPC compare to GraphQL/REST?
 !VAR MORE_POWER Which is more powerful, GraphQL or RPC?
