@@ -111,7 +111,7 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-<img src="/docs/images/blank.svg" height="175" align="left" width="300px" style="max-width:90;"/>
+<img src="/docs/images/blank.svg" height="175px" align="left" width="300px"/>
 <p align="left">
   :sparkles:
   <b>Easy Setup</b>
