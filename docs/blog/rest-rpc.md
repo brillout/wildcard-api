@@ -43,8 +43,10 @@ import {endpoints} from '@wildcard-api/client';
 
 ##### Custom JSON endpoints
 
-With *custom JSON endpoints* we denote the practice of creating new server routes and modifying old ones in an ad-hoc fashion, as the need arises.
-Usually, JSON is used to serialize.
+With *custom JSON endpoints* we denote the practice of creating custom server routes
+to retrieve and mutate data.
+We create and modify the server routes
+in an ad-hoc fashion as the need arises.
 
 <details>
 <summary>
