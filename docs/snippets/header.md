@@ -1,9 +1,6 @@
 <p align="center">
   <a href="/../../#readme">
-    <img
-      srcset="https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-title.svg?sanitize=true 1345w, https://github.com/reframejs/wildcard-api/raw/master/docs/images/logo-title.svg?sanitize=true 2345w"
-      sizes="(max-width: 1600px) 563px, 100px"
-    />
+    <img src="/docs/images/logo-title.svg" height="105" alt="Wildcard API"/>
   </a>
 </p>
 
