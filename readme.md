@@ -863,8 +863,10 @@ export const endpoints: Endpoints = endpointsUntyped;
 
 See [/examples/typescript/](/examples/typescript/).
 
-<img src="/docs/images/typescript-1.png" width="800" align="middle" />
-<img src="/docs/images/typescript-2.png" width="800" align="middle" />
+<p align="center">
+  <img src="/docs/images/typescript-1.png" width="800" align="middle" />
+  <img src="/docs/images/typescript-2.png" width="800" align="middle" />
+</p>
 
 
 <br/>
@@ -897,8 +899,10 @@ In dev mode you can:
 - List all API endpoints.
 - Call endpoints directly in the browser.
 
-<img src="/docs/images/dev-mode_list-of-endpoints.png" width="482" />
-<img src="/docs/images/dev-mode_endpoint.png" width="400" align="right"/>
+<p align="left">
+  <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" />
+  <img src="/docs/images/dev-mode_endpoint.png" width="500" align="right"/>
+</p>
 
 
 <br/>
