@@ -1,0 +1,20 @@
+{
+  "name": "example_typescript",
+  "version": "0.0.1-never-published",
+  "private": true,
+  "scripts": {
+    "start": "yarn run build:client && yarn run start:server",
+    "build:client": "cd client && parcel build *.html",
+    "start:server": "ts-node start-server.ts"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.21",
+    "@wildcard-api/client": "*",
+    "@wildcard-api/server": "*",
+    "babel-polyfill": "^6.26.0",
+    "express": "^4.16.4",
+    "parcel": "^1.12.3",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  }
+}
