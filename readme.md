@@ -425,7 +425,7 @@ when and only if the need arises.
    ~~~
 
    > :information_source:
-   > Wildcard automatically loads any file named `endpoints.*` or `*.endpoints.*`.
+   > Wildcard automatically loads any file named `endpoints.js` or `*.endpoints.js`.
 
 3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 

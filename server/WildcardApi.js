@@ -88,7 +88,7 @@ function WildcardApi() {
 
     assert.usage(
       endpointExists({endpointName, endpointsObject}),
-      getNoEndpointError({endpointName, endpointsObject, calledInBrowser: false}),
+      getEndpointMissingError({endpointName, endpointsObject, calledInBrowser: false}),
     );
 
     const resultObject = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: true});
@@ -419,7 +419,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
-        errorText: getNoEndpointError({endpointName, endpointsObject, calledInBrowser: true}),
+        errorText: getEndpointMissingError({endpointName, endpointsObject, calledInBrowser: true}),
       },
       endpointName,
       isHumanMode,
@@ -710,7 +710,7 @@ function endpointExists({endpointName, endpointsObject}) {
   return !!endpoint;
 }
 
-function getNoEndpointError({endpointName, endpointsObject, calledInBrowser}) {
+function getEndpointMissingError({endpointName, endpointsObject, calledInBrowser}) {
   const endpointNames = getEndpointNames({endpointsObject});
   const noEndpointsDefined = endpointNames.length===0;
 
@@ -733,7 +733,7 @@ function getNoEndpointError({endpointName, endpointsObject, calledInBrowser}) {
   }
 
   errorText.push(
-    colorizeEmphasis('Make sure that the file that defines `'+endpointName+'` is named `endpoints.*` or `*.endpoints.*`: Wildcard automatically loads any file with such a name.'),
+    colorizeEmphasis('Make sure that the file that defines `'+endpointName+'` is named `endpoints.js` or `*.endpoints.js`: Wildcard automatically loads any file with such a name.'),
     'Alternatively, you can manually load your endpoint files: `require(\'./path/to/file-that-defines-'+endpointName+'.js\').`',
   );
 

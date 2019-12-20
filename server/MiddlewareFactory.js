@@ -1,4 +1,5 @@
 const assert = require('@brillout/assert');
+const autoLoadEndpointFiles = require('./autoLoadEndpointFiles');
 
 module.exports = MiddlewareFactory;
 
@@ -8,7 +9,13 @@ function MiddlewareFactory(ServerAdapter, opts) {
       return (
         ServerAdapter(
           [ async (requestObject, {requestProps}) => {
-            const wildcardApi = (args||{}).wildcardApi || require('@wildcard-api/server');
+            let wildcardApi = (args||{}).wildcardApi;
+            if( !wildcardApi ){
+              wildcardApi =  require('@wildcard-api/server');
+              if( Object.keys(wildcardApi.endpoints).length===0 ){
+                autoLoadEndpointFiles();
+              }
+            }
             assert.usage(
               contextGetter,
               'You need to pass a context getter to the Wildcard middleware.',
