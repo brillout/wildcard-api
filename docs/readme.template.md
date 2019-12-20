@@ -635,9 +635,10 @@ See [/examples/typescript/](/examples/typescript/).
 
 <p align="center">
   <a href="#typescript">
-    <img src="/docs/images/typescript-1.png" width="850" align="middle" />
-    &nbsp;
-    <img src="/docs/images/typescript-2.png" width="850" align="middle" />
+    <img src="/docs/images/typescript-1.png" width="850" height="195" align="middle" />
+    <br/>
+    <br/>
+    <img src="/docs/images/typescript-2.png" width="850" height="212" align="middle" />
   </a>
 </p>
 
@@ -655,8 +656,8 @@ In dev mode you can:
 
 <p align="left">
   <a href="#dev-tools">
-    <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" align="left"/>
-    <img src="/docs/images/dev-mode_endpoint.png" width="515"/>
+    <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" height="187" align="left"/>
+    <img src="/docs/images/dev-mode_endpoint.png" width="515" height="290"/>
   </a>
 </p>
 
