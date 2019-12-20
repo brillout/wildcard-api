@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "yarn run build && yarn run server",
-    "server": "node ./start-with-express.js",
-    "build": "cd client && parcel build *.html"
+    "start": "yarn run start:build && yarn run start:server",
+    "start:server": "node ./start-with-express.js",
+    "start:build": "cd client && parcel build *.html"
   },
   "dependencies": {
     "@brillout/assert": "^0.1.0",
