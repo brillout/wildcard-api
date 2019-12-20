@@ -13,7 +13,6 @@
   "workspaces": [
     "server/",
     "client/",
-    "examples/*",
     "test/"
   ],
   "private": true

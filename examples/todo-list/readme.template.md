@@ -26,25 +26,31 @@ Run the following npm scripts to build and serve the example:
 
    ~~~shell
    $ git clone git@github.com:reframejs/wildcard-api
-   $ cd example/
    ~~~
 
 1. Install dependencies.
 
+   First the dependencies of Wildcard:
    ~~~shell
-   $ npm run setup
+   $ yarn
+   ~~~
+
+   Then the dependencies of the example:
+   ~~~shell
+   $ cd example/todo-list/
+   $ yarn
    ~~~
 
 2. Build the frontend.
 
    ~~~shell
-   $ npm run build
+   $ yarn start:build
    ~~~
 
 3. Run the server.
 
    ~~~shell
-   $ npm run server
+   $ npm run start:server
    ~~~
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
