@@ -634,8 +634,11 @@ You can use your endpoints' types on the frontend by using TypeScript's `typeof`
 See [/examples/typescript/](/examples/typescript/).
 
 <p align="center">
-  <img src="/docs/images/typescript-1.png" width="800" align="middle" />
-  <img src="/docs/images/typescript-2.png" width="800" align="middle" />
+  <a href="#typescript">
+    <img src="/docs/images/typescript-1.png" width="850" align="middle" />
+    &nbsp;
+    <img src="/docs/images/typescript-2.png" width="850" align="middle" />
+  </a>
 </p>
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
@@ -651,8 +654,10 @@ In dev mode you can:
 - Call endpoints directly in the browser.
 
 <p align="left">
-  <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" />
-  <img src="/docs/images/dev-mode_endpoint.png" width="500" align="right"/>
+  <a href="#dev-tools">
+    <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" align="left"/>
+    <img src="/docs/images/dev-mode_endpoint.png" width="515"/>
+  </a>
 </p>
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
