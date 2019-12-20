@@ -177,7 +177,7 @@ Run the following npm scripts to build and serve the example:
 
 <sup>
 Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
+if you want have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -245,7 +245,7 @@ endpoints.getCompletedPageData = async function () {
 
 <sup>
 Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
+if you want have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -370,7 +370,7 @@ console.log('Koa server is running, go to http://localhost:3000')
 
 <sup>
 Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
+if you want have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -436,7 +436,7 @@ async function getTodo(todoId) {
 
 <sup>
 Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
+if you want have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -525,7 +525,7 @@ function Todo({todo, updateTodo}) {
 
 <sup>
 Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
-if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
+if you want have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
