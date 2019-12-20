@@ -264,7 +264,7 @@ Status code: <b>${responseProps.statusCode}</b>`
 ${endpointError && endpointError.stack || endpointError}
 </pre>
 <small>
-(The call stack is shown only in development. That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)
+The call stack is shown ${getDevModeNote()}
 </small>`
     );
   }
@@ -273,12 +273,14 @@ ${endpointError && endpointError.stack || endpointError}
 }
 
 function get_html_response(htmlBody, note) {
-  note = note || [
-    "(Showing HTML version because the request's method is <code>GET</code>.",
-    "Make a <code>POST</code> request to get JSON instead.)",
-  ].join('\n');
+  if( note===undefined ){
+    note = [
+      'This page exists '+getDevModeNote(),
+      "Showing HTML because the request's method is <code>GET</code>. Make a <code>POST</code> request to get JSON.",
+    ].join('\n');
+  }
 
-  const body = (
+  let body = (
 `<html><body>
 <style>
   code {
@@ -294,11 +296,23 @@ function get_html_response(htmlBody, note) {
   }
 </style>
 ${htmlBody}
+`
+  );
+
+  if( note ){
+    body += (
+`
 <br/>
 <br/>
 <small>
 ${note.split('\n').join('<br/>\n')}
 </small>
+`
+    );
+  }
+
+  body += (
+`
 </body></html>
 `
   );
@@ -396,7 +410,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
   ){
     return {isNotWildcardRequest: true, isHumanMode};
   }
-  if( isPathanameBase({pathname}) && isDev() && isHumanMode ){
+  if( isPathanameBase({pathname}) && isHumanMode ){
     return {isIntrospection: true, isHumanMode};
   }
 
@@ -555,6 +569,12 @@ function parsePathname({pathname}){
 
 
 function HttpIntrospectionResponse({endpointsObject}) {
+  if( !isDev() ) {
+    return get_html_response(
+      'This page is available '+getDevModeNote(),
+      null,
+    );
+  }
   const htmlBody = `
 Endpoints:
 <ul>
@@ -570,10 +590,7 @@ getEndpointNames({endpointsObject})
 `;
   return get_html_response(
     htmlBody,
-    [
-      "This page exists only in development.",
-      "That is when <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.",
-    ].join('\n')
+    'This page exists '+getDevModeNote(),
   );
 }
 function getEndpointNames({endpointsObject}) {
@@ -738,4 +755,8 @@ function getEndpointMissingError({endpointName, endpointsObject, calledInBrowser
   );
 
   return errorText.join('\n');
+}
+
+function getDevModeNote() {
+  return "only in dev mode. (When <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)";
 }
