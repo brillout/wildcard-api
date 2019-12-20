@@ -242,14 +242,14 @@ and issues are fixed promptly.
   :rotating_light:
   <b>Simple Error Handling</b>
   <br/>
-  :detective:
-  <b>Dev Tools</b>
-  <br/>
   :microscope:
   <b>TypeScript Support</b>
   <br/>
   :memo:
   <b>SSR Support</b>
+  <br/>
+  :detective:
+  <b>Dev Tools</b>
   <br/>
   :zap:
   <b>Automatic Caching</b>
