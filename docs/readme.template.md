@@ -28,7 +28,11 @@ Basics
 More
 </sub>
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[TypeScript](#typescript)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Dev Tools](#dev-tools)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[API Documentation](#api-documentation)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Caching](#caching)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -125,20 +129,16 @@ and issues are fixed promptly.
   :detective:
   <b>Dev Tools</b>
   <br/>
+  :microscope:
+  <b>TypeScript Support</b>
+  <br/>
   :memo:
   <b>SSR Support</b>
-  <br/>
-  :wrench:
-  <b>Server Framework Agnostic</b>
   <br/>
   :zap:
   <b>Automatic Caching</b>
   <br/>
 </p>
-<!--
-:microscope:
-<b>TypeScript Support</b>
--->
 
 &nbsp;
 
@@ -620,10 +620,21 @@ import 'handli'; // npm install handli
 
 
 
-## Caching
+## TypeScript
 
-Wildcard automatically caches your endpoint results by using the HTTP ETag header.
-You can disable caching by using the [`disableEtag` option](#disableetag).
+You can use your endpoints' types on the frontend by using TypeScript's `typeof`.
+
+~~~ts
+!INLINE /examples/typescript/endpoints.ts
+~~~
+~~~ts
+!INLINE /examples/typescript/client/index.ts
+~~~
+
+See [/examples/typescript/](/examples/typescript/).
+
+<img src="/docs/images/typescript-1.png" width="800" align="middle" />
+<img src="/docs/images/typescript-2.png" width="800" align="middle" />
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -631,8 +642,42 @@ You can disable caching by using the [`disableEtag` option](#disableetag).
 
 ## Dev Tools
 
-You can browse your API by going to `/wildcard/`.
-For example, if your app is running at `http://localhost:3000` then go to `http://localhost:3000/wildcard/`.
+Wildcard is in *dev mode* when `[undefined, 'development'].includes(process.env.NODE_ENV)`.
+
+In dev mode you can:
+- List all API endpoints.
+- Call endpoints directly in the browser.
+
+<img src="/docs/images/dev-mode_list-of-endpoints.png" width="482" />
+<img src="/docs/images/dev-mode_endpoint.png" width="400" align="right"/>
+
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+
+
+## API Documentation
+
+You can browse your API by using [Wildcard's dev tools](#dev-tools).
+
+More evolved API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for APIs used by third-party developers who don't have access to your source code.
+
+A Wildcard API is meant to be used by internal developers;
+instead of using OpenAPI,
+you can give your frontend developers access to your backend code and save all endpoints in files named `endpoints.js`.
+That way, a frontend developer can explore your API.
+
+For improved developer experience,
+you can use [Wildcard with TypeScript](#typescript) and make type hints available on the frontend.
+A frontend developer can then explore your Wildcard API directly in his IDE!
+
+!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+
+
+## Caching
+
+Wildcard automatically caches your endpoint results by using the HTTP ETag header.
+You can disable caching by using the [`disableEtag` option](#disableetag).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -784,7 +829,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
   <br/>
   Talks about the technologies Wildcard uses under the hood.
-- [Example - A Todo List](/examples/todo-list#example---a-todo-list)
+- [Example - A Todo List](/examples/todo-list/#example---a-todo-list)
   <br/>
   Showcases a to-do list app built with RPC/Wildcard.
 - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)

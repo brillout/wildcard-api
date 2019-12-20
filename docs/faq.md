@@ -163,8 +163,8 @@ We explain this in more depth at
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -230,8 +230,8 @@ you can modify your own API at will.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -284,8 +284,8 @@ which we talk about in the next querstion
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -331,8 +331,8 @@ This ensures that frontend and backend are deployed synchronously.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -373,8 +373,8 @@ it gives him the power to use any SQL/ORM query and any server-side tool he want
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -404,8 +404,8 @@ versioning: your backend always serves a single and the correct version of your 
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -539,8 +539,8 @@ There are more crucial and interesting questions such as "How can I structure my
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want to discuss, have questions, or if something is not clear &mdash; we enjoy talking with our users.
+Feel free to <a href="https://github.com/reframejs/wildcard-api/issues/new">open a GitHub ticket</a>
+if you want have questions or if something is not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
