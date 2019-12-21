@@ -258,6 +258,13 @@ and issues are fixed promptly.
 
 &nbsp;
 
+> The seamless "drop in and use" nature of Wildcard has enabled Vibescout to accelerate the development of new features, it enables us to quickly prototype new ideas and build out internal dashboards with ease (without the unneeded verbosity of things like GraphQL). The barrier between our server and client is almost nonexistent now- it's really just a function!
+<p align="right">
+Paul Myburgh, CTO of Vibescout <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecomment-566983911">(ref)</a>
+</p>
+
+&nbsp;
+
 ## Wildcard compared to REST and GraphQL
 
 REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
