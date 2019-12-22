@@ -1,6 +1,6 @@
 # REST or GraphQL? A simple answer.
 
-Whether REST or GraphQL better fits your application depends on many factors:
+Whether REST or GraphQL is the right tool for your application depends on many factors:
 do you need third parties to be able to access your data?
 What are third parties going to do with your data?
 Is your stack statically typed?
@@ -16,8 +16,8 @@ making it unfeasible to reliably predict whether REST or GraphQL is the right ch
 
 A solution is to use [RPC](/docs/what-is-rpc.md#what-is-rpc):
 you implement your prototype with RPC at first and later,
-as your MVP scales to a stable application,
-it will become much clearer and much easier to decide
+as your MVP scales to a mature application,
+it will become clearer and easier to decide
 whether either REST or GraphQL best fits your application.
 You then progressively replace your RPC endpoints with your newly created RESTful/GraphQL API.
 

@@ -1,27 +1,29 @@
 ## RPC as Default
 
-In order to create a backend API,
-web developers
-usually go with REST or GraphQL by default &mdash;
+Most web developers use
+REST or GraphQL
+to create a backend API;
 they rarely consider
 [RPC](/docs/what-is-rpc.md#what-is-rpc).
+For most web developers the default is REST or GraphQL.
 
-If your goal is to build an API
-for a large project used by a high number of developers and a high number of third-party developers
+For a large project
+If your goal is to create an API
+for a large project that will be used by a high number of developers and a high number of third-party developers
 then ignoring RPC makes sense:
 you need an API that has structure and RPC's schemaless nature is no fit.
 For example, Facebook's API is used by ~200k third parties and RPC is not an option.
 
-But,
-for a prototype that needs only few API endpoints,
-you don't need REST nor GraphQL &mdash; RPC is enough.
-Not only is RPC enough but it also allows you to quickly deliver and evolve your MVP.
+REST or GraphQL make sense for large projects
+but for small to medium-sized apps, and especially prototypes,
+you most often don't need REST nor GraphQL &mdash; RPC is enough.
+Not only is RPC enough but it also allows you to quickly deliver and evolve an MVP.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist [is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer).
 RPC enables you to postpone the "REST or GraphQL" decision:
 you implement your prototype with RPC at first and later,
-as your MVP scales to a stable application,
-it will become much clearer and much easier to decide
+as your MVP scales to a mature application,
+it will become clearer and easier to decide
 whether either REST or GraphQL best fits your application.
 You then progressively replace your RPC endpoints with your newly created RESTful/GraphQL API.
 
