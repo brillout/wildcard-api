@@ -85,7 +85,7 @@ You can, for example, use SQL or ORM queries.
 // Node.js server
 
 const {endpoints} = require('@wildcard-api/server');
-const Todo = require('./path/to/your/data/model/Todo');
+const Todo = require('./path/to/your/data/models/Todo');
 
 endpoints.createTodoItem = async function(text) {
   if( !this.user ) {
@@ -145,6 +145,11 @@ and issues are fixed promptly.
 > The seamless "drop in and use" nature of Wildcard has enabled Vibescout to accelerate the development of new features, it enables us to quickly prototype new ideas and build out internal dashboards with ease (without the unneeded verbosity of things like GraphQL). The barrier between our server and client is almost nonexistent now- it's really just a function!
 <p align="right">
 Paul Myburgh, CTO of Vibescout <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecomment-566983911">(ref)</a>
+</p>
+
+> We are a web shop and decided to try Wildcard with one of our projects. We were delighted: not only made Wildcard our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with REST or GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Wildcard a no-brainer.
+<p align="right">
+Niels Litt, <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecomment-568246660">(ref)</a>
 </p>
 
 &nbsp;
@@ -629,7 +634,7 @@ import 'handli'; // npm install handli
 
 ## TypeScript
 
-You can use your endpoints' types on the frontend by using TypeScript's `typeof`.
+You can use your backend types on the frontend by using TypeScript's `typeof`.
 
 ~~~ts
 !INLINE /examples/typescript/endpoints.ts
