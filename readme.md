@@ -231,29 +231,32 @@ Wildcard is used in production at several projects,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
-<img src="/docs/images/blank.svg" height="175px" align="left" width="300px"/>
-<p align="left">
+&nbsp;
+
+<p align="center">
   :sparkles:
   <b>Easy Setup</b>
-  <br/>
+  <img src="/docs/images/blank.svg" height="1" width="85" align="middle"/>
   :shield:
   <b>Simple Permissions</b>
-  <br/>
+  <img src="/docs/images/blank.svg" height="1" width="42" align="middle"/>
   :rotating_light:
   <b>Simple Error Handling</b>
-  <br/>
-  :microscope:
-  <b>TypeScript Support</b>
-  <br/>
-  :memo:
-  <b>SSR Support</b>
+  <img src="/docs/images/blank.svg" height="1" width="1" align="middle"/>
   <br/>
   :detective:
   <b>Dev Tools</b>
+  <img src="/docs/images/blank.svg" height="1" width="96" align="middle"/>
+  :microscope:
+  <b>TypeScript Support</b>
+  <img src="/docs/images/blank.svg" height="1" width="47" align="middle"/>
+  :memo:
+  <b>SSR Support</b>
+  <img src="/docs/images/blank.svg" height="1" width="71" align="middle"/>
   <br/>
   :zap:
   <b>Automatic Caching</b>
-  <br/>
+  <img src="/docs/images/blank.svg" height="1" width="455" align="middle"/>
 </p>
 
 &nbsp;
