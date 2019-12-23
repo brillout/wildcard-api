@@ -10,7 +10,7 @@ We believe this to be a mistake and that RPC should be the default instead.
 
 - [What is RPC](#what-is-rpc)
 - [Start with RPC](#start-with-rpc)
-- [RPC as default](#rpc-as-default)
+- [RPC as default](#rpc-as-default-1)
 - [RPC-like](#rpc-like)
 - [Conclusion](#conclusion)
 
