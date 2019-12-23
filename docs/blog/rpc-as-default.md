@@ -14,7 +14,7 @@ We believe this to be a mistake and that RPC should be the default instead.
 - [RPC-like](#rpc-like)
 - [Conclusion](#conclusion)
 
-### What is RPC
+##### What is RPC
 
 RPC is a simple concept: you define a function on the backend and call it remotely from the frontend.
 For example with Node.js and [Wildcard API](https://github.com/reframejs/wildcard-api#readme):
@@ -83,7 +83,7 @@ endpoints.getLandingPageData = async function() {
 then have a look at
 [What do REST and RPC-like mean exactly?](/docs/blog/rest-rpc.md#readme).)
 
-### Start with RPC
+##### Start with RPC
 
 REST and GraphQL are most useful for large applications
 but,
@@ -104,7 +104,7 @@ to skip REST and GraphQL altogether.
 
 Starting with RPC allows you to get a quick start while being able to later embrace REST or GraphQL.
 
-### RPC as default
+##### RPC as default
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist
 [is difficult](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer).
@@ -118,7 +118,7 @@ In short,
 use RPC as default and
 switch to REST or GraphQL when and if the need arises.
 
-### RPC-like
+##### RPC-like
 
 For a Node.js backend you can have RPC by using [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other backends you can have an "RPC-like" API by creating custom JSON endpoints, for example with Python:
@@ -151,7 +151,7 @@ def create_todo_item(text, user_id):
     return db_item
 ~~~
 
-### Conclusion
+##### Conclusion
 
 For your next project you may want to start with RPC (or RPC-like)
 and switch to REST or GraphQL when and if the need arises.
