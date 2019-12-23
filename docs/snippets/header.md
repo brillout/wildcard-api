@@ -29,7 +29,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;
-    <a href="https://github.com/reframejs/wildcard-api/issues/new?title=I'd%20like%20to%20join&body=I'd%20like%20to%20contribute%2C%20how%20can%20I%20help%3F">
+    <a href="https://github.com/reframejs/wildcard-api/issues/new?title=I'd%20like%20to%20help&body=I'd%20like%20to%20contribute%2C%20how%20can%20I%20help%3F">
       <img
         src="/docs/images/biceps.svg"
         width="16"
