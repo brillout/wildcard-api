@@ -155,7 +155,7 @@ the following happens:
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>

@@ -466,7 +466,7 @@ That's it.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -538,7 +538,7 @@ If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentica
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -686,7 +686,7 @@ which we explain in the next section [Error Handling](#error-handling).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -813,7 +813,7 @@ import 'handli'; // npm install handli
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -896,7 +896,7 @@ See [/examples/typescript/](/examples/typescript/).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -934,7 +934,7 @@ In dev mode you can:
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -972,7 +972,7 @@ A frontend developer can then explore your Wildcard API directly in his IDE!
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1000,7 +1000,7 @@ You can disable caching by using the [`disableEtag` option](#disableetag).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1030,7 +1030,7 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1150,7 +1150,7 @@ wildcardServer.disableEtag = false;
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1214,7 +1214,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you want have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have a question or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
