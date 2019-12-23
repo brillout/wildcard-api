@@ -9,10 +9,10 @@ the default is REST or GraphQL.
 We believe this to be a mistake and that RPC should be the default instead.
 
 - [What is RPC](#what-is-rpc)
-- [Rapid Prototyping]
-- [RPC as default]
-- [RPC-like]
-- [Conclusion]
+- [Start with RPC](#start-with-rpc)
+- [RPC as default](#rpc-as-default)
+- [RPC-like](#rpc-like)
+- [Conclusion](#conclusion)
 
 ### What is RPC
 
