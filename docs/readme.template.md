@@ -167,15 +167,14 @@ It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
-and build all kinds of applications.
-For an API used by third parties with highly diverse uses cases, GraphQL is the right tool.
+to be able to build all kinds of applications.
+For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
 
 However,
-if you want to create an API that is not meant to be used by third-party developers,
+if you want to create an API that is meant to consumed only by your frontend,
 then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
-For a large API used by hundreds of internal developers,
-you may still want the structure of a RESTful or GraphQL API.
+For a large app that has many developers and many frontends you may still want the structure of a RESTful or GraphQL API.
 This typically applies only for large companies and "Premature optimization is the root of all evil"
 &mdash;
 start with
