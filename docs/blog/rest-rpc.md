@@ -55,6 +55,8 @@ Server routes
 are created and modified
 in an ad-hoc fashion.
 
+An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
+
 <details>
 <summary>
 JavaScript Example
@@ -125,9 +127,6 @@ def create_todo_item(text, user_id):
     return db_item
 ~~~
 </details>
-
-An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
-
 
 ##### REST level-0
 
