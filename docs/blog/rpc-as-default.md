@@ -1,12 +1,12 @@
 ## RPC as Default
 
-Most web developers use either
-REST or GraphQL
-to create a backend API and they
-rarely consider
+Today, for most web developers,
+REST and GraphQL are the default choice
+to create a backend API.
+
 [RPC](/docs/what-is-rpc.md#what-is-rpc);
-the default is REST or GraphQL.
-We believe this to be a mistake and that RPC should be the default instead.
+is often ignored and
+we believe this to be an important mistake.
 
 - [What is RPC](#what-is-rpc)
 - [Start with RPC](#start-with-rpc)
@@ -17,11 +17,12 @@ We believe this to be a mistake and that RPC should be the default instead.
 #### What is RPC
 
 RPC is a simple concept: you define a function on the backend and call it remotely from the frontend.
-For example with Node.js and [Wildcard API](https://github.com/reframejs/wildcard-api#readme):
+For example with a Node.js backend:
 
 ~~~js
 // Node.js server
 
+// Wildcard API is an RPC implementation for Node.js backends
 const {endpoints} = require('@wildcard-api/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
@@ -42,7 +43,7 @@ import {endpoints} from '@wildcard-api/client';
 })();
 ~~~
 
-RPC allows you to directly use SQL or your ORM while developing your frontend.
+RPC enables you to directly use SQL or your ORM while developing your frontend.
 
 ~~~js
 const {endpoints} = require('@wildcard-api/server');
@@ -79,19 +80,26 @@ endpoints.getLandingPageData = async function() {
 }
 ~~~
 
-(If you wonder what the difference between RPC and REST is,
-then have a look at
-[What do REST and RPC-like mean exactly?](/docs/blog/rest-rpc.md#readme).)
+If you wonder what the difference between RPC and REST is,
+we explain the difference at
+[What is the difference between REST and RPC?](/docs/blog/rest-rpc.md#readme).
 
 #### Start with RPC
 
 REST and GraphQL are most useful for large applications
 but,
 in the development beginning of an application, you usually don't need REST nor GraphQL &mdash; RPC is enough.
+
+The schema of RESTful or GraphQL API
+acts as a rigid long-term contract between frontend and backend.
+While it is a good thing if you want to stabilize a large application,
+the rigid structure of a RESTful or GraphQL API gets in the way of quickly implementing a prototyping.
+
 In the prototyping phase,
-a RESTful/GraphQL API rigidifies and slows down development
-whereas
-with RPC you stay lean and flexible allowing you to quickly implement changes and pivots.
+a RESTful or GraphQL API slows down development speed.
+
+RPC, on the other hand,
+allows you to stay lean and flexible, to quickly implement changes, and to quickly embrace pivots.
 
 As your app grows to a large application
 with stabilized requirements,
@@ -121,7 +129,7 @@ switch to REST or GraphQL when and if the need arises.
 #### RPC-like
 
 For a Node.js backend you can have RPC by using [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
-and for other backends you can have an "RPC-like" API by creating custom JSON endpoints, for example with Python:
+and for other backends you can have an RPC-like API by creating custom JSON server endpoints. For example with Python:
 
 ~~~python
 # RPC-like API with Python and FastAPI
@@ -154,13 +162,13 @@ def create_todo_item(text, user_id):
 #### Conclusion
 
 For your next project you may want to start with RPC (or RPC-like)
-and switch to REST or GraphQL when and if the need arises.
+and switch to REST or GraphQL when and only if the need arises.
 
-For example,
-if you are startup,
+If you are startup,
 you can use RPC to get to your seed funding round faster.
+Once you've hired a large team of developers
+you can progressively replace RPC with REST or GraphQL.
+
+As Turing Award winner Donald Knuth says:
 
 > Premature optimization is the root of all evil
-<p align="right">
-Donald Knuth, Turing Award winner
-</p>

@@ -1,9 +1,15 @@
-# What do REST and RPC-like mean exactly?
+# What is the difference between REST and RPC?
 
 There is a lot of confusion in API terminology.
 The term REST, for example, is often wrongly used to denote an RPC-like API.
 
 Let's clarify.
+
+- [RPC](#rpc)
+- [Custom JSON endpoints](#custom-json-endpoints)
+- [REST level-0](#rest-level-0)
+- [REST level-5](#rest-level-5)
+- [RPC-like](#rpc-like)
 
 ##### RPC
 
@@ -126,7 +132,7 @@ An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
 
 REST defines its methodology over 5 levels of principles.
 
-The first level, REST level-0, stipulates the usage of the HTTP protocl to transport data.
+The first level, REST level-0, stipulates the usage of the HTTP protocol to transport data.
 
 Any API that uses HTTP is a REST level-0 API;
 RPC and custom JSON endpoints are REST level-0 APIs.
@@ -134,10 +140,10 @@ RPC and custom JSON endpoints are REST level-0 APIs.
 
 ##### REST level-5
 
-For an API to be called REST, it needs to follow *all* the principles of REST level-5, REST level-4, etc.
+For an API to be called REST, it needs to follow *all* REST levels.
 
-A REST level-5 API, in a nutshell, is an API that consists of CRUD operations on schema models;
-a REST level-5 API has a schema (whereas a REST level-0 API can be schemaless).
+The last level, REST level-5, stipulates that an API should only consists of CRUD operations on a list of data models.
+In a nutshell, a REST level-5 API has a schema.
 
 ##### RPC-like
 
