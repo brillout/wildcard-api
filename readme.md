@@ -283,7 +283,7 @@ It is no surprise that Facebook is using (and invented) GraphQL;
 a GraphQL API enables
 third-party developers
 to extensively access Facebook's social graph
-to be able to build all kinds of applications.
+to build all kinds of applications.
 For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
 
 However,
@@ -312,8 +312,6 @@ Is your API meant to be used by yourself? Use Wildcard.
 
    With Express:
    ~~~js
-   // Node.js server
-
    const express = require('express');
    const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
@@ -322,7 +320,7 @@ Is your API meant to be used by yourself? Use Wildcard.
    // We install the Wildcard middleware
    app.use(wildcard(getContext));
 
-   // `getContext` is called on every API request to define the `context` object.
+   // `getContext` is called on every API request. It defines the `context` object.
    // `req` is Express' request object
    async function getContext(req) {
      const context = {};
@@ -338,8 +336,6 @@ Is your API meant to be used by yourself? Use Wildcard.
    </summary>
 
    ~~~js
-   // Node.js server
-
    const Hapi = require('hapi');
    const wildcard = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
 
@@ -348,7 +344,7 @@ Is your API meant to be used by yourself? Use Wildcard.
    // We install the Wildcard middleware
    await server.register(wildcard(getContext));
 
-   // `getContext` is called on every API request to define the `context` object.
+   // `getContext` is called on every API request. It defines the `context` object.
    // `request` is Hapi's request object
    async function getContext(request) {
      const context = {};
@@ -365,8 +361,6 @@ Is your API meant to be used by yourself? Use Wildcard.
    </summary>
 
    ~~~js
-   // Node.js server
-
    const Koa = require('koa');
    const wildcard = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
 
@@ -375,7 +369,7 @@ Is your API meant to be used by yourself? Use Wildcard.
    // We install the Wildcard middleware
    app.use(wildcard(getContext));
 
-   // `getContext` is called on every API request to define the `context` object.
+   // `getContext` is called on every API request. It defines the `context` object.
    async function getContext(ctx) {
      const context = {};
      // Authentication middlewares often make user information available at `ctx.state.user`.
@@ -395,8 +389,6 @@ Is your API meant to be used by yourself? Use Wildcard.
    In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse`.
    You use `getApiHttpResponse` to build the HTTP response for any HTTP request made to `/wildcard/*`.
    ~~~js
-   // Node.js server
-
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
    const {getApiHttpResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
@@ -440,9 +432,9 @@ Is your API meant to be used by yourself? Use Wildcard.
 
    endpoints.myFirstEndpoint = async function () {
      // The `this` object is the `context` object we defined in `getContext`.
-     console.log('The logged-in user name is: ', this.user.username);
+     console.log('The logged-in user is: ', this.user.username);
 
-     return {msg: 'Hello, from my first Wildcard endpoint';
+     return {msg: 'Hello, from my first Wildcard endpoint'};
    };
    ~~~
 
@@ -489,29 +481,37 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## Authentication
 
-You can use the `context` object to make authentication available to your endpoint functions.
+You can use the `context` object to make authentication information available to your endpoint functions.
+
+For example:
 
 ~~~js
 // Node.js server
 
-// We define the `context` object while installing the Wildcard middleware.
+const express = require('express');
+const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
-app.use(wildcard(async req => {
-  // The context object is available to endpoint functions as `this`.
+const app = express();
+
+// We install the Wildcard middleware
+app.use(wildcard(getContext));
+
+// We define the `context` object
+async function getContext(req) {
   const context = {};
 
   // Authentication middlewares usually make information about the logged-in
   // user available on the request object, for example `req.user`.
   context.user = req.user;
 
-  context.login = context.auth.login;
-  context.logout = context.auth.logout;
+  context.login = req.auth.login;
+  context.logout = req.auth.logout;
 
   return context;
 }));
 ~~~
 
-The `context` object is available to your endpoint function as `this`.
+The `context` object is available to your endpoint functions as `this`.
 
 ~~~js
 // Node.js server
