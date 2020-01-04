@@ -481,9 +481,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## Authentication
 
-You can use the `context` object to make authentication information available to your endpoint functions.
-
-For example:
+You can use the `context` object to authenticate your users. For example:
 
 ~~~js
 // Node.js server
