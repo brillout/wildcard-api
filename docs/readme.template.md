@@ -175,7 +175,7 @@ if you want to create an API that is meant to consumed only by your frontend,
 then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
 For a large app that has many developers and many frontends you may still want the structure of a RESTful or GraphQL API.
-But this typically applies only for large companies and "Premature optimization is the root of all evil"
+But this typically applies only for large companies and "premature optimization is the root of all evil"
 &mdash;
 start with
 [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)

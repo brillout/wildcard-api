@@ -291,7 +291,7 @@ if you want to create an API that is meant to consumed only by your frontend,
 then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
 For a large app that has many developers and many frontends you may still want the structure of a RESTful or GraphQL API.
-But this typically applies only for large companies and "Premature optimization is the root of all evil"
+But this typically applies only for large companies and "premature optimization is the root of all evil"
 &mdash;
 start with
 [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
@@ -471,7 +471,7 @@ That's it.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -543,7 +543,7 @@ If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentica
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -691,7 +691,7 @@ which we explain in the next section [Error Handling](#error-handling).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -818,7 +818,7 @@ import 'handli'; // npm install handli
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -901,7 +901,7 @@ See [/examples/typescript/](/examples/typescript/).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -939,7 +939,7 @@ In dev mode you can:
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -977,7 +977,7 @@ A frontend developer can then explore your Wildcard API directly in his IDE!
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1005,7 +1005,7 @@ You can disable caching by using the [`disableEtag` option](#disableetag).
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1035,7 +1035,7 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1155,7 +1155,7 @@ wildcardServer.disableEtag = false;
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -1219,7 +1219,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>

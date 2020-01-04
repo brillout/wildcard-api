@@ -164,7 +164,7 @@ We explain this in more depth at
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -231,7 +231,7 @@ you can modify your own API at will.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -285,7 +285,7 @@ which we talk about in the next querstion
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -332,7 +332,7 @@ This ensures that frontend and backend are deployed synchronously.
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -374,7 +374,7 @@ it gives him the power to use any SQL/ORM query and any server-side tool he want
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -405,7 +405,7 @@ versioning: your backend always serves a single and the correct version of your 
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
@@ -540,7 +540,7 @@ There are more crucial and interesting questions such as "How can I structure my
 
 <sup>
 <a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have a question or something's not clear &mdash; we enjoy talking with our users.
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
 <br/>
