@@ -50,7 +50,7 @@ import {endpoints} from '@wildcard-api/client';
 ##### Custom JSON endpoints
 
 With *custom JSON endpoints* we denote the practice of creating server routes
-to retrieve and mutate data.
+in order to retrieve and mutate data.
 Server routes
 are created and modified
 in an ad-hoc fashion.
