@@ -410,8 +410,10 @@ permissions are defined programmatically.
 ~~~js
 // Node.js server
 
+const {endpoints} = require('@wildcard-api/server');
+
 endpoints.deletePost = async function(){
-  // Only admins are allow to remove a post
+  // Only admins are allowed to remove a post
   if( !user.isAdmin ) return;
 
   // ...
@@ -423,8 +425,11 @@ You should never do this:
 ~~~js
 // Node.js server
 
-endpoints.run = async function(query) {
-  const result = await db.run(query);
+const {endpoints} = require('@wildcard-api/server');
+const db = require('your-favorite-sql-query-builder');
+
+endpoints.executeSqlQuery = async function(query) {
+  const result = await db.runQuery(query);
   return result;
 };
 ~~~
@@ -434,7 +439,7 @@ open the browser's web dev console, and call your endpoint.
 ~~~js
 // Browser
 
-const users = await endpoints.run('SELECT login, password FROM users;');
+const users = await endpoints.executeSqlQuery('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
   // W00t — I have all passwords ｡^‿^｡
   console.log(login, password);
