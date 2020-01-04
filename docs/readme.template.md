@@ -438,19 +438,16 @@ open the browser's web dev console, and call your endpoint.
 
 const users = await endpoints.executeQuery('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
-  // W00t — I have all passwords ｡^‿^｡
+  // W00t I have all passwords ｡^‿^｡
   console.log(login, password);
 });
 ~~~
 
-Instead, you should define permissions, for example:
+Instead, you should define permissions. For example:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
-const db = require('./path/to/your/db/code');
-
-// The following endpoint allows a to-do item's text to be modified only by its author.
+// This endpoint allows a to-do item's text to be modified only by its author.
 
 endpoints.updateTodoText = async function(todoId, newText) {
   // The user is not logged in — we abort.
@@ -473,10 +470,9 @@ You may wonder why we return `undefined` when aborting.
 ~~~js
 // Node.js server
 
-// The user is not logged-in — we abort.
 if( !this.user ){
   // Why do we return `undefined`?
-  // Why don't we return something like `return {error: 'Permission denied'}`?
+  // Why don't we return something like `return {error: 'Permission denied'};`?
   return;
 }
 ~~~
@@ -484,12 +480,12 @@ if( !this.user ){
 The reason is simple:
 when we develop the frontend we know what is allowed and we can
 develop the frontend to always call endpoints in an authorized way.
-If an endpoint call isn't allowed, either there is a bug in our frontend or an attacker is trying to hack our backend.
+If an endpoint call isn't allowed, either there is a bug in our frontend code or an attacker is trying to hack our backend.
 If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
 
 That said,
-there are situations where it is expected that a permission may fail and
-you may want to return the information that the permission failed, for example:
+there are situations where it is expected that a permission may fail, and
+you may want to return the information that the permission failed. For example:
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
@@ -508,7 +504,7 @@ Note that you should not deliberately throw exceptions.
 endpoints.getTodoList = async function() {
   if( !this.user ) {
     // Don't do this:
-    throw new Error('Permissen denied: user is not logged in.');
+    throw new Error('User is not logged in.');
   }
   // ...
 };
@@ -569,9 +565,8 @@ import assert from 'assert';
 })();
 ~~~
 
-Wildcard considers an uncaught error as a bug in your code.
-
-You shouldn't deliberately throw exceptions.
+You shouldn't deliberately throw exceptions:
+Wildcard considers any uncaught error as a bug in your code.
 In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
@@ -584,7 +579,7 @@ endpoints.createAccount = async function({email, password}) {
     /* Don't do this:
     throw new Error("Password is too weak.");
     */
-    // Instead, return a JavaScript value:
+    // Return a JavaScript value instead:
     return {validationError: "Password is too weak."};
   }
 
@@ -690,15 +685,15 @@ In dev mode you can:
 
 You can browse your API by using [Wildcard's dev tools](#dev-tools).
 
-More evolved API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for APIs used by third-party developers who don't have access to your source code.
+More evolved API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
 
-A Wildcard API is meant to be used by internal developers;
+A Wildcard API is meant to be used by your own developers;
 instead of using OpenAPI,
 you can give your frontend developers access to your backend code and save all endpoints in files named `endpoints.js`.
 That way, a frontend developer can explore your API.
 
 For improved developer experience,
-you can use [Wildcard with TypeScript](#typescript) and make type hints available on the frontend.
+you can use [Wildcard with TypeScript](#typescript) to make type hints available on the frontend.
 A frontend developer can then explore your Wildcard API directly in his IDE!
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
