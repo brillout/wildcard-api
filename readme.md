@@ -298,6 +298,12 @@ start with
 and later switch to [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
 when and only if the need arises.
 
+In a nuthsell:
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by third parties? Use REST or GraphQL.
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by yourself? Use Wildcard.
+
 &nbsp;
 
 ## Getting Started
