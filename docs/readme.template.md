@@ -410,8 +410,6 @@ permissions are defined programmatically.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
-
 endpoints.deletePost = async function(){
   // Only admins are allowed to remove a post
   if( !user.isAdmin ) return;
@@ -425,7 +423,6 @@ You should never do this:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
 const db = require('your-favorite-sql-query-builder');
 
 endpoints.executeQuery = async function(query) {
