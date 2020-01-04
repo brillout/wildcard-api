@@ -4,9 +4,10 @@ Today, for most web developers,
 REST and GraphQL are the default choice
 to create a backend API.
 
-[RPC](/docs/what-is-rpc.md#what-is-rpc);
-is often ignored and
-we believe this to be an important mistake.
+[RPC](/docs/what-is-rpc.md#what-is-rpc)
+is often ignored.
+
+We believe this to be an important mistake.
 
 - [What is RPC](#what-is-rpc)
 - [Start with RPC](#start-with-rpc)
@@ -16,8 +17,10 @@ we believe this to be an important mistake.
 
 #### What is RPC
 
-RPC is a simple concept: you define a function on the backend and call it remotely from the frontend.
-For example with a Node.js backend:
+RPC denotes the practice of calling a procedure that is defined on a remote computer(/process)
+as if it were defined locally on the same computer(/process).
+
+For example between a Node.js backend and a browser frontend:
 
 ~~~js
 // Node.js server
