@@ -11,6 +11,8 @@ Let's clarify.
 - [REST level-5](#rest-level-5)
 - [RPC-like](#rpc-like)
 
+&nbsp;
+
 ##### RPC
 
 RPC denotes the practice of calling a procedure that is defined on a remote computer(/process)
@@ -46,6 +48,7 @@ import {endpoints} from '@wildcard-api/client';
 ~~~
 </details>
 
+&nbsp;
 
 ##### Custom JSON endpoints
 
@@ -128,6 +131,8 @@ def create_todo_item(text, user_id):
 ~~~
 </details>
 
+&nbsp;
+
 ##### REST level-0
 
 REST defines its methodology over 5 levels of principles.
@@ -137,6 +142,7 @@ The first level, REST level-0, stipulates the usage of the HTTP protocol to tran
 Any API that uses HTTP is a REST level-0 API;
 RPC and custom JSON endpoints are REST level-0 APIs.
 
+&nbsp;
 
 ##### REST level-5
 
@@ -144,6 +150,8 @@ For an API to be called REST, it needs to follow *all* REST levels.
 
 The last level, REST level-5, stipulates that an API should only consists of CRUD operations on a list of data models.
 In a nutshell, a REST level-5 API has a schema.
+
+&nbsp;
 
 ##### RPC-like
 
