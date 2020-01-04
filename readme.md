@@ -506,7 +506,7 @@ async function getContext(req) {
   context.logout = req.auth.logout;
 
   return context;
-}));
+}
 ~~~
 
 The `context` object is available to your endpoint functions as `this`.
