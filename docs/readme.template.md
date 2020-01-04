@@ -352,7 +352,7 @@ You can use the `context` object to authenticate your users. For example:
 // Node.js server
 
 const express = require('express');
-const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
+const wildcard = require('@wildcard-api/server/express');
 
 const app = express();
 
