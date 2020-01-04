@@ -517,7 +517,6 @@ The `context` object is available to your endpoint functions as `this`.
 const {endpoints} = require('@wildcard-api/server');
 
 endpoints.whoAmI = async function() {
-  // `this===context`; `context.user` is available as `this.user`.
   const {user} = this;
   return user.name;
 };
