@@ -3,8 +3,6 @@
 Whether REST or GraphQL is the right tool for your application depends on many factors:
 do you need third parties to be able to access your data?
 What are third parties going to do with your data?
-Is your stack statically typed?
-Does your team have experience with GraphQL?
 Does your language environment have good GraphQL tooling?
 And so on and so forth.
 
@@ -25,11 +23,11 @@ It may also happen that you won't even need REST nor GraphQL:
 RPC is often enough for small to medium-sized applications.
 
 In short,
-use [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default) and
-switch to REST or GraphQL when and if the need arises.
+use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
+switch to REST or GraphQL when and only if the need arises.
 
 For a Node.js backend you can use RPC with
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other server environments
-you can use RPC-like [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
+you can use [RPC-like custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
 

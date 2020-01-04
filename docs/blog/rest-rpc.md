@@ -49,10 +49,11 @@ import {endpoints} from '@wildcard-api/client';
 
 ##### Custom JSON endpoints
 
-With *custom JSON endpoints* we denote the practice of creating custom server routes
+With *custom JSON endpoints* we denote the practice of creating server routes
 to retrieve and mutate data.
-We create and modify the server routes
-in an ad-hoc fashion as the need arises.
+Server routes
+are created and modified
+in an ad-hoc fashion.
 
 <details>
 <summary>
@@ -112,7 +113,7 @@ app.add_middleware(AuthMiddleware)
 
 @app.get("/get-todo-items")
 def get_todo_items(user_id):
-		todos = db.query(models.Todo).all()
+    todos = db.query(models.Todo).all()
     return todos
 
 @app.post("/create-todo-item/{text}")

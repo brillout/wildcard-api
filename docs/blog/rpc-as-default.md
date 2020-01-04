@@ -150,7 +150,7 @@ app.add_middleware(AuthMiddleware)
 
 @app.get("/get-todo-items")
 def get_todo_items(user_id):
-		todos = db.query(models.Todo).all()
+    todos = db.query(models.Todo).all()
     return todos
 
 @app.post("/create-todo-item/{text}")
