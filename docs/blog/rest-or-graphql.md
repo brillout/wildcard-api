@@ -1,10 +1,11 @@
 # REST or GraphQL? A simple answer.
 
-Whether REST or GraphQL is the right tool for your application depends on many factors:
-do you need third parties to be able to access your data?
-What are third parties going to do with your data?
+Whether REST or GraphQL is the right tool for your application depends on many things:
+will third parties use your API?
+What will third parties do with your API?
 Does your language environment have good GraphQL tooling?
-And so on and so forth.
+Is your team proficient GraphQL?
+Etc.
 
 Deciding whether to use REST or GraphQL for an application that does not yet exist is difficult at best, if not impossible.
 For example,
