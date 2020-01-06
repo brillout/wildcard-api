@@ -269,17 +269,17 @@ Niels Litt <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecom
 REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
-a GraphQL API enables
+a GraphQL API allows
 third-party developers
 to extensively access Facebook's social graph
-to build all kinds of applications.
+enabling them to build all kinds of applications.
 For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
 
 However,
-if you want to create an API that is meant to consumed only by your frontend,
+if you want to create a backend API that is meant to be used only by your frontend,
 then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
-For a large app that has many developers and many frontends you may still want the structure of a RESTful or GraphQL API.
+You may still want the structure of a RESTful or GraphQL API for a large app.
 But this typically applies only for large companies and "premature optimization is the root of all evil"
 &mdash;
 start with
