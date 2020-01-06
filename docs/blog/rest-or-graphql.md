@@ -18,7 +18,7 @@ you implement your prototype with RPC at first and later,
 as your MVP scales to a mature application,
 it will become clearer and easier to decide
 whether either REST or GraphQL best fits your application.
-You then progressively replace your RPC endpoints with your newly created RESTful/GraphQL API.
+You then progressively replace your RPC endpoints with your newly created RESTful or GraphQL API.
 
 It may also happen that you won't even need REST nor GraphQL:
 RPC is often enough for small to medium-sized applications.
@@ -29,6 +29,6 @@ switch to REST or GraphQL when and only if the need arises.
 
 For a Node.js backend you can use RPC with
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
-and for other server environments
+and for other environments
 you can use [RPC-like custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
 
