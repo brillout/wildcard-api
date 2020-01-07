@@ -27,4 +27,8 @@ In short,
 use [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default) and
 switch to REST or GraphQL when and only if the need arises.
 
-!INLINE /docs/snippets/tools.md --hide-source-path
+For a Node.js backend you can use RPC with
+[Wildcard API](https://github.com/reframejs/wildcard-api#readme)
+and for other environments
+you can use [RPC-like custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
+

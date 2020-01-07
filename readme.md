@@ -1177,9 +1177,6 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
   <br/>
   Compares RPC with REST/GraphQL, in depth.
-- [RPC Tools](/docs/rpc-tools.md#rpc-tools)
-  <br/>
-  List of RPC tools.
 
 ###### Wildcard
 
