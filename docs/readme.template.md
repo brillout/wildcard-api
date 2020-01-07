@@ -78,8 +78,7 @@ that are defined on your Node.js server,
 callable in the browser.
 Nothing more, nothing less.
 
-How you retrieve and mutate data is up to you.
-You can, for example, use SQL or ORM queries.
+To retrieve and mutate data, you can direclty use SQL or an ORM.
 
 ~~~js
 // Node.js server
@@ -152,7 +151,7 @@ Paul Myburgh, CTO of Vibescout <a href="https://github.com/reframejs/wildcard-ap
 
 &nbsp;
 
-> We are a web shop and decided to try Wildcard with one of our projects. We were delighted: not only made Wildcard our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with the rigid structure of REST or GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Wildcard a no-brainer.
+> We are a web shop and decided to try Wildcard with one of our projects. We were delighted: not only made Wildcard our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with the rigid structure of REST and GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Wildcard a no-brainer.
 <p align="right">
 Niels Litt <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecomment-568246660">(ref)</a>
 </p>
@@ -164,10 +163,9 @@ Niels Litt <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecom
 REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
-a GraphQL API allows
-third-party developers
+it enables third-party developers
 to extensively access Facebook's social graph
-enabling them to build all kinds of applications.
+allowing them to build all kinds of applications.
 For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
 
 However,
