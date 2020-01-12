@@ -3,9 +3,9 @@
   "version": "0.2.7",
   "main": "index.js",
   "dependencies": {
-    "@brillout/json-s": "^0.1.0",
     "@brillout/assert": "^0.1.0",
-    "@brillout/fetch": "^0.1.2"
+    "@brillout/fetch": "^0.1.2",
+    "@brillout/json-s": "^0.1.0"
   },
   "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api",
@@ -15,10 +15,10 @@
   "scripts": {
     "prepublishOnly": "../node_modules/.bin/parcel build index.js -d umd --global WildcardApiClient"
   },
-  "files": [
-    "*"
-  ],
   "browserslist": [
     "last 1 Chrome versions"
-  ]
+  ],
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
 }
