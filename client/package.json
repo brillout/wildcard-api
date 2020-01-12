@@ -9,5 +9,16 @@
   },
   "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "../node_modules/.bin/parcel build index.js -d umd --global WildcardApiClient"
+  },
+  "files": [
+    "*"
+  ],
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
 }
