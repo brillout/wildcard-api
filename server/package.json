@@ -1,6 +1,6 @@
 {
   "name": "@wildcard-api/server",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "index.js",
   "dependencies": {
     "@brillout/assert": "^0.1.0",
