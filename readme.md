@@ -864,16 +864,18 @@ export const endpoints: Endpoints = endpointsUntyped;
 })();
 ~~~
 
-See [/examples/typescript/](/examples/typescript/).
-
 <p align="center">
   <a href="#typescript">
-    <img src="/docs/images/typescript-1.png" width="850" height="195" align="middle" />
+    <img src="/examples/typescript/screenshots/types-on-frontend-1.png" width="850" height="195" align="middle" />
     <br/>
     <br/>
-    <img src="/docs/images/typescript-2.png" width="850" height="212" align="middle" />
+    <img src="/examples/typescript/screenshots/types-on-frontend-2.png" width="850" height="212" align="middle" />
   </a>
 </p>
+
+TypeScript usage examples:
+- [/examples/typescript/](/examples/typescript/)
+- [/examples/prisma/](/examples/prisma/)
 
 
 <br/>
