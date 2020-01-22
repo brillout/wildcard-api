@@ -737,7 +737,7 @@ function getEndpointMissingError({endpointName, endpointsObject, calledInBrowser
 
   if( noEndpointsDefined ) {
     errorText.push(
-      colorizeError("You didn't define any endpoint function."),
+      colorizeError("You didn't define any endpoints."),
     );
   }
 

@@ -88,7 +88,7 @@ async function noEndpoints({wildcardApi, browserEval}) {
     console.log(text);
     assert(resp.status===404, resp.status);
     assert(text.includes("Endpoint `hello` doesn't exist."), {text});
-    assert(text.includes("You didn't define any endpoint function."), {text});
+    assert(text.includes("You didn't define any endpoints."), {text});
     assert(text.includes("Make sure that the file that defines `hello` is named"), {text});
   });
 }
@@ -100,7 +100,7 @@ async function noEndpoints2({wildcardApi, wildcardClient}) {
   } catch(err) {
     errorThrown = true;
     assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."), err.stack);
-    assert(err.stack.includes("You didn't define any endpoint function."), err.stack);
+    assert(err.stack.includes("You didn't define any endpoints."), err.stack);
     assert(err.stack.includes("Make sure that the file that defines `helloSsr` is named"), err.stack);
   }
   assert(errorThrown===true);
@@ -117,7 +117,7 @@ async function endpointDoesNotExist({wildcardApi, browserEval}) {
     console.log(text);
     assert(resp.status===404, resp.status);
     assert(text.includes("Endpoint `blub` doesn't exist."), {text});
-    assert(!text.includes("You didn't define any endpoint function."), {text});
+    assert(!text.includes("You didn't define any endpoints."), {text});
   });
 }
 
