@@ -16,7 +16,7 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
       const context = {headers};
       return context;
     },
-    wildcardApiHolder,
+    {__INTERNAL__wildcardApiHolder: wildcardApiHolder},
   ));
 
   const server = await start(app, httpPort);
