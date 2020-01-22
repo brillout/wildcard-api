@@ -129,9 +129,10 @@ function WildcardClient() {
         "Wrong SSR usage.",
         "You are:",
         "  - Using the Wildcard client on the browser-side",
-        "  - Providing `context`",
-        "But you should provide `context` only while doing server-side rendering.",
-        "(Providing `context` doesn't make sense on browser-side.)",
+        "  - Manually providing the `context` object (you are using `bind`)",
+        "But you should manually provide the `context` object only on the server-side while doing server-side rendering.",
+        "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
+
       );
     }
   }
