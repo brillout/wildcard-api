@@ -1,0 +1,10 @@
+[
+  {
+    "title": "My first Next.js + Wildcard app",
+    "content": "This example shows the usage of Wildcard with Next.js"
+  },
+  {
+    "title": "Do you like Wildcard?",
+    "content": "Consider giving Wildcard a star or tweet :-)"
+  }
+]
