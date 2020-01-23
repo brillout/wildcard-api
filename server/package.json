@@ -3,7 +3,7 @@
   "version": "0.2.9",
   "main": "index.js",
   "dependencies": {
-    "@brillout/assert": "^0.1.0",
+    "@brillout/assert": "^0.1.1",
     "@brillout/json-s": "^0.1.0",
     "@brillout/project-files": "^0.4.2",
     "@brillout/url-props": "^0.1.1",

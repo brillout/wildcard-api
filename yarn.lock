@@ -703,6 +703,13 @@
   dependencies:
     "@brillout/format-text" "^0.1.3"
 
+"@brillout/assert@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.1.1.tgz#f841387f0538b9b0ecfc70794ec6f882348c656e"
+  integrity sha512-+5U8TCMWhppJStnEngqcmU7HXfBY1xqfZDde6aan8HhsR4AcD2WXbv9JBUmv6wqdHM28L3bxrIRDZPdtZ7dw+g==
+  dependencies:
+    "@brillout/format-text" "^0.1.3"
+
 "@brillout/cli-theme@^0.3.1":
   version "0.3.4"
   resolved "https://registry.npmjs.org/@brillout/cli-theme/-/cli-theme-0.3.4.tgz#7d55738d30da2f43dbd551df12e492a4638d9df8"
