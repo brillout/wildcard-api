@@ -3,6 +3,7 @@ const {stringify, parse} = require('@brillout/json-s');
 const chalk = require('chalk');
 const docsUrl = require('./package.json').repository;
 const getUrlProps = require('@brillout/url-props');
+const autoLoadEndpointFiles = require('./autoLoadEndpointFiles');
 
 const API_URL_BASE = '/wildcard/';
 
@@ -85,6 +86,10 @@ function WildcardApi() {
   async function __directCall({endpointName, endpointArgs, context}) {
     assert.internal(endpointName);
     assert.internal(endpointArgs.constructor===Array);
+
+    if( noEndpoints({endpointsObject}) ){
+      autoLoadEndpointFiles();
+    }
 
     assert.usage(
       endpointExists({endpointName, endpointsObject}),
@@ -726,23 +731,26 @@ function endpointExists({endpointName, endpointsObject}) {
   const endpoint = endpointsObject[endpointName];
   return !!endpoint;
 }
+function noEndpoints({endpointsObject}) {
+  const endpointNames = getEndpointNames({endpointsObject});
+  return endpointNames.length===0;
+}
 
 function getEndpointMissingError({endpointName, endpointsObject, calledInBrowser}) {
   const endpointNames = getEndpointNames({endpointsObject});
-  const noEndpointsDefined = endpointNames.length===0;
 
   const errorText = [
     colorizeError('Endpoint `'+endpointName+"` doesn't exist."),
   ];
 
-  if( noEndpointsDefined ) {
+  if( noEndpoints({endpointsObject}) ) {
     errorText.push(
       colorizeError("You didn't define any endpoints."),
     );
   }
 
   assert.internal([true, false].includes(calledInBrowser));
-  if( !noEndpointsDefined && (!calledInBrowser || isDev()) ){
+  if( !noEndpoints({endpointsObject}) && (!calledInBrowser || isDev()) ){
     errorText.push(
       'List of existing endpoints:',
       ...endpointNames.map(endpointName => ' - '+endpointName),
