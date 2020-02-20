@@ -1176,9 +1176,6 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
   as well as low-level questions such as
   "How can I do versioning with RPC?" or
   "Doesn't RPC tightly couple frontend with backend?".
-- [RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql)
-  <br/>
-  Compares RPC with REST/GraphQL, in depth.
 
 ###### Wildcard
 
