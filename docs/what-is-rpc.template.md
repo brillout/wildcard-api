@@ -8,9 +8,9 @@ The [Wikipedia article](https://en.wikipedia.org/wiki/Remote_procedure_call) exp
 > [...] A remote procedure call (RPC) is when a computer program causes a procedure [...] to execute [...] on another computer on a shared network [...], which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client–server interaction (caller is client, executor is server), typically implemented via a request–response message-passing system.
 
 This is the formal definition;
-the term RPC is often used loosely to denote the RPC-like approach of
+the term RPC is often used loosely to denote RPC-like approaches such as
 creating [JSON endpoints](/docs/blog/rest-rpc.md#json-endpoints).
-(Essentially denoting an API that is schemaless &mdash; in contrast to RESTful and GraphQL APIs that are always based on a schema.)
+(RPC-like essentially denotes an API that is schemaless &mdash; in contrast to RESTful and GraphQL APIs which always have a schema.)
 
 **Example**
 
