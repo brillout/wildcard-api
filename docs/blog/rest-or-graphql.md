@@ -30,5 +30,5 @@ switch to REST or GraphQL when and only if the need arises.
 For a Node.js backend you can use RPC with
 [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
 and for other environments
-you can use [RPC-like custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
+you can use [RPC-like JSON endpoints](/docs/blog/rest-rpc.md#json-endpoints).
 

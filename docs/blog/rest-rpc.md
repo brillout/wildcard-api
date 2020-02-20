@@ -1,12 +1,12 @@
 # What is the difference between REST and RPC?
 
-There is a lot of confusion in API terminology.
-The term REST, for example, is often wrongly used to denote an RPC-like API.
+There is a lot of confusion in API terminology;
+for example, The term REST is often wrongly used to denote an RPC-like API.
 
-Let's clarify.
+Let's clarify the definition of following terms.
 
 - [RPC](#rpc)
-- [Custom JSON endpoints](#custom-json-endpoints)
+- [JSON endpoints](#json-endpoints)
 - [REST level-0](#rest-level-0)
 - [REST level-5](#rest-level-5)
 - [RPC-like](#rpc-like)
@@ -17,7 +17,6 @@ Let's clarify.
 
 RPC denotes the practice of calling a procedure that is defined on a remote computer(/process)
 as if it were defined locally on the same computer(/process).
-A more elaborate definition can be found [here](/docs/what-is-rpc.md#what-is-rpc).
 
 <details>
 <summary>
@@ -48,17 +47,13 @@ import {endpoints} from '@wildcard-api/client';
 ~~~
 </details>
 
+A more elaborate definition can be found [here](/docs/what-is-rpc.md#what-is-rpc).
+
 &nbsp;
 
-##### Custom JSON endpoints
+##### JSON endpoints
 
-With *custom JSON endpoints* we denote the practice of creating server routes
-in order to retrieve and mutate data.
-Server routes
-are created and modified
-in an ad-hoc fashion.
-
-An API consisting of custom JSON endpoints is RPC-like but it is *not* RPC.
+*JSON endpoints* denotes the practice of creating HTTP routes that return JSON data.
 
 <details>
 <summary>
@@ -131,6 +126,8 @@ def create_todo_item(text, user_id):
 ~~~
 </details>
 
+An API consisting of JSON endpoints is RPC-like but it is *not* RPC.
+
 &nbsp;
 
 ##### REST level-0
@@ -140,7 +137,7 @@ REST defines its methodology over 5 levels of principles.
 The first level, REST level-0, stipulates the usage of the HTTP protocol to transport data.
 
 Any API that uses HTTP is a REST level-0 API;
-RPC and custom JSON endpoints are REST level-0 APIs.
+RPC and JSON endpoints are REST level-0 APIs.
 
 &nbsp;
 
@@ -149,7 +146,8 @@ RPC and custom JSON endpoints are REST level-0 APIs.
 For an API to be called REST, it needs to follow *all* REST levels.
 
 The last level, REST level-5, stipulates that an API should only consists of CRUD operations on a list of data models.
-In a nutshell, a REST level-5 API has a schema.
+
+This list of data models is usually called the API schema.
 
 &nbsp;
 
@@ -159,7 +157,7 @@ APIs can be classified by whether they have a schema or not.
 
 Schemaless:
 - RPC
-- Custom JSON endpoints
+- JSON endpoints
 - REST level-0
 
 Schema:

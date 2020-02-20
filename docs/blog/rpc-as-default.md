@@ -132,7 +132,7 @@ switch to REST or GraphQL when and if the need arises.
 #### RPC-like
 
 For a Node.js backend you can have RPC by using [Wildcard API](https://github.com/reframejs/wildcard-api#readme)
-and for other backends you can have an RPC-like API by creating custom JSON server endpoints. For example with Python:
+and for other backends you can have an RPC-like API by creating JSON endpoints. For example with Python:
 
 ~~~python
 # RPC-like API with Python and FastAPI

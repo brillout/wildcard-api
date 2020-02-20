@@ -9,7 +9,7 @@ The [Wikipedia article](https://en.wikipedia.org/wiki/Remote_procedure_call) exp
 
 This is the formal definition;
 the term RPC is often used loosely to denote the RPC-like approach of
-creating [custom JSON endpoints](/docs/blog/rest-rpc.md#custom-json-endpoints).
+creating [JSON endpoints](/docs/blog/rest-rpc.md#json-endpoints).
 (Essentially denoting an API that is schemaless &mdash; in contrast to RESTful and GraphQL APIs that are always based on a schema.)
 
 **Example**
