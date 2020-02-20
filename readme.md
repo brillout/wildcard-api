@@ -1170,6 +1170,14 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
   as well as low-level questions such as
   "How can I do versioning with RPC?" or
   "Doesn't RPC tightly couple frontend with backend?".
+- [What is the difference between REST and RPC?](/docs/blog/rest-rpc.md#readme)
+  <br/>
+  This post explains what REST, RPC, and RPC-like means.
+
+###### Blog
+
+- [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
+- [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
 
 ###### Wildcard
 
@@ -1182,12 +1190,6 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
   <br/>
   How to use Wildcard with SSR and Authentication.
-
-###### Blog
-
-- [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
-- [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
-- [What is the difference between REST and RPC?](/docs/blog/rest-rpc.md#readme)
 
 
 <br/>
