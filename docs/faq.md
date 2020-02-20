@@ -129,22 +129,19 @@
 
 ### How does RPC compare to GraphQL/REST?
 
-Comparing RPC with REST/GraphQL is like comparing apples to oranges;
+Comparing RPC with REST/GraphQL is a bit like comparing apples to oranges:
 they have different goals.
 
-With GraphQL/REST you create a *generic API*:
-an API that aims to be able to fulfill a maximum number of data requirements;
-enabling third party developers to build all kinds of applications on top of your data.
+With GraphQL and REST (level-5) you create a *generic API*:
+an API that aims to be able to fulfill a maximum number of data requirements.
+A generic API enables third party developers to build all kinds of applications on top of your data.
 If your goal is to enable third party developers to access your data,
 then you need a generic API and you'll have to use REST or GraphQL.
 
 With RPC you create a *custom API*:
 an API that fulfills the data requirements of your clients and your clients only.
-If your goal is to retrieve and mutate data from your web and mobile clients,
-then RPC offers a simpler and more powerful alternative.
-
-We explain this in more depth at
-[RPC vs REST/GraphQL](/docs/rpc-vs-rest-graphql.md#rpc-vs-restgraphql).
+If your goal is to retrieve and mutate data from your web and/or mobile clients,
+then RPC offers a simpler (and more powerful!) alternative.
 
 
 <br/>
@@ -240,9 +237,9 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 Yes it does.
 RPC indeed induces a tighter coupling between frontend and backend.
-More precisely, RPC increases the need for synchronized frontend-backend deployements.
+More precisely, RPC increases the need for synchronized frontend-backend deployments.
 
-For example:
+Let's for example consider following endpoint:
 
 ~~~js
 // This API endpoint is tightly coupled to the frontend:
@@ -262,7 +259,7 @@ then the SQL query of the `getLandingPageData` API endpoint needs to be changed 
 This means that the API needs to be modified and re-deployed.
 
 In general (and regardless whether you use RPC or REST/GraphQL),
-it has nowadays become a best practice to
+it has nowadays become best practice to
 deploy backend and frontend at the same time,
 which we talk about in the next querstion
 <a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>.
@@ -292,12 +289,13 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ### Should I deploy frontend and backend at the same time?
 
-Yes, we recommend synchronized deployements, that is to deploy frontend and backend at the same time.
+Yes, we recommend synchronized deployments, that is to deploy frontend and backend at the same time.
 
 If your backend is written with Node.js,
 we recommend to put your frontend and backend code in the same repository.
-(This technique is commonly called "monorepo". A monorepo is a repository that holds the codebase of many different components of a system, instead of having a multitude of repositories each holding the codebase of a single component.
-Monorepos are increasingly popular; a monorepo makes it easier to perform changes across system components and removes the need to manage dependency between system components.)
+
+(This technique is commonly called "monorepo": a monorepo is a repository that holds the codebase of many different components of a system, instead of having a multitude of repositories each holding the codebase of a single component.
+Monorepos are increasingly popular; a monorepo makes it easier to perform changes across system components and removes the need for versioning between system components.)
 
 A monorepo with synchronized frontend and backend deployment
 is easy to acheive with Node.js.
@@ -312,7 +310,7 @@ const server = express();
 server.use(express.static('/path/to/frontend/dist/'));
 ~~~
 
-This ensures that frontend and backend are deployed synchronously.
+That way your frontend and backend are always deployed synchronously.
 
 
 <br/>
@@ -342,18 +340,17 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 You can, but you don't have to.
 
 Although,
-there are less and less engineers that only do frontend.
-Most engineers that write browser-side JavaScript are also comfortable and eager
+there are less and less engineers that only do frontend;
+most engineers that write browser-side JavaScript are nowadays also comfortable and eager
 to write server-side JavaScript.
-It makes sense to hire only Full-stack Engineers and develop frontend and backend hand-in-hand.
+It nowadays makes sense to hire full-stack engineers and develop frontend and backend hand-in-hand.
 
-You can still have separation of concerns:
-- Backend code that is tighly coupled to the frontend, which includes the API endpoints that run SQL/ORM queries on behalf of the frontend, is developed by the frontend team.
-- The rest of the backend that is agnostic to the frontend is developed by the backend team.
+But, you can still have separation of concerns:
+- Server-side code that is tighly coupled to the frontend (which includes the API endpoints that run SQL/ORM queries on behalf of the frontend) is developed by the frontend team.
+- The rest of the server-side code is developed by the backend team.
 
-The strict separation between browser-side code and server-side code makes less and less sense.
-Most Frontend Engineers are nowadays Full-stack Engineers.
-To a Full-stack Engineer, RPC is a boon:
+The strict separation between browser-side code and server-side code makes less and less sense and
+, to a frontend engineer, RPC is a boon:
 it gives him the power to use any SQL/ORM query and any server-side tool he wants.
 
 
@@ -385,7 +382,7 @@ As explained in
 <a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>,
 we recommend to deploy frontend and backend synchronously.
 You then don't need
-versioning: your backend always serves a single and the correct version of your API.
+versioning as your backend only serves the latest version of your API.
 
 
 <br/>
@@ -512,15 +509,14 @@ endpoints.updateTodoText = async function({id, text}) {
 That is, each endpoint call will occur exactly once in the frontend code.
 
 This works for most uses cases.
-In doubt,
+But, in doubt,
 use your best judgement.
 
 Bear in mind that, in general, it's best to create few structures and abstractions.
-Too many structures are dangerously counter-productive.
+Too many structures are most often counter-productive.
 
 To conclude,
 how you strucutre your code has less to do with RPC and more to do with your business logic.
-There are more crucial and interesting questions such as "How can I structure my code to isolate business logic in order to scale from 3 developers to 7 developers?".
 
 
 <br/>
