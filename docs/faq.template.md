@@ -1,7 +1,7 @@
 !INLINE ./snippets/header.md --hide-source-path
 
 !VAR COMPARISON How does RPC compare to GraphQL/REST?
-!VAR WHICH_TO_USE Which should I use, RPC, GraphQL or REST?
+!VAR WHICH_TO_USE Should I use RPC, GraphQL or REST?
 !VAR MORE_POWER Which is more powerful, GraphQL or RPC?
 !VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
 !VAR SYNC_DEPLOY Should I deploy frontend and backend at the same time?
