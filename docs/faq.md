@@ -508,7 +508,12 @@ one endpoint per need:
 
 // Get data for https://example.com
 endpoints.getLandingPageData = async function() {
-  const todos = await Todo.find({userId: this.user.id, completed: false});
+  const todos = await (
+    Todo
+    .find({userId: this.user.id, completed: false})
+    // We only retrieve the fields that the landing page needs
+    .select(['id', 'text'])
+  );
 
   return {
     user: {
