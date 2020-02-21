@@ -166,6 +166,47 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 
 
+### Which should I use, RPC, GraphQL or REST?
+
+Deciding whether to use RPC is simple:
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by third parties? Use REST or GraphQL.
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by yourself? Use RPC.
+
+You may still want the structure of a RESTful or GraphQL API for a large app.
+But this typically applies only for large companies and "premature optimization is the root of all evil"
+&mdash;
+start with
+[RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
+and later switch to REST or GraphQL
+when and only if the need arises.
+
+Whether you should use [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer) cannot be answered in a generic manner and depends on the specifics of your use case.
+
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#faq"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
+
+
+
 ### Which is more powerful, GraphQL or RPC?
 
 Depends.

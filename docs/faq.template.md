@@ -1,6 +1,7 @@
 !INLINE ./snippets/header.md --hide-source-path
 
 !VAR COMPARISON How does RPC compare to GraphQL/REST?
+!VAR WHICH_TO_USE Which should I use, RPC, GraphQL or REST?
 !VAR MORE_POWER Which is more powerful, GraphQL or RPC?
 !VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
 !VAR SYNC_DEPLOY Should I deploy frontend and backend at the same time?
@@ -43,6 +44,28 @@ With RPC you create a *custom API*:
 an API that fulfills the data requirements of your clients and your clients only.
 If your goal is to retrieve and mutate data from your web and/or mobile clients,
 then RPC offers a simpler (and more powerful!) alternative.
+
+!INLINE ./snippets/section-footer.md #faq --hide-source-path
+
+
+
+### !VAR WHICH_TO_USE
+
+Deciding whether to use RPC is simple:
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by third parties? Use REST or GraphQL.
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+Is your API meant to be used by yourself? Use RPC.
+
+You may still want the structure of a RESTful or GraphQL API for a large app.
+But this typically applies only for large companies and "premature optimization is the root of all evil"
+&mdash;
+start with
+[RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
+and later switch to REST or GraphQL
+when and only if the need arises.
+
+Whether you should use [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer) cannot be answered in a generic manner and depends on the specifics of your use case.
 
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
