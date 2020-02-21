@@ -1,4 +1,4 @@
-## RPC as Default
+# RPC as Default
 
 Today, for most web developers,
 REST and GraphQL are the default choice
