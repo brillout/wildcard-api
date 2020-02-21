@@ -17,9 +17,9 @@ const DEBUG_CACHE = (
 
 assert.usage(
   isNodejs(),
-  "You are loading the module `wildcard-api` in the browser.",
-  "The module `wildcard-api` is meant for your Node.js server. Load `wildcard-api/client` instead.",
-  "That is: `import {endpoints} from 'wildcard-api/client'",
+  "You are loading the module `@wildcard-api/server` in the browser.",
+  "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
+  "That is: `import {endpoints} from '@wildcard-api/client'",
 );
 
 module.exports = WildcardApi;
