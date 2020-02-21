@@ -113,6 +113,8 @@
 
 <a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
 <br/>
+<a href=#which-should-i-use-rpc-graphql-or-rest>Which should I use, RPC, GraphQL or REST?</a>
+<br/>
 <a href=#which-is-more-powerful-graphql-or-rpc>Which is more powerful, GraphQL or RPC?</a>
 <br/>
 <a href=#doesnt-rpc-tightly-couple-frontend-with-backend>Doesn't RPC tightly couple frontend with backend?</a>
