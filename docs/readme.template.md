@@ -830,7 +830,7 @@ Material to learn more about RPC and Wildcard. Create a Pull Request to add your
 - [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
   <br/>
   Explains what RPC is.
-- [RPC FAQ](/docs/faq.md#faq)
+- [FAQ](/docs/faq.md#faq)
   <br/>
   FAQ about RPC.
   Covers high-level questions such as "Which is more powerful, GraphQL or RPC?"

@@ -109,7 +109,7 @@
 
 &nbsp;
 
-# RPC FAQ
+# FAQ
 
 <a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
 <br/>
