@@ -112,11 +112,11 @@
 # FAQ
 
 ###### High-level
-<a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
+<a href=#how-does-rpc-compare-to-graphql-and-rest>How does RPC compare to GraphQL and REST?</a>
 <br/>
-<a href=#when-should-i-use-rpc-graphql-or-rest>When should I use RPC, GraphQL, or REST?</a>
+<a href=#when-should-i-use-rpc-graphql-and-rest>When should I use RPC, GraphQL, and REST?</a>
 <br/>
-<a href=#which-is-more-powerful-graphql-or-rpc>Which is more powerful, GraphQL or RPC?</a>
+<a href=#which-one-is-more-powerful-graphql-or-rpc>Which one is more powerful, GraphQL or RPC?</a>
 <br/>
 
 ###### Low-level
@@ -132,7 +132,7 @@
 
 <br/>
 
-### How does RPC compare to GraphQL/REST?
+### How does RPC compare to GraphQL and REST?
 
 Comparing RPC with REST/GraphQL is a bit like comparing apples to oranges:
 they have different goals.
@@ -171,7 +171,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 
 
-### When should I use RPC, GraphQL, or REST?
+### When should I use RPC, GraphQL, and REST?
 
 Deciding whether to use RPC is simple:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -212,15 +212,15 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 
 
-### Which is more powerful, GraphQL or RPC?
+### Which one is more powerful, GraphQL or RPC?
 
 Depends.
 
-From the perspective of a third party,
-GraphQL is more powerful.
+From the perspective of a third-party developer,
+GraphQL queries are more powerful.
 
-From the perspective of your frontend development,
-RPC is more powerful.
+But, from the perspective of your frontend development,
+RPC queries are more powerful.
 
 With Wildcard,
 while developing your frontend,
@@ -247,14 +247,16 @@ endpoints.iHavePower();
 The whole power of the backend is at your disposal while developing your frontend.
 For example,
 you can use any SQL/ORM you want to retrieve and mutate data.
-That's more powerful than GraphQL.
+That's more powerful than GraphQL queries.
 
-The distinctive difference is that,
-from the perspective of a third party,
+The difference is that,
+from the perspective of a third-party developer,
 your API is set in stone
 whereas,
 from the perspective of your frontend development,
 you can modify your own API at will.
+
+That's why you should use GraphQL (or REST level-5) if your API is meant to be used by third-party developers and RPC otherwise.
 
 
 <br/>
@@ -277,7 +279,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
+## Low-level FAQ
 
 ### Doesn't RPC tightly couple frontend with backend?
 

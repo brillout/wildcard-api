@@ -1,8 +1,8 @@
 !INLINE ./snippets/header.md --hide-source-path
 
-!VAR COMPARISON How does RPC compare to GraphQL/REST?
-!VAR WHICH_TO_USE When should I use RPC, GraphQL, or REST?
-!VAR MORE_POWER Which is more powerful, GraphQL or RPC?
+!VAR COMPARISON How does RPC compare to GraphQL and REST?
+!VAR WHICH_TO_USE When should I use RPC, GraphQL, and REST?
+!VAR MORE_POWER Which one is more powerful, GraphQL or RPC?
 !VAR TIGHT_COUPLING Doesn't RPC tightly couple frontend with backend?
 !VAR SYNC_DEPLOY Should I deploy frontend and backend at the same time?
 !VAR SYNC_DEV Should I develop frontend and backend hand-in-hand?
@@ -80,11 +80,11 @@ Whether you should use [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-g
 
 Depends.
 
-From the perspective of a third party,
-GraphQL is more powerful.
+From the perspective of a third-party developer,
+GraphQL queries are more powerful.
 
-From the perspective of your frontend development,
-RPC is more powerful.
+But, from the perspective of your frontend development,
+RPC queries are more powerful.
 
 With Wildcard,
 while developing your frontend,
@@ -111,18 +111,20 @@ endpoints.iHavePower();
 The whole power of the backend is at your disposal while developing your frontend.
 For example,
 you can use any SQL/ORM you want to retrieve and mutate data.
-That's more powerful than GraphQL.
+That's more powerful than GraphQL queries.
 
-The distinctive difference is that,
-from the perspective of a third party,
+The difference is that,
+from the perspective of a third-party developer,
 your API is set in stone
 whereas,
 from the perspective of your frontend development,
 you can modify your own API at will.
 
+That's why you should use GraphQL (or REST level-5) if your API is meant to be used by third-party developers and RPC otherwise.
+
 !INLINE ./snippets/section-footer.md #faq --hide-source-path
 
-
+## Low-level FAQ
 
 ### !VAR TIGHT_COUPLING
 
