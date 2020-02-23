@@ -111,12 +111,15 @@
 
 # FAQ
 
+###### High-level
 <a href=#how-does-rpc-compare-to-graphqlrest>How does RPC compare to GraphQL/REST?</a>
 <br/>
-<a href=#should-i-use-rpc-graphql-or-rest>Should I use RPC, GraphQL, or REST?</a>
+<a href=#when-should-i-use-rpc-graphql-or-rest>When should I use RPC, GraphQL, or REST?</a>
 <br/>
 <a href=#which-is-more-powerful-graphql-or-rpc>Which is more powerful, GraphQL or RPC?</a>
 <br/>
+
+###### Low-level
 <a href=#doesnt-rpc-tightly-couple-frontend-with-backend>Doesn't RPC tightly couple frontend with backend?</a>
 <br/>
 <a href=#should-i-deploy-frontend-and-backend-at-the-same-time>Should I deploy frontend and backend at the same time?</a>
@@ -168,7 +171,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 
 
-### Should I use RPC, GraphQL, or REST?
+### When should I use RPC, GraphQL, or REST?
 
 Deciding whether to use RPC is simple:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
