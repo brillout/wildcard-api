@@ -344,7 +344,7 @@ That's it.
 
 ## Authentication
 
-You can use the `context` object to authenticate your users. For example:
+Use the context object to authenticate requests. For example:
 
 ~~~js
 // Node.js server
@@ -357,14 +357,18 @@ const app = express();
 // We install the Wildcard middleware
 app.use(wildcard(getContext));
 
-// We define the `context` object
+// We define the context object
 async function getContext(req) {
+  // `req` is Express' request object
+
   const context = {};
 
-  // Authentication middlewares usually make information about the logged-in
-  // user available on the request object, for example `req.user`.
+  // Express authentication middlewares usually make information
+  // about the logged-in user available at `req.user`.
   context.user = req.user;
 
+  // We add authentication operations to the context object
+  // in order to make them available to our endpoint functions.
   context.login = req.auth.login;
   context.logout = req.auth.logout;
 
@@ -372,7 +376,7 @@ async function getContext(req) {
 }
 ~~~
 
-The `context` object is available to your endpoint functions as `this`.
+The context object is available to endpoint functions as `this`.
 
 ~~~js
 // Node.js server
