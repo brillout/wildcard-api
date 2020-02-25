@@ -1160,7 +1160,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## Learning Material
 
-Material to learn more about RPC and Wildcard. Create a Pull Request to add yours.
+Material to learn more about RPC and Wildcard.
 
 ###### RPC
 
