@@ -1,7 +1,7 @@
 # What is the difference between REST and RPC?
 
-There is a lot of confusion in API terminology;
-for example, The term REST is often wrongly used to denote an RPC-like API.
+There is a lot of confusion in API terminology.
+For example, the term REST is often wrongly used to denote an RPC-like API.
 
 Let's clarify the definition of following terms.
 
