@@ -55,6 +55,8 @@ A more elaborate definition can be found [here](/docs/what-is-rpc.md#what-is-rpc
 
 *JSON endpoints* denotes the practice of creating HTTP routes that return JSON data.
 
+JSON endpoints are RPC-like but are not *not* RPC.
+
 <details>
 <summary>
 JavaScript Example
@@ -126,8 +128,6 @@ def create_todo_item(text, user_id):
 ~~~
 </details>
 
-An API consisting of JSON endpoints is RPC-like but it is *not* RPC.
-
 &nbsp;
 
 ##### REST level-0
@@ -145,8 +145,7 @@ RPC and JSON endpoints are REST level-0 APIs.
 
 For an API to be called REST, it needs to follow *all* REST levels.
 
-The last level, REST level-5, stipulates that an API should only consists of CRUD operations on a list of data models.
-
+The last level, REST level-5, stipulates that an API should only consist of CRUD operations on a list of data models.
 This list of data models is usually called the API schema.
 
 &nbsp;
@@ -161,7 +160,7 @@ Schemaless:
 - REST level-0
 
 Schema:
-- REST level-5
+- REST
 - GraphQL
 
 The term *RPC-like* is commonly used to denote an API that is schemaless.
