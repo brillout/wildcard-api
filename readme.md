@@ -374,7 +374,7 @@ Is your API meant to be used by yourself? Use Wildcard.
    The function `getApiHttpResponse` allows you to use Wildcard with any
    server framework.
    In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse`.
-   You use `getApiHttpResponse` to build the HTTP response for any HTTP request made to `/wildcard/*`.
+   You use `getApiHttpResponse` to build the HTTP response for any HTTP request made to `/_wildcard_api/*`.
    ~~~js
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
@@ -383,9 +383,9 @@ Is your API meant to be used by yourself? Use Wildcard.
    // A server framework usually provides a way to add a route and define an HTTP response.
    const {addRoute, HttpResponse} = require('your-favorite-server-framework');
 
-   // Add a new route `/wildcard/*` to your server
+   // Add a new route `/_wildcard_api/*` to your server
    addRoute(
-     '/wildcard/*',
+     '/_wildcard_api/*',
      // A server framework usually provides an object holding
      // information about the request. We denote this object `req`.
      async ({req}) => {
@@ -1086,11 +1086,11 @@ async function callEndpoint() {
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make the HTTP request to the same origin:
-  //   POST https://example.com/wildcard/myEndpoint HTTP/1.1
+  //   POST https://example.com/_wildcard_api/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Wildcard makes
   // the HTTP request to `https://api.example.com:1337`:
-  //   POST https://api.example.com:1337/wildcard/myEndpoint HTTP/1.1
+  //   POST https://api.example.com:1337/_wildcard_api/myEndpoint HTTP/1.1
 };
 ~~~
 
@@ -1113,11 +1113,11 @@ async function callEndpoint() {
   await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
 
   // Normally, Wildcard would pass the arguments in the HTTP request URL:
-  //   POST /wildcard/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
+  //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `argumentsAlwaysInHttpBody` to `true`,
   // Wildcard passes the arguments in the HTTP request body:
-  //   POST /wildcard/myEndpoint HTTP/1.1
+  //   POST /_wildcard_api/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
 ~~~
