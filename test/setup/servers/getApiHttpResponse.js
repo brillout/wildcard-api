@@ -10,31 +10,7 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
     debug: {request: ['internal']},
   });
 
-  server.route({
-    method: '*',
-    path: '/wildcard/{param*}',
-    handler: async (request, h) => {
-      const requestProps = {
-        url: request.url,
-        method: request.method,
-        body: request.payload,
-      };
-      const context = {
-        headers: request.headers,
-      };
-      const responseProps = await wildcardApiHolder.wildcardApi.getApiHttpResponse(requestProps, context);
-      {
-        const {body, statusCode, contentType} = responseProps;
-        assert.internal(body);
-        assert.internal(statusCode);
-        assert.internal(contentType);
-        const response = h.response(body);
-        response.code(statusCode);
-        response.type(contentType);
-        return response;
-      }
-    }
-  });
+  server.ext('onPreResponse', wildcardHandler);
 
   await server.register(Inert);
   server.route({
@@ -50,4 +26,29 @@ async function startServer({wildcardApiHolder, httpPort, staticDir}) {
   await server.start();
 
   return () => server.stop();
+
+  async function wildcardHandler(request, h) {
+    const requestProps = {
+      url: request.url,
+      method: request.method,
+      body: request.payload,
+    };
+    const context = {
+      headers: request.headers,
+    };
+    const responseProps = await wildcardApiHolder.wildcardApi.getApiHttpResponse(requestProps, context);
+    if( responseProps === null ){
+      return h.continue;
+    }
+    {
+      const {body, statusCode, contentType} = responseProps;
+      assert.internal(body);
+      assert.internal(statusCode);
+      assert.internal(contentType);
+      const response = h.response(body);
+      response.code(statusCode);
+      response.type(contentType);
+      return response;
+    }
+  }
 }

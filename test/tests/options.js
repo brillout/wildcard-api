@@ -2,6 +2,7 @@ module.exports = [
   option_argumentsAlwaysInHttpBody_1,
   option_argumentsAlwaysInHttpBody_2,
   option_serverUrl,
+  option_baseUrl,
 ];
 
 async function option_argumentsAlwaysInHttpBody_1({wildcardApi, browserEval, httpPort}) {
@@ -64,7 +65,7 @@ async function option_argumentsAlwaysInHttpBody_2({wildcardApi, browserEval, htt
   }
 }
 
-async function option_serverUrl({wildcardApi, wildcardClient, browserEval, httpPort}) {
+async function option_serverUrl({wildcardApi, browserEval, httpPort}) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
@@ -72,7 +73,7 @@ async function option_serverUrl({wildcardApi, wildcardClient, browserEval, httpP
     endpointCalled = true;
   };
 
-  const wrongHttpPort = 3449
+  const wrongHttpPort = 3449;
   assert(httpPort.constructor===Number && httpPort!==wrongHttpPort);
   await browserEval(async ({wrongHttpPort}) => {
     const {WildcardClient} = window;
@@ -92,6 +93,33 @@ async function option_serverUrl({wildcardApi, wildcardClient, browserEval, httpP
 
   function onHttpRequest(request) {
     assert(request._url.startsWith('http://localhost:'+wrongHttpPort), request._url);
+    onHttpRequestCalled = true;
+  }
+}
+
+async function option_baseUrl({wildcardApi, browserEval, httpPort}) {
+  let endpointCalled = false;
+  let onHttpRequestCalled = false;
+
+  const baseUrl = wildcardApi.baseUrl = '/_api/wildcard/';
+  wildcardApi.endpoints.test_baseUrl = async function() {
+    endpointCalled = true;
+  };
+
+  await browserEval(async ({baseUrl}) => {
+    const {WildcardClient} = window;
+    const wildcardClient = new WildcardClient();
+    wildcardClient.baseUrl = baseUrl;
+    const {endpoints} = wildcardClient;
+    await endpoints.test_baseUrl();
+  }, {onHttpRequest, browserArgs: {baseUrl}});
+
+  assert(endpointCalled===true && onHttpRequestCalled===true, {endpointCalled, onHttpRequestCalled});
+
+  function onHttpRequest(request) {
+    const correctUrlBeginning = 'http://localhost:'+httpPort+baseUrl;
+    const actualUrl = request._url;
+    assert(actualUrl.startsWith(correctUrlBeginning), {actualUrl, correctUrlBeginning});
     onHttpRequestCalled = true;
   }
 }

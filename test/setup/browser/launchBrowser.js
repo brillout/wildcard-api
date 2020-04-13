@@ -12,13 +12,13 @@ async function launchBrowser() {
 	/*
 	page.on("pageerror", function(err) {
 			const theTempValue = err.toString();
-			console.log("Page error: " + theTempValue);
+			console.log("Browser-side Error [pageerror]: " + theTempValue);
 	});
 	page.on("error", function (err) {
 			const theTempValue = err.toString();
-			console.log("Error: " + theTempValue);
+			console.log("Browser-side Error [error]: " + theTempValue);
 	});
-	*/
+	//*/
 
   let _onHttpRequest;
   page.on('request', async request => {
