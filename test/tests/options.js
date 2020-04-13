@@ -22,7 +22,7 @@ async function option_argumentsAlwaysInHttpBody_1({wildcardApi, browserEval, htt
   function onHttpRequest(request) {
     const {_url, _postData} = request;
     assert(
-      _url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody/%5B%22just%20some%20args%22%5D',
+      _url==='http://localhost:'+httpPort+'/_wildcard_api/testEndpoint__argumentsAlwaysInHttpBody/%5B%22just%20some%20args%22%5D',
       {_url},
     );
     assert(_postData===undefined, {_postData});
@@ -53,7 +53,7 @@ async function option_argumentsAlwaysInHttpBody_2({wildcardApi, browserEval, htt
   function onHttpRequest(request) {
     const {_url, _postData} = request;
     assert(
-      _url==='http://localhost:'+httpPort+'/wildcard/testEndpoint__argumentsAlwaysInHttpBody/args-in-body',
+      _url==='http://localhost:'+httpPort+'/_wildcard_api/testEndpoint__argumentsAlwaysInHttpBody/args-in-body',
       {_url},
     );
     assert(
@@ -101,7 +101,7 @@ async function option_baseUrl({wildcardApi, browserEval, httpPort}) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  const baseUrl = wildcardApi.baseUrl = '/_api/wildcard/';
+  const baseUrl = wildcardApi.baseUrl = '/_api/my_custom_base/';
   wildcardApi.endpoints.test_baseUrl = async function() {
     endpointCalled = true;
   };

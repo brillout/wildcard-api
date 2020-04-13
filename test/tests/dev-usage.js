@@ -10,7 +10,7 @@ async function browseEndpoint({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/%5B"Johny"%5D');
+    const resp = await window.fetch('/_wildcard_api/hello/%5B"Johny"%5D');
     const text = await resp.text();
     assert(
       text.startsWith('<html>'),
@@ -29,7 +29,7 @@ async function browseEndpoint__unescaped({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/["Liza"]');
+    const resp = await window.fetch('/_wildcard_api/hello/["Liza"]');
     const text = await resp.text();
     assert(
       text.startsWith('<html>'),
@@ -49,7 +49,7 @@ async function listAllEndpoints({wildcardApi, browserEval}) {
   wildcardApi.endpoints.secondEndpoint = async function() {};
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/');
+    const resp = await window.fetch('/_wildcard_api/');
     const text = await resp.text();
     assert(
       text.includes('firstEndpoint') && text.includes('secondEndpoint'),

@@ -16,7 +16,7 @@ async function validUsage1({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/["Mom"]');
+    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===200, resp.status);
@@ -30,7 +30,7 @@ async function validUsage2({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/%5B%22Mom%22%5D');
+    const resp = await window.fetch('/_wildcard_api/hello/%5B%22Mom%22%5D');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===200, resp.status);
@@ -43,10 +43,10 @@ async function wrongUrl1({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard//hello');
+    const resp = await window.fetch('/_wildcard_api//hello');
     const text = await resp.text();
     assert(resp.status===400, resp.status);
-    assert(text.includes('Malformatted API URL `/wildcard//hello`'), {text});
+    assert(text.includes('Malformatted API URL `/_wildcard_api//hello`'), {text});
     assert(text.includes('API URL should have following format:'), {text});
   });
 }
@@ -57,11 +57,11 @@ async function wrongUrl2({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/wrongArgSyntax');
+    const resp = await window.fetch('/_wildcard_api/hello/wrongArgSyntax');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===400, resp.status);
-    assert(text.includes('Malformatted API request `/wildcard/hello/wrongArgSyntax`'), {text});
+    assert(text.includes('Malformatted API request `/_wildcard_api/hello/wrongArgSyntax`'), {text});
     assert(text.includes('The URL arguments should be a JSON array.'), {text});
   });
 }
@@ -72,18 +72,18 @@ async function wrongUrl3({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello/{}');
+    const resp = await window.fetch('/_wildcard_api/hello/{}');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===400, resp.status);
-    assert(text.includes('Malformatted API request `/wildcard/hello/{}`'), {text});
+    assert(text.includes('Malformatted API request `/_wildcard_api/hello/{}`'), {text});
     assert(text.includes('The URL arguments should be a JSON array.'), {text});
   });
 }
 
 async function noEndpoints({wildcardApi, browserEval}) {
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/hello');
+    const resp = await window.fetch('/_wildcard_api/hello');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===404, resp.status);
@@ -112,7 +112,7 @@ async function endpointDoesNotExist({wildcardApi, browserEval}) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/wildcard/blub');
+    const resp = await window.fetch('/_wildcard_api/blub');
     const text = await resp.text();
     console.log(text);
     assert(resp.status===404, resp.status);

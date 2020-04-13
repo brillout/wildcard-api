@@ -33,7 +33,7 @@ function WildcardApi() {
       endpoints: endpointsObject,
       getApiHttpResponse,
       disableEtag: false,
-      baseUrl: '/wildcard/',
+      baseUrl: '/_wildcard_api/',
       __directCall,
     },
   );

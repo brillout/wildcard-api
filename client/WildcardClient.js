@@ -14,7 +14,7 @@ function WildcardClient() {
     {
       endpoints: getEndpointsProxy(),
       serverUrl: null,
-      baseUrl: '/wildcard/',
+      baseUrl: '/_wildcard_api/',
       argumentsAlwaysInHttpBody: false,
     }
   );
