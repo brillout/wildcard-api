@@ -733,6 +733,9 @@ import wildcardClient from '@wildcard-api/client';
 // The URL of the Node.js server that serves the API
 wildcardClient.serverUrl = null;
 
+// The base URL of Wildcard HTTP requests
+wildcardClient.baseUrl = '/_wildcard_api/';
+
 // Whether the endpoint arguments are always passed in the HTTP body
 wildcardClient.argumentsAlwaysInHttpBody = false;
 ~~~
@@ -741,9 +744,13 @@ import wildcardServer from '@wildcard-api/server';
 
 // Whether Wildcard generates an ETag header.
 wildcardServer.disableEtag = false;
+
+// The base URL of Wildcard HTTP requests
+wildcardServer.baseUrl = '/_wildcard_api/';
 ~~~
 
 - [`serverUrl`](#serverurl)
+- [`baseUrl`](#baseUrl)
 - [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
 - [`disableEtag`](#disableetag)
 
@@ -774,13 +781,50 @@ async function callEndpoint() {
   await endpoints.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
-  // Normally, Wildcard would make the HTTP request to the same origin:
+  // Normally, Wildcard would make an HTTP request to the same origin:
   //   POST https://example.com/_wildcard_api/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Wildcard makes
-  // the HTTP request to `https://api.example.com:1337`:
+  // the HTTP request to `https://api.example.com:1337` instead:
   //   POST https://api.example.com:1337/_wildcard_api/myEndpoint HTTP/1.1
 };
+~~~
+
+<br/>
+
+### `baseUrl`
+
+By default, the pathname of any HTTP request that Wildcard makes starts with `/_willdcard_api/`.
+You can change this base URL by using the `baseUrl` option.
+
+~~~js
+import wildcardClient, {endpoints} from '@wildcard-api/client';
+import assert from 'assert';
+
+wildcardClient.baseUrl = '/_my_custom_api_base_url/';
+
+callEndpoint();
+
+async function callEndpoint() {
+  await endpoints.myEndpoint();
+
+  assert(window.location.origin==='https://example.com');
+  // Normally, Wildcard would make an HTTP request to `/_wildcard_api/`:
+  //   POST https://example.com/_wildcard_api/myEndpoint HTTP/1.1
+
+  // But because we have changed `baseUrl`, Wildcard makes
+  // the HTTP request to `/_my_custom_api_base_url/` instead:
+  //   POST https://example.com/_my_custom_api_base_url/myEndpoint HTTP/1.1
+};
+~~~
+
+If you change the `baseUrl` option of your Wildcard client,
+then make sure that the `baseUrl` of your Wildcard server is the same:
+
+~~~js
+import wildcardServer from '@wildcard-api/server';
+
+wildcardServer.baseUrl = '/_my_custom_api_base_url/';
 ~~~
 
 <br/>
@@ -805,7 +849,7 @@ async function callEndpoint() {
   //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `argumentsAlwaysInHttpBody` to `true`,
-  // Wildcard passes the arguments in the HTTP request body:
+  // Wildcard passes the arguments in the HTTP request body instead:
   //   POST /_wildcard_api/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
