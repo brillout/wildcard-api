@@ -2,7 +2,6 @@ const assert = require('@brillout/assert');
 const {parse, stringify} = require('./serializer');
 const makeHttpRequest = require('./makeHttpRequest');
 
-const PATH_NAME_BASE = '/wildcard/';
 const IS_CALLED_BY_PROXY = Symbol();
 
 module.exports = WildcardClient;
@@ -15,6 +14,7 @@ function WildcardClient() {
     {
       endpoints: getEndpointsProxy(),
       serverUrl: null,
+      baseUrl: '/wildcard/',
       argumentsAlwaysInHttpBody: false,
     }
   );
@@ -148,15 +148,15 @@ function WildcardClient() {
       url = '';
     }
 
-    if( PATH_NAME_BASE ) {
-      if( !url.endsWith('/') && !PATH_NAME_BASE.startsWith('/') ) {
+    if( options.baseUrl ) {
+      if( !url.endsWith('/') && !options.baseUrl.startsWith('/') ) {
         url += '/';
       }
-      if( url.endsWith('/') && PATH_NAME_BASE.startsWith('/') ) {
+      if( url.endsWith('/') && options.baseUrl.startsWith('/') ) {
         url = url.slice(0, -1);
         assert.internal('bla/'.slice(0, -1)==='bla');
       }
-      url += PATH_NAME_BASE;
+      url += options.baseUrl;
     }
 
     if( !url.endsWith('/') ){

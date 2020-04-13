@@ -5,8 +5,6 @@ const docsUrl = require('./package.json').repository;
 const getUrlProps = require('@brillout/url-props');
 const autoLoadEndpointFiles = require('./autoLoadEndpointFiles');
 
-const API_URL_BASE = '/wildcard/';
-
 const DEBUG_CACHE = (
   /*/
   true
@@ -35,6 +33,7 @@ function WildcardApi() {
       endpoints: endpointsObject,
       getApiHttpResponse,
       disableEtag: false,
+      baseUrl: '/wildcard/',
       __directCall,
     },
   );
@@ -49,7 +48,7 @@ function WildcardApi() {
       isIntrospection,
       isNotWildcardRequest,
       isHumanMode,
-    } = RequestInfo({requestProps, context, endpointsObject});
+    } = RequestInfo({requestProps, context, endpointsObject, options});
 
     if( isNotWildcardRequest ){
       return null;
@@ -61,7 +60,7 @@ function WildcardApi() {
       return HttpMalformationResponse({malformationError});
     }
     if( isIntrospection ){
-      return HttpIntrospectionResponse({endpointsObject});
+      return HttpIntrospectionResponse({endpointsObject, options});
     }
 
     const {endpointResult, endpointError} = await runEndpoint({endpointName, endpointArgs, context, isDirectCall: false});
@@ -388,16 +387,16 @@ function colorizeEmphasis(text) {
   return chalk.cyan(text);
 }
 
-function isPathanameBase({pathname}) {
+function isPathanameBase({pathname, options}) {
   return (
     [
-      API_URL_BASE,
-      API_URL_BASE.slice(0, -1)
+      options.baseUrl,
+      options.baseUrl.slice(0, -1)
     ].includes(pathname)
   );
 }
 
-function RequestInfo({requestProps, context, endpointsObject}) {
+function RequestInfo({requestProps, context, endpointsObject, options}) {
   const method = requestProps.method.toUpperCase();
 
   assert_request({requestProps, method});
@@ -411,11 +410,11 @@ function RequestInfo({requestProps, context, endpointsObject}) {
 
   if(
     !['GET', 'POST'].includes(method) ||
-    !isPathanameBase({pathname}) && !pathname.startsWith(API_URL_BASE)
+    !isPathanameBase({pathname, options}) && !pathname.startsWith(options.baseUrl)
   ){
     return {isNotWildcardRequest: true, isHumanMode};
   }
-  if( isPathanameBase({pathname}) && isHumanMode ){
+  if( isPathanameBase({pathname, options}) && isHumanMode ){
     return {isIntrospection: true, isHumanMode};
   }
 
@@ -424,7 +423,7 @@ function RequestInfo({requestProps, context, endpointsObject}) {
     endpointName,
     urlArgs__string,
     pathname__prettified,
-  } = parsePathname({pathname});
+  } = parsePathname({pathname, options});
 
   if( malformationError__pathname ){
     return {
@@ -544,21 +543,21 @@ function getEndpointArgs({urlArgs__string, requestBody, pathname__prettified, re
   }
   return {endpointArgs};
 }
-function parsePathname({pathname}){
-  assert.internal(pathname.startsWith(API_URL_BASE));
-  const urlParts = pathname.slice(API_URL_BASE.length).split('/');
+function parsePathname({pathname, options}){
+  assert.internal(pathname.startsWith(options.baseUrl));
+  const urlParts = pathname.slice(options.baseUrl.length).split('/');
 
   const isMalformatted = urlParts.length<1 || urlParts.length>2 || !urlParts[0];
 
   const endpointName = urlParts[0];
   const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
-  const pathname__prettified = isMalformatted ? pathname : '/wildcard/'+endpointName+'/'+urlArgs__string;
+  const pathname__prettified = isMalformatted ? pathname : options.baseUrl+endpointName+'/'+urlArgs__string;
   let malformationError;
   if( isMalformatted ){
     malformationError = {
       errorText: [
         'Malformatted API URL `'+pathname__prettified+'`',
-        'API URL should have following format: `/wildcard/yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
+        'API URL should have following format: `'+options.baseUrl+'yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
       ].join('\n'),
     };
   }
@@ -573,7 +572,7 @@ function parsePathname({pathname}){
 
 
 
-function HttpIntrospectionResponse({endpointsObject}) {
+function HttpIntrospectionResponse({endpointsObject, options}) {
   if( !isDev() ) {
     return get_html_response(
       'This page is available '+getDevModeNote(),
@@ -586,7 +585,7 @@ Endpoints:
 ${
 getEndpointNames({endpointsObject})
 .map(endpointName => {
-  const endpointURL = API_URL_BASE+endpointName;
+  const endpointURL = options.baseUrl+endpointName;
   return '    <li><a href="'+endpointURL+'">'+endpointURL+'</a></li>'
 })
 .join('\n')
