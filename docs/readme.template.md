@@ -726,11 +726,12 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 
 ## Options
 
+Quick overview of all available options with their default value:
 ~~~js
 import wildcardClient from '@wildcard-api/client';
 
 // The URL of the Node.js server that serves the API
-wildcardClient.serverUrl = 'https://api.example.org';
+wildcardClient.serverUrl = null;
 
 // Whether the endpoint arguments are always passed in the HTTP body
 wildcardClient.argumentsAlwaysInHttpBody = false;
@@ -755,15 +756,17 @@ But if your API and your browser-side assets are not served by the same server,
 then you need to provide a `serverUrl`.
 
 `serverUrl` can be one of the following:
-- `null`
+- `null`. (Default value.)
 - The URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
 - The IP address of the server, for example `92.194.249.32`.
+
+When `serverUrl` is `null`, the Wildcard client uses `window.location.origin` as server URL.
 
 ~~~js
 import wildcardClient, {endpoints} from '@wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.serverUrl = 'https://api.example.com:1337'; // Default value is `null`
+wildcardClient.serverUrl = 'https://api.example.com:1337';
 
 callEndpoint();
 
@@ -812,12 +815,14 @@ async function callEndpoint() {
 
 ### `disableEtag`
 
-The `disableEtag` option is about configuring whether Wildcard generates an HTTP ETag header.
+By default Wildcard generates an HTTP ETag cache header.
+If you need to save CPU computation time,
+you can set `disableEtag` to `true` and Wildcard will skip generating HTTP ETag headers.
 
 ~~~js
 import wildcardServer from '@wildcard-api/server';
 
-wildcardServer.disableEtag = false;
+wildcardServer.disableEtag = true;
 ~~~
 
 
