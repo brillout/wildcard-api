@@ -14,6 +14,7 @@ function WildcardClient() {
     {
       endpoints: getEndpointsProxy(),
       serverUrl: null,
+      // Use Proxy to validate user input
       baseUrl: '/_wildcard_api/',
       argumentsAlwaysInHttpBody: false,
     }

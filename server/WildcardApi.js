@@ -33,6 +33,7 @@ function WildcardApi() {
       endpoints: endpointsObject,
       getApiHttpResponse,
       disableEtag: false,
+      // Use Proxy to validate user input
       baseUrl: '/_wildcard_api/',
       __directCall,
     },
