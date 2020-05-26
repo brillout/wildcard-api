@@ -837,9 +837,9 @@
     string-width "^2.1.1"
 
 "@brillout/json-s@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.0.tgz#84d7bb6a96b310a166a58767bb84dcb6c852287a"
-  integrity sha512-DSOGC4liW0rLU+C5ZQGimy/myB3Bmvso5hgJM0gzuiZJs7mAEhTU1W3O1fNJATX1CJMBkFlG2ebLOvByH/3K9A==
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.1.tgz#e2711f0d0c9aa28723daa86f782fb21cd32c40b2"
+  integrity sha512-6Z05hnohdQ9NMZR9FDWPVVZYtSP8RO/HAZ5afj1A3egd9ZE1kzPFvMXnxJ4PUbKrd+D7qpkJ2QTMiyDU8O/4QQ==
   dependencies:
     "@brillout/assert" "^0.1.0"
 
