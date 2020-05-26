@@ -1,10 +1,10 @@
 {
   "name": "@wildcard-api/server",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "index.js",
   "dependencies": {
     "@brillout/assert": "^0.1.1",
-    "@brillout/json-s": "^0.1.0",
+    "@brillout/json-s": "^0.1.2",
     "@brillout/project-files": "^0.4.2",
     "@brillout/url-props": "^0.1.1",
     "@universal-adapter/express": "^0.5.1",

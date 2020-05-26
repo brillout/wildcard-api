@@ -836,10 +836,10 @@
     reassert "^1.1.14"
     string-width "^2.1.1"
 
-"@brillout/json-s@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.1.tgz#e2711f0d0c9aa28723daa86f782fb21cd32c40b2"
-  integrity sha512-6Z05hnohdQ9NMZR9FDWPVVZYtSP8RO/HAZ5afj1A3egd9ZE1kzPFvMXnxJ4PUbKrd+D7qpkJ2QTMiyDU8O/4QQ==
+"@brillout/json-s@^0.1.0", "@brillout/json-s@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.2.tgz#8d29f8d2a59e448738a39f9b3d24f3194c2aaaaf"
+  integrity sha512-tAJzn5c7tCj3xyEc5XZrVbqKYd9NuKpkEyMveGlV2nsokMO955np9AJzaaUqcGI3z7xX+H2Rmtr17mJ1T7ZJJg==
   dependencies:
     "@brillout/assert" "^0.1.0"
 
