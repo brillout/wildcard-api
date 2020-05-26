@@ -1,26 +1,23 @@
-import React from 'react';
+import React from "react";
 
-export {TodoCheckbox};
-export {TodoText};
+export { TodoCheckbox };
+export { TodoText };
 
-function TodoCheckbox({todo, onChange}) {
+function TodoCheckbox({ todo, onChange }) {
   return (
     <input
       type="checkbox"
       checked={todo.completed}
       onChange={onChange}
-      style={{cursor: 'pointer'}}
+      style={{ cursor: "pointer" }}
     />
   );
 }
 
-function TodoText({todo}) {
+function TodoText({ todo }) {
   return (
-    <span
-      style={{textDecoration: todo.completed && 'line-through'}}
-    >
+    <span style={{ textDecoration: todo.completed && "line-through" }}>
       {todo.text}
     </span>
   );
 }
-

@@ -10,11 +10,10 @@ async function coupleOfTodos(knex) {
   ]);
   */
 
-  await knex('todos').del();
-  await knex('todos').insert([
-    {id: 1, text: 'Bananas', authorId: 1},
-    {id: 2, text: 'Chocolate', authorId: 1},
-    {id: 3, text: 'Milk', authorId: 1},
+  await knex("todos").del();
+  await knex("todos").insert([
+    { id: 1, text: "Bananas", authorId: 1 },
+    { id: 2, text: "Chocolate", authorId: 1 },
+    { id: 3, text: "Milk", authorId: 1 },
   ]);
 }
-

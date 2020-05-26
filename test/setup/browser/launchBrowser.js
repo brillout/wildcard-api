@@ -1,5 +1,5 @@
-const puppeteer = require('puppeteer');
-const assert = require('@brillout/assert');
+const puppeteer = require("puppeteer");
+const assert = require("@brillout/assert");
 
 module.exports = launchBrowser;
 
@@ -7,9 +7,9 @@ async function launchBrowser() {
   const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
-  page.on('console', consoleObj => console.log(consoleObj.text()));
+  page.on("console", (consoleObj) => console.log(consoleObj.text()));
 
-	/*
+  /*
 	page.on("pageerror", function(err) {
 			const theTempValue = err.toString();
 			console.log("Browser-side Error [pageerror]: " + theTempValue);
@@ -21,8 +21,8 @@ async function launchBrowser() {
 	//*/
 
   let _onHttpRequest;
-  page.on('request', async request => {
-    if( _onHttpRequest ){
+  page.on("request", async (request) => {
+    if (_onHttpRequest) {
       await _onHttpRequest(request);
       request.continue();
     }
@@ -34,9 +34,13 @@ async function launchBrowser() {
   };
 
   var httpPort__current;
-  async function browserEval(httpPort, fn, {offlineMode=false, browserArgs, onHttpRequest}={}) {
-    if( httpPort!==httpPort__current ){
-      await page.goto('http://localhost:'+httpPort);
+  async function browserEval(
+    httpPort,
+    fn,
+    { offlineMode = false, browserArgs, onHttpRequest } = {}
+  ) {
+    if (httpPort !== httpPort__current) {
+      await page.goto("http://localhost:" + httpPort);
       httpPort__current = httpPort;
     }
 
@@ -49,7 +53,7 @@ async function launchBrowser() {
     let ret;
     try {
       ret = await page.evaluate(fn, browserArgs);
-    } catch(err) {
+    } catch (err) {
       /*
       // Non-helpful error "Evaluation failed: [object Object]" is a bug:
       // - https://github.com/GoogleChrome/puppeteer/issues/4651

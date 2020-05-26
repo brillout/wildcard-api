@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 export default LoadingWrapper;
 
-function LoadingWrapper({fetchData, children: renderContent}) {
+function LoadingWrapper({ fetchData, children: renderContent }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -12,21 +12,21 @@ function LoadingWrapper({fetchData, children: renderContent}) {
     })();
   }, {});
 
-  if( data === null ) {
-    return 'Loading...';
+  if (data === null) {
+    return "Loading...";
   }
 
-  return renderContent({data, updateTodo});
+  return renderContent({ data, updateTodo });
 
   function updateTodo(todo, newValues) {
     setData({
       ...data,
-      todos: data.todos.map(_todo => {
-        if( _todo.id === todo.id ) {
-          return {..._todo, ...newValues};
+      todos: data.todos.map((_todo) => {
+        if (_todo.id === todo.id) {
+          return { ..._todo, ...newValues };
         }
         return _todo;
-      })
+      }),
     });
   }
 }

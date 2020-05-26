@@ -1,4 +1,4 @@
-exports.up = async knex => {
+exports.up = async (knex) => {
   /*
   await (
     knex.schema
@@ -15,23 +15,17 @@ exports.up = async knex => {
   );
   */
 
-  await (
-    knex.schema
-    .createTable('todos', table => {
-      table.increments('id').primary();
-      table.string('text').notNullable();
-      table.boolean('completed').notNullable().defaultTo(false);
-      table.integer('authorId').unsigned().notNullable();
-      table.foreign('authorId').references('id').inTable('users');
-    })
-  );
+  await knex.schema.createTable("todos", (table) => {
+    table.increments("id").primary();
+    table.string("text").notNullable();
+    table.boolean("completed").notNullable().defaultTo(false);
+    table.integer("authorId").unsigned().notNullable();
+    table.foreign("authorId").references("id").inTable("users");
+  });
 };
 
-exports.down = async knex => {
-  await (
-    knex.schema
-    .dropTableIfExists('todos')
-  );
+exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists("todos");
   /*
   await (
     knex.schema
@@ -39,4 +33,3 @@ exports.down = async knex => {
   );
   */
 };
-

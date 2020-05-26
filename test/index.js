@@ -1,1 +1,1 @@
-require('./setup');
+require("./setup");

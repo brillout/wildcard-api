@@ -1,20 +1,19 @@
-
 module.exports = {
-  client: 'sqlite3',
+  client: "sqlite3",
   connection: {
-    filename: resolve('./data.sqlite'),
+    filename: resolve("./data.sqlite"),
   },
   seeds: {
-    directory: resolve('./seeds'),
+    directory: resolve("./seeds"),
   },
   migrations: {
-    directory: resolve('./migrations'),
+    directory: resolve("./migrations"),
   },
   useNullAsDefault: true,
 };
 
 function resolve(relativePath) {
-  const path = require('path');
+  const path = require("path");
 
   return path.resolve(__dirname, relativePath);
 }

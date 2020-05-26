@@ -1,28 +1,29 @@
-module.exports = [
-  bigPayloads,
-];
+module.exports = [bigPayloads];
 
-async function bigPayloads({wildcardApi, browserEval}) {
+async function bigPayloads({ wildcardApi, browserEval }) {
   const _bigArg = gen_big_string();
   const _bigResult = gen_big_string();
 
-  wildcardApi.endpoints.bigEndpoint = async function({bigArg}) {
-    assert(bigArg===_bigArg);
+  wildcardApi.endpoints.bigEndpoint = async function ({ bigArg }) {
+    assert(bigArg === _bigArg);
     return _bigResult;
   };
 
-  await browserEval(async ({_bigArg, _bigResult}) => {
-    const bigResult = await window.endpoints.bigEndpoint({bigArg: _bigArg});
-    assert(bigResult===_bigResult);
-  }, {browserArgs: {_bigResult, _bigArg}});
+  await browserEval(
+    async ({ _bigArg, _bigResult }) => {
+      const bigResult = await window.endpoints.bigEndpoint({ bigArg: _bigArg });
+      assert(bigResult === _bigResult);
+    },
+    { browserArgs: { _bigResult, _bigArg } }
+  );
 }
 
 function gen_big_string() {
-  let str = '';
-  for(let i=0 ;i<10*10000; i++) {
-    const char = Math.round(Math.random()*10).toString()[0];
+  let str = "";
+  for (let i = 0; i < 10 * 10000; i++) {
+    const char = Math.round(Math.random() * 10).toString()[0];
     str += char;
   }
-  console.log('ss', str);
+  console.log("ss", str);
   return str;
 }

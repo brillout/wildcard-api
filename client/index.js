@@ -1,3 +1,3 @@
-const WildcardClient = require('./WildcardClient');
+const WildcardClient = require("./WildcardClient");
 
 module.exports = new WildcardClient();

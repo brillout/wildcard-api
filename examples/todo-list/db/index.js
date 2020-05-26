@@ -1,3 +1,3 @@
-const query = require('./query');
+const query = require("./query");
 
-module.exports={query};
+module.exports = { query };
