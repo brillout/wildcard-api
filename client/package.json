@@ -5,7 +5,8 @@
   "dependencies": {
     "@brillout/assert": "^0.1.1",
     "@brillout/fetch": "^0.1.2",
-    "@brillout/json-s": "^0.1.2"
+    "@brillout/json-s": "^0.1.2",
+    "@lsos/donation-reminder": "^0.1.0"
   },
   "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api",

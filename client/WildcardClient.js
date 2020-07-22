@@ -1,3 +1,4 @@
+const { printDonationReminder } = require("@lsos/donation-reminder");
 const assert = require("@brillout/assert");
 const { parse, stringify } = require("./serializer");
 const makeHttpRequest = require("./makeHttpRequest");
@@ -5,6 +6,14 @@ const makeHttpRequest = require("./makeHttpRequest");
 const IS_CALLED_BY_PROXY = Symbol();
 
 module.exports = WildcardClient;
+
+printDonationReminder({
+  npmName: "@wildcard-api",
+  projectName: "Wildcard API",
+  donationText:
+    "Servus :beers:, I'm Romuald, any gesture is greatly appreciated! :heart:",
+  minNumberOfAuthors: 0,
+});
 
 function WildcardClient() {
   const options = this;
