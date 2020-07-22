@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "cd test/ && yarn run-tests",
-    "example": "cd example/todo-list/ && yarn start",
+    "demo": "cd examples/todo-list/ && yarn start",
     "release": "(cd client/ && npm publish) && (cd server/ && npm publish)",
     "docs": "mdocs",
     "clean": "git clean -Xdf"

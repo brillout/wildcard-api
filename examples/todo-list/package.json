@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "yarn run start:build && yarn run start:server",
+    "start": "yarn install && yarn run start:build && yarn run start:server",
     "start:server": "node ./start-with-express.js",
     "start:build": "cd client && parcel build *.html"
   },
