@@ -183,7 +183,7 @@ that are defined on your Node.js server,
 callable in the browser.
 Nothing more, nothing less.
 
-To retrieve and mutate data, you can direclty use SQL or an ORM.
+To retrieve and mutate data, you can directly use SQL or an ORM.
 
 ~~~js
 // Node.js server
