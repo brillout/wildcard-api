@@ -1,6 +1,12 @@
 !OUTPUT ../readme.md
 !INLINE ./snippets/header.md --hide-source-path
 
+<p align="center">
+  <a href="https://github.com/reframejs/wildcard-api/issues/56">
+    <img align="center" src="https://lsos.org/basic/label-line.svg">
+  </a>
+</p>
+
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
