@@ -81,31 +81,6 @@
   </a>
 </p>
 
-<p align="center">
-  <sup>
-    <a href="#top">
-      <img src="/docs/images/blank.svg" height="10px" align="middle" width="23px"/>
-      <img
-        src="/docs/images/star.svg"
-        width="13"
-        align="middle"
-      />
-      Star if you like
-    </a>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;
-    <a href="https://twitter.com/intent/tweet?text=Interesting%20alternative%20to%20REST%20and%20GraphQL.%0Ahttps%3A%2F%2Fgithub.com%2Freframejs%2Fwildcard-api" target="_blank">
-      <img
-        src="/docs/images/twitter.svg"
-        width="15"
-        align="middle"
-      />
-      Tweet about Wildcard
-    </a>
-  </sup>
-</p>
-
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -183,7 +158,7 @@ that are defined on your Node.js server,
 callable in the browser.
 Nothing more, nothing less.
 
-To retrieve and mutate data, you can directly use SQL or an ORM.
+To retrieve and mutate data, you can direclty use SQL or an ORM.
 
 ~~~js
 // Node.js server
@@ -825,7 +800,7 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ~~~ts
 // /examples/typescript/endpoints.ts
 
-import wildcard from '@wildcard-api/server';
+import wildcard from "@wildcard-api/server";
 
 interface Person {
   firstName: string;
@@ -833,15 +808,15 @@ interface Person {
   id: number;
 }
 
-const persons : Array<Person> = [
-  {firstName: 'John', lastName: 'Smith', id: 0},
-  {firstName: 'Alice', lastName: 'Graham', id: 1},
-  {firstName: 'Harry', lastName: 'Thompson', id: 2},
+const persons: Array<Person> = [
+  { firstName: "John", lastName: "Smith", id: 0 },
+  { firstName: "Alice", lastName: "Graham", id: 1 },
+  { firstName: "Harry", lastName: "Thompson", id: 2 },
 ];
 
 async function getPerson(id: number): Promise<Person> {
-  return persons.find(person => person.id===id);
-};
+  return persons.find((person) => person.id === id);
+}
 
 const endpoints = {
   getPerson,
@@ -860,9 +835,10 @@ import { endpoints as endpointsUntyped } from "@wildcard-api/client";
 export const endpoints: Endpoints = endpointsUntyped;
 
 (async () => {
-  const id = Math.floor(Math.random()*3);
+  const id = Math.floor(Math.random() * 3);
   const person = await endpoints.getPerson(id);
-  const personHtml = person.firstName + ' ' + person.lastName + ' <b>(' + person.id + ')</b>';
+  const personHtml =
+    person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
   document.body.innerHTML = personHtml;
 })();
 ~~~
