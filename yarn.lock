@@ -973,10 +973,10 @@
   resolved "https://registry.npmjs.org/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@lsos/donation-reminder@^0.1.0":
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/@lsos/donation-reminder/-/donation-reminder-0.1.6.tgz#c4b80864f6e1440b47d20bcf5479ac8c033e6777"
-  integrity sha512-Xlu2orseVX6/DDWjrqavobiW6+AyuRiFvcffs6Ej/JXtTav9iQ9BoetoeRDFo5vraCU7Ef9LpIJzmux8nWCA+Q==
+"@lsos/donation-reminder@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.npmjs.org/@lsos/donation-reminder/-/donation-reminder-0.1.7.tgz#4746300791734cb232cad18a7911b48347115c5d"
+  integrity sha512-uegugLJLQ54IAOIOnFte3ZaZM8JC9AWDy1my6ZZ6qiM6QFu18yiT/wZzyU9NFFOKR030FCrbUjJLK6HZ9v6kNg==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -5009,7 +5009,7 @@ postcss@6.0.1:
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
-postcss@7.0.32, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.11, postcss@^7.0.17, postcss@^7.0.27:
+postcss@7.0.32:
   version "7.0.32"
   resolved "https://registry.npmjs.org/postcss/-/postcss-7.0.32.tgz#4310d6ee347053da3433db2be492883d62cec59d"
   integrity sha512-03eXong5NLnNCD05xscnGKGDZ98CyzoqPSMjOe6SuoQY7Z2hIj0Ld1g/O/UQRuOle2aRtiIRDg9tDcTGAkLfKw==
@@ -5026,6 +5026,15 @@ postcss@^6.0.1:
     chalk "^2.4.1"
     source-map "^0.6.1"
     supports-color "^5.4.0"
+
+postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.11, postcss@^7.0.17, postcss@^7.0.27:
+  version "7.0.34"
+  resolved "https://registry.npmjs.org/postcss/-/postcss-7.0.34.tgz#f2baf57c36010df7de4009940f21532c16d65c20"
+  integrity sha512-H/7V2VeNScX9KE83GDrDZNiGT1m2H+UTnlinIzhjlLX9hfMUn1mHNnGeX81a1c8JSBdBvqk7c2ZOG6ZPn5itGw==
+  dependencies:
+    chalk "^2.4.2"
+    source-map "^0.6.1"
+    supports-color "^6.1.0"
 
 posthtml-parser@^0.4.0, posthtml-parser@^0.4.1:
   version "0.4.2"
