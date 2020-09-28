@@ -25,7 +25,9 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
 
   await server.start();
 
-  return () => server.stop();
+  return async () => {
+    await server.stop();
+  };
 
   async function wildcardHandler(request, h) {
     const requestProps = {
@@ -54,4 +56,11 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
       return response;
     }
   }
+}
+
+function sleep(seconds) {
+  let resolve;
+  const promise = new Promise(r => resolve=r);
+  setTimeout(resolve, seconds*1000);
+  return promise;
 }

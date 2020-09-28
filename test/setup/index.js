@@ -39,13 +39,17 @@ const DEBUG = false;
   let browserEval = browserEval_org.bind(null, httpPort);
 
   for (let serverFramework of ['getApiHttpResponse', 'express', 'koa', 'hapi']) {
-    const startServer = require("./servers/" + serverFramework);
-
-    const stop = await startServer({
-      wildcardApiHolder,
-      httpPort,
-      staticDir,
-    });
+    let stop;
+    const _startServer = require("./servers/" + serverFramework);
+    const startServer = async (args) => {
+      stop = await _startServer({
+        wildcardApiHolder,
+        httpPort,
+        staticDir,
+        ...args
+      });
+    };
+    await startServer();
 
     for (let { test, file } of getTests()) {
       const wildcardApi = new WildcardApi();
@@ -59,10 +63,13 @@ const DEBUG = false;
       !DEBUG && log_suppressor.enable();
 
       if( test.recreateServer ){
-        const testSpec = test();
-        test = testSpec.test;
-        assert(!test.then, "Test fct shouldn't return a promise");
-        assert(test, {testSpec});
+        const {test: testFct, ...serverArgs} = test();
+        test = testFct;
+        test.recreateServer = true;
+        assert(test);
+
+        await stop();
+        await startServer(serverArgs);
       }
 
       try {
@@ -80,6 +87,11 @@ const DEBUG = false;
         throw err;
       }
       !DEBUG && log_suppressor.disable();
+
+      if( test.recreateServer) {
+        await stop();
+        await startServer();
+      }
 
       console.log(symbolSuccess + testName);
     }
