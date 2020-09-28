@@ -5,13 +5,14 @@ process.on("unhandledRejection", (err) => {
 const assert = require("@brillout/assert");
 global.assert = assert;
 
+const {resolve: pathResolve} = require('path');
 const WildcardApi = require("@wildcard-api/server/WildcardApi");
 const WildcardClient = require("@wildcard-api/client/WildcardClient");
 
 const bundle = require("./browser/bundle");
 const launchBrowser = require("./browser/launchBrowser");
 
-const startAllServers = require("./servers/startAllServers");
+const staticDir = pathResolve(__dirname + "/browser/dist/");
 
 const {
   symbolSuccess,
@@ -32,11 +33,20 @@ const DEBUG = false;
   const log_suppressor = new LogSupressor();
 
   const wildcardApiHolder = {};
-  const servers = await startAllServers(wildcardApiHolder);
 
+  const httpPort = 3442;
   const { browserEval: browserEval_org, browser } = await launchBrowser();
-  for (let { serverFramework, httpPort } of servers) {
-    let browserEval = browserEval_org.bind(null, httpPort);
+  let browserEval = browserEval_org.bind(null, httpPort);
+
+  for (let serverFramework of ['getApiHttpResponse', 'express', 'koa', 'hapi']) {
+    const startServer = require("./servers/" + serverFramework);
+
+    const stop = await startServer({
+      wildcardApiHolder,
+      httpPort,
+      staticDir,
+    });
+
     for (let { test, file } of getTests()) {
       const wildcardApi = new WildcardApi();
       wildcardApiHolder.wildcardApi = wildcardApi;
@@ -47,6 +57,14 @@ const DEBUG = false;
         "[" + serverFramework + "] " + test.name + " (" + file + ")";
 
       !DEBUG && log_suppressor.enable();
+
+      if( test.recreateServer ){
+        const testSpec = test();
+        test = testSpec.test;
+        assert(!test.then, "Test fct shouldn't return a promise");
+        assert(test, {testSpec});
+      }
+
       try {
         await test({
           wildcardApi,
@@ -65,11 +83,11 @@ const DEBUG = false;
 
       console.log(symbolSuccess + testName);
     }
+
+    await stop();
   }
 
   await browser.close();
-
-  await Promise.all(servers.map(({ stop }) => stop()));
 
   console.log(chalk.bold.green("All tests successfully passed."));
 })();

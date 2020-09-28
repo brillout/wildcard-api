@@ -8,6 +8,7 @@ module.exports = [
   noEndpoints2,
   endpointDoesNotExist,
   ssrMissingRequestProps,
+  missingContext,
 ];
 
 async function validUsage1({ wildcardApi, browserEval }) {
@@ -164,4 +165,23 @@ async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
 
   await wildcardClient.endpoints.ssrTest();
   assert(endpointFunctionCalled === true);
+}
+
+missingContext.recreateServer = true;
+function missingContext() {
+  return {
+    getContext: undefined,
+    test,
+  };
+
+  async function test({ wildcardApi, browserEval }) {
+    wildcardApi.endpoints.hello = async function (name) {
+      return "Dear " + name;
+    };
+
+    await browserEval(async () => {
+      const ret = await window.endpoints.hello("rom");
+      assert(ret === "Dear rom", { ret });
+    });
+  }
 }
