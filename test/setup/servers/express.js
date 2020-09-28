@@ -2,6 +2,8 @@ const express = require("express");
 const wildcard = require("@wildcard-api/server/express");
 
 module.exports = startServer;
+module.exports.start = start;
+module.exports.stop = stop;
 
 async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
   const app = express();
@@ -29,12 +31,17 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
 async function start(app, httpPort) {
   const http = require("http");
   const server = http.createServer(app);
+  const p = (
+      new Promise((r, f) => {
+        server.on("listening", () => {
+          r();
+        });
+        server.on("error", f);
+    })
+  );
   server.listen(httpPort);
   // Wait until the server has started
-  await new Promise((r, f) => {
-    server.on("listening", r);
-    server.on("error", f);
-  });
+  await p;
   return server;
 }
 async function stop(server) {

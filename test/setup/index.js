@@ -27,16 +27,29 @@ const DEBUG = true;
 const DEBUG = false;
 //*/
 
+const httpPort = 3442;
+
 (async () => {
   await bundle();
 
   const log_suppressor = new LogSupressor();
 
-  const wildcardApiHolder = {};
-
-  const httpPort = 3442;
   const { browserEval: browserEval_org, browser } = await launchBrowser();
   let browserEval = browserEval_org.bind(null, httpPort);
+
+  const {standardTests, integrationTests} = getTests();
+
+  await runStandardTests({standardTests, browserEval, log_suppressor});
+
+  await runIntegrationTests({integrationTests, browserEval, log_suppressor});
+
+  await browser.close();
+
+  console.log(chalk.bold.green("All tests successfully passed."));
+})();
+
+async function runStandardTests({standardTests, browserEval, log_suppressor}) {
+  const wildcardApiHolder = {};
 
   for (let serverFramework of ['getApiHttpResponse', 'express', 'koa', 'hapi']) {
     let stop;
@@ -51,58 +64,51 @@ const DEBUG = false;
     };
     await startServer();
 
-    for (let { test, file } of getTests()) {
+    for (let test of standardTests) {
       const wildcardApi = new WildcardApi();
       wildcardApiHolder.wildcardApi = wildcardApi;
       const wildcardClient = new WildcardClient();
       wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
 
-      const testName =
-        "[" + serverFramework + "] " + test.name + " (" + file + ")";
+      const testArgs = {
+        wildcardApi,
+        wildcardClient,
+        WildcardClient,
+        browserEval,
+        httpPort,
+      };
 
-      !DEBUG && log_suppressor.enable();
-
-      if( test.recreateServer ){
-        const {test: testFct, ...serverArgs} = test();
-        test = testFct;
-        test.recreateServer = true;
-        assert(test);
-
-        await stop();
-        await startServer(serverArgs);
-      }
-
-      try {
-        await test({
-          wildcardApi,
-          wildcardClient,
-          WildcardClient,
-          browserEval,
-          httpPort,
-        });
-      } catch (err) {
-        !DEBUG && log_suppressor.flush();
-        !DEBUG && log_suppressor.disable();
-        console.log(colorError(symbolError + "Failed test: " + testName));
-        throw err;
-      }
-      !DEBUG && log_suppressor.disable();
-
-      if( test.recreateServer) {
-        await stop();
-        await startServer();
-      }
-
-      console.log(symbolSuccess + testName);
+      await runTest({test, testArgs, serverFramework, log_suppressor});
     }
 
     await stop();
   }
+}
 
-  await browser.close();
+async function runTest({test: {testFn, testFile}, serverFramework, testArgs, log_suppressor}) {
+  const testName = "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
 
-  console.log(chalk.bold.green("All tests successfully passed."));
-})();
+  !DEBUG && log_suppressor.enable();
+
+  try {
+    await testFn(testArgs);
+  } catch (err) {
+    !DEBUG && log_suppressor.flush();
+    !DEBUG && log_suppressor.disable();
+    console.log(colorError(symbolError + "Failed test: " + testName));
+    throw err;
+  }
+  !DEBUG && log_suppressor.disable();
+
+  console.log(symbolSuccess + testName);
+}
+
+async function runIntegrationTests({integrationTests, browserEval, log_suppressor}) {
+  for(test of integrationTests) {
+    const testArgs = {browserEval, staticDir, httpPort};
+    await runTest({test, testArgs, log_suppressor, serverFramework: 'custom-server'});
+  }
+}
 
 function getTests() {
   const glob = require("glob");
@@ -111,15 +117,21 @@ function getTests() {
   const projectRoot = __dirname + "/..";
 
   const testFiles = glob.sync(projectRoot + "/tests/*.js");
-  const tests = [];
+  const standardTests = [];
+  const integrationTests = [];
   testFiles.forEach((filePath) => {
-    require(filePath).forEach((test) => {
-      const file = path.relative(projectRoot, filePath);
-      tests.push({ test, file });
+    require(filePath).forEach((testFn) => {
+      const testFile = path.relative(projectRoot, filePath);
+      const args = {testFile, testFn};
+      if( testFn.isIntegrationTest ){
+        integrationTests.push(args);
+      } else {
+        standardTests.push(args);
+      }
     });
   });
 
-  return tests;
+  return {standardTests, integrationTests};
 }
 
 function LogSupressor() {

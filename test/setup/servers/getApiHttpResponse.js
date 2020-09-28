@@ -57,10 +57,3 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
     }
   }
 }
-
-function sleep(seconds) {
-  let resolve;
-  const promise = new Promise(r => resolve=r);
-  setTimeout(resolve, seconds*1000);
-  return promise;
-}

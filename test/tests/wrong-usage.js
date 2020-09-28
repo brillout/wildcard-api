@@ -167,15 +167,23 @@ async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
   assert(endpointFunctionCalled === true);
 }
 
-missingContext.recreateServer = true;
-function missingContext() {
-  return {
-    getContext: undefined,
-    test,
-  };
+missingContext.isIntegrationTest = true;
+async function missingContext({browserEval, staticDir, httpPort}) {
+  const WildcardApi = require("@wildcard-api/server/WildcardApi");
+  const wildcardApi = new WildcardApi();
 
-  async function test({ wildcardApi, browserEval }) {
+  const stopServer = await createserver();
+
+  await test();
+
+  await stopServer();
+
+  return;
+
+  async function test() {
+    let endpointCalled = false;
     wildcardApi.endpoints.hello = async function (name) {
+      endpointCalled = true;
       return "Dear " + name;
     };
 
@@ -183,5 +191,35 @@ function missingContext() {
       const ret = await window.endpoints.hello("rom");
       assert(ret === "Dear rom", { ret });
     });
+
+    assert(endpointCalled===true);
   }
+
+  async function createserver() {
+    const express = require("express");
+    const wildcard = require("@wildcard-api/server/express");
+    const {stop, start} = require('../setup/servers/express');
+
+    const app = express();
+
+    app.use(express.json());
+
+    app.use(express.static(staticDir, { extensions: ["html"] }));
+
+    app.use(
+      wildcard(
+        async (req) => {
+          const { headers } = req;
+          const context = { headers };
+          return context;
+        },
+        { __INTERNAL__wildcardApiHolder: {wildcardApi} }
+      )
+    );
+
+    const server = await start(app, httpPort);
+
+    return () => stop(server);
+  }
+
 }

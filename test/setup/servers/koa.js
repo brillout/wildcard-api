@@ -2,6 +2,7 @@ const Koa = require("koa");
 const Static = require("koa-static");
 const bodyParser = require("koa-bodyparser");
 const wildcard = require("@wildcard-api/server/koa");
+const {start, stop} = require('./express');
 
 module.exports = startServer;
 
@@ -23,6 +24,8 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
 
   app.use(Static(staticDir, { extensions: [".html"] }));
 
-  const server = app.listen(httpPort);
-  return () => server.close();
+  // Not sure why `.callback()` is needed
+  //  - Source: https://github.com/koajs/koa/pull/1102#issue-154979875
+  const server = await start(app.callback(), httpPort);
+  return () => stop(server);
 }
