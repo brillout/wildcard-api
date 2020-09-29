@@ -351,8 +351,7 @@ function createContextProxy({ context, endpointName, isDirectCall }) {
     return true;
   }
   function get(_, prop) {
-    if (!context) {
-      assert.internal(isDirectCall === true);
+    if (!context && isDirectCall) {
       const propNameIsNormal = isPropNameNormal(prop);
       assert.usage(
         false,
@@ -383,7 +382,9 @@ function createContextProxy({ context, endpointName, isDirectCall }) {
         "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
       );
     }
-    assert.internal(context);
+
+    if( !context ) return undefined;
+
     return context[prop];
   }
 }
