@@ -1,19 +1,20 @@
 module.exports = [
   missingContext,
   missingContextSSR,
+  missingContextFunction,
   missingContextObject,
   wrongContextObject,
 ];
 
 async function missingContext({ wildcardApi, browserEval }) {
   let endpointFunctionCalled = false;
-  wildcardApi.endpoints.failingEndpoint = async function () {
+  wildcardApi.endpoints.ctxEndpoint = async function () {
     endpointFunctionCalled = true;
     return this.notExistingContext + " bla";
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.failingEndpoint("rom");
+    const ret = await window.endpoints.ctxEndpoint();
     assert(ret === "undefined bla");
   });
 
@@ -44,10 +45,34 @@ async function missingContextSSR({ wildcardApi, wildcardClient }) {
   assert(endpointFunctionCalled === true);
 }
 
+missingContextFunction.isIntegrationTest = true;
+async function missingContextFunction({ browserEval, ...args }) {
+  const getContext = undefined;
+  const { stopServer, wildcardApi } = await createServer({
+    getContext,
+    ...args,
+  });
+
+  let endpointFunctionCalled = false;
+  wildcardApi.endpoints.ctxEndpoint = async function () {
+    endpointFunctionCalled = true;
+    return this.notExistingContext + " blib";
+  };
+
+  await browserEval(async () => {
+    const ret = await window.endpoints.ctxEndpoint();
+    assert(ret === "undefined blib");
+  });
+
+  assert(endpointFunctionCalled === true);
+
+  await stopServer();
+}
+
 missingContextObject.isIntegrationTest = true;
 async function missingContextObject({ stdoutLogs, stderrLogs, ...args }) {
   const getContext = () => undefined;
-  const { stopServer, wildcardApi } = await createserver({
+  const { stopServer, wildcardApi } = await createServer({
     getContext,
     ...args,
   });
@@ -68,7 +93,7 @@ async function missingContextObject({ stdoutLogs, stderrLogs, ...args }) {
 wrongContextObject.isIntegrationTest = true;
 async function wrongContextObject({ stdoutLogs, stderrLogs, ...args }) {
   const getContext = () => "wrong-context-type";
-  const { stopServer, wildcardApi } = await createserver({
+  const { stopServer, wildcardApi } = await createServer({
     getContext,
     ...args,
   });
@@ -114,7 +139,7 @@ async function test_failedEndpointCall({ wildcardApi, ...args }) {
   assert(endpointCalled === false);
 }
 
-async function createserver({ getContext, staticDir, httpPort }) {
+async function createServer({ getContext, staticDir, httpPort }) {
   const express = require("express");
   const wildcard = require("@wildcard-api/server/express");
   const WildcardApi = require("@wildcard-api/server/WildcardApi");
@@ -128,7 +153,9 @@ async function createserver({ getContext, staticDir, httpPort }) {
 
   app.use(express.static(staticDir, { extensions: ["html"] }));
 
-  app.use(wildcard(getContext));
+  app.use(
+    wildcard(getContext, { __INTERNAL__wildcardApiHolder: { wildcardApi } })
+  );
 
   const server = await start(app, httpPort);
 

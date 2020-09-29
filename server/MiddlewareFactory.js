@@ -18,12 +18,6 @@ function MiddlewareFactory(ServerAdapter, opts) {
           ) {
             autoLoadEndpointFiles();
           }
-          /*
-            assert.usage(
-              contextGetter,
-              'You need to pass a context getter to the Wildcard middleware.',
-            );
-            */
           let context;
           if (contextGetter) {
             context = await contextGetter(requestObject);

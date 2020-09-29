@@ -45,7 +45,7 @@ function WildcardApi() {
       isIntrospection,
       isNotWildcardRequest,
       isHumanMode,
-    } = RequestInfo({ requestProps, context, endpointsObject, options });
+    } = RequestInfo({ requestProps, endpointsObject, options });
 
     if (isNotWildcardRequest) {
       return null;
@@ -408,7 +408,7 @@ function isPathanameBase({ pathname, options }) {
   return [options.baseUrl, options.baseUrl.slice(0, -1)].includes(pathname);
 }
 
-function RequestInfo({ requestProps, context, endpointsObject, options }) {
+function RequestInfo({ requestProps, endpointsObject, options }) {
   const method = requestProps.method.toUpperCase();
 
   assert_request({ requestProps, method });
