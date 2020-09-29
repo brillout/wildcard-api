@@ -17,11 +17,11 @@ async function validUsage1({ wildcardApi, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]');
+    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]', {method: 'POST'});
     const text = await resp.text();
     console.log(text);
     assert(resp.status === 200, resp.status);
-    assert(text.includes("Yo Mom!"), { text });
+    assert(text==='"Yo Mom!"', { text });
   });
 }
 
@@ -31,11 +31,11 @@ async function validUsage2({ wildcardApi, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/%5B%22Mom%22%5D");
+    const resp = await window.fetch("/_wildcard_api/hello/%5B%22Mom%22%5D", {method: 'POST'});
     const text = await resp.text();
     console.log(text);
     assert(resp.status === 200, resp.status);
-    assert(text.includes("Yo Mom!"), { text });
+    assert(text==='"Yo Mom!"', { text });
   });
 }
 
@@ -168,7 +168,7 @@ async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
 }
 
 missingContext.isIntegrationTest = true;
-async function missingContext({browserEval, staticDir, httpPort}) {
+async function missingContext({browserEval, staticDir, httpPort, stdoutLogs, stderrLogs}) {
   const WildcardApi = require("@wildcard-api/server/WildcardApi");
   const wildcardApi = new WildcardApi();
 
@@ -177,6 +177,9 @@ async function missingContext({browserEval, staticDir, httpPort}) {
   await test();
 
   await stopServer();
+
+  // TODO: make `stdoutLogs.length===0`
+  assert(stderrLogs.find(log => log.includes('Your context getter should return an object but it returns `undefined`.')));
 
   return;
 
@@ -188,11 +191,17 @@ async function missingContext({browserEval, staticDir, httpPort}) {
     };
 
     await browserEval(async () => {
-      const ret = await window.endpoints.hello("rom");
-      assert(ret === "Dear rom", { ret });
+      let errorThrown = false;
+      try {
+        await window.endpoints.hello("rom");
+      } catch(err){
+        assert(err.message==='Internal Server Error');
+        errorThrown = true;
+      }
+      assert(errorThrown===true);
     });
 
-    assert(endpointCalled===true);
+    assert(endpointCalled===false);
   }
 
   async function createserver() {
@@ -206,16 +215,7 @@ async function missingContext({browserEval, staticDir, httpPort}) {
 
     app.use(express.static(staticDir, { extensions: ["html"] }));
 
-    app.use(
-      wildcard(
-        async (req) => {
-          const { headers } = req;
-          const context = { headers };
-          return context;
-        },
-        { __INTERNAL__wildcardApiHolder: {wildcardApi} }
-      )
-    );
+    app.use(wildcard(() => undefined));
 
     const server = await start(app, httpPort);
 
