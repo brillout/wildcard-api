@@ -7,9 +7,9 @@ module.exports = [
   noEndpoints,
   noEndpoints2,
   endpointDoesNotExist,
-  ssrMissingRequestProps,
-  missingContext,
-  wrongContext,
+  missingContextSSR,
+  missingContextObject,
+  wrongContextObject,
 ];
 
 async function validUsage1({ wildcardApi, browserEval }) {
@@ -144,7 +144,7 @@ async function endpointDoesNotExist({ wildcardApi, browserEval }) {
   });
 }
 
-async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
+async function missingContextSSR({ wildcardApi, wildcardClient }) {
   let endpointFunctionCalled = false;
   wildcardApi.endpoints.ssrTest = async function () {
     let errorThrown = false;
@@ -168,8 +168,8 @@ async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
   assert(endpointFunctionCalled === true);
 }
 
-missingContext.isIntegrationTest = true;
-async function missingContext({stdoutLogs, stderrLogs, ...args}) {
+missingContextObject.isIntegrationTest = true;
+async function missingContextObject({stdoutLogs, stderrLogs, ...args}) {
   const getContext = () => undefined;
   const {stopServer, wildcardApi} = await createserver({getContext, ...args});
 
@@ -184,8 +184,8 @@ async function missingContext({stdoutLogs, stderrLogs, ...args}) {
   assert(noStdoutSpam(stdoutLogs));
 }
 
-wrongContext.isIntegrationTest = true;
-async function wrongContext({stdoutLogs, stderrLogs, ...args}) {
+wrongContextObject.isIntegrationTest = true;
+async function wrongContextObject({stdoutLogs, stderrLogs, ...args}) {
   const getContext = () => 'wrong-context-type';
   const {stopServer, wildcardApi} = await createserver({getContext, ...args});
 
