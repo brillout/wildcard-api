@@ -7,6 +7,7 @@ module.exports = [
   noEndpoints,
   noEndpoints2,
   endpointDoesNotExist,
+  missingContext,
   missingContextSSR,
   missingContextObject,
   wrongContextObject,
@@ -144,6 +145,21 @@ async function endpointDoesNotExist({ wildcardApi, browserEval }) {
   });
 }
 
+async function missingContext({ wildcardApi, browserEval }) {
+  let endpointFunctionCalled = false;
+  wildcardApi.endpoints.failingEndpoint = async function () {
+    endpointFunctionCalled = true;
+    return this.notExistingContext+' bla';
+  };
+
+  await browserEval(async () => {
+    const ret = await window.endpoints.failingEndpoint("rom");
+    assert(ret==='undefined bla');
+  });
+
+  assert(endpointFunctionCalled === true);
+}
+
 async function missingContextSSR({ wildcardApi, wildcardClient }) {
   let endpointFunctionCalled = false;
   wildcardApi.endpoints.ssrTest = async function () {
@@ -213,23 +229,14 @@ function noStdoutSpam(stdoutLogs) {
   );
 }
 
-async function test_failedEndpointCall({wildcardApi, browserEval}) {
+async function test_failedEndpointCall({wildcardApi, ...args}) {
   let endpointCalled = false;
-  wildcardApi.endpoints.hello = async function (name) {
+  wildcardApi.endpoints.failingEndpoint = async function (name) {
     endpointCalled = true;
     return "Dear " + name;
   };
 
-  await browserEval(async () => {
-    let errorThrown = false;
-    try {
-      await window.endpoints.hello("rom");
-    } catch(err){
-      assert(err.message==='Internal Server Error');
-      errorThrown = true;
-    }
-    assert(errorThrown===true);
-  });
+  await callFailaingEndpoint(args);
 
   assert(endpointCalled===false);
 }
@@ -254,4 +261,18 @@ async function createserver({getContext, staticDir, httpPort}) {
 
   const stopServer = () => stop(server);
   return {stopServer, wildcardApi};
+}
+
+async function callFailaingEndpoint({browserEval}) {
+  await browserEval(async () => {
+    let errorThrown = false;
+    try {
+      const ret = await window.endpoints.failingEndpoint("rom");
+      console.log('ret: ', ret);
+    } catch(err){
+      assert(err.message==='Internal Server Error');
+      errorThrown = true;
+    }
+    assert(errorThrown===true);
+  });
 }
