@@ -351,42 +351,46 @@ function createContextProxy({ context, endpointName, isDirectCall }) {
     return true;
   }
   function get(_, prop) {
-    if (!context && isDirectCall) {
-      const propNameIsNormal = isPropNameNormal(prop);
-      assert.usage(
-        false,
-        colorizeError("Wrong usage of the Wildcard client in Node.js."),
-        ...(propNameIsNormal
-          ? [
-              "",
-              "Cannot get `this." +
-                prop +
-                "` because you didn't provide `" +
-                prop +
-                "`.",
-            ]
-          : []),
-        "",
-        colorizeEmphasis(
-          propNameIsNormal
-            ? "Make sure to provide `" +
-                prop +
-                "` by using `bind({" +
-                prop +
-                "})` when calling your `" +
-                endpointName +
-                "` endpoint in Node.js."
-            : "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `context`/`this`."
-        ),
-        "",
-        "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
-      );
-    }
+    assert.usage(
+      context || !isDirectCall,
+      ...getNodejsContextUsageNote({ endpointName, prop })
+    );
 
-    if( !context ) return undefined;
+    if (!context) return undefined;
 
     return context[prop];
   }
+}
+
+function getNodejsContextUsageNote({ endpointName, prop }) {
+  const propNameIsNormal = isPropNameNormal(prop);
+  return [
+    colorizeError("Wrong usage of the Wildcard client in Node.js."),
+    ...(propNameIsNormal
+      ? [
+          "",
+          "Cannot get `this." +
+            prop +
+            "` because you didn't provide `" +
+            prop +
+            "`.",
+        ]
+      : []),
+    "",
+    colorizeEmphasis(
+      propNameIsNormal
+        ? "Make sure to provide `" +
+            prop +
+            "` by using `bind({" +
+            prop +
+            "})` when calling your `" +
+            endpointName +
+            "` endpoint in Node.js."
+        : "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `context`/`this`."
+    ),
+    "",
+    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+  ];
 }
 
 function isPropNameNormal(prop) {
