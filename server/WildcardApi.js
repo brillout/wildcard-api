@@ -131,7 +131,7 @@ function WildcardApi() {
     assert.internal(endpoint);
     assert.internal(endpointIsValid(endpoint));
 
-    const requestProps_proxy = create_requestProps_proxy({
+    const contextProxy = createContextProxy({
       context,
       endpointName,
       isDirectCall,
@@ -141,7 +141,7 @@ function WildcardApi() {
     let endpointError;
 
     try {
-      endpointResult = await endpoint.apply(requestProps_proxy, endpointArgs);
+      endpointResult = await endpoint.apply(contextProxy, endpointArgs);
     } catch (err) {
       endpointError = err;
     }
@@ -342,9 +342,9 @@ function getEndpointsObject() {
   return new Proxy({}, { set: validateEndpoint });
 }
 
-function create_requestProps_proxy({ context, endpointName, isDirectCall }) {
-  const requestProps_proxy = new Proxy(context || {}, { get, set });
-  return requestProps_proxy;
+function createContextProxy({ context, endpointName, isDirectCall }) {
+  const contextProxy = new Proxy(context || {}, { get, set });
+  return contextProxy;
 
   function set(_, prop, newVal) {
     context[prop] = newVal;
