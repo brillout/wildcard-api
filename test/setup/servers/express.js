@@ -31,14 +31,12 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
 async function start(app, httpPort) {
   const http = require("http");
   const server = http.createServer(app);
-  const p = (
-      new Promise((r, f) => {
-        server.on("listening", () => {
-          r();
-        });
-        server.on("error", f);
-    })
-  );
+  const p = new Promise((r, f) => {
+    server.on("listening", () => {
+      r();
+    });
+    server.on("error", f);
+  });
   server.listen(httpPort);
   // Wait until the server has started
   await p;

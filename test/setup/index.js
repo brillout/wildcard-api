@@ -5,7 +5,7 @@ process.on("unhandledRejection", (err) => {
 const assert = require("@brillout/assert");
 global.assert = assert;
 
-const {resolve: pathResolve} = require('path');
+const { resolve: pathResolve } = require("path");
 const WildcardApi = require("@wildcard-api/server/WildcardApi");
 const WildcardClient = require("@wildcard-api/client/WildcardClient");
 
@@ -35,25 +35,23 @@ const httpPort = 3442;
   const { browserEval: browserEval_org, browser } = await launchBrowser();
   let browserEval = browserEval_org.bind(null, httpPort);
 
-  const {standardTests, integrationTests} = getTests();
+  const { standardTests, integrationTests } = getTests();
 
-  await runStandardTests({standardTests, browserEval});
+  await runStandardTests({ standardTests, browserEval });
 
-  await runIntegrationTests({integrationTests, browserEval});
+  await runIntegrationTests({ integrationTests, browserEval });
 
   await browser.close();
 
   console.log(chalk.bold.green("All tests successfully passed."));
 })();
 
-async function runStandardTests({standardTests, browserEval}) {
+async function runStandardTests({ standardTests, browserEval }) {
   const wildcardApiHolder = {};
 
-  const serverFrameworks = (
-    getSelectedTest() ?
-      ['express'] :
-      ['getApiHttpResponse', 'express', 'koa', 'hapi']
-  );
+  const serverFrameworks = getSelectedTest()
+    ? ["express"]
+    : ["getApiHttpResponse", "express", "koa", "hapi"];
 
   for (let serverFramework of serverFrameworks) {
     let stop;
@@ -63,7 +61,7 @@ async function runStandardTests({standardTests, browserEval}) {
         wildcardApiHolder,
         httpPort,
         staticDir,
-        ...args
+        ...args,
       });
     };
     await startServer();
@@ -82,22 +80,27 @@ async function runStandardTests({standardTests, browserEval}) {
         httpPort,
       };
 
-      await runTest({test, testArgs, serverFramework});
+      await runTest({ test, testArgs, serverFramework });
     }
 
     await stop();
   }
 }
 
-async function runTest({test: {testFn, testFile}, serverFramework, testArgs}) {
-  const testName = "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
+async function runTest({
+  test: { testFn, testFile },
+  serverFramework,
+  testArgs,
+}) {
+  const testName =
+    "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
 
-  const log_collector = new LogCollector({silenceLogs: !DEBUG});
+  const log_collector = new LogCollector({ silenceLogs: !DEBUG });
   log_collector.enable();
-  const {stdoutLogs, stderrLogs} = log_collector;
+  const { stdoutLogs, stderrLogs } = log_collector;
 
   try {
-    await testFn({...testArgs, stdoutLogs, stderrLogs});
+    await testFn({ ...testArgs, stdoutLogs, stderrLogs });
   } catch (err) {
     log_collector.flush();
     log_collector.disable();
@@ -111,10 +114,10 @@ async function runTest({test: {testFn, testFile}, serverFramework, testArgs}) {
   console.log(symbolSuccess + testName);
 }
 
-async function runIntegrationTests({integrationTests, browserEval}) {
-  for(test of integrationTests) {
-    const testArgs = {browserEval, staticDir, httpPort};
-    await runTest({test, testArgs, serverFramework: 'custom-server'});
+async function runIntegrationTests({ integrationTests, browserEval }) {
+  for (test of integrationTests) {
+    const testArgs = { browserEval, staticDir, httpPort };
+    await runTest({ test, testArgs, serverFramework: "custom-server" });
   }
 }
 
@@ -132,9 +135,9 @@ function getTests() {
   testFiles.forEach((filePath) => {
     require(filePath).forEach((testFn) => {
       const testFile = path.relative(projectRoot, filePath);
-      const args = {testFile, testFn};
-      if( !selectedTest || selectedTest===testFn.name){
-        if( testFn.isIntegrationTest ){
+      const args = { testFile, testFn };
+      if (!selectedTest || selectedTest === testFn.name) {
+        if (testFn.isIntegrationTest) {
           integrationTests.push(args);
         } else {
           standardTests.push(args);
@@ -143,23 +146,23 @@ function getTests() {
     });
   });
 
-  return {standardTests, integrationTests};
+  return { standardTests, integrationTests };
 }
 function getSelectedTest() {
   return getCLIArgument();
 }
 function getCLIArgument() {
-  assert([2,3].includes(process.argv.length));
+  assert([2, 3].includes(process.argv.length));
   return process.argv[2];
 }
 
-function LogCollector({silenceLogs}) {
+function LogCollector({ silenceLogs }) {
   assert([true, false].includes(silenceLogs));
 
   let stdout_write;
   let stderr_write;
-  const stdout_write_calls = []
-  const stderr_write_calls = []
+  const stdout_write_calls = [];
+  const stderr_write_calls = [];
 
   const stdoutLogs = [];
   const stderrLogs = [];
@@ -170,18 +173,18 @@ function LogCollector({silenceLogs}) {
     stdout_write = process.stdout.write;
     stderr_write = process.stderr.write;
     process.stdout.write = (...args) => {
-      if( !silenceLogs ){
-        stdout_write.apply(process.stdout, args)
+      if (!silenceLogs) {
+        stdout_write.apply(process.stdout, args);
       }
       stdout_write_calls.push(args);
-      stdoutLogs.push(...args.map(o => o.toString()));
+      stdoutLogs.push(...args.map((o) => o.toString()));
     };
     process.stderr.write = (...args) => {
-      if( !silenceLogs ){
-        stderr_write.apply(process.stderr, args)
+      if (!silenceLogs) {
+        stderr_write.apply(process.stderr, args);
       }
       stderr_write_calls.push(args);
-      stderrLogs.push(...args.map(o => o.toString()));
+      stderrLogs.push(...args.map((o) => o.toString()));
     };
   }
   function disable() {
@@ -189,7 +192,7 @@ function LogCollector({silenceLogs}) {
     process.stderr.write = stderr_write;
   }
   function flush() {
-    if( !silenceLogs ) {
+    if (!silenceLogs) {
       return;
     }
     stdout_write_calls.forEach((args) =>

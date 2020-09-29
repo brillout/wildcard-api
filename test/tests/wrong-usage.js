@@ -19,11 +19,13 @@ async function validUsage1({ wildcardApi, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]', {method: 'POST'});
+    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]', {
+      method: "POST",
+    });
     const text = await resp.text();
     console.log(text);
     assert(resp.status === 200, resp.status);
-    assert(text==='"Yo Mom!"', { text });
+    assert(text === '"Yo Mom!"', { text });
   });
 }
 
@@ -33,11 +35,13 @@ async function validUsage2({ wildcardApi, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/%5B%22Mom%22%5D", {method: 'POST'});
+    const resp = await window.fetch("/_wildcard_api/hello/%5B%22Mom%22%5D", {
+      method: "POST",
+    });
     const text = await resp.text();
     console.log(text);
     assert(resp.status === 200, resp.status);
-    assert(text==='"Yo Mom!"', { text });
+    assert(text === '"Yo Mom!"', { text });
   });
 }
 
@@ -149,12 +153,12 @@ async function missingContext({ wildcardApi, browserEval }) {
   let endpointFunctionCalled = false;
   wildcardApi.endpoints.failingEndpoint = async function () {
     endpointFunctionCalled = true;
-    return this.notExistingContext+' bla';
+    return this.notExistingContext + " bla";
   };
 
   await browserEval(async () => {
     const ret = await window.endpoints.failingEndpoint("rom");
-    assert(ret==='undefined bla');
+    assert(ret === "undefined bla");
   });
 
   assert(endpointFunctionCalled === true);
@@ -185,51 +189,64 @@ async function missingContextSSR({ wildcardApi, wildcardClient }) {
 }
 
 missingContextObject.isIntegrationTest = true;
-async function missingContextObject({stdoutLogs, stderrLogs, ...args}) {
+async function missingContextObject({ stdoutLogs, stderrLogs, ...args }) {
   const getContext = () => undefined;
-  const {stopServer, wildcardApi} = await createserver({getContext, ...args});
+  const { stopServer, wildcardApi } = await createserver({
+    getContext,
+    ...args,
+  });
 
-  await test_failedEndpointCall({wildcardApi, ...args});
+  await test_failedEndpointCall({ wildcardApi, ...args });
 
   await stopServer();
 
-  assert(stderrIncludes(
-    stderrLogs,
-    'Your context getter should return an object but it returns `undefined`.',
-  ));
+  assert(
+    stderrIncludes(
+      stderrLogs,
+      "Your context getter should return an object but it returns `undefined`."
+    )
+  );
   assert(noStdoutSpam(stdoutLogs));
 }
 
 wrongContextObject.isIntegrationTest = true;
-async function wrongContextObject({stdoutLogs, stderrLogs, ...args}) {
-  const getContext = () => 'wrong-context-type';
-  const {stopServer, wildcardApi} = await createserver({getContext, ...args});
+async function wrongContextObject({ stdoutLogs, stderrLogs, ...args }) {
+  const getContext = () => "wrong-context-type";
+  const { stopServer, wildcardApi } = await createserver({
+    getContext,
+    ...args,
+  });
 
-  await test_failedEndpointCall({wildcardApi, ...args});
+  await test_failedEndpointCall({ wildcardApi, ...args });
 
   await stopServer();
 
-  assert(stderrIncludes(
-    stderrLogs,
-    'Your context getter should return an object but it returns `context.constructor===String`.',
-  ));
-  assert(noStdoutSpam(stdoutLogs), {stdoutLogs});
+  assert(
+    stderrIncludes(
+      stderrLogs,
+      "Your context getter should return an object but it returns `context.constructor===String`."
+    )
+  );
+  assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
 }
 
 function stderrIncludes(stderrLogs, str) {
-  return stderrLogs.find(log => log.includes(str));
+  return stderrLogs.find((log) => log.includes(str));
 }
 function noStdoutSpam(stdoutLogs) {
   return (
-    stdoutLogs.length===2 &&
+    stdoutLogs.length === 2 &&
     // Browser-side puppeteer log
-    stdoutLogs[0]==='Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n' &&
+    stdoutLogs[0] ===
+      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n" &&
     // Puppeteer "hidden" log (never saw such hidden log before; no clue how and why this exists)
-    stdoutLogs[1].includes('This conditional evaluates to true if and only if there was an error')
+    stdoutLogs[1].includes(
+      "This conditional evaluates to true if and only if there was an error"
+    )
   );
 }
 
-async function test_failedEndpointCall({wildcardApi, ...args}) {
+async function test_failedEndpointCall({ wildcardApi, ...args }) {
   let endpointCalled = false;
   wildcardApi.endpoints.failingEndpoint = async function (name) {
     endpointCalled = true;
@@ -238,14 +255,14 @@ async function test_failedEndpointCall({wildcardApi, ...args}) {
 
   await callFailaingEndpoint(args);
 
-  assert(endpointCalled===false);
+  assert(endpointCalled === false);
 }
 
-async function createserver({getContext, staticDir, httpPort}) {
+async function createserver({ getContext, staticDir, httpPort }) {
   const express = require("express");
   const wildcard = require("@wildcard-api/server/express");
   const WildcardApi = require("@wildcard-api/server/WildcardApi");
-  const {stop, start} = require('../setup/servers/express');
+  const { stop, start } = require("../setup/servers/express");
 
   const wildcardApi = new WildcardApi();
 
@@ -260,19 +277,19 @@ async function createserver({getContext, staticDir, httpPort}) {
   const server = await start(app, httpPort);
 
   const stopServer = () => stop(server);
-  return {stopServer, wildcardApi};
+  return { stopServer, wildcardApi };
 }
 
-async function callFailaingEndpoint({browserEval}) {
+async function callFailaingEndpoint({ browserEval }) {
   await browserEval(async () => {
     let errorThrown = false;
     try {
       const ret = await window.endpoints.failingEndpoint("rom");
-      console.log('ret: ', ret);
-    } catch(err){
-      assert(err.message==='Internal Server Error');
+      console.log("ret: ", ret);
+    } catch (err) {
+      assert(err.message === "Internal Server Error");
       errorThrown = true;
     }
-    assert(errorThrown===true);
+    assert(errorThrown === true);
   });
 }
