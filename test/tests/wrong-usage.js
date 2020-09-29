@@ -9,6 +9,7 @@ module.exports = [
   endpointDoesNotExist,
   ssrMissingRequestProps,
   missingContext,
+  wrongContext,
 ];
 
 async function validUsage1({ wildcardApi, browserEval }) {
@@ -168,58 +169,89 @@ async function ssrMissingRequestProps({ wildcardApi, wildcardClient }) {
 }
 
 missingContext.isIntegrationTest = true;
-async function missingContext({browserEval, staticDir, httpPort, stdoutLogs, stderrLogs}) {
-  const WildcardApi = require("@wildcard-api/server/WildcardApi");
-  const wildcardApi = new WildcardApi();
+async function missingContext({stdoutLogs, stderrLogs, ...args}) {
+  const getContext = () => undefined;
+  const {stopServer, wildcardApi} = await createserver({getContext, ...args});
 
-  const stopServer = await createserver();
-
-  await test();
+  await test_failedEndpointCall({wildcardApi, ...args});
 
   await stopServer();
 
-  // TODO: make `stdoutLogs.length===0`
-  assert(stderrLogs.find(log => log.includes('Your context getter should return an object but it returns `undefined`.')));
+  assert(stderrIncludes(
+    stderrLogs,
+    'Your context getter should return an object but it returns `undefined`.',
+  ));
+  assert(noStdoutSpam(stdoutLogs));
+}
 
-  return;
+wrongContext.isIntegrationTest = true;
+async function wrongContext({stdoutLogs, stderrLogs, ...args}) {
+  const getContext = () => 'wrong-context-type';
+  const {stopServer, wildcardApi} = await createserver({getContext, ...args});
 
-  async function test() {
-    let endpointCalled = false;
-    wildcardApi.endpoints.hello = async function (name) {
-      endpointCalled = true;
-      return "Dear " + name;
-    };
+  await test_failedEndpointCall({wildcardApi, ...args});
 
-    await browserEval(async () => {
-      let errorThrown = false;
-      try {
-        await window.endpoints.hello("rom");
-      } catch(err){
-        assert(err.message==='Internal Server Error');
-        errorThrown = true;
-      }
-      assert(errorThrown===true);
-    });
+  await stopServer();
 
-    assert(endpointCalled===false);
-  }
+  assert(stderrIncludes(
+    stderrLogs,
+    'Your context getter should return an object but it returns `context.constructor===String`.',
+  ));
+  assert(noStdoutSpam(stdoutLogs), {stdoutLogs});
+}
 
-  async function createserver() {
-    const express = require("express");
-    const wildcard = require("@wildcard-api/server/express");
-    const {stop, start} = require('../setup/servers/express');
+function stderrIncludes(stderrLogs, str) {
+  return stderrLogs.find(log => log.includes(str));
+}
+function noStdoutSpam(stdoutLogs) {
+  return (
+    stdoutLogs.length===2 &&
+    // Browser-side puppeteer log
+    stdoutLogs[0]==='Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n' &&
+    // Puppeteer "hidden" log (never saw such hidden log before; no clue how and why this exists)
+    stdoutLogs[1].includes('This conditional evaluates to true if and only if there was an error')
+  );
+}
 
-    const app = express();
+async function test_failedEndpointCall({wildcardApi, browserEval}) {
+  let endpointCalled = false;
+  wildcardApi.endpoints.hello = async function (name) {
+    endpointCalled = true;
+    return "Dear " + name;
+  };
 
-    app.use(express.json());
+  await browserEval(async () => {
+    let errorThrown = false;
+    try {
+      await window.endpoints.hello("rom");
+    } catch(err){
+      assert(err.message==='Internal Server Error');
+      errorThrown = true;
+    }
+    assert(errorThrown===true);
+  });
 
-    app.use(express.static(staticDir, { extensions: ["html"] }));
+  assert(endpointCalled===false);
+}
 
-    app.use(wildcard(() => undefined));
+async function createserver({getContext, staticDir, httpPort}) {
+  const express = require("express");
+  const wildcard = require("@wildcard-api/server/express");
+  const WildcardApi = require("@wildcard-api/server/WildcardApi");
+  const {stop, start} = require('../setup/servers/express');
 
-    const server = await start(app, httpPort);
+  const wildcardApi = new WildcardApi();
 
-    return () => stop(server);
-  }
+  const app = express();
 
+  app.use(express.json());
+
+  app.use(express.static(staticDir, { extensions: ["html"] }));
+
+  app.use(wildcard(getContext));
+
+  const server = await start(app, httpPort);
+
+  const stopServer = () => stop(server);
+  return {stopServer, wildcardApi};
 }
