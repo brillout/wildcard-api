@@ -1,6 +1,6 @@
 const { printDonationReminder } = require("@lsos/donation-reminder");
 const assert = require("@brillout/assert");
-const { parse, stringify } = require("./serializer");
+const { stringify, parse } = require("@brillout/json-s");
 const makeHttpRequest = require("./makeHttpRequest");
 
 const IS_CALLED_BY_PROXY = Symbol();
