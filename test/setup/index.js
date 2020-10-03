@@ -98,9 +98,14 @@ async function runTest({
   const log_collector = new LogCollector({ silenceLogs: !DEBUG });
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
+  const assertStderr = (content) => {
+    const stderrLogsLength = stderrLogs.length;
+    assert(stderrIs(stderrLogs, content), { stderrLogsLength, stderrLogs });
+  };
 
   try {
-    await testFn({ ...testArgs, stdoutLogs, stderrLogs });
+    await testFn({ ...testArgs, assertStderr });
+    assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
   } catch (err) {
     log_collector.flush();
     log_collector.disable();
@@ -112,6 +117,50 @@ async function runTest({
   log_collector.disable();
 
   console.log(symbolSuccess + testName);
+}
+
+function stderrIs(stderrLogs, content) {
+  //stderrLogs = removeHiddenLog(stderrLogs);
+
+  if (stderrLogs.length !== 1) {
+    return false;
+  }
+
+  return stderrLogs.find((log) => log.includes(content));
+}
+
+function noStdoutSpam(stdoutLogs) {
+  stdoutLogs = removeHiddenLog(stdoutLogs);
+
+  if (stdoutLogs.length === 0) {
+    return true;
+  }
+
+  if (stdoutLogs.length === 1) {
+    return (
+      // Browser-side puppeteer log when endpoint failed
+      stdoutLogs[0] ===
+      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n"
+    );
+  }
+
+  return false;
+}
+
+function removeHiddenLog(stdLogs) {
+  console.log("before", stdLogs);
+  const [last, ...rest] = stdLogs.slice().reverse();
+  // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
+  if (
+    last &&
+    last.includes(
+      "This conditional evaluates to true if and only if there was an error"
+    )
+  ) {
+    stdLogs = rest;
+  }
+  console.log("after", stdLogs);
+  return stdLogs;
 }
 
 async function runIntegrationTests({ integrationTests, browserEval }) {

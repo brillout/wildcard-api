@@ -1,6 +1,7 @@
 module.exports = [
   validUsage1,
   validUsage2,
+  endpointReturnsFunction,
   wrongUrl1,
   wrongUrl2,
   wrongUrl3,
@@ -39,6 +40,32 @@ async function validUsage2({ wildcardApi, browserEval }) {
     assert(resp.status === 200, resp.status);
     assert(text === '"Yo Mom!"', { text });
   });
+}
+
+async function endpointReturnsFunction({
+  wildcardApi,
+  browserEval,
+  assertStderr,
+}) {
+  wildcardApi.endpoints.fnEndpoint1 = async function () {
+    return () => {};
+  };
+
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.endpoints.fnEndpoint1();
+    } catch (_err) {
+      err = _err;
+    }
+    /*
+    assert(err.code === 500);
+    assert(err.message === "Internal Server Error");
+    */
+    assert(err);
+  });
+
+  assertStderr("Cannot read");
 }
 
 async function wrongUrl1({ wildcardApi, browserEval }) {

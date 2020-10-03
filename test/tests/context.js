@@ -70,7 +70,7 @@ async function missingContextFunction({ browserEval, ...args }) {
 }
 
 missingContextObject.isIntegrationTest = true;
-async function missingContextObject({ stdoutLogs, stderrLogs, ...args }) {
+async function missingContextObject({ assertStderr, ...args }) {
   const getContext = () => undefined;
   const { stopServer, wildcardApi } = await createServer({
     getContext,
@@ -81,17 +81,13 @@ async function missingContextObject({ stdoutLogs, stderrLogs, ...args }) {
 
   await stopServer();
 
-  assert(
-    stderrIncludes(
-      stderrLogs,
-      "Your context getter should return an object but it returns `undefined`."
-    )
+  assertStderr(
+    "Your context getter should return an object but it returns `undefined`."
   );
-  assert(noStdoutSpam(stdoutLogs));
 }
 
 wrongContextObject.isIntegrationTest = true;
-async function wrongContextObject({ stdoutLogs, stderrLogs, ...args }) {
+async function wrongContextObject({ assertStderr, ...args }) {
   const getContext = () => "wrong-context-type";
   const { stopServer, wildcardApi } = await createServer({
     getContext,
@@ -102,28 +98,8 @@ async function wrongContextObject({ stdoutLogs, stderrLogs, ...args }) {
 
   await stopServer();
 
-  assert(
-    stderrIncludes(
-      stderrLogs,
-      "Your context getter should return an object but it returns `context.constructor===String`."
-    )
-  );
-  assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
-}
-
-function stderrIncludes(stderrLogs, str) {
-  return stderrLogs.find((log) => log.includes(str));
-}
-function noStdoutSpam(stdoutLogs) {
-  return (
-    stdoutLogs.length === 2 &&
-    // Browser-side puppeteer log
-    stdoutLogs[0] ===
-      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n" &&
-    // Puppeteer "hidden" log (never saw such hidden log before; no clue how and why this exists)
-    stdoutLogs[1].includes(
-      "This conditional evaluates to true if and only if there was an error"
-    )
+  assertStderr(
+    "Your context getter should return an object but it returns `context.constructor===String`."
   );
 }
 
