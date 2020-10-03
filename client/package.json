@@ -1,25 +1,22 @@
 {
   "name": "@wildcard-api/client",
   "version": "0.3.3",
-  "main": "index.js",
+  "description": "JavaScript Functions as API.",
+  "main": "dist/index.js",
   "dependencies": {
     "@brillout/assert": "^0.1.1",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
     "@lsos/donation-reminder": "^0.1.7"
   },
-  "description": "JavaScript Functions as API.",
+  "scripts": {
+    "prepublishOnly": "parcel build dist/index.js --out-dir dist/umd --out-file wildcard-api-client.production.min.js --global WildcardApiClient"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  },
   "repository": "https://github.com/reframejs/wildcard-api",
   "publishConfig": {
     "access": "public"
-  },
-  "scripts": {
-    "prepublishOnly": "parcel build index.js --out-dir umd --out-file wildcard-api-client.production.min.js --global WildcardApiClient"
-  },
-  "browserslist": [
-    "last 1 Chrome versions"
-  ],
-  "devDependencies": {
-    "parcel": "^1.12.4"
   }
 }

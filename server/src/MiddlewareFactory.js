@@ -1,6 +1,6 @@
 const assert = require("@brillout/assert");
 const autoLoadEndpointFiles = require("./autoLoadEndpointFiles");
-const wilcardApi_ = require("@wildcard-api/server");
+const wilcardApi_ = require("./index");
 
 module.exports = MiddlewareFactory;
 

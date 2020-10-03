@@ -1,6 +1,12 @@
 node_modules/
+
+# TypeScript & Parcel build directory
 dist/
+
+# Parcel's cache
 .cache/
+
+tsconfig.tsbuildinfo
 
 npm-debug.log*
 yarn-error.log

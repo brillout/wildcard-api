@@ -359,7 +359,7 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
-   const {getApiHttpResponse} = require('@wildcard-api/server'); // npm install @wildcard-api/server
+   const {getApiHttpResponse} = require('@wildcard-api/server'); // npm i @wildcard-api/server
 
    // A server framework usually provides a way to add a route and define an HTTP response.
    const {addRoute, HttpResponse} = require('your-favorite-server-framework');
@@ -414,7 +414,9 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    // Browser
 
-   import {endpoints} from '@wildcard-api/client'; // npm install @wildcard-api/client
+   // npm install @wildcard-api/client
+   // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-api-client.production.min.js"/>
+   import {endpoints} from '@wildcard-api/client';
 
    (async () => {
      const {msg} = await endpoints.myFirstEndpoint();

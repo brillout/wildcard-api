@@ -1,19 +1,20 @@
 {
   "name": "@wildcard-api/server",
   "version": "0.3.2",
-  "main": "index.js",
+  "description": "JavaScript Functions as API.",
+  "main": "dist/index.js",
   "dependencies": {
     "@brillout/assert": "^0.1.1",
     "@brillout/json-s": "^0.1.4",
     "@brillout/project-files": "^0.4.2",
     "@brillout/url-props": "^0.1.1",
+    "@types/node": "^14.11.2",
     "@universal-adapter/express": "^0.5.1",
     "@universal-adapter/hapi": "^0.5.1",
     "@universal-adapter/koa": "^0.5.1",
     "chalk": "^2.4.2",
     "strip-ansi": "^6.0.0"
   },
-  "description": "JavaScript Functions as API.",
   "repository": "https://github.com/reframejs/wildcard-api",
   "publishConfig": {
     "access": "public"

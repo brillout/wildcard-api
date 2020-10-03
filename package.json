@@ -1,13 +1,19 @@
 {
   "scripts": {
-    "test": "cd test/ && yarn run-tests",
     "demo": "cd examples/todo-list/ && yarn dev",
-    "release": "(cd client/ && npm publish) && (cd server/ && npm publish)",
+    "test": "cd test/ && yarn run-tests",
+    "dev": "yarn build:dev",
+    "build:dev": "tsc --build --watch",
+    "build:prod": "tsc --build",
+    "release": "yarn build:prod && yarn release:client && yarn release:server",
+    "release:client": "cd client/ && npm publish",
+    "release:server": "cd server/ && npm publish",
     "docs": "mdocs",
     "clean": "git clean -Xdf"
   },
   "devDependencies": {
-    "@brillout/mdocs": "^0.1.24"
+    "@brillout/mdocs": "^0.1.24",
+    "typescript": "^4.0.3"
   },
   "workspaces": [
     "server/",

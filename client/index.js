@@ -1,3 +1,1 @@
-const WildcardClient = require("./WildcardClient");
-
-module.exports = new WildcardClient();
+module.exports = require("./dist/index");
