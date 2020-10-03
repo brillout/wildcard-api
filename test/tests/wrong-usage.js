@@ -51,28 +51,21 @@ async function endpointReturnsFunction({
     return () => {};
   };
 
-  console.log("before");
   await browserEval(async () => {
-    console.log("begin");
-    console.error("err1");
-    //await new Promise((r) => setTimeout(r, 4000));
     let err;
     try {
       await window.endpoints.fnEndpoint1();
     } catch (_err) {
       err = _err;
     }
+    /*
+    assert(err.code === 500);
+    assert(err.message === "Internal Server Error");
+    */
     assert(err);
-    console.error("err2");
-    console.log("end");
   });
-  console.log("after");
-  console.error("fi er");
 
-  await new Promise((r) => setTimeout(r, 0));
-  //await new Promise(r => r());
-
-  assertStderr("bla");
+  assertStderr("Cannot read");
 }
 
 async function wrongUrl1({ wildcardApi, browserEval }) {
