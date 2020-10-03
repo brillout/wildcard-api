@@ -67,12 +67,14 @@ function WildcardApi() {
       isDirectCall: false,
     });
 
+    let responseProps;
     if (endpointError) {
       logError({ err: endpointError, endpointName });
-      return HttpErrorResponse({ endpointError, isHumanMode });
+      responseProps = HttpErrorResponse({ endpointError, isHumanMode });
+    } else {
+      responseProps = HttpResponse({ endpointResult, isHumanMode });
     }
-
-    const responseProps = await HttpResponse({ endpointResult, isHumanMode });
+    assert.internal(responseProps.body.constructor === String);
 
     if (!options.disableEtag) {
       const computeEtag = require("./computeEtag");
@@ -641,7 +643,12 @@ function HttpErrorResponse({ endpointError, isHumanMode }) {
     contentType: "text/plain",
   };
   if (isHumanMode) {
-    return get_human_error_response({ responseProps, endpointError });
+    const responseProps_ = get_human_error_response({
+      responseProps,
+      endpointError,
+    });
+    assert.internal(responseProps.body.constructor === String);
+    return responseProps_;
   } else {
     return responseProps;
   }
@@ -675,6 +682,7 @@ function HttpResponse({ endpointResult, isHumanMode }) {
   if (endpointError) {
     return HttpErrorResponse({ endpointError, isHumanMode });
   }
+  assert.internal(responseProps.body.constructor === String);
   if (isHumanMode) {
     return get_human_response({ responseProps, endpointResult });
   } else {
