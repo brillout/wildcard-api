@@ -72,7 +72,11 @@ function WildcardApi() {
       logError({ err: endpointError, endpointName });
       responseProps = HttpErrorResponse({ endpointError, isHumanMode });
     } else {
-      responseProps = HttpResponse({ endpointResult, isHumanMode });
+      responseProps = HttpResponse({
+        endpointResult,
+        isHumanMode,
+        endpointName,
+      });
     }
     assert.internal(responseProps.body.constructor === String);
 
@@ -652,7 +656,7 @@ function HttpErrorResponse({ endpointError, isHumanMode }) {
     return responseProps;
   }
 }
-function HttpResponse({ endpointResult, isHumanMode }) {
+function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   const responseProps = {
     statusCode: 200,
     contentType: "application/json",
@@ -662,21 +666,16 @@ function HttpResponse({ endpointResult, isHumanMode }) {
   const valueToStringify = endpointResult === undefined ? null : endpointResult;
   try {
     responseProps.body = stringify(valueToStringify);
-  } catch (err_) {
-    console.error(err_);
-    console.log("\n");
-    console.log("Returned value");
-    console.log(valueToStringify);
-    console.log("\n");
-    assert.internal(err_);
-    endpointError = err_;
-    assert.warning(
-      false,
-      "Couldn't serialize value returned by endpoint function `" +
-        endpointName +
-        "`.",
-      "The returned value in question and the serialization error are printed above."
+  } catch (stringifyError) {
+    const usageError = new UsageError(
+      [
+        `Couldn't serialize value returned by endpoint function \`${endpointName}\`.`,
+        "Make sure the returned value only contains supported types: `Object`, `string`, `number`, `Date`, `null`, `undefined`, `RegExp`, `Inifinity`, `NaN`.",
+        "Serialization Error: " + stringifyError.message,
+      ].join(" ")
     );
+    console.error(usageError);
+    endpointError = usageError;
   }
   if (endpointError) {
     return HttpErrorResponse({ endpointError, isHumanMode });
@@ -819,4 +818,8 @@ function getEndpointMissingError({
 
 function getDevModeNote() {
   return "only in dev mode. (When <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)";
+}
+
+function UsageError(msg) {
+  return new Error("[@wildcard-api/server] " + msg);
 }

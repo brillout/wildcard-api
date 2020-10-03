@@ -6,13 +6,14 @@
 module.exports = [
   validUsage1,
   validUsage2,
-  endpointReturnsFunction,
   wrongUrl1,
   wrongUrl2,
   wrongUrl3,
   noEndpoints,
   noEndpoints2,
   endpointDoesNotExist,
+  endpointReturnsFunction1,
+  endpointReturnsFunction2,
 ];
 
 async function validUsage1({ wildcardApi, browserEval }) {
@@ -43,28 +44,6 @@ async function validUsage2({ wildcardApi, browserEval }) {
     assert(resp.status === 200, resp.status);
     assert(text === '"Yo Mom!"', { text });
   });
-}
-
-async function endpointReturnsFunction({
-  wildcardApi,
-  browserEval,
-  assertStderr,
-}) {
-  wildcardApi.endpoints.fnEndpoint1 = async function () {
-    return () => {};
-  };
-
-  await browserEval(async () => {
-    let err;
-    try {
-      await window.endpoints.fnEndpoint1();
-    } catch (_err) {
-      err = _err;
-    }
-    assert(err.message === "Internal Server Error");
-  });
-
-  // assertStderr("Endpoints should not return a function.");
 }
 
 async function wrongUrl1({ wildcardApi, browserEval }) {
@@ -149,4 +128,51 @@ async function endpointDoesNotExist({ wildcardApi, browserEval }) {
     assert(text.includes("Endpoint `blub` doesn't exist."), { text });
     assert(!text.includes("You didn't define any endpoints."), { text });
   });
+}
+
+async function endpointReturnsFunction1({
+  wildcardApi,
+  browserEval,
+  assertStderr,
+}) {
+  wildcardApi.endpoints.fnEndpoint1 = async function () {
+    return function heloFn() {}; //() => {};
+  };
+
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.endpoints.fnEndpoint1();
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.message === "Internal Server Error");
+  });
+
+  assertStderr(
+    "Couldn't serialize value returned by endpoint function `fnEndpoint1`",
+    "Cannot serialize function `heloFn`"
+  );
+}
+
+async function endpointReturnsFunction2({
+  wildcardApi,
+  browserEval,
+  assertStderr,
+}) {
+  wildcardApi.endpoints.fnEndpoint2 = async function () {
+    return async () => {};
+  };
+
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.endpoints.fnEndpoint2();
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.message === "Internal Server Error");
+  });
+
+  assertStderr("Cannot serialize function");
 }

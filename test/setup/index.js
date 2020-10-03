@@ -99,10 +99,10 @@ async function runTest({
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
 
-  let stderrContent;
+  let stderrContents;
   try {
-    await testFn({ ...testArgs, assertStderr: (c) => (stderrContent = c) });
-    await checkStderr({ stderrContent, stderrLogs });
+    await testFn({ ...testArgs, assertStderr: (...c) => (stderrContents = c) });
+    await checkStderr({ stderrContents, stderrLogs });
     assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
   } catch (err) {
     log_collector.flush();
@@ -119,8 +119,8 @@ async function runTest({
   return;
 }
 
-async function checkStderr({ stderrContent, stderrLogs }) {
-  if (stderrContent === undefined) {
+async function checkStderr({ stderrContents, stderrLogs }) {
+  if (!stderrContents || stderrContents.length === 0) {
     return;
   }
 
@@ -132,8 +132,9 @@ async function checkStderr({ stderrContent, stderrLogs }) {
   const stderrLogsLength = stderrLogs.length;
   assert(stderrLogsLength === 1, { stderrLogsLength, stderrLogs });
   const stderrLog = stderrLogs[0];
-  assert(stderrLog.includes(stderrContent), { stderrLog });
-  //assert(stderrLogs.find((log) => log.includes(content), { stderrLogsLength, stderrLogs });
+  stderrContents.forEach((stderrContent) => {
+    assert(stderrLog.includes(stderrContent), { stderrContent, stderrLog });
+  });
 }
 
 function noStdoutSpam(stdoutLogs) {
