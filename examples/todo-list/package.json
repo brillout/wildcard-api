@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "yarn install && yarn run start:build && yarn run start:server",
-    "start:server": "node ./start-with-express.js",
-    "start:build": "cd client && parcel build *.html"
+    "dev": "yarn install && sh -c 'yarn dev:frontend & yarn dev:backend & wait'",
+    "dev:backend": "nodemon ./start-with-express.js",
+    "dev:frontend": "cd client && parcel watch *.html"
   },
   "dependencies": {
     "@brillout/assert": "^0.1.0",
@@ -16,6 +16,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
+    "nodemon": "^2.0.4",
     "parcel": "^1.12.3",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
