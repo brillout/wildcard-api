@@ -547,18 +547,6 @@ function getEndpointArgs({
         endpointArgs: [],
       };
     }
-    if (!urlArgs__string.startsWith("[")) {
-      return {
-        malformationError: {
-          errorText: [
-            JSON.stringify({ requestBody }),
-            "Malformatted API request `" + pathname__prettified + "`.",
-            colorizeError("The URL arguments should be a JSON array."),
-            "`" + urlArgs__string + "` is not a JSON array",
-          ].join("\n"),
-        },
-      };
-    }
     endpointArgs__string = urlArgs__string;
   }
 
@@ -566,14 +554,25 @@ function getEndpointArgs({
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch (err_) {
-    assert.internal(endpointArgs__string.startsWith("["));
     return {
       malformationError: {
         errorText: [
           "Malformatted API request `" + pathname__prettified + "`.",
-          "Cannot JSON parse `" + endpointArgs__string + "`.",
-          colorizeError("JSON Parse Error:"),
+          "Cannot parse `" + endpointArgs__string + "`.",
+          colorizeError("Parse Error:"),
           err_.message,
+        ].join("\n"),
+      },
+    };
+  }
+  if (!endpointArgs || endpointArgs.constructor !== Array) {
+    return {
+      malformationError: {
+        errorText: [
+          JSON.stringify({ requestBody }),
+          "Malformatted API request `" + pathname__prettified + "`.",
+          colorizeError("The URL arguments should be an array."),
+          "`" + urlArgs__string + "` is not an array",
         ].join("\n"),
       },
     };

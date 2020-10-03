@@ -74,10 +74,7 @@ async function wrongUrl1({ wildcardApi, browserEval }) {
     const resp = await window.fetch("/_wildcard_api//hello");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
-    assert(text.includes("Malformatted API URL `/_wildcard_api//hello`"), {
-      text,
-    });
-    assert(text.includes("API URL should have following format:"), { text });
+    assert(text.includes("Malformatted API"));
   });
 }
 
@@ -90,15 +87,7 @@ async function wrongUrl2({ wildcardApi, browserEval }) {
     const resp = await window.fetch("/_wildcard_api/hello/wrongArgSyntax");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
-    assert(
-      text.includes(
-        "Malformatted API request `/_wildcard_api/hello/wrongArgSyntax`"
-      ),
-      { text }
-    );
-    assert(text.includes("The URL arguments should be a JSON array."), {
-      text,
-    });
+    assert(text.includes("Malformatted API"));
   });
 }
 
@@ -111,13 +100,8 @@ async function wrongUrl3({ wildcardApi, browserEval }) {
     const resp = await window.fetch("/_wildcard_api/hello/{}");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
-    assert(
-      text.includes("Malformatted API request `/_wildcard_api/hello/{}`"),
-      { text }
-    );
-    assert(text.includes("The URL arguments should be a JSON array."), {
-      text,
-    });
+    assert(text.includes("Malformatted API"));
+    assert(text.includes("The URL arguments should be an array."));
   });
 }
 

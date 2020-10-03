@@ -91,7 +91,6 @@ function WildcardClient() {
       stringify,
     });
     if (endpointArgsStr) {
-      assert.internal(endpointArgsStr.startsWith("["));
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
       if (endpointArgsStr.length >= 2000 || options.argumentsAlwaysInHttpBody) {
         body = endpointArgsStr;
