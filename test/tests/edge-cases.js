@@ -24,6 +24,5 @@ function gen_big_string() {
     const char = Math.round(Math.random() * 10).toString()[0];
     str += char;
   }
-  console.log("ss", str);
   return str;
 }

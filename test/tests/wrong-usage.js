@@ -20,7 +20,6 @@ async function validUsage1({ wildcardApi, browserEval }) {
       method: "POST",
     });
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 200, resp.status);
     assert(text === '"Yo Mom!"', { text });
   });
@@ -36,7 +35,6 @@ async function validUsage2({ wildcardApi, browserEval }) {
       method: "POST",
     });
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 200, resp.status);
     assert(text === '"Yo Mom!"', { text });
   });
@@ -90,7 +88,6 @@ async function wrongUrl2({ wildcardApi, browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/hello/wrongArgSyntax");
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 400, resp.status);
     assert(
       text.includes(
@@ -112,7 +109,6 @@ async function wrongUrl3({ wildcardApi, browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/hello/{}");
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 400, resp.status);
     assert(
       text.includes("Malformatted API request `/_wildcard_api/hello/{}`"),
@@ -128,7 +124,6 @@ async function noEndpoints({ wildcardApi, browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/hello");
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 404, resp.status);
     assert(text.includes("Endpoint `hello` doesn't exist."), { text });
     assert(text.includes("You didn't define any endpoints."), { text });
@@ -165,7 +160,6 @@ async function endpointDoesNotExist({ wildcardApi, browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/blub");
     const text = await resp.text();
-    console.log(text);
     assert(resp.status === 404, resp.status);
     assert(text.includes("Endpoint `blub` doesn't exist."), { text });
     assert(!text.includes("You didn't define any endpoints."), { text });

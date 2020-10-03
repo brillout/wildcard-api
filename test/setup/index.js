@@ -146,8 +146,13 @@ function noStdoutSpam(stdoutLogs) {
   if (stdoutLogs.length === 1) {
     return (
       // Browser-side puppeteer log when endpoint failed
-      stdoutLogs[0] ===
-      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n"
+      [
+        "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
+        "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n",
+        "Failed to load resource: the server responded with a status of 400 (Bad Request)\n",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)\n",
+      ].includes(stdoutLogs[0])
     );
   }
 
