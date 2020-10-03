@@ -3,6 +3,7 @@ const crypto = require("crypto");
 module.exports = computeEtag;
 
 function computeEtag(body) {
+  console.error('rrii before');
   if (body.length === 0) {
     // fast-path empty body
     return "1B2M2Y8AsgTpgAmY7PhCfg==";

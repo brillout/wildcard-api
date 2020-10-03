@@ -21,7 +21,7 @@ const {
 } = require("@brillout/cli-theme");
 const chalk = require("chalk");
 
-/*
+//*
 const DEBUG = true;
 /*/
 const DEBUG = false;
@@ -120,17 +120,15 @@ async function runTest({
 }
 
 function stderrIs(stderrLogs, content) {
-  //stderrLogs = removeHiddenLog(stderrLogs);
-
+  // TODO
   if (stderrLogs.length !== 1) {
     return false;
   }
-
   return stderrLogs.find((log) => log.includes(content));
 }
 
 function noStdoutSpam(stdoutLogs) {
-  stdoutLogs = removeHiddenLog(stdoutLogs);
+  removeHiddenLog(stdoutLogs);
 
   if (stdoutLogs.length === 0) {
     return true;
@@ -148,19 +146,15 @@ function noStdoutSpam(stdoutLogs) {
 }
 
 function removeHiddenLog(stdLogs) {
-  console.log("before", stdLogs);
   const [last, ...rest] = stdLogs.slice().reverse();
   // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
   if (
-    last &&
     last.includes(
       "This conditional evaluates to true if and only if there was an error"
     )
   ) {
     stdLogs = rest;
   }
-  console.log("after", stdLogs);
-  return stdLogs;
 }
 
 async function runIntegrationTests({ integrationTests, browserEval }) {
