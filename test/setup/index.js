@@ -98,13 +98,11 @@ async function runTest({
   const log_collector = new LogCollector({ silenceLogs: !DEBUG });
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
-  const assertStderr = (content) => {
-    const stderrLogsLength = stderrLogs.length;
-    assert(stderrIs(stderrLogs, content), { stderrLogsLength, stderrLogs });
-  };
 
+  let stderrContent;
   try {
-    await testFn({ ...testArgs, assertStderr });
+    await testFn({ ...testArgs, assertStderr: (c) => (stderrContent = c) });
+    await checkStderr({ stderrContent, stderrLogs });
     assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
   } catch (err) {
     log_collector.flush();
@@ -117,16 +115,25 @@ async function runTest({
   log_collector.disable();
 
   console.log(symbolSuccess + testName);
+
+  return;
 }
 
-function stderrIs(stderrLogs, content) {
-  //stderrLogs = removeHiddenLog(stderrLogs);
-
-  if (stderrLogs.length !== 1) {
-    return false;
+async function checkStderr({ stderrContent, stderrLogs }) {
+  if (stderrContent === undefined) {
+    return;
   }
 
-  return stderrLogs.find((log) => log.includes(content));
+  // Express seems to rethrow errors asyncronously; we need to wait for express to rethrow errors.
+  await new Promise((r) => setTimeout(r, 0));
+
+  stderrLogs = removeHiddenLog(stderrLogs);
+
+  const stderrLogsLength = stderrLogs.length;
+  assert(stderrLogsLength === 1, { stderrLogsLength, stderrLogs });
+  const stderrLog = stderrLogs[0];
+  assert(stderrLog.includes(stderrContent), { stderrLog });
+  //assert(stderrLogs.find((log) => log.includes(content), { stderrLogsLength, stderrLogs });
 }
 
 function noStdoutSpam(stdoutLogs) {
@@ -148,7 +155,6 @@ function noStdoutSpam(stdoutLogs) {
 }
 
 function removeHiddenLog(stdLogs) {
-  console.log("before", stdLogs);
   const [last, ...rest] = stdLogs.slice().reverse();
   // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
   if (
@@ -159,7 +165,6 @@ function removeHiddenLog(stdLogs) {
   ) {
     stdLogs = rest;
   }
-  console.log("after", stdLogs);
   return stdLogs;
 }
 
