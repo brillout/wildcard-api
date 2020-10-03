@@ -285,11 +285,11 @@ Is your API meant to be used by yourself? Use RPC.
    const app = express();
 
    // We install the Wildcard middleware
-   app.use(wildcard(getContext));
+   app.use(wildcard(setContext));
 
-   // `getContext` is called on every API request. It defines the `context` object.
+   // `setContext` is called on every API request. It defines the `context` object.
    // `req` is Express' request object
-   async function getContext(req) {
+   async function setContext(req) {
      const context = {};
      // Authentication middlewares usually make user information available at `req.user`.
      context.user = req.user;
@@ -309,11 +309,11 @@ Is your API meant to be used by yourself? Use RPC.
    const server = Hapi.Server();
 
    // We install the Wildcard middleware
-   await server.register(wildcard(getContext));
+   await server.register(wildcard(setContext));
 
-   // `getContext` is called on every API request. It defines the `context` object.
+   // `setContext` is called on every API request. It defines the `context` object.
    // `request` is Hapi's request object
-   async function getContext(request) {
+   async function setContext(request) {
      const context = {};
      // Authentication plugins usually make user information available at `request.auth.credentials`.
      context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
@@ -334,10 +334,10 @@ Is your API meant to be used by yourself? Use RPC.
    const app = new Koa();
 
    // We install the Wildcard middleware
-   app.use(wildcard(getContext));
+   app.use(wildcard(setContext));
 
-   // `getContext` is called on every API request. It defines the `context` object.
-   async function getContext(ctx) {
+   // `setContext` is called on every API request. It defines the `context` object.
+   async function setContext(ctx) {
      const context = {};
      // Authentication middlewares often make user information available at `ctx.state.user`.
      context.user = ctx.state.user;
@@ -398,7 +398,7 @@ Is your API meant to be used by yourself? Use RPC.
    const {endpoints} = require('@wildcard-api/server');
 
    endpoints.myFirstEndpoint = async function () {
-     // The `this` object is the `context` object we defined in `getContext`.
+     // The `this` object is the `context` object we defined in `setContext`.
      console.log('The logged-in user is: ', this.user.username);
 
      return {msg: 'Hello, from my first Wildcard endpoint'};
@@ -459,11 +459,12 @@ const wildcard = require('@wildcard-api/server/express');
 const app = express();
 
 // We install the Wildcard middleware
-app.use(wildcard(getContext));
+app.use(wildcard(setContext));
 
-// We define the context object
-async function getContext(req) {
-  // `req` is Express' request object
+async function setContext(
+  // The `req` Express request object.
+    req
+  ) {
 
   const context = {};
 
@@ -471,8 +472,8 @@ async function getContext(req) {
   // about the logged-in user available at `req.user`.
   context.user = req.user;
 
-  // We add authentication operations to the context object
-  // in order to make them available to our endpoint functions.
+  // We add login and logout functions to the context object.
+  // That way we make them available to our endpoint functions.
   context.login = req.auth.login;
   context.logout = req.auth.logout;
 
@@ -502,7 +503,7 @@ endpoints.logout = async function() {
 };
 ~~~
 
-If you do SSR then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+For SSR, read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 
 <br/>
@@ -537,14 +538,16 @@ permissions are defined programmatically.
 
 endpoints.deletePost = async function(){
   // Only admins are allowed to remove a post
-  if( !user.isAdmin ) return;
+  if( !user.isAdmin ) {
+    // The user is not admin — we abort.
+    return;
+  }
 
   // ...
 };
 ~~~
 
-It is crucial that you define permissions.
-You should never do this:
+It is crucial to define permissions; never do something like this:
 ~~~js
 // Node.js server
 
@@ -568,7 +571,7 @@ users.forEach(({login, password}) => {
 });
 ~~~
 
-Instead, you should define permissions. For example:
+Instead, you should define permissions, such as:
 ~~~js
 // Node.js server
 
@@ -605,17 +608,17 @@ if( !this.user ){
 The reason is simple:
 when we develop the frontend we know what is allowed and we can
 develop the frontend to always call endpoints in an authorized way.
-If an endpoint call isn't allowed, either there is a bug in our frontend code or an attacker is trying to hack our backend.
+If an endpoint call isn't allowed, either there is a bug in our code or an attacker is trying to hack us.
 If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
 
 That said,
-there are situations where it is expected that a permission may fail, and
-you may want to return the information that the permission failed. For example:
+there are situations when it is expected that a permission may fail. For example:
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
 endpoints.getTodoList = async function() {
-  if( !this.user ) {
+  const isLoggedIn = !!this.user;
+  if( !isLoggedIn ) {
     // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
     // the frontend knows that the user should be redirected to the login page.
     return {isNotLoggedIn: true};
@@ -624,31 +627,18 @@ endpoints.getTodoList = async function() {
 };
 ~~~
 
-Note that you should not deliberately throw exceptions.
+You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
 ~~~js
 endpoints.getTodoList = async function() {
   if( !this.user ) {
-    // Don't do this:
+    /* Don't do this:
     throw new Error('User is not logged in.');
-  }
-  // ...
-};
-~~~
-
-Return a JavaScript value instead.
-~~~js
-endpoints.getTodoList = async function() {
-  if( !this.user ) {
-    // Do this:
+    */
+    // Do this instead:
     return {isNotLoggedIn: true};
   }
   // ...
-};
 ~~~
-
-Your endpoint functions should not deliberately throw exceptions because
-Wildcard treats exceptions as bugs,
-which we explain in the next section [Error Handling](#error-handling).
 
 
 <br/>
@@ -675,9 +665,9 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## Error Handling
 
-Calling an endpoint throws an error when:
-- The browser couldn't connect to the server. (The user is offline or your server is down.)
-- The endpoint function threw an error.
+Calling an endpoint throws an error if and only if:
+- the browser couldn't connect to the server (the browser is offline or your server is down), or
+- the endpoint function threw an error.
 
 ~~~js
 // Browser
@@ -685,7 +675,9 @@ Calling an endpoint throws an error when:
 import {endpoints} from '@wildcard-api/client';
 import assert from 'assert';
 
-(async () => {
+callEndpoint();
+
+async function callEndpoint() {
   let err;
   try {
     await endpoints.myEndpoint();
@@ -693,24 +685,29 @@ import assert from 'assert';
     err = _err;
   }
 
-  assert(err || err.isNetworkError || err.isServerError);
   if( !err ){
     // Success: the browser could connect to the server and
-    // the endpoint function `myEndpoint` didn't throw an error.
+    // the endpoint `myEndpoint` didn't throw any error.
+  } else {
+    // Something went wrong.
+
+    // Either there was a network problem or your endpoint threw an error.
+    assert(err.isNetworkError || err.isServerError);
+
+    if( err.isNetworkError ){
+      // The browser couldn't connect to the server
+      assert(err.message==='No Server Connection');
+    }
+
+    if( err.isServerError ){
+      // The endpoint `myEndpoint` threw an error.
+      assert(err.message==='Internal Server Error');
+    }
   }
-  if( err.isNetworkError ){
-    // Error: the browser couldn't connect to the server
-    assert(err.message==='No Server Connection');
-  }
-  if( err.isServerError ){
-    // Error: the endpoint function `myEndpoint` threw an error.
-    assert(err.message==='Internal Server Error');
-  }
-})();
+}
 ~~~
 
-You shouldn't deliberately throw exceptions:
-Wildcard considers any uncaught error as a bug in your code.
+You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
 In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
@@ -731,7 +728,7 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-You can use `isServerError` and `isNetworkError` to handle errors more precisely.
+The `isServerError` and `isNetworkError` flags can be used to handle errors more precisely. For example:
 ~~~js
 // Browser
 

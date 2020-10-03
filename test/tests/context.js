@@ -47,9 +47,9 @@ async function missingContextSSR({ wildcardApi, wildcardClient }) {
 
 missingContextFunction.isIntegrationTest = true;
 async function missingContextFunction({ browserEval, ...args }) {
-  const getContext = undefined;
+  const setContext = undefined;
   const { stopServer, wildcardApi } = await createServer({
-    getContext,
+    setContext,
     ...args,
   });
 
@@ -71,9 +71,9 @@ async function missingContextFunction({ browserEval, ...args }) {
 
 missingContextObject.isIntegrationTest = true;
 async function missingContextObject({ assertStderr, ...args }) {
-  const getContext = () => undefined;
+  const setContext = () => undefined;
   const { stopServer, wildcardApi } = await createServer({
-    getContext,
+    setContext,
     ...args,
   });
 
@@ -88,9 +88,9 @@ async function missingContextObject({ assertStderr, ...args }) {
 
 wrongContextObject.isIntegrationTest = true;
 async function wrongContextObject({ assertStderr, ...args }) {
-  const getContext = () => "wrong-context-type";
+  const setContext = () => "wrong-context-type";
   const { stopServer, wildcardApi } = await createServer({
-    getContext,
+    setContext,
     ...args,
   });
 
@@ -115,7 +115,7 @@ async function test_failedEndpointCall({ wildcardApi, ...args }) {
   assert(endpointCalled === false);
 }
 
-async function createServer({ getContext, staticDir, httpPort }) {
+async function createServer({ setContext, staticDir, httpPort }) {
   const express = require("express");
   const wildcard = require("@wildcard-api/server/express");
   const WildcardApi = require("@wildcard-api/server/WildcardApi");
@@ -130,7 +130,7 @@ async function createServer({ getContext, staticDir, httpPort }) {
   app.use(express.static(staticDir, { extensions: ["html"] }));
 
   app.use(
-    wildcard(getContext, { __INTERNAL__wildcardApiHolder: { wildcardApi } })
+    wildcard(setContext, { __INTERNAL__wildcardApiHolder: { wildcardApi } })
   );
 
   const server = await start(app, httpPort);
