@@ -1,3 +1,8 @@
+// TODO
+// - Returning undefined is ok
+// - Arrow endpoint functions not ok
+// - Non-async endpoint functions not ok
+
 module.exports = [
   validUsage1,
   validUsage2,
