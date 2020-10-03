@@ -246,7 +246,7 @@ Niels Litt <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecom
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are well-suited tools to create an API that is meant to be consumed by third-party developers.
+REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 it enables third-party developers
@@ -268,9 +268,9 @@ when (and only if!) the need arises.
 
 In a nuthsell:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be consumed by third parties? Use REST or GraphQL.
+Is your API meant to be used by third parties? Use REST or GraphQL.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be consumed by yourself? Use RPC.
+Is your API meant to be used by yourself? Use RPC.
 
 &nbsp;
 
