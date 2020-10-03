@@ -196,7 +196,7 @@ endpoints.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is used in production at several projects,
+Wildcard is used in production at many companies,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
@@ -246,7 +246,7 @@ Niels Litt <a href="https://github.com/reframejs/wildcard-api/issues/22#issuecom
 
 ## Wildcard compared to REST and GraphQL
 
-REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
+REST and GraphQL are well-suited tools to create an API that is meant to be consumed by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
 It is no surprise that Facebook is using (and invented) GraphQL;
 it enables third-party developers
@@ -255,21 +255,22 @@ allowing them to build all kinds of applications.
 For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
 
 However,
-if you want to create a backend API that is meant to be used only by your frontend,
+if you want to create a backend API that is meant to be consumed only by your frontend,
 then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
 
 For a large app, you may still want the structure that comes with a RESTful/GraphQL API.
-But this typically applies only for large companies that develop apps with a high number of developers, and "premature optimization is the root of all evil";
+But this typically applies only for large companies that develop apps with a large number of developers.
+"Premature optimization is the root of all evil";
 start with
 [RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
 and later switch to [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
-when and only if the need arises.
+when (and only if!) the need arises.
 
 In a nuthsell:
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be used by third parties? Use REST or GraphQL.
+Is your API meant to be consumed by third parties? Use REST or GraphQL.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be used by yourself? Use RPC.
+Is your API meant to be consumed by yourself? Use RPC.
 
 &nbsp;
 
