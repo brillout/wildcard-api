@@ -120,7 +120,7 @@ async function wrongUrl3({ wildcardApi, browserEval }) {
   });
 }
 
-async function noEndpoints({ wildcardApi, browserEval }) {
+async function noEndpoints({ browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/hello");
     const text = await resp.text();
@@ -134,7 +134,7 @@ async function noEndpoints({ wildcardApi, browserEval }) {
   });
 }
 
-async function noEndpoints2({ wildcardApi, wildcardClient }) {
+async function noEndpoints2({ wildcardClient }) {
   let errorThrown = false;
   try {
     await wildcardClient.endpoints.helloSsr();
