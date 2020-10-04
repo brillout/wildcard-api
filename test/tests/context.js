@@ -130,7 +130,7 @@ async function createServer({ setContext, staticDir, httpPort }) {
   app.use(express.static(staticDir, { extensions: ["html"] }));
 
   app.use(
-    wildcard(setContext, { __INTERNAL__wildcardApiHolder: { wildcardApi } })
+    wildcard(setContext, { __INTERNAL__wildcardServerHolder: { wildcardApi } })
   );
 
   const server = await start(app, httpPort);

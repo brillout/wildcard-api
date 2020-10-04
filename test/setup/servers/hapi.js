@@ -18,7 +18,7 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
         const context = { headers };
         return context;
       },
-      { __INTERNAL__wildcardApiHolder: wildcardApiHolder }
+      { __INTERNAL__wildcardServerHolder: wildcardApiHolder }
     )
   );
 

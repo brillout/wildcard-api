@@ -6,7 +6,7 @@ const assert = require("@brillout/assert");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
-const { WildcardApi } = require("@wildcard-api/server");
+const { WildcardServer } = require("@wildcard-api/server");
 const { WildcardClient } = require("@wildcard-api/client");
 
 const bundle = require("./browser/bundle");
@@ -67,10 +67,10 @@ async function runStandardTests({ standardTests, browserEval }) {
     await startServer();
 
     for (let test of standardTests) {
-      const wildcardApi = new WildcardApi();
+      const wildcardApi = new WildcardServer();
       wildcardApiHolder.wildcardApi = wildcardApi;
       const wildcardClient = new WildcardClient();
-      wildcardClient.__INTERNAL__wildcardApi = wildcardApi;
+      wildcardClient.__INTERNAL__wildcardServer = wildcardApi;
 
       const testArgs = {
         wildcardApi,

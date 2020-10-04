@@ -3,7 +3,7 @@ import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import assert = require("@brillout/assert");
 import getUrlProps = require("@brillout/url-props");
 
-export { WildcardApi };
+export { WildcardServer };
 
 const DEBUG_CACHE =
   /*/
@@ -12,6 +12,11 @@ const DEBUG_CACHE =
   false;
 //*/
 
+type Config = {
+  disableEtag: boolean;
+  baseUrl: string;
+};
+
 assert.usage(
   isNodejs(),
   "You are loading the module `@wildcard-api/server` in the browser.",
@@ -19,17 +24,17 @@ assert.usage(
   "That is: `import {endpoints} from '@wildcard-api/client'"
 );
 
-function WildcardApi(): void {
-  const options = this;
-
+function WildcardServer(): void {
   const endpointsObject = getEndpointsObject();
+  const config = getConfigProxy({
+    disableEtag: false,
+    baseUrl: "/_wildcard_api/",
+  });
 
   Object.assign(this, {
     endpoints: endpointsObject,
+    config: config as Config,
     getApiHttpResponse,
-    disableEtag: false,
-    // Use Proxy to validate user input
-    baseUrl: "/_wildcard_api/",
     __directCall,
   });
 
@@ -43,7 +48,7 @@ function WildcardApi(): void {
       isIntrospection,
       isNotWildcardRequest,
       isHumanMode,
-    } = RequestInfo({ requestProps, endpointsObject, options });
+    } = RequestInfo({ requestProps, endpointsObject, config });
 
     if (isNotWildcardRequest) {
       return null;
@@ -55,7 +60,7 @@ function WildcardApi(): void {
       return HttpMalformationResponse({ malformationError });
     }
     if (isIntrospection) {
-      return HttpIntrospectionResponse({ endpointsObject, options });
+      return HttpIntrospectionResponse({ endpointsObject, config });
     }
 
     const { endpointResult, endpointError } = await runEndpoint({
@@ -78,7 +83,7 @@ function WildcardApi(): void {
     }
     assert.internal(responseProps.body.constructor === String);
 
-    if (!options.disableEtag) {
+    if (!config.disableEtag) {
       const computeEtag = require("./computeEtag");
       const etag = computeEtag(responseProps.body);
       assert.internal(etag);
@@ -346,6 +351,20 @@ function getEndpointsObject() {
   return new Proxy({}, { set: validateEndpoint });
 }
 
+function getConfigProxy(configDefaults: Config) {
+  return new Proxy({ ...configDefaults }, { set: validateNewConfig });
+
+  function validateNewConfig(obj, prop, value) {
+    assert.usage(
+      prop in configDefaults,
+      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
+    );
+
+    // Make TS happy
+    return false;
+  }
+}
+
 function createContextProxy({ context, endpointName, isDirectCall }) {
   const contextProxy = new Proxy(context || {}, { get, set });
   return contextProxy;
@@ -419,11 +438,11 @@ function colorizeEmphasis(text) {
   */
 }
 
-function isPathanameBase({ pathname, options }) {
-  return [options.baseUrl, options.baseUrl.slice(0, -1)].includes(pathname);
+function isPathanameBase({ pathname, config }) {
+  return [config.baseUrl, config.baseUrl.slice(0, -1)].includes(pathname);
 }
 
-function RequestInfo({ requestProps, endpointsObject, options }) {
+function RequestInfo({ requestProps, endpointsObject, config }) {
   const method = requestProps.method.toUpperCase();
 
   assert_request({ requestProps, method });
@@ -437,12 +456,12 @@ function RequestInfo({ requestProps, endpointsObject, options }) {
 
   if (
     !["GET", "POST"].includes(method) ||
-    (!isPathanameBase({ pathname, options }) &&
-      !pathname.startsWith(options.baseUrl))
+    (!isPathanameBase({ pathname, config }) &&
+      !pathname.startsWith(config.baseUrl))
   ) {
     return { isNotWildcardRequest: true, isHumanMode };
   }
-  if (isPathanameBase({ pathname, options }) && isHumanMode) {
+  if (isPathanameBase({ pathname, config }) && isHumanMode) {
     return { isIntrospection: true, isHumanMode };
   }
 
@@ -451,7 +470,7 @@ function RequestInfo({ requestProps, endpointsObject, options }) {
     endpointName,
     urlArgs__string,
     pathname__prettified,
-  } = parsePathname({ pathname, options });
+  } = parsePathname({ pathname, config });
 
   if (malformationError__pathname) {
     return {
@@ -587,9 +606,9 @@ function getEndpointArgs({
   }
   return { endpointArgs };
 }
-function parsePathname({ pathname, options }) {
-  assert.internal(pathname.startsWith(options.baseUrl));
-  const urlParts = pathname.slice(options.baseUrl.length).split("/");
+function parsePathname({ pathname, config }) {
+  assert.internal(pathname.startsWith(config.baseUrl));
+  const urlParts = pathname.slice(config.baseUrl.length).split("/");
 
   const isMalformatted =
     urlParts.length < 1 || urlParts.length > 2 || !urlParts[0];
@@ -598,14 +617,14 @@ function parsePathname({ pathname, options }) {
   const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
   const pathname__prettified = isMalformatted
     ? pathname
-    : options.baseUrl + endpointName + "/" + urlArgs__string;
+    : config.baseUrl + endpointName + "/" + urlArgs__string;
   let malformationError;
   if (isMalformatted) {
     malformationError = {
       errorText: [
         "Malformatted API URL `" + pathname__prettified + "`",
         "API URL should have following format: `" +
-          options.baseUrl +
+          config.baseUrl +
           'yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
       ].join("\n"),
     };
@@ -619,7 +638,7 @@ function parsePathname({ pathname, options }) {
   };
 }
 
-function HttpIntrospectionResponse({ endpointsObject, options }) {
+function HttpIntrospectionResponse({ endpointsObject, config }) {
   if (!isDev()) {
     return get_html_response(
       "This page is available " + getDevModeNote(),
@@ -631,7 +650,7 @@ Endpoints:
 <ul>
 ${getEndpointNames({ endpointsObject })
   .map((endpointName) => {
-    const endpointURL = options.baseUrl + endpointName;
+    const endpointURL = config.baseUrl + endpointName;
     return '    <li><a href="' + endpointURL + '">' + endpointURL + "</a></li>";
   })
   .join("\n")}

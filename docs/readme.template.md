@@ -58,10 +58,10 @@ creating an API endpoint is as easy as creating a JavaScript function.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
 // We define a `hello` function on the server
-endpoints.hello = function(name) {
+server.hello = function(name) {
   return {message: 'Welcome '+name};
 };
 ~~~
@@ -69,11 +69,11 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import { server } from '@wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Elisabeth');
+  const {message} = await server.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
@@ -89,10 +89,10 @@ To retrieve and mutate data, you can direclty use SQL or an ORM.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 const Todo = require('./path/to/your/data/models/Todo');
 
-endpoints.createTodoItem = async function(text) {
+server.createTodoItem = async function(text) {
   if( !this.user ) {
     // The user is not logged-in. We abort.
     // With Wildcard, you define permissions programmatically
@@ -311,14 +311,14 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~
    </details>
 
-2. Define an endpoint function `endpoints.myFirstEndpoint` in a file called `endpoints.js`.
+2. Define an endpoint function `myFirstEndpoint` in a file called `endpoints.js`.
 
    ~~~js
    // Node.js server
 
-   const {endpoints} = require('@wildcard-api/server');
+   const { server } = require('@wildcard-api/server');
 
-   endpoints.myFirstEndpoint = async function () {
+   server.myFirstEndpoint = async function () {
      // The `this` object is the `context` object we defined in `setContext`.
      console.log('The logged-in user is: ', this.user.username);
 
@@ -336,10 +336,10 @@ Is your API meant to be used by yourself? Use RPC.
 
    // npm install @wildcard-api/client
    // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"/>
-   import {endpoints} from '@wildcard-api/client';
+   import { server } from '@wildcard-api/client';
 
    (async () => {
-     const {msg} = await endpoints.myFirstEndpoint();
+     const {msg} = await server.myFirstEndpoint();
      console.log(msg);
    })();
    ~~~
@@ -390,19 +390,19 @@ The context object is available to endpoint functions as `this`.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
-endpoints.whoAmI = async function() {
+server.whoAmI = async function() {
   const {user} = this;
   return user.name;
 };
 
-endpoints.login = async function(username, password) {
+server.login = async function(username, password) {
   const user = await this.login(username, password);
   return user;
 };
 
-endpoints.logout = async function() {
+server.logout = async function() {
   await this.logout();
 };
 ~~~
@@ -421,7 +421,7 @@ permissions are defined programmatically.
 ~~~js
 // Node.js server
 
-endpoints.deletePost = async function(){
+server.deletePost = async function(){
   // Only admins are allowed to remove a post
   if( !user.isAdmin ) {
     // The user is not admin — we abort.
@@ -438,7 +438,7 @@ It is crucial to define permissions; never do something like this:
 
 const db = require('your-favorite-sql-query-builder');
 
-endpoints.executeQuery = async function(query) {
+server.executeQuery = async function(query) {
   const result = await db.run(query);
   return result;
 };
@@ -449,7 +449,7 @@ open the browser's web dev console, and call your endpoint.
 ~~~js
 // Browser
 
-const users = await endpoints.executeQuery('SELECT login, password FROM users;');
+const users = await server.executeQuery('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
   // W00t I have all passwords ｡^‿^｡
   console.log(login, password);
@@ -462,7 +462,7 @@ Instead, you should define permissions, such as:
 
 // This endpoint allows a to-do item's text to be modified only by its author.
 
-endpoints.updateTodoText = async function(todoId, newText) {
+server.updateTodoText = async function(todoId, newText) {
   // The user is not logged in — we abort.
   if( !this.user ) return;
 
@@ -501,7 +501,7 @@ there are situations when it is expected that a permission may fail. For example
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
-endpoints.getTodoList = async function() {
+server.getTodoList = async function() {
   const isLoggedIn = !!this.user;
   if( !isLoggedIn ) {
     // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
@@ -514,7 +514,7 @@ endpoints.getTodoList = async function() {
 
 You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
 ~~~js
-endpoints.getTodoList = async function() {
+server.getTodoList = async function() {
   if( !this.user ) {
     /* Don't do this:
     throw new Error('User is not logged in.');
@@ -538,7 +538,7 @@ Calling an endpoint throws an error if and only if:
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import { server } from '@wildcard-api/client';
 import assert from 'assert';
 
 callEndpoint();
@@ -546,7 +546,7 @@ callEndpoint();
 async function callEndpoint() {
   let err;
   try {
-    await endpoints.myEndpoint();
+    await server.myEndpoint();
   } catch(_err) {
     err = _err;
   }
@@ -578,10 +578,10 @@ In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 const isStrongPassword = require('./path/to/isStrongPassword');
 
-endpoints.createAccount = async function({email, password}) {
+server.createAccount = async function({email, password}) {
   if( !isStrongPassword(password) ){
     /* Don't do this:
     throw new Error("Password is too weak.");
@@ -598,12 +598,12 @@ The `isServerError` and `isNetworkError` flags can be used to handle errors more
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import { server } from '@wildcard-api/client';
 
 (async () => {
   let data, err;
   try {
-    data = await endpoints.getSomeData();
+    data = await server.getSomeData();
   } catch(_err) {
     err = _err;
   }
@@ -731,27 +731,31 @@ If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authenticatio
 
 ## Options
 
-Quick overview of all available options with their default value:
+All options with their default value:
 ~~~js
-import wildcardClient from '@wildcard-api/client';
+// Browser (or Node.js)
+
+import { config } from '@wildcard-api/client';
 
 // The URL of the Node.js server that serves the API
-wildcardClient.serverUrl = null;
+config.serverUrl = null;
 
 // The base URL of Wildcard HTTP requests
-wildcardClient.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_wildcard_api/';
 
 // Whether the endpoint arguments are always passed in the HTTP body
-wildcardClient.argumentsAlwaysInHttpBody = false;
+config.argumentsAlwaysInHttpBody = false;
 ~~~
 ~~~js
-import wildcardServer from '@wildcard-api/server';
+// Node.js
+
+import { config } from '@wildcard-api/server';
 
 // Whether Wildcard generates an ETag header.
-wildcardServer.disableEtag = false;
+config.disableEtag = false;
 
 // The base URL of Wildcard HTTP requests
-wildcardServer.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_wildcard_api/';
 ~~~
 
 - [`serverUrl`](#serverurl)
@@ -775,15 +779,15 @@ then you need to provide a `serverUrl`.
 When `serverUrl` is `null`, the Wildcard client uses `window.location.origin` as server URL.
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.serverUrl = 'https://api.example.com:1337';
+config.serverUrl = 'https://api.example.com:1337';
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint();
+  await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make an HTTP request to the same origin:
@@ -803,15 +807,15 @@ By default, the pathname of any HTTP request that Wildcard makes starts with `/_
 You can change this base URL by using the `baseUrl` option.
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.baseUrl = '/_my_custom_api_base_url/';
+config.baseUrl = '/_my_custom_api_base_url/';
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint();
+  await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make an HTTP request to `/_wildcard_api/`:
@@ -827,9 +831,9 @@ If you change the `baseUrl` option of your Wildcard client,
 then make sure that the `baseUrl` of your Wildcard server is the same:
 
 ~~~js
-import wildcardServer from '@wildcard-api/server';
+import { config } from '@wildcard-api/server';
 
-wildcardServer.baseUrl = '/_my_custom_api_base_url/';
+config.baseUrl = '/_my_custom_api_base_url/';
 ~~~
 
 <br/>
@@ -841,14 +845,14 @@ arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 
-wildcardClient.argumentsAlwaysInHttpBody = true; // Default value is `false`
+config.argumentsAlwaysInHttpBody = true; // Default value is `false`
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
+  await server.myEndpoint({some: 'arguments' }, 'second arg');
 
   // Normally, Wildcard would pass the arguments in the HTTP request URL:
   //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1

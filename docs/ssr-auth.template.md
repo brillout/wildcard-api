@@ -23,10 +23,10 @@ For example:
 ~~~js
 // Node.js
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
 // Our endpoint function `whoAmI` needs the name of the logged-in user.
-endpoints.whoAmI = async function() {
+server.whoAmI = async function() {
   const {user} = this;
   return 'You are '+user.name;
 };
@@ -35,7 +35,7 @@ endpoints.whoAmI = async function() {
 ~~~js
 // Browser & Node.js (this code runs in the browser as well as in Node.js)
 
-const {endpoints} = require('@wildcard-api/client');
+const { server } = require('@wildcard-api/client');
 
 // Whether the code runs in the browser or in Node.js
 function isNodejs() {
@@ -45,7 +45,7 @@ function isNodejs() {
 // `req` is the HTTP request object provided by your server
 // framework (Express/Koa/Hapi/...).
 async function(req) {
-  let {whoAmI} = endpoints;
+  let {whoAmI} = server;
 
   if( isNodejs() ){
     // When we call `whoAmI` in Node.js we need to manually
@@ -76,10 +76,10 @@ Let's consider the endpoint `whoAmI` from above:
 ~~~js
 // Node.js
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
 // Our endpoint function `whoAmI` needs the name of the logged-in user.
-endpoints.whoAmI = async function() {
+server.whoAmI = async function() {
   const {user} = this;
   return 'You are '+user.name;
 };
@@ -91,11 +91,11 @@ And let's now dissect what happens when we call `whoAmI` in the browser:
 // Browser
 
 // We use the Wildcard client in the browser
-const {endpoints} = require('@wildcard-api/client');
+const { server } = require('@wildcard-api/client');
 
 (async () => {
   // Because we are on the browser, the Wildcard client makes an HTTP request to our Node.js server
-  const userName = await endpoints.whoAmI();
+  const userName = await server.whoAmI();
 
   console.log('Welcome to Wildcard, '+userName);
 })();
@@ -142,7 +142,7 @@ There is no way for Wildcard to get `req.user` &mdash; we have to manually `bind
 // Node.js
 
 // We use the Wildcard client in Node.js
-const {endpoints} = require('@wildcard-api/client');
+const { server } = require('@wildcard-api/client');
 
 module.exports = getGreeting;
 
@@ -154,7 +154,7 @@ async function getGreeting(
   // Because we are in Node.js, the Wildcard client directly calls
   // the endpoint function `whoAmI`. Wildcard doesn't have access to
   // `req.user` and we need to bind it ourselves:
-  let whoAmI = endpoints.whoAmI.bind({user: req.user});
+  let whoAmI = server.whoAmI.bind({user: req.user});
 
   const userName = await whoAmI();
 
@@ -236,7 +236,7 @@ The isomorphic (aka universal) usage of the Wildcard client looks this:
 
 // /common/getGreeting.js
 
-const {endpoints} = require('@wildcard-api/client');
+const { server } = require('@wildcard-api/client');
 const assert = require('assert');
 
 module.exports = getGreeting;
@@ -247,7 +247,7 @@ function isNodejs() {
 }
 
 async function getGreeting ({req}) {
-  let {whoAmI} = endpoints;
+  let {whoAmI} = server;
 
   if( isNodejs() ) {
     // We need `req` when calling the endpoint in Node.js.

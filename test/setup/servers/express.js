@@ -1,5 +1,5 @@
 const express = require("express");
-const {wildcard} = require("@wildcard-api/server/express");
+const { wildcard } = require("@wildcard-api/server/express");
 
 module.exports = startServer;
 module.exports.start = start;
@@ -19,7 +19,7 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
         const context = { headers };
         return context;
       },
-      { __INTERNAL__wildcardApiHolder: wildcardApiHolder }
+      { __INTERNAL__wildcardServerHolder: wildcardApiHolder }
     )
   );
 

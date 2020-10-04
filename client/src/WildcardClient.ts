@@ -15,15 +15,27 @@ printDonationReminder({
   minNumberOfAuthors: 0,
 });
 
+type Config = {
+  serverUrl?: string;
+  baseUrl: string;
+  argumentsAlwaysInHttpBody: boolean;
+};
+
+type ConfigPrivate = Config & {
+  __INTERNAL__wildcardServer: any;
+};
+
 function WildcardClient(): void {
-  const options = this;
+  const config = getConfigProxy({
+    serverUrl: null,
+    baseUrl: "/_wildcard_api/",
+    argumentsAlwaysInHttpBody: false,
+    __INTERNAL__wildcardServer: null,
+  });
 
   Object.assign(this, {
     endpoints: getEndpointsProxy(),
-    serverUrl: null,
-    // Use Proxy to validate user input
-    baseUrl: "/_wildcard_api/",
-    argumentsAlwaysInHttpBody: false,
+    config: config as Config,
   });
 
   return this;
@@ -40,7 +52,7 @@ function WildcardClient(): void {
     const { context } = wildcardApiArgs;
 
     const wildcardApiFound =
-      options.__INTERNAL__wildcardApi ||
+      config.__INTERNAL__wildcardServer ||
       (typeof global !== "undefined" && global && global.__globalWildcardApi);
     const runDirectlyWithoutHTTP = !!wildcardApiFound;
 
@@ -63,7 +75,7 @@ function WildcardClient(): void {
       });
     } else {
       assert.internal(!context);
-      assert_serverUrl(options.serverUrl);
+      assert_serverUrl(config.serverUrl);
       return callEndpointOverHttp({ endpointName, endpointArgs });
     }
   }
@@ -92,7 +104,7 @@ function WildcardClient(): void {
     });
     if (endpointArgsStr) {
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-      if (endpointArgsStr.length >= 2000 || options.argumentsAlwaysInHttpBody) {
+      if (endpointArgsStr.length >= 2000 || config.argumentsAlwaysInHttpBody) {
         body = endpointArgsStr;
         urlArgs__string = ARGS_IN_BODY;
       } else {
@@ -166,7 +178,7 @@ function WildcardClient(): void {
       assert.usage(
         wildcardApiFound.__directCall,
         errorIntro,
-        "You are providing the `__INTERNAL__wildcardApi` option but it isn't an instance of `new WildcardApi()`."
+        "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardApi()`."
       );
     } else {
       assert.usage(
@@ -184,7 +196,7 @@ function WildcardClient(): void {
   function getEndpointUrl({ endpointName, endpointArgs }) {
     let url;
 
-    const { serverUrl } = options;
+    const { serverUrl } = config;
     assert.internal(serverUrl || isBrowser());
     if (serverUrl) {
       url = serverUrl;
@@ -192,15 +204,15 @@ function WildcardClient(): void {
       url = "";
     }
 
-    if (options.baseUrl) {
-      if (!url.endsWith("/") && !options.baseUrl.startsWith("/")) {
+    if (config.baseUrl) {
+      if (!url.endsWith("/") && !config.baseUrl.startsWith("/")) {
         url += "/";
       }
-      if (url.endsWith("/") && options.baseUrl.startsWith("/")) {
+      if (url.endsWith("/") && config.baseUrl.startsWith("/")) {
         url = url.slice(0, -1);
         assert.internal("bla/".slice(0, -1) === "bla");
       }
-      url += options.baseUrl;
+      url += config.baseUrl;
     }
 
     if (!url.endsWith("/")) {
@@ -350,6 +362,20 @@ function assert_serverUrl(serverUrl) {
     serverUrl || isBrowser(),
     "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
   );
+}
+
+function getConfigProxy(configDefaults: ConfigPrivate) {
+  return new Proxy({ ...configDefaults }, { set: validateNewConfig });
+
+  function validateNewConfig(obj, prop, value) {
+    assert.usage(
+      prop in configDefaults,
+      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
+    );
+
+    // Make TS happy
+    return false;
+  }
 }
 
 declare global {

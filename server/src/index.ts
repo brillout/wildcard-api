@@ -1,8 +1,10 @@
-import { WildcardApi } from "./WildcardApi";
+import { WildcardServer } from "./WildcardApi";
 
-export { WildcardApi };
-export const wildcardApi = (global.__globalWildcardApi = new WildcardApi());
-export const { endpoints } = wildcardApi;
+export { WildcardServer };
+export const wildcardServer = (global.__globalWildcardApi = new WildcardServer());
+export const server = wildcardServer.endpoints;
+export const { config } = wildcardServer;
+export const { getApiHttpResponse } = wildcardServer;
 
 declare global {
   namespace NodeJS {
