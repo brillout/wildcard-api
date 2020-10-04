@@ -135,12 +135,13 @@ async function createServer({ setContext, staticDir, httpPort }) {
     })
   );
 
-  const server = wildcardServer.endpoints;
+  const server = await start(app, httpPort);
+  const stopApp = () => stop(server);
 
-  const appServer = await start(appServer, httpPort);
-
-  const stopApp = () => stop(appServer);
-  return { stopApp, server };
+  return {
+    stopApp,
+    server: wildcardServer.endpoints,
+  };
 }
 
 async function callFailaingEndpoint({ browserEval }) {

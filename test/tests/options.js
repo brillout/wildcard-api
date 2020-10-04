@@ -56,11 +56,13 @@ async function option_argumentsAlwaysInHttpBody_2({
 
   await browserEval(
     async () => {
-      const { wildcardClient } = window;
-      assert(wildcardClient.argumentsAlwaysInHttpBody === false);
-      wildcardClient.argumentsAlwaysInHttpBody = true;
-      await endpoints.testEndpoint__argumentsAlwaysInHttpBody("just some args");
-      wildcardClient.argumentsAlwaysInHttpBody = false;
+      const { config } = window;
+      assert(config.argumentsAlwaysInHttpBody === false);
+      config.argumentsAlwaysInHttpBody = true;
+      await window.server.testEndpoint__argumentsAlwaysInHttpBody(
+        "just some args"
+      );
+      config.argumentsAlwaysInHttpBody = false;
     },
     { onHttpRequest }
   );
@@ -96,11 +98,11 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
     async ({ wrongHttpPort }) => {
       const { WildcardClient } = window;
       const wildcardClient = new WildcardClient();
-      wildcardClient.serverUrl = "http://localhost:" + wrongHttpPort;
-      const { endpoints } = wildcardClient;
+      wildcardClient.config.serverUrl = "http://localhost:" + wrongHttpPort;
+      const server = wildcardClient.endpoints;
       let failed = false;
       try {
-        await endpoints.test_serverUrl();
+        await server.test_serverUrl();
       } catch (err) {
         failed = true;
       }
@@ -123,11 +125,11 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
   }
 }
 
-async function option_baseUrl({ server, browserEval, httpPort }) {
+async function option_baseUrl({ server, config, browserEval, httpPort }) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  const baseUrl = (server.baseUrl = "/_api/my_custom_base/");
+  const baseUrl = (config.baseUrl = "/_api/my_custom_base/");
   server.test_baseUrl = async function () {
     endpointCalled = true;
   };
@@ -136,9 +138,9 @@ async function option_baseUrl({ server, browserEval, httpPort }) {
     async ({ baseUrl }) => {
       const { WildcardClient } = window;
       const wildcardClient = new WildcardClient();
-      wildcardClient.baseUrl = baseUrl;
-      const { endpoints } = wildcardClient;
-      await endpoints.test_baseUrl();
+      wildcardClient.config.baseUrl = baseUrl;
+      const server = wildcardClient.endpoints;
+      await server.test_baseUrl();
     },
     { onHttpRequest, browserArgs: { baseUrl } }
   );
