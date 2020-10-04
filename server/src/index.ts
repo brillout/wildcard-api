@@ -1,4 +1,4 @@
-import { WildcardServer } from "./WildcardApi";
+import { WildcardServer } from "./WildcardServer";
 
 export { WildcardServer };
 export const wildcardServer = (global.__globalWildcardServer = new WildcardServer());
