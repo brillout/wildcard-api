@@ -1,6 +1,8 @@
+// @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
+// @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 
 export { WildcardServer };
@@ -23,6 +25,58 @@ type Config = {
   baseUrl: string;
 };
 
+type RequestProps = {
+  url: string;
+  method: "POST" | "GET" | "post" | "get";
+  body?: string;
+  comesFromUniversalAdapter?: boolean;
+};
+
+type ResponseProps = {
+  body: string;
+  contentType: string;
+  statusCode: number;
+  etag?: string;
+};
+
+type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
+
+type EndpointResult = unknown & { _brand?: "EndpointResult" };
+type EndpointError = Error & { _brand?: "EndpointError" };
+type EndpointArg = string & { _brand?: "EndpointArg" };
+type EndpointArgs = EndpointArg[];
+type EndpointArgsSerialized = string & { _brand?: "EndpointArgsSerialized" };
+
+type ObjectKey = string | number;
+
+type ContextValue = unknown & { _brand?: "ContextValue" };
+type ContextProp = ObjectKey & { _brand?: "ContextProp" };
+type ContextObject = Record<ContextProp, ContextValue>;
+type ContextProxy = ContextObject;
+
+type EndpointName = string & { _brand?: "EndpointName" };
+type EndpointFunction = () => {} & { _brand?: "EndpointFunction" };
+type EndpointsObject = Record<EndpointName, EndpointFunction>;
+type EndpointsProxy = EndpointsObject;
+
+type ErrorText = string & { _brand?: "ErrorText" };
+type EndpointDoesNotExist = boolean & { _brand?: "EndpointDoesNotExist" };
+type MalformationError = {
+  errorText: ErrorText;
+  endpointDoesNotExist?: EndpointDoesNotExist;
+};
+type IsIntrospection = boolean & { _brand?: "IsIntrospection" };
+type IsNotWildcardRequest = boolean & { _brand?: "IsNotWildcardRequest" };
+type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
+type RequestInfo = {
+  endpointName?: EndpointName;
+  endpointArgs?: EndpointArgs;
+  malformationError?: MalformationError;
+  isIntrospection?: IsIntrospection;
+  isNotWildcardRequest?: IsNotWildcardRequest;
+  isHumanMode: IsHumanMode;
+};
+
 assertUsage(
   isNodejs(),
   "You are loading the module `@wildcard-api/server` in the browser.",
@@ -30,14 +84,14 @@ assertUsage(
 );
 
 function WildcardServer(): void {
-  const endpointsObject = getEndpointsObject();
+  const endpointsProxy: EndpointsProxy = getEndpointsProxy();
   const config = getConfigProxy({
     disableEtag: false,
     baseUrl: "/_wildcard_api/",
   });
 
   Object.assign(this, {
-    endpoints: endpointsObject,
+    endpoints: endpointsProxy,
     config: config as Config,
     getApiHttpResponse,
     __directCall,
@@ -45,7 +99,10 @@ function WildcardServer(): void {
 
   return this;
 
-  async function getApiHttpResponse(requestProps, context) {
+  async function getApiHttpResponse(
+    requestProps: RequestProps,
+    context: ContextObject
+  ) {
     const {
       endpointName,
       endpointArgs,
@@ -53,7 +110,7 @@ function WildcardServer(): void {
       isIntrospection,
       isNotWildcardRequest,
       isHumanMode,
-    } = RequestInfo({ requestProps, endpointsObject, config });
+    }: RequestInfo = getRequestInfo({ requestProps, endpointsProxy, config });
 
     if (isNotWildcardRequest) {
       return null;
@@ -65,7 +122,7 @@ function WildcardServer(): void {
       return HttpMalformationResponse({ malformationError });
     }
     if (isIntrospection) {
-      return HttpIntrospectionResponse({ endpointsObject, config });
+      return HttpIntrospectionResponse({ endpointsProxy, config });
     }
 
     const { endpointResult, endpointError } = await runEndpoint({
@@ -75,9 +132,9 @@ function WildcardServer(): void {
       isDirectCall: false,
     });
 
-    let responseProps;
+    let responseProps: ResponseProps;
     if (endpointError) {
-      logError({ err: endpointError, endpointName });
+      logError(endpointError);
       responseProps = HttpErrorResponse({ endpointError, isHumanMode });
     } else {
       responseProps = HttpResponse({
@@ -102,15 +159,15 @@ function WildcardServer(): void {
     assert(endpointName);
     assert(endpointArgs.constructor === Array);
 
-    if (noEndpoints({ endpointsObject })) {
+    if (noEndpoints({ endpointsProxy })) {
       autoLoadEndpointFiles();
     }
 
     assertUsage(
-      endpointExists({ endpointName, endpointsObject }),
+      endpointExists({ endpointName, endpointsProxy }),
       getEndpointMissingError({
         endpointName,
-        endpointsObject,
+        endpointsProxy,
         calledInBrowser: false,
       })
     );
@@ -136,12 +193,20 @@ function WildcardServer(): void {
     endpointArgs,
     context,
     isDirectCall,
-  }) {
+  }: {
+    endpointName: EndpointName;
+    endpointArgs: EndpointArgs;
+    context: ContextObject;
+    isDirectCall: IsDirectCall;
+  }): Promise<{
+    endpointResult: EndpointResult;
+    endpointError: EndpointError;
+  }> {
     assert(endpointName);
     assert(endpointArgs.constructor === Array);
     assert([true, false].includes(isDirectCall));
 
-    const endpoint = endpointsObject[endpointName];
+    const endpoint: EndpointFunction = endpointsProxy[endpointName];
     assert(endpoint);
     assert(endpointIsValid(endpoint));
 
@@ -151,8 +216,8 @@ function WildcardServer(): void {
       isDirectCall,
     });
 
-    let endpointResult;
-    let endpointError;
+    let endpointResult: EndpointResult;
+    let endpointError: EndpointError;
 
     try {
       endpointResult = await endpoint.apply(contextProxy, endpointArgs);
@@ -173,12 +238,15 @@ function isNodejs() {
   );
 }
 
-function endpointIsValid(endpoint) {
+function endpointIsValid(endpoint: EndpointFunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
 }
 
-function validateEndpoint(obj, prop, value) {
-  const endpointsObject = obj;
+function validateEndpoint(
+  obj: EndpointsObject,
+  prop: EndpointName,
+  value: EndpointFunction
+) {
   const endpoint = value;
   const endpointName = prop;
 
@@ -196,14 +264,14 @@ function validateEndpoint(obj, prop, value) {
 
   assert_plain_function(endpoint, "The endpoint `" + endpointName + "`");
 
-  assert(endpointIsValid);
+  assert(endpointIsValid(endpoint));
 
   obj[prop] = value;
 
   return true;
 }
 
-function assert_plain_function(fn, errPrefix) {
+function assert_plain_function(fn: () => {}, errPrefix: string) {
   assertUsage(
     !isArrowFunction(fn),
     errPrefix + " is defined as an arrow function.",
@@ -211,11 +279,11 @@ function assert_plain_function(fn, errPrefix) {
   );
 }
 
-function isCallable(thing) {
+function isCallable(thing: unknown) {
   return thing instanceof Function || typeof thing === "function";
 }
 
-function isArrowFunction(fn) {
+function isArrowFunction(fn: unknown) {
   // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
   // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
 
@@ -226,7 +294,7 @@ function isArrowFunction(fn) {
 
   return yes(fn);
 
-  function yes(fn) {
+  function yes(fn: unknown) {
     if (fn.hasOwnProperty("prototype")) {
       return false;
     }
@@ -304,7 +372,7 @@ The call stack is shown ${getDevModeNote()}
   return get_html_response(html__error);
 }
 
-function get_html_response(htmlBody, note?) {
+function get_html_response(htmlBody: string, note?: string) {
   if (note === undefined) {
     note = [
       "This page exists " + getDevModeNote(),
@@ -352,8 +420,9 @@ ${note.split("\n").join("<br/>\n")}
   return responseProps;
 }
 
-function getEndpointsObject() {
-  return new Proxy({}, { set: validateEndpoint });
+function getEndpointsProxy(): EndpointsProxy {
+  const endpointsObject: EndpointsObject = {};
+  return new Proxy(endpointsObject, { set: validateEndpoint });
 }
 
 function getConfigProxy(configDefaults: Config) {
@@ -368,15 +437,24 @@ function getConfigProxy(configDefaults: Config) {
   }
 }
 
-function createContextProxy({ context, endpointName, isDirectCall }) {
-  const contextProxy = new Proxy(context || {}, { get, set });
+function createContextProxy({
+  context,
+  endpointName,
+  isDirectCall,
+}: {
+  context: ContextObject;
+  endpointName: EndpointName;
+  isDirectCall: IsDirectCall;
+}) {
+  const contextObject: ContextObject = context || {};
+  const contextProxy: ContextProxy = new Proxy(contextObject, { get, set });
   return contextProxy;
 
-  function set(_, prop, newVal) {
+  function set(_: ContextObject, prop: ContextProp, newVal: ContextValue) {
     context[prop] = newVal;
     return true;
   }
-  function get(_, prop) {
+  function get(_: ContextObject, prop: ContextProp) {
     assertUsage(
       context || !isDirectCall,
       ...getNodejsContextUsageNote({ endpointName, prop })
@@ -419,8 +497,8 @@ function getNodejsContextUsageNote({ endpointName, prop }) {
   ];
 }
 
-function isPropNameNormal(prop) {
-  let propStr;
+function isPropNameNormal(prop: ContextProp) {
+  let propStr: string;
   try {
     propStr = prop.toString();
   } catch (err) {}
@@ -428,13 +506,13 @@ function isPropNameNormal(prop) {
   return propStr === prop && /^[a-zA-Z0-9_]+$/.test(prop);
 }
 
-function colorizeError(text) {
+function colorizeError(text: string) {
   return text;
   /*
   return chalk.bold.red(text);
   */
 }
-function colorizeEmphasis(text) {
+function colorizeEmphasis(text: string) {
   return text;
   /*
   return chalk.cyan(text);
@@ -445,10 +523,10 @@ function isPathanameBase({ pathname, config }) {
   return [config.baseUrl, config.baseUrl.slice(0, -1)].includes(pathname);
 }
 
-function RequestInfo({ requestProps, endpointsObject, config }) {
+function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
   const method = requestProps.method.toUpperCase();
 
-  assert_request({ requestProps, method });
+  assert_request(requestProps);
 
   const urlProps = getUrlProps(requestProps.url);
   assert(urlProps.pathname.startsWith("/"));
@@ -483,13 +561,13 @@ function RequestInfo({ requestProps, endpointsObject, config }) {
     };
   }
 
-  if (!endpointExists({ endpointName, endpointsObject })) {
+  if (!endpointExists({ endpointName, endpointsProxy })) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
         errorText: getEndpointMissingError({
           endpointName,
-          endpointsObject,
+          endpointsProxy,
           calledInBrowser: true,
         }),
       },
@@ -529,7 +607,7 @@ function getEndpointArgs({
   const ARGS_IN_BODY = "args-in-body";
   const args_are_in_body = urlArgs__string === ARGS_IN_BODY;
 
-  let endpointArgs__string;
+  let endpointArgs__string: EndpointArgsSerialized;
   if (args_are_in_body) {
     if (!requestBody) {
       return {
@@ -580,7 +658,7 @@ function getEndpointArgs({
     endpointArgs__string = urlArgs__string;
   }
 
-  let endpointArgs;
+  let endpointArgs: EndpointArgs;
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch (err_) {
@@ -621,7 +699,7 @@ function parsePathname({ pathname, config }) {
   const pathname__prettified = isMalformatted
     ? pathname
     : config.baseUrl + endpointName + "/" + urlArgs__string;
-  let malformationError;
+  let malformationError: MalformationError;
   if (isMalformatted) {
     malformationError = {
       errorText: [
@@ -641,7 +719,7 @@ function parsePathname({ pathname, config }) {
   };
 }
 
-function HttpIntrospectionResponse({ endpointsObject, config }) {
+function HttpIntrospectionResponse({ endpointsProxy, config }) {
   if (!isDev()) {
     return get_html_response(
       "This page is available " + getDevModeNote(),
@@ -651,7 +729,7 @@ function HttpIntrospectionResponse({ endpointsObject, config }) {
   const htmlBody = `
 Endpoints:
 <ul>
-${getEndpointNames({ endpointsObject })
+${getEndpointNames({ endpointsProxy })
   .map((endpointName) => {
     const endpointURL = config.baseUrl + endpointName;
     return '    <li><a href="' + endpointURL + '">' + endpointURL + "</a></li>";
@@ -661,8 +739,8 @@ ${getEndpointNames({ endpointsObject })
 `;
   return get_html_response(htmlBody, "This page exists " + getDevModeNote());
 }
-function getEndpointNames({ endpointsObject }) {
-  return Object.keys(endpointsObject);
+function getEndpointNames({ endpointsProxy }): EndpointName[] {
+  return Object.keys(endpointsProxy);
 }
 
 function HttpErrorResponse({ endpointError, isHumanMode }) {
@@ -688,7 +766,7 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
     contentType: "application/json",
     body: undefined,
   };
-  let endpointError;
+  let endpointError: EndpointError;
   // TODO be able to stringify undefined instead of null
   const valueToStringify = endpointResult === undefined ? null : endpointResult;
   try {
@@ -723,7 +801,7 @@ function HttpMalformationResponse({ malformationError }) {
   };
 }
 
-function assert_request({ requestProps, method }) {
+function assert_request(requestProps: RequestProps) {
   const correctUsageNote = requestProps.comesFromUniversalAdapter
     ? []
     : [getApiHttpResponse__usageNote()];
@@ -779,7 +857,7 @@ function getBodyUsageNote({ requestProps }) {
   ].join("\n");
 }
 
-function logError({ err, endpointName }) {
+function logError(err: EndpointError) {
   console.error(err);
   /* TODO
   console.error("");
@@ -799,32 +877,32 @@ function logError({ err, endpointName }) {
   */
 }
 
-function endpointExists({ endpointName, endpointsObject }) {
-  const endpoint = endpointsObject[endpointName];
+function endpointExists({ endpointName, endpointsProxy }) {
+  const endpoint: EndpointFunction | undefined = endpointsProxy[endpointName];
   return !!endpoint;
 }
-function noEndpoints({ endpointsObject }) {
-  const endpointNames = getEndpointNames({ endpointsObject });
+function noEndpoints({ endpointsProxy }) {
+  const endpointNames = getEndpointNames({ endpointsProxy });
   return endpointNames.length === 0;
 }
 
 function getEndpointMissingError({
   endpointName,
-  endpointsObject,
+  endpointsProxy,
   calledInBrowser,
 }) {
-  const endpointNames = getEndpointNames({ endpointsObject });
+  const endpointNames = getEndpointNames({ endpointsProxy });
 
   const errorText = [
     colorizeError("Endpoint `" + endpointName + "` doesn't exist."),
   ];
 
-  if (noEndpoints({ endpointsObject })) {
+  if (noEndpoints({ endpointsProxy })) {
     errorText.push(colorizeError("You didn't define any endpoints."));
   }
 
   assert([true, false].includes(calledInBrowser));
-  if (!noEndpoints({ endpointsObject }) && (!calledInBrowser || isDev())) {
+  if (!noEndpoints({ endpointsProxy }) && (!calledInBrowser || isDev())) {
     errorText.push(
       "List of existing endpoints:",
       ...endpointNames.map((endpointName) => " - " + endpointName)
@@ -849,6 +927,6 @@ function getDevModeNote() {
   return "only in dev mode. (When <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)";
 }
 
-function UsageError(msg) {
+function UsageError(msg: string) {
   return new Error("[@wildcard-api/server] " + msg);
 }
