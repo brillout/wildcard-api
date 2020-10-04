@@ -77,6 +77,8 @@ type RequestInfo = {
   isHumanMode: IsHumanMode;
 };
 
+type CalledInBrowser = boolean & { _brand?: "CalledInBrowser" };
+
 assertUsage(
   isNodejs(),
   "You are loading the module `@wildcard-api/server` in the browser.",
@@ -164,10 +166,8 @@ function WildcardServer(): void {
     }
 
     assertUsage(
-      endpointExists({ endpointName, endpointsProxy }),
-      getEndpointMissingError({
-        endpointName,
-        endpointsProxy,
+      doesEndpointExist(endpointName, endpointsProxy),
+      getEndpointMissingError(endpointName, endpointsProxy, {
         calledInBrowser: false,
       })
     );
@@ -561,13 +561,11 @@ function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
     };
   }
 
-  if (!endpointExists({ endpointName, endpointsProxy })) {
+  if (!doesEndpointExist(endpointName, endpointsProxy)) {
     return {
       malformationError: {
         endpointDoesNotExist: true,
-        errorText: getEndpointMissingError({
-          endpointName,
-          endpointsProxy,
+        errorText: getEndpointMissingError(endpointName, endpointsProxy, {
           calledInBrowser: true,
         }),
       },
@@ -877,7 +875,10 @@ function logError(err: EndpointError) {
   */
 }
 
-function endpointExists({ endpointName, endpointsProxy }) {
+function doesEndpointExist(
+  endpointName: EndpointName,
+  endpointsProxy: EndpointsProxy
+) {
   const endpoint: EndpointFunction | undefined = endpointsProxy[endpointName];
   return !!endpoint;
 }
@@ -886,11 +887,11 @@ function noEndpoints({ endpointsProxy }) {
   return endpointNames.length === 0;
 }
 
-function getEndpointMissingError({
-  endpointName,
-  endpointsProxy,
-  calledInBrowser,
-}) {
+function getEndpointMissingError(
+  endpointName: EndpointName,
+  endpointsProxy: EndpointsProxy,
+  { calledInBrowser }: { calledInBrowser: CalledInBrowser }
+) {
   const endpointNames = getEndpointNames({ endpointsProxy });
 
   const errorText = [
