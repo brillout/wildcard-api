@@ -1,7 +1,7 @@
 module.exports = [bugHandling, networkHandling];
 
-async function bugHandling({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.testEndpointBug = async function () {
+async function bugHandling({ server, browserEval }) {
+  server.testEndpointBug = async function () {
     throw new Error("This is a simulated bug");
     return "You shouldn't see me";
   };
@@ -9,7 +9,7 @@ async function bugHandling({ wildcardApi, browserEval }) {
   await browserEval(async () => {
     let err = null;
     try {
-      await window.endpoints.testEndpointBug();
+      await server.testEndpointBug();
     } catch (err_) {
       err = err_;
     }
@@ -34,8 +34,8 @@ async function bugHandling({ wildcardApi, browserEval }) {
   });
 }
 
-async function networkHandling({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.testEndpointBug = async function () {
+async function networkHandling({ server, browserEval }) {
+  server.testEndpointBug = async function () {
     return "You shouldn't see me";
   };
 
@@ -43,7 +43,7 @@ async function networkHandling({ wildcardApi, browserEval }) {
     async () => {
       let err = null;
       try {
-        await window.endpoints.testEndpointBug();
+        await server.testEndpointBug();
       } catch (err_) {
         err = err_;
       }

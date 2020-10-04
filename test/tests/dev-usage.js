@@ -1,7 +1,7 @@
 module.exports = [listAllEndpoints, browseEndpoint, browseEndpoint__unescaped];
 
-async function browseEndpoint({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function browseEndpoint({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Greetings " + name;
   };
 
@@ -13,8 +13,8 @@ async function browseEndpoint({ wildcardApi, browserEval }) {
   });
 }
 
-async function browseEndpoint__unescaped({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function browseEndpoint__unescaped({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Greetings " + name;
   };
 
@@ -26,11 +26,11 @@ async function browseEndpoint__unescaped({ wildcardApi, browserEval }) {
   });
 }
 
-async function listAllEndpoints({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.firstEndpoint = async function (name) {
+async function listAllEndpoints({ server, browserEval }) {
+  server.firstEndpoint = async function (name) {
     return "Greetings " + name;
   };
-  wildcardApi.endpoints.secondEndpoint = async function () {};
+  server.secondEndpoint = async function () {};
 
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/");

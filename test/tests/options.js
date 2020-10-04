@@ -6,24 +6,20 @@ module.exports = [
 ];
 
 async function option_argumentsAlwaysInHttpBody_1({
-  wildcardApi,
+  server,
   browserEval,
   httpPort,
 }) {
   let execCount = 0;
 
-  wildcardApi.endpoints.testEndpoint__argumentsAlwaysInHttpBody = async function (
-    arg
-  ) {
+  server.testEndpoint__argumentsAlwaysInHttpBody = async function (arg) {
     assert(arg === "just some args");
     execCount++;
   };
 
   await browserEval(
     async () => {
-      await window.endpoints.testEndpoint__argumentsAlwaysInHttpBody(
-        "just some args"
-      );
+      await server.testEndpoint__argumentsAlwaysInHttpBody("just some args");
     },
     { onHttpRequest }
   );
@@ -46,16 +42,14 @@ async function option_argumentsAlwaysInHttpBody_1({
 }
 
 async function option_argumentsAlwaysInHttpBody_2({
-  wildcardApi,
+  server,
   browserEval,
   httpPort,
 }) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  wildcardApi.endpoints.testEndpoint__argumentsAlwaysInHttpBody = async function (
-    arg
-  ) {
+  server.testEndpoint__argumentsAlwaysInHttpBody = async function (arg) {
     assert(arg === "just some args");
     endpointCalled = true;
   };
@@ -88,11 +82,11 @@ async function option_argumentsAlwaysInHttpBody_2({
   }
 }
 
-async function option_serverUrl({ wildcardApi, browserEval, httpPort }) {
+async function option_serverUrl({ server, browserEval, httpPort }) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  wildcardApi.endpoints.test_serverUrl = async function () {
+  server.test_serverUrl = async function () {
     endpointCalled = true;
   };
 
@@ -129,12 +123,12 @@ async function option_serverUrl({ wildcardApi, browserEval, httpPort }) {
   }
 }
 
-async function option_baseUrl({ wildcardApi, browserEval, httpPort }) {
+async function option_baseUrl({ server, browserEval, httpPort }) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  const baseUrl = (wildcardApi.baseUrl = "/_api/my_custom_base/");
-  wildcardApi.endpoints.test_baseUrl = async function () {
+  const baseUrl = (server.baseUrl = "/_api/my_custom_base/");
+  server.test_baseUrl = async function () {
     endpointCalled = true;
   };
 

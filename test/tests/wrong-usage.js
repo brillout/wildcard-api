@@ -16,8 +16,8 @@ module.exports = [
   endpointReturnsFunction2,
 ];
 
-async function validUsage1({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function validUsage1({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Yo " + name + "!";
   };
 
@@ -31,8 +31,8 @@ async function validUsage1({ wildcardApi, browserEval }) {
   });
 }
 
-async function validUsage2({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function validUsage2({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Yo " + name + "!";
   };
 
@@ -46,8 +46,8 @@ async function validUsage2({ wildcardApi, browserEval }) {
   });
 }
 
-async function wrongUrl1({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function () {};
+async function wrongUrl1({ server, browserEval }) {
+  server.hello = async function () {};
 
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api//hello");
@@ -57,8 +57,8 @@ async function wrongUrl1({ wildcardApi, browserEval }) {
   });
 }
 
-async function wrongUrl2({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function wrongUrl2({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Greetings " + name;
   };
 
@@ -70,8 +70,8 @@ async function wrongUrl2({ wildcardApi, browserEval }) {
   });
 }
 
-async function wrongUrl3({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function wrongUrl3({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Greetings " + name;
   };
 
@@ -116,8 +116,8 @@ async function noEndpoints2({ wildcardClient }) {
   assert(errorThrown === true);
 }
 
-async function endpointDoesNotExist({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function endpointDoesNotExist({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Greetings " + name;
   };
 
@@ -130,19 +130,15 @@ async function endpointDoesNotExist({ wildcardApi, browserEval }) {
   });
 }
 
-async function endpointReturnsFunction1({
-  wildcardApi,
-  browserEval,
-  assertStderr,
-}) {
-  wildcardApi.endpoints.fnEndpoint1 = async function () {
+async function endpointReturnsFunction1({ server, browserEval, assertStderr }) {
+  server.fnEndpoint1 = async function () {
     return function heloFn() {}; //() => {};
   };
 
   await browserEval(async () => {
     let err;
     try {
-      await window.endpoints.fnEndpoint1();
+      await server.fnEndpoint1();
     } catch (_err) {
       err = _err;
     }
@@ -155,19 +151,15 @@ async function endpointReturnsFunction1({
   );
 }
 
-async function endpointReturnsFunction2({
-  wildcardApi,
-  browserEval,
-  assertStderr,
-}) {
-  wildcardApi.endpoints.fnEndpoint2 = async function () {
+async function endpointReturnsFunction2({ server, browserEval, assertStderr }) {
+  server.fnEndpoint2 = async function () {
     return async () => {};
   };
 
   await browserEval(async () => {
     let err;
     try {
-      await window.endpoints.fnEndpoint2();
+      await server.fnEndpoint2();
     } catch (_err) {
       err = _err;
     }
