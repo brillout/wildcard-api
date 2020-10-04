@@ -4,7 +4,7 @@ const assert = require("@brillout/assert");
 
 module.exports = startServer;
 
-async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
+async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
   const server = Hapi.Server({
     port: httpPort,
     debug: { request: ["internal"] },
@@ -38,7 +38,7 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
     const context = {
       headers: request.headers,
     };
-    const responseProps = await wildcardApiHolder.wildcardApi.getApiHttpResponse(
+    const responseProps = await wildcardServerHolder.wildcardServer.getApiHttpResponse(
       requestProps,
       context
     );

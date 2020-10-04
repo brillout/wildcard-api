@@ -5,7 +5,7 @@ module.exports = startServer;
 module.exports.start = start;
 module.exports.stop = stop;
 
-async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
+async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
   const app = express();
 
   app.use(express.json());
@@ -19,7 +19,7 @@ async function startServer({ wildcardApiHolder, httpPort, staticDir }) {
         const context = { headers };
         return context;
       },
-      { __INTERNAL__wildcardServerHolder: wildcardApiHolder }
+      { __INTERNAL__wildcardServerHolder: wildcardServerHolder }
     )
   );
 

@@ -43,25 +43,27 @@ function WildcardClient(): void {
   function fetchEndpoint(
     endpointName,
     endpointArgs,
-    wildcardApiArgs,
+    generalArgs,
     ...restArgs
   ) {
-    wildcardApiArgs = wildcardApiArgs || {};
+    generalArgs = generalArgs || {};
     endpointArgs = endpointArgs || [];
 
-    const { context } = wildcardApiArgs;
+    const { context } = generalArgs;
 
-    const wildcardApiFound =
+    const wildcardServerFound =
       config.__INTERNAL__wildcardServer ||
-      (typeof global !== "undefined" && global && global.__globalWildcardApi);
-    const runDirectlyWithoutHTTP = !!wildcardApiFound;
+      (typeof global !== "undefined" &&
+        global &&
+        global.__globalWildcardServer);
+    const runDirectlyWithoutHTTP = !!wildcardServerFound;
 
     validateArgs({
       endpointName,
       endpointArgs,
-      wildcardApiArgs,
+      generalArgs,
       restArgs,
-      wildcardApiFound,
+      wildcardServerFound,
       runDirectlyWithoutHTTP,
     });
 
@@ -70,7 +72,7 @@ function WildcardClient(): void {
       return callEndpointDirectly({
         endpointName,
         endpointArgs,
-        wildcardApiFound,
+        wildcardServerFound,
         context,
       });
     } else {
@@ -83,10 +85,10 @@ function WildcardClient(): void {
   function callEndpointDirectly({
     endpointName,
     endpointArgs,
-    wildcardApiFound,
+    wildcardServerFound,
     context,
   }) {
-    return wildcardApiFound.__directCall({
+    return wildcardServerFound.__directCall({
       endpointName,
       endpointArgs,
       context,
@@ -125,21 +127,21 @@ function WildcardClient(): void {
   function validateArgs({
     endpointName,
     endpointArgs,
-    wildcardApiArgs,
+    generalArgs,
     restArgs,
-    wildcardApiFound,
+    wildcardServerFound,
     runDirectlyWithoutHTTP,
   }) {
-    assert.internal(wildcardApiArgs);
+    assert.internal(generalArgs);
     const fetchEndpoint__validArgs =
       (endpointName && endpointArgs.constructor === Array,
       restArgs.length === 0,
-      wildcardApiArgs.constructor === Object &&
-        Object.keys(wildcardApiArgs).every((arg) =>
+      generalArgs.constructor === Object &&
+        Object.keys(generalArgs).every((arg) =>
           ["context", IS_CALLED_BY_PROXY].includes(arg)
         ));
 
-    if (wildcardApiArgs[IS_CALLED_BY_PROXY]) {
+    if (generalArgs[IS_CALLED_BY_PROXY]) {
       assert.internal(fetchEndpoint__validArgs);
     } else {
       // TODO remove all code related to directly calling `fetchEndpoint`
@@ -163,7 +165,7 @@ function WildcardClient(): void {
       */
     }
 
-    const { context } = wildcardApiArgs;
+    const { context } = generalArgs;
     if (runDirectlyWithoutHTTP) {
       const errorIntro = [
         "You are trying to run an endpoint directly.",
@@ -176,9 +178,9 @@ function WildcardClient(): void {
         "Running endpoints directly should be done in Node.js only."
       );
       assert.usage(
-        wildcardApiFound.__directCall,
+        wildcardServerFound.__directCall,
         errorIntro,
-        "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardApi()`."
+        "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`."
       );
     } else {
       assert.usage(
@@ -381,7 +383,7 @@ function getConfigProxy(configDefaults: ConfigPrivate) {
 declare global {
   namespace NodeJS {
     interface Global {
-      __globalWildcardApi: any;
+      __globalWildcardServer: any;
     }
   }
 }

@@ -47,7 +47,7 @@ const httpPort = 3442;
 })();
 
 async function runStandardTests({ standardTests, browserEval }) {
-  const wildcardApiHolder = {};
+  const wildcardServerHolder = {};
 
   const serverFrameworks = getSelectedTest()
     ? ["express"]
@@ -58,7 +58,7 @@ async function runStandardTests({ standardTests, browserEval }) {
     const _startServer = require("./servers/" + serverFramework);
     const startServer = async (args) => {
       stop = await _startServer({
-        wildcardApiHolder,
+        wildcardServerHolder,
         httpPort,
         staticDir,
         ...args,
@@ -67,13 +67,13 @@ async function runStandardTests({ standardTests, browserEval }) {
     await startServer();
 
     for (let test of standardTests) {
-      const wildcardApi = new WildcardServer();
-      wildcardApiHolder.wildcardApi = wildcardApi;
+      const wildcardServer = new WildcardServer();
+      wildcardServerHolder.wildcardServer = wildcardServer;
       const wildcardClient = new WildcardClient();
-      wildcardClient.__INTERNAL__wildcardServer = wildcardApi;
+      wildcardClient.__INTERNAL__wildcardServer = wildcardServer;
 
       const testArgs = {
-        wildcardApi,
+        wildcardServer,
         wildcardClient,
         WildcardClient,
         browserEval,
