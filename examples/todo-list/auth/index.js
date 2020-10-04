@@ -1,4 +1,4 @@
-const assert = require("@brillout/assert");
+const { assert } = require("@brillout/assert");
 
 module.exports = { getLoggedUser };
 

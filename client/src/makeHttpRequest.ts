@@ -1,5 +1,5 @@
+import { assert } from "@brillout/assert";
 import fetch = require("@brillout/fetch");
-import assert = require("@brillout/assert");
 
 export { makeHttpRequest };
 
@@ -42,15 +42,15 @@ async function makeHttpRequest({ url, parse, body }) {
         isServerError,
       }
     );
-    assert.internal(err.isNetworkError === true);
+    assert(err.isNetworkError === true);
     throw err;
   }
   const responseBody = await response.text();
   const contentType = response.headers.get("content-type");
   const isOk = response.ok;
-  assert.internal([true, false].includes(isOk));
+  assert([true, false].includes(isOk));
   const statusCode = response.status;
-  assert.internal(statusCode.constructor === Number);
+  assert(statusCode.constructor === Number);
   isServerError = 500 <= statusCode && statusCode <= 599;
 
   const value =
@@ -67,7 +67,7 @@ async function makeHttpRequest({ url, parse, body }) {
         isServerError,
       }
     );
-    assert.internal(err.isNetworkError === false);
+    assert(err.isNetworkError === false);
     throw err;
   }
 

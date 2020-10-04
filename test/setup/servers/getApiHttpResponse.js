@@ -1,6 +1,6 @@
 const Hapi = require("hapi");
 const Inert = require("inert");
-const assert = require("@brillout/assert");
+const { assert } = require("@brillout/assert");
 
 module.exports = startServer;
 
@@ -47,9 +47,9 @@ async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
     }
     {
       const { body, statusCode, contentType } = responseProps;
-      assert.internal(body);
-      assert.internal(statusCode);
-      assert.internal(contentType);
+      assert(body);
+      assert(statusCode);
+      assert(contentType);
       const response = h.response(body);
       response.code(statusCode);
       response.type(contentType);

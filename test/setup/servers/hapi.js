@@ -1,6 +1,5 @@
 const Hapi = require("hapi");
 const Inert = require("inert");
-const assert = require("@brillout/assert");
 const { wildcard } = require("@wildcard-api/server/hapi");
 
 module.exports = startServer;

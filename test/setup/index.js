@@ -2,7 +2,7 @@ process.on("unhandledRejection", (err) => {
   throw err;
 });
 
-const assert = require("@brillout/assert");
+const { assert } = require("@brillout/assert");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");

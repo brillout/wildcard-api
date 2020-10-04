@@ -4,7 +4,7 @@
   "description": "JavaScript Functions as API.",
   "main": "dist/index.js",
   "dependencies": {
-    "@brillout/assert": "^0.1.1",
+    "@brillout/assert": "^0.2.0",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
     "@lsos/donation-reminder": "^0.1.7"

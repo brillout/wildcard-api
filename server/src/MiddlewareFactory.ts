@@ -1,4 +1,4 @@
-import assert = require("@brillout/assert");
+import { assertUsage } from "@brillout/assert";
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { wildcardServer as wildcardServer_ } from "./index";
 
@@ -26,13 +26,13 @@ function MiddlewareFactory(ServerAdapter, opts?) {
           let context;
           if (contextGetter) {
             context = await contextGetter(requestObject);
-            assert.usage(
+            assertUsage(
               context,
               "Your context getter should return an object but it returns `" +
                 context +
                 "`."
             );
-            assert.usage(
+            assertUsage(
               context instanceof Object,
               { context },
               "Your context getter should return an object but it returns `context.constructor===" +

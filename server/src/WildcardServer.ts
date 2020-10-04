@@ -1,9 +1,15 @@
 import { stringify, parse } from "@brillout/json-s";
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
-import assert = require("@brillout/assert");
+import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 import getUrlProps = require("@brillout/url-props");
 
 export { WildcardServer };
+
+setProjectInfo({
+  projectName: "@wildcard-api",
+  projectGithub: "https://github.com/reframejs/wildcard-api",
+  projectDocs: "https://github.com/reframejs/wildcard-api",
+});
 
 const DEBUG_CACHE =
   /*/
@@ -17,11 +23,10 @@ type Config = {
   baseUrl: string;
 };
 
-assert.usage(
+assertUsage(
   isNodejs(),
   "You are loading the module `@wildcard-api/server` in the browser.",
-  "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
-  "That is: `import {endpoints} from '@wildcard-api/client'"
+  "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead."
 );
 
 function WildcardServer(): void {
@@ -81,12 +86,12 @@ function WildcardServer(): void {
         endpointName,
       });
     }
-    assert.internal(responseProps.body.constructor === String);
+    assert(responseProps.body.constructor === String);
 
     if (!config.disableEtag) {
       const computeEtag = require("./computeEtag");
       const etag = computeEtag(responseProps.body);
-      assert.internal(etag);
+      assert(etag);
       responseProps.etag = etag;
     }
 
@@ -94,14 +99,14 @@ function WildcardServer(): void {
   }
 
   async function __directCall({ endpointName, endpointArgs, context }) {
-    assert.internal(endpointName);
-    assert.internal(endpointArgs.constructor === Array);
+    assert(endpointName);
+    assert(endpointArgs.constructor === Array);
 
     if (noEndpoints({ endpointsObject })) {
       autoLoadEndpointFiles();
     }
 
-    assert.usage(
+    assertUsage(
       endpointExists({ endpointName, endpointsObject }),
       getEndpointMissingError({
         endpointName,
@@ -132,13 +137,13 @@ function WildcardServer(): void {
     context,
     isDirectCall,
   }) {
-    assert.internal(endpointName);
-    assert.internal(endpointArgs.constructor === Array);
-    assert.internal([true, false].includes(isDirectCall));
+    assert(endpointName);
+    assert(endpointArgs.constructor === Array);
+    assert([true, false].includes(isDirectCall));
 
     const endpoint = endpointsObject[endpointName];
-    assert.internal(endpoint);
-    assert.internal(endpointIsValid(endpoint));
+    assert(endpoint);
+    assert(endpointIsValid(endpoint));
 
     const contextProxy = createContextProxy({
       context,
@@ -177,7 +182,7 @@ function validateEndpoint(obj, prop, value) {
   const endpoint = value;
   const endpointName = prop;
 
-  assert.usage(
+  assertUsage(
     isCallable(endpoint),
     "An endpoint must be function.",
     "But `endpoints['" +
@@ -191,7 +196,7 @@ function validateEndpoint(obj, prop, value) {
 
   assert_plain_function(endpoint, "The endpoint `" + endpointName + "`");
 
-  assert.internal(endpointIsValid);
+  assert(endpointIsValid);
 
   obj[prop] = value;
 
@@ -199,7 +204,7 @@ function validateEndpoint(obj, prop, value) {
 }
 
 function assert_plain_function(fn, errPrefix) {
-  assert.usage(
+  assertUsage(
     !isArrowFunction(fn),
     errPrefix + " is defined as an arrow function.",
     "You cannot use an arrow function (`() => {}`), use a plain function (`function(){}`) instead."
@@ -214,10 +219,10 @@ function isArrowFunction(fn) {
   // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
   // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
 
-  assert.internal(!yes(function () {}));
-  assert.internal(yes(() => {}));
-  assert.internal(!yes(async function () {}));
-  assert.internal(yes(async () => {}));
+  assert(!yes(function () {}));
+  assert(yes(() => {}));
+  assert(!yes(async function () {}));
+  assert(yes(async () => {}));
 
   return yes(fn);
 
@@ -234,7 +239,7 @@ function isArrowFunction(fn) {
 }
 
 function isHumanReadableMode({ method }) {
-  assert.internal(method && method.toUpperCase() === method);
+  assert(method && method.toUpperCase() === method);
   if (DEBUG_CACHE) {
     return false;
   }
@@ -355,7 +360,7 @@ function getConfigProxy(configDefaults: Config) {
   return new Proxy({ ...configDefaults }, { set: validateNewConfig });
 
   function validateNewConfig(obj: Config, prop: string, value: any) {
-    assert.usage(
+    assertUsage(
       prop in configDefaults,
       `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
     );
@@ -372,7 +377,7 @@ function createContextProxy({ context, endpointName, isDirectCall }) {
     return true;
   }
   function get(_, prop) {
-    assert.usage(
+    assertUsage(
       context || !isDirectCall,
       ...getNodejsContextUsageNote({ endpointName, prop })
     );
@@ -446,7 +451,7 @@ function RequestInfo({ requestProps, endpointsObject, config }) {
   assert_request({ requestProps, method });
 
   const urlProps = getUrlProps(requestProps.url);
-  assert.internal(urlProps.pathname.startsWith("/"));
+  assert(urlProps.pathname.startsWith("/"));
 
   const { pathname } = urlProps;
   const { body: requestBody } = requestProps;
@@ -507,7 +512,7 @@ function RequestInfo({ requestProps, endpointsObject, config }) {
     };
   }
 
-  assert.internal(endpointArgs.constructor === Array);
+  assert(endpointArgs.constructor === Array);
   return {
     endpointArgs,
     endpointName,
@@ -605,7 +610,7 @@ function getEndpointArgs({
   return { endpointArgs };
 }
 function parsePathname({ pathname, config }) {
-  assert.internal(pathname.startsWith(config.baseUrl));
+  assert(pathname.startsWith(config.baseUrl));
   const urlParts = pathname.slice(config.baseUrl.length).split("/");
 
   const isMalformatted =
@@ -671,7 +676,7 @@ function HttpErrorResponse({ endpointError, isHumanMode }) {
       responseProps,
       endpointError,
     });
-    assert.internal(responseProps.body.constructor === String);
+    assert(responseProps.body.constructor === String);
     return responseProps_;
   } else {
     return responseProps;
@@ -702,7 +707,7 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   if (endpointError) {
     return HttpErrorResponse({ endpointError, isHumanMode });
   }
-  assert.internal(responseProps.body.constructor === String);
+  assert(responseProps.body.constructor === String);
   if (isHumanMode) {
     return get_human_response({ responseProps, endpointResult });
   } else {
@@ -723,7 +728,7 @@ function assert_request({ requestProps, method }) {
     ? []
     : [getApiHttpResponse__usageNote()];
 
-  assert.usage(
+  assertUsage(
     requestProps.url,
     ...correctUsageNote,
     colorizeError("`url` is missing."),
@@ -731,7 +736,7 @@ function assert_request({ requestProps, method }) {
     ""
   );
 
-  assert.usage(
+  assertUsage(
     requestProps.method,
     ...correctUsageNote,
     colorizeError("`method` is missing."),
@@ -765,7 +770,7 @@ function getBodyUsageNote({ requestProps }) {
     return "You seem to be using Koa; " + expressNote;
   }
   if (requestProps.comesFromUniversalAdapter === "hapi") {
-    assert.internal("body" in requestProps);
+    assert("body" in requestProps);
   }
   return [
     "If you are using Express: " + expressNote,
@@ -818,7 +823,7 @@ function getEndpointMissingError({
     errorText.push(colorizeError("You didn't define any endpoints."));
   }
 
-  assert.internal([true, false].includes(calledInBrowser));
+  assert([true, false].includes(calledInBrowser));
   if (!noEndpoints({ endpointsObject }) && (!calledInBrowser || isDev())) {
     errorText.push(
       "List of existing endpoints:",

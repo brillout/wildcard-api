@@ -1,11 +1,15 @@
 import { printDonationReminder } from "@lsos/donation-reminder";
 import { stringify, parse } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
-import assert = require("@brillout/assert");
-
-const IS_CALLED_BY_PROXY = Symbol();
+import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 
 export { WildcardClient };
+
+setProjectInfo({
+  projectName: "@wildcard-api",
+  projectGithub: "https://github.com/reframejs/wildcard-api",
+  projectDocs: "https://github.com/reframejs/wildcard-api",
+});
 
 printDonationReminder({
   npmName: "@wildcard-api",
@@ -24,6 +28,8 @@ type Config = {
 type ConfigPrivate = Config & {
   __INTERNAL__wildcardServer: any;
 };
+
+const IS_CALLED_BY_PROXY = Symbol();
 
 function WildcardClient(): void {
   const config = getConfigProxy({
@@ -63,7 +69,7 @@ function WildcardClient(): void {
     });
 
     if (runDirectlyWithoutHTTP) {
-      assert.internal(isNodejs());
+      assert(isNodejs());
       return callEndpointDirectly({
         endpointName,
         endpointArgs,
@@ -71,7 +77,7 @@ function WildcardClient(): void {
         context,
       });
     } else {
-      assert.internal(!context);
+      assert(!context);
       assert_serverUrl(config.serverUrl);
       return callEndpointOverHttp({ endpointName, endpointArgs });
     }
@@ -106,7 +112,7 @@ function WildcardClient(): void {
         urlArgs__string = ARGS_IN_BODY;
       } else {
         urlArgs__string = endpointArgsStr;
-        assert.internal(!urlArgs__string.startsWith(ARGS_IN_BODY));
+        assert(!urlArgs__string.startsWith(ARGS_IN_BODY));
       }
     }
 
@@ -127,7 +133,7 @@ function WildcardClient(): void {
     wildcardServerFound,
     runDirectlyWithoutHTTP,
   }) {
-    assert.internal(generalArgs);
+    assert(generalArgs);
     const fetchEndpoint__validArgs =
       (endpointName && endpointArgs.constructor === Array,
       restArgs.length === 0,
@@ -137,12 +143,12 @@ function WildcardClient(): void {
         ));
 
     if (generalArgs[IS_CALLED_BY_PROXY]) {
-      assert.internal(fetchEndpoint__validArgs);
+      assert(fetchEndpoint__validArgs);
     } else {
       // TODO remove all code related to directly calling `fetchEndpoint`
-      assert.internal(false);
+      assert(false);
       /*
-      assert.usage(
+      assertUsage(
         fetchEndpoint__validArgs,
         "Usage:"+
         "",
@@ -166,19 +172,19 @@ function WildcardClient(): void {
         "You are trying to run an endpoint directly.",
         "(Instead of doing an HTTP request).",
       ].join("\n");
-      assert.usage(
+      assertUsage(
         isNodejs(),
         errorIntro,
         "But you are trying to do so in the browser which doesn't make sense.",
         "Running endpoints directly should be done in Node.js only."
       );
-      assert.usage(
+      assertUsage(
         wildcardServerFound.__directCall,
         errorIntro,
         "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`."
       );
     } else {
-      assert.usage(
+      assertUsage(
         Object.keys(context || {}).length === 0,
         "Wrong SSR usage.",
         "You are:",
@@ -194,7 +200,7 @@ function WildcardClient(): void {
     let url;
 
     const { serverUrl } = config;
-    assert.internal(serverUrl || isBrowser());
+    assert(serverUrl || isBrowser());
     if (serverUrl) {
       url = serverUrl;
     } else {
@@ -207,7 +213,7 @@ function WildcardClient(): void {
       }
       if (url.endsWith("/") && config.baseUrl.startsWith("/")) {
         url = url.slice(0, -1);
-        assert.internal("bla/".slice(0, -1) === "bla");
+        assert("bla/".slice(0, -1) === "bla");
       }
       url += config.baseUrl;
     }
@@ -244,7 +250,7 @@ function WildcardClient(): void {
         // Webpack: `this===undefined`
         // New webpack version: `this===global`
         // Parcel: `this===window`
-        assert.internal(
+        assert(
           this === undefined ||
             (typeof window !== "undefined" && this === window) ||
             (typeof global !== "undefined" && this === global),
@@ -267,7 +273,7 @@ function WildcardClient(): void {
     }
 
     function set() {
-      assert.usage(
+      assertUsage(
         false,
         "You cannot add/modify endpoint functions with the client module `@wildcard-api/client`.",
         "Instead, define your endpoint functions with the `@wildcard-api/server` module:",
@@ -284,7 +290,7 @@ function WildcardClient(): void {
 
 function isNodejs() {
   const itIs = __nodeTest();
-  assert.internal(itIs === !__browserTest());
+  assert(itIs === !__browserTest());
   return itIs;
 }
 function __nodeTest() {
@@ -297,7 +303,7 @@ function __nodeTest() {
 }
 function isBrowser() {
   const itIs = __browserTest();
-  assert.internal(itIs === !__nodeTest());
+  assert(itIs === !__nodeTest());
   return itIs;
 }
 function __browserTest() {
@@ -305,7 +311,7 @@ function __browserTest() {
 }
 
 function assertProxySupport() {
-  assert.usage(
+  assertUsage(
     envSupportsProxy(),
     [
       "This JavaScript environment doesn't seem to support Proxy.",
@@ -320,7 +326,7 @@ function envSupportsProxy() {
 }
 
 function serializeArgs({ endpointArgs, endpointName, stringify }) {
-  assert.internal(endpointArgs.length >= 0);
+  assert(endpointArgs.length >= 0);
   if (endpointArgs.length === 0) {
     return undefined;
   }
@@ -333,7 +339,7 @@ function serializeArgs({ endpointArgs, endpointName, stringify }) {
     console.log("Endpoint arguments:");
     console.log(endpointArgs);
     console.log("\n");
-    assert.usage(
+    assertUsage(
       false,
       "Couldn't serialize arguments for `" + endpointName + "`.",
       "The endpoint arguments in question and the serialization error are printed above."
@@ -343,7 +349,7 @@ function serializeArgs({ endpointArgs, endpointName, stringify }) {
 }
 
 function assert_serverUrl(serverUrl) {
-  assert.usage(
+  assertUsage(
     serverUrl === null ||
       // Should be an HTTP URL
       (serverUrl &&
@@ -355,7 +361,7 @@ function assert_serverUrl(serverUrl) {
     { serverUrl }
   );
 
-  assert.usage(
+  assertUsage(
     serverUrl || isBrowser(),
     "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
   );
@@ -365,7 +371,7 @@ function getConfigProxy(configDefaults: ConfigPrivate) {
   return new Proxy({ ...configDefaults }, { set: validateNewConfig });
 
   function validateNewConfig(obj: ConfigPrivate, prop: string, value: any) {
-    assert.usage(
+    assertUsage(
       prop in configDefaults,
       `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/client\` config and not a \`@wildcard-api/server\` one.`
     );

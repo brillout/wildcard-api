@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const assert = require("@brillout/assert");
 
 module.exports = launchBrowser;
 
