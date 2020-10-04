@@ -9,7 +9,8 @@
     "release:client": "cd client/ && npm publish",
     "release:server": "cd server/ && npm publish",
     "docs": "mdocs",
-    "clean": "git clean -Xdf"
+    "clean": "git clean -Xdf",
+    "clean-ts": "rm -rf **/dist/ **/tsconfig.tsbuildinfo"
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
