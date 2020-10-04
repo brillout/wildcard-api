@@ -6,24 +6,24 @@ module.exports = [
   wrongContextObject,
 ];
 
-async function missingContext({ wildcardServer, browserEval }) {
+async function missingContext({ server, browserEval }) {
   let endpointFunctionCalled = false;
-  wildcardServer.endpoints.ctxEndpoint = async function () {
+  server.ctxEndpoint = async function () {
     endpointFunctionCalled = true;
     return this.notExistingContext + " bla";
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.ctxEndpoint();
+    const ret = await window.server.ctxEndpoint();
     assert(ret === "undefined bla");
   });
 
   assert(endpointFunctionCalled === true);
 }
 
-async function missingContextSSR({ wildcardServer, wildcardClient }) {
+async function missingContextSSR({ server, wildcardClient }) {
   let endpointFunctionCalled = false;
-  wildcardServer.endpoints.ssrTest = async function () {
+  server.ssrTest = async function () {
     let errorThrown = false;
     try {
       this.headers;
@@ -48,38 +48,38 @@ async function missingContextSSR({ wildcardServer, wildcardClient }) {
 missingContextFunction.isIntegrationTest = true;
 async function missingContextFunction({ browserEval, ...args }) {
   const setContext = undefined;
-  const { stopServer, wildcardServer } = await createServer({
+  const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
 
   let endpointFunctionCalled = false;
-  wildcardServer.endpoints.ctxEndpoint = async function () {
+  server.ctxEndpoint = async function () {
     endpointFunctionCalled = true;
     return this.notExistingContext + " blib";
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.ctxEndpoint();
+    const ret = await window.server.ctxEndpoint();
     assert(ret === "undefined blib");
   });
 
   assert(endpointFunctionCalled === true);
 
-  await stopServer();
+  await stopApp();
 }
 
 missingContextObject.isIntegrationTest = true;
 async function missingContextObject({ assertStderr, ...args }) {
   const setContext = () => undefined;
-  const { stopServer, wildcardServer } = await createServer({
+  const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
 
-  await test_failedEndpointCall({ wildcardServer, ...args });
+  await test_failedEndpointCall({ server, ...args });
 
-  await stopServer();
+  await stopApp();
 
   assertStderr(
     "Your context getter should return an object but it returns `undefined`."
@@ -89,23 +89,23 @@ async function missingContextObject({ assertStderr, ...args }) {
 wrongContextObject.isIntegrationTest = true;
 async function wrongContextObject({ assertStderr, ...args }) {
   const setContext = () => "wrong-context-type";
-  const { stopServer, wildcardServer } = await createServer({
+  const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
 
-  await test_failedEndpointCall({ wildcardServer, ...args });
+  await test_failedEndpointCall({ server, ...args });
 
-  await stopServer();
+  await stopApp();
 
   assertStderr(
     "Your context getter should return an object but it returns `context.constructor===String`."
   );
 }
 
-async function test_failedEndpointCall({ wildcardServer, ...args }) {
+async function test_failedEndpointCall({ server, ...args }) {
   let endpointCalled = false;
-  wildcardServer.endpoints.failingEndpoint = async function (name) {
+  server.failingEndpoint = async function (name) {
     endpointCalled = true;
     return "Dear " + name;
   };
@@ -135,17 +135,19 @@ async function createServer({ setContext, staticDir, httpPort }) {
     })
   );
 
-  const server = await start(app, httpPort);
+  const server = wildcardServer.endpoints;
 
-  const stopServer = () => stop(server);
-  return { stopServer, wildcardServer };
+  const appServer = await start(appServer, httpPort);
+
+  const stopApp = () => stop(appServer);
+  return { stopApp, server };
 }
 
 async function callFailaingEndpoint({ browserEval }) {
   await browserEval(async () => {
     let errorThrown = false;
     try {
-      const ret = await window.endpoints.failingEndpoint("rom");
+      const ret = await window.server.failingEndpoint("rom");
       console.log("ret: ", ret);
     } catch (err) {
       assert(err.message === "Internal Server Error");

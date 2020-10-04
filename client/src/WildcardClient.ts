@@ -40,12 +40,7 @@ function WildcardClient(): void {
 
   return this;
 
-  function fetchEndpoint(
-    endpointName,
-    endpointArgs,
-    generalArgs,
-    ...restArgs
-  ) {
+  function fetchEndpoint(endpointName, endpointArgs, generalArgs, ...restArgs) {
     generalArgs = generalArgs || {};
     endpointArgs = endpointArgs || [];
 
@@ -369,14 +364,12 @@ function assert_serverUrl(serverUrl) {
 function getConfigProxy(configDefaults: ConfigPrivate) {
   return new Proxy({ ...configDefaults }, { set: validateNewConfig });
 
-  function validateNewConfig(obj, prop, value) {
+  function validateNewConfig(obj: ConfigPrivate, prop: string, value: any) {
     assert.usage(
       prop in configDefaults,
-      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
+      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/client\` config and not a \`@wildcard-api/server\` one.`
     );
-
-    // Make TS happy
-    return false;
+    return (obj[prop] = value);
   }
 }
 

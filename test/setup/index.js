@@ -68,12 +68,14 @@ async function runStandardTests({ standardTests, browserEval }) {
 
     for (let test of standardTests) {
       const wildcardServer = new WildcardServer();
+      const { endpoints: server, config } = wildcardServer;
       wildcardServerHolder.wildcardServer = wildcardServer;
       const wildcardClient = new WildcardClient();
-      wildcardClient.__INTERNAL__wildcardServer = wildcardServer;
+      wildcardClient.config.__INTERNAL__wildcardServer = wildcardServer;
 
       const testArgs = {
-        wildcardServer,
+        server,
+        config,
         wildcardClient,
         WildcardClient,
         browserEval,

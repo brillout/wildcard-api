@@ -5,36 +5,36 @@ module.exports = [
   basic_serverSideUse_withoutRequestProps,
 ];
 
-async function basic_clientSideUse({ wildcardApi, browserEval }) {
-  wildcardApi.endpoints.hello = async function (name) {
+async function basic_clientSideUse({ server, browserEval }) {
+  server.hello = async function (name) {
     return "Dear " + name;
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.hello("rom");
+    const ret = await window.server.hello("rom");
     assert(ret === "Dear rom", { ret });
   });
 }
 
 async function basic_clientSideUse_requestObjectIsAvailbe({
-  wildcardApi,
+  server,
   browserEval,
 }) {
-  wildcardApi.endpoints.hello = async function (name) {
+  server.hello = async function (name) {
     assert(this.headers.host.startsWith("localhost"));
     assert(this.headers["user-agent"].includes("HeadlessChrome"));
     return "Servus " + name;
   };
 
   await browserEval(async () => {
-    const ret = await window.endpoints.hello("Romuald");
+    const ret = await window.server.hello("Romuald");
     assert(ret === "Servus Romuald", { ret });
   });
 }
 
-async function basic_serverSideUse({ wildcardApi, wildcardClient }) {
+async function basic_serverSideUse({ server, wildcardClient }) {
   const headers = [];
-  wildcardApi.endpoints.hello = async function (name) {
+  server.hello = async function (name) {
     assert(this.headers === headers);
     return "heyy " + name;
   };
@@ -46,10 +46,10 @@ async function basic_serverSideUse({ wildcardApi, wildcardClient }) {
 }
 
 async function basic_serverSideUse_withoutRequestProps({
-  wildcardApi,
+  server,
   wildcardClient,
 }) {
-  wildcardApi.endpoints.hello = async function (name) {
+  server.hello = async function (name) {
     return "yo " + name;
   };
 

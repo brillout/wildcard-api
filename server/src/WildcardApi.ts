@@ -354,14 +354,12 @@ function getEndpointsObject() {
 function getConfigProxy(configDefaults: Config) {
   return new Proxy({ ...configDefaults }, { set: validateNewConfig });
 
-  function validateNewConfig(obj, prop, value) {
+  function validateNewConfig(obj: Config, prop: string, value: any) {
     assert.usage(
       prop in configDefaults,
       `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
     );
-
-    // Make TS happy
-    return false;
+    return (obj[prop] = value);
   }
 }
 
