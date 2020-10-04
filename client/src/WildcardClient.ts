@@ -1,11 +1,11 @@
-const { printDonationReminder } = require("@lsos/donation-reminder");
-const assert = require("@brillout/assert");
-const { stringify, parse } = require("@brillout/json-s");
-const makeHttpRequest = require("./makeHttpRequest");
+import { printDonationReminder } from "@lsos/donation-reminder";
+import { stringify, parse } from "@brillout/json-s";
+import { makeHttpRequest } from "./makeHttpRequest";
+import assert = require("@brillout/assert");
 
 const IS_CALLED_BY_PROXY = Symbol();
 
-module.exports = WildcardClient;
+export { WildcardClient };
 
 printDonationReminder({
   npmName: "@wildcard-api",
@@ -15,7 +15,7 @@ printDonationReminder({
   minNumberOfAuthors: 0,
 });
 
-function WildcardClient() {
+function WildcardClient(): void {
   const options = this;
 
   Object.assign(this, {
@@ -266,6 +266,9 @@ function WildcardClient() {
         "    endpoints.newEndpoint = function(){return 'hello'};",
         "Note how we load `endpoints` from `require('@wildcard-api/server')` and not `require('@wildcard-api/client')`."
       );
+
+      // Make TS happy
+      return false;
     }
   }
 }
@@ -347,4 +350,12 @@ function assert_serverUrl(serverUrl) {
     serverUrl || isBrowser(),
     "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
   );
+}
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      __globalWildcardApi: any;
+    }
+  }
 }

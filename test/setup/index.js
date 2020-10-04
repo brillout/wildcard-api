@@ -7,7 +7,7 @@ global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
 const WildcardApi = require("@wildcard-api/server/WildcardApi");
-const WildcardClient = require("@wildcard-api/client/WildcardClient");
+const { WildcardClient } = require("@wildcard-api/client");
 
 const bundle = require("./browser/bundle");
 const launchBrowser = require("./browser/launchBrowser");

@@ -1,7 +1,12 @@
-const fetch = require("@brillout/fetch");
-const assert = require("@brillout/assert");
+import fetch = require("@brillout/fetch");
+import assert = require("@brillout/assert");
 
-module.exports = makeHttpRequest;
+export { makeHttpRequest };
+
+type EndpointError = Error & {
+  isNetworkError: boolean;
+  isServerError: boolean;
+};
 
 async function makeHttpRequest({ url, parse, body }) {
   const makeRequest = addHandli(() =>
@@ -30,11 +35,13 @@ async function makeHttpRequest({ url, parse, body }) {
     networkError = err;
   }
   if (isNetworkError) {
-    const err = new Error("No Server Connection");
-    Object.assign(err, {
-      isNetworkError,
-      isServerError,
-    });
+    const err: EndpointError = Object.assign(
+      new Error("No Server Connection"),
+      {
+        isNetworkError,
+        isServerError,
+      }
+    );
     assert.internal(err.isNetworkError === true);
     throw err;
   }
@@ -53,11 +60,13 @@ async function makeHttpRequest({ url, parse, body }) {
       : responseBody;
 
   if (!isOk) {
-    const err = new Error("Internal Server Error");
-    Object.assign(err, {
-      isNetworkError,
-      isServerError,
-    });
+    const err: EndpointError = Object.assign(
+      new Error("Internal Server Error"),
+      {
+        isNetworkError,
+        isServerError,
+      }
+    );
     assert.internal(err.isNetworkError === false);
     throw err;
   }
@@ -67,9 +76,19 @@ async function makeHttpRequest({ url, parse, body }) {
 
 function addHandli(fetch_) {
   return () => {
-    if (typeof window !== "undefined" && window.handli) {
+    if (
+      typeof window !== "undefined" &&
+      window.handli &&
+      window.handli.constructor === Function
+    ) {
       return window.handli(fetch_);
     }
     return fetch_();
   };
+}
+
+declare global {
+  interface Window {
+    handli?: any;
+  }
 }
