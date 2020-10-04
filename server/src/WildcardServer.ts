@@ -1,7 +1,13 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
-import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
+import {
+  assert,
+  assertUsage,
+  getUsageError,
+  UsageError,
+  setProjectInfo,
+} from "@brillout/assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 
@@ -25,24 +31,37 @@ type Config = {
   baseUrl: string;
 };
 
+type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
+type HttpRequestMethod = "POST" | "GET" | "post" | "get";
+type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
+type ComesFromUniversalAdapter =
+  | "express"
+  | "koa"
+  | ("hapi" & {
+      _brand?: "ComesFromUniversalAdapter";
+    });
 type RequestProps = {
-  url: string;
-  method: "POST" | "GET" | "post" | "get";
-  body?: string;
-  comesFromUniversalAdapter?: boolean;
+  url: HttpRequestUrl;
+  method: HttpRequestMethod;
+  body?: HttpRequestBody;
+  comesFromUniversalAdapter?: ComesFromUniversalAdapter;
 };
 
-type ResponseProps = {
-  body: string;
-  contentType: string;
-  statusCode: number;
-  etag?: string;
+type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
+type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
+type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
+type HttpResponseEtag = string & { _brand?: "HttpResponseEtag" };
+type HttpResponseProps = {
+  body: HttpResponseBody;
+  contentType: HttpResponseContentType;
+  statusCode: HttpResponseStatusCode;
+  etag?: HttpResponseEtag;
 };
 
 type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 
 type EndpointResult = unknown & { _brand?: "EndpointResult" };
-type EndpointError = Error & { _brand?: "EndpointError" };
+type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
 type EndpointArg = string & { _brand?: "EndpointArg" };
 type EndpointArgs = EndpointArg[];
 type EndpointArgsSerialized = string & { _brand?: "EndpointArgsSerialized" };
@@ -59,7 +78,7 @@ type EndpointFunction = () => {} & { _brand?: "EndpointFunction" };
 type EndpointsObject = Record<EndpointName, EndpointFunction>;
 type EndpointsProxy = EndpointsObject;
 
-type ErrorText = string & { _brand?: "ErrorText" };
+type ErrorText = UsageError;
 type EndpointDoesNotExist = boolean & { _brand?: "EndpointDoesNotExist" };
 type MalformationError = {
   errorText: ErrorText;
@@ -76,8 +95,6 @@ type RequestInfo = {
   isNotWildcardRequest?: IsNotWildcardRequest;
   isHumanMode: IsHumanMode;
 };
-
-type CalledInBrowser = boolean & { _brand?: "CalledInBrowser" };
 
 assertUsage(
   isNodejs(),
@@ -104,7 +121,7 @@ function WildcardServer(): void {
   async function getApiHttpResponse(
     requestProps: RequestProps,
     context: ContextObject
-  ) {
+  ): Promise<HttpResponseProps> {
     const {
       endpointName,
       endpointArgs,
@@ -118,9 +135,7 @@ function WildcardServer(): void {
       return null;
     }
     if (malformationError) {
-      console.error("");
       console.error(malformationError.errorText);
-      console.error("");
       return HttpMalformationResponse({ malformationError });
     }
     if (isIntrospection) {
@@ -134,9 +149,9 @@ function WildcardServer(): void {
       isDirectCall: false,
     });
 
-    let responseProps: ResponseProps;
+    let responseProps: HttpResponseProps;
     if (endpointError) {
-      logError(endpointError);
+      console.error(endpointError);
       responseProps = HttpErrorResponse({ endpointError, isHumanMode });
     } else {
       responseProps = HttpResponse({
@@ -167,7 +182,7 @@ function WildcardServer(): void {
 
     assertUsage(
       doesEndpointExist(endpointName, endpointsProxy),
-      getEndpointMissingError(endpointName, endpointsProxy, {
+      getEndpointMissingText(endpointName, endpointsProxy, {
         calledInBrowser: false,
       })
     );
@@ -247,36 +262,34 @@ function validateEndpoint(
   prop: EndpointName,
   value: EndpointFunction
 ) {
-  const endpoint = value;
   const endpointName = prop;
+  const endpointFunction = value;
 
   assertUsage(
-    isCallable(endpoint),
-    "An endpoint must be function.",
-    "But `endpoints['" +
-      endpointName +
-      "']` is " +
-      (endpoint && endpoint.constructor ? "a " : "") +
-      "`" +
-      (endpoint && endpoint.constructor) +
-      "`"
+    isCallable(endpointFunction),
+    [
+      "An endpoint must be function,",
+      `but \`endpoints['${endpointName}']\` is`,
+      endpointFunction && endpointFunction.constructor
+        ? `a ${endpointFunction.constructor}`
+        : endpointFunction,
+    ].join(" ")
   );
 
-  assert_plain_function(endpoint, "The endpoint `" + endpointName + "`");
+  assertUsage(
+    !isArrowFunction(endpointFunction),
+    [
+      "The endpoint function `" + endpointName + "` is an arrow function",
+      "Endpoints cannot be defined with arrow functions (`() => {}`),",
+      "use a plain function (`function(){}`) instead.",
+    ].join(" ")
+  );
 
-  assert(endpointIsValid(endpoint));
+  assert(endpointIsValid(endpointFunction));
 
   obj[prop] = value;
 
   return true;
-}
-
-function assert_plain_function(fn: () => {}, errPrefix: string) {
-  assertUsage(
-    !isArrowFunction(fn),
-    errPrefix + " is defined as an arrow function.",
-    "You cannot use an arrow function (`() => {}`), use a plain function (`function(){}`) instead."
-  );
 }
 
 function isCallable(thing: unknown) {
@@ -372,7 +385,10 @@ The call stack is shown ${getDevModeNote()}
   return get_html_response(html__error);
 }
 
-function get_html_response(htmlBody: string, note?: string) {
+function get_html_response(
+  htmlBody: HttpResponseBody,
+  note?: string
+): HttpResponseProps {
   if (note === undefined) {
     note = [
       "This page exists " + getDevModeNote(),
@@ -431,7 +447,11 @@ function getConfigProxy(configDefaults: Config) {
   function validateNewConfig(obj: Config, prop: string, value: any) {
     assertUsage(
       prop in configDefaults,
-      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/server\` config and not a \`@wildcard-api/client\` one.`
+      [
+        `Unkown config \`${prop}\`.`,
+        "Make sure that the config is a `@wildcard-api/server` config",
+        "and not a `@wildcard-api/client` one.",
+      ].join(" ")
     );
     return (obj[prop] = value);
   }
@@ -457,7 +477,7 @@ function createContextProxy({
   function get(_: ContextObject, prop: ContextProp) {
     assertUsage(
       context || !isDirectCall,
-      ...getNodejsContextUsageNote({ endpointName, prop })
+      getNodejsContextUsageNote({ endpointName, prop })
     );
 
     if (!context) return undefined;
@@ -468,33 +488,24 @@ function createContextProxy({
 
 function getNodejsContextUsageNote({ endpointName, prop }) {
   const propNameIsNormal = isPropNameNormal(prop);
-  return [
-    colorizeError("Wrong usage of the Wildcard client in Node.js."),
-    ...(propNameIsNormal
-      ? [
-          "",
-          "Cannot get `this." +
-            prop +
-            "` because you didn't provide `" +
-            prop +
-            "`.",
-        ]
-      : []),
-    "",
-    colorizeEmphasis(
-      propNameIsNormal
-        ? "Make sure to provide `" +
-            prop +
-            "` by using `bind({" +
-            prop +
-            "})` when calling your `" +
-            endpointName +
-            "` endpoint in Node.js."
-        : "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide `context`/`this`."
-    ),
-    "",
-    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
-  ];
+  const contextUsageNote = ["Wrong usage of the Wildcard client in Node.js."];
+
+  if (propNameIsNormal) {
+    contextUsageNote.push(
+      `Cannot get \`this.${prop}\` because you didn't provide \`${prop}\`.`,
+      `Make sure to provide \`${prop}\` by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`
+    );
+  } else {
+    contextUsageNote.push(
+      "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide the context."
+    );
+  }
+
+  contextUsageNote.push(
+    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
+  );
+
+  return contextUsageNote.join(" ");
 }
 
 function isPropNameNormal(prop: ContextProp) {
@@ -504,19 +515,6 @@ function isPropNameNormal(prop: ContextProp) {
   } catch (err) {}
 
   return propStr === prop && /^[a-zA-Z0-9_]+$/.test(prop);
-}
-
-function colorizeError(text: string) {
-  return text;
-  /*
-  return chalk.bold.red(text);
-  */
-}
-function colorizeEmphasis(text: string) {
-  return text;
-  /*
-  return chalk.cyan(text);
-  */
 }
 
 function isPathanameBase({ pathname, config }) {
@@ -550,7 +548,6 @@ function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
     malformationError: malformationError__pathname,
     endpointName,
     urlArgs__string,
-    pathname__prettified,
   } = parsePathname({ pathname, config });
 
   if (malformationError__pathname) {
@@ -562,12 +559,18 @@ function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
   }
 
   if (!doesEndpointExist(endpointName, endpointsProxy)) {
+    const endpointMissingText = getEndpointMissingText(
+      endpointName,
+      endpointsProxy,
+      {
+        calledInBrowser: true,
+      }
+    );
+    const errorText = getUsageError(endpointMissingText);
     return {
       malformationError: {
         endpointDoesNotExist: true,
-        errorText: getEndpointMissingError(endpointName, endpointsProxy, {
-          calledInBrowser: true,
-        }),
+        errorText,
       },
       endpointName,
       isHumanMode,
@@ -577,7 +580,6 @@ function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
   const { endpointArgs, malformationError } = getEndpointArgs({
     urlArgs__string,
     requestBody,
-    pathname__prettified,
     requestProps,
   });
   if (malformationError) {
@@ -599,48 +601,36 @@ function getRequestInfo({ requestProps, endpointsProxy, config }): RequestInfo {
 function getEndpointArgs({
   urlArgs__string,
   requestBody,
-  pathname__prettified,
   requestProps,
-}) {
+}): { malformationError?: MalformationError; endpointArgs?: EndpointArgs } {
   const ARGS_IN_BODY = "args-in-body";
   const args_are_in_body = urlArgs__string === ARGS_IN_BODY;
 
   let endpointArgs__string: EndpointArgsSerialized;
   if (args_are_in_body) {
     if (!requestBody) {
+      const errorText = getUsageError(
+        [
+          urlArgs__string.comesFromUniversalAdapter
+            ? `Your ${urlArgs__string.comesFromUniversalAdapter} server is not providing the HTTP request body.`
+            : "Argument `body` missing when calling `getApiHttpResponse()`.",
+          "You need to provide the HTTP request body when calling an endpoint with arguments serialized to >=2000 characters.",
+          getBodyUsageNote(requestProps),
+        ].join(" ")
+      );
       return {
-        malformationError: {
-          errorText: [
-            urlArgs__string.comesFromUniversalAdapter
-              ? colorizeError(
-                  "Your " +
-                    urlArgs__string.comesFromUniversalAdapter +
-                    " server does not provide the HTTP request body."
-                )
-              : [
-                  getApiHttpResponse__usageNote(),
-                  colorizeError("`body` is missing."),
-                ].join("\n"),
-            colorizeEmphasis(
-              "You need to provide the HTTP request body when calling an endpoint with arguments serialized to >=2000 characters."
-            ),
-            getBodyUsageNote({ requestProps }),
-          ].join("\n"),
-        },
+        malformationError: { errorText },
       };
     }
     const bodyIsValid =
       requestBody.constructor === Array ||
       (requestBody.startsWith && requestBody.startsWith("["));
     if (!bodyIsValid) {
+      const errorText = getUsageError(
+        "Malformatted API request. HTTP request body should be a serialized array."
+      );
       return {
-        malformationError: {
-          errorText: [
-            JSON.stringify({ httpRequestBody: requestBody }),
-            "Malformatted API request `" + pathname__prettified + "`.",
-            colorizeError("HTTP request body should be a JSON array."),
-          ].join("\n"),
-        },
+        malformationError: { errorText },
       };
     }
     endpointArgs__string =
@@ -660,27 +650,24 @@ function getEndpointArgs({
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch (err_) {
+    const errorText = getUsageError(
+      [
+        "Malformatted API request.",
+        "Cannot parse `" + endpointArgs__string + "`.",
+        "Parse Error:",
+        err_.message,
+      ].join(" ")
+    );
     return {
-      malformationError: {
-        errorText: [
-          "Malformatted API request `" + pathname__prettified + "`.",
-          "Cannot parse `" + endpointArgs__string + "`.",
-          colorizeError("Parse Error:"),
-          err_.message,
-        ].join("\n"),
-      },
+      malformationError: { errorText },
     };
   }
   if (!endpointArgs || endpointArgs.constructor !== Array) {
+    const errorText = getUsageError(
+      "Malformatted API request. The endpoint arguments should be an array."
+    );
     return {
-      malformationError: {
-        errorText: [
-          JSON.stringify({ requestBody }),
-          "Malformatted API request `" + pathname__prettified + "`.",
-          colorizeError("The URL arguments should be an array."),
-          "`" + urlArgs__string + "` is not an array",
-        ].join("\n"),
-      },
+      malformationError: { errorText },
     };
   }
   return { endpointArgs };
@@ -694,18 +681,15 @@ function parsePathname({ pathname, config }) {
 
   const endpointName = urlParts[0];
   const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
+  /*
   const pathname__prettified = isMalformatted
     ? pathname
     : config.baseUrl + endpointName + "/" + urlArgs__string;
+  */
   let malformationError: MalformationError;
   if (isMalformatted) {
     malformationError = {
-      errorText: [
-        "Malformatted API URL `" + pathname__prettified + "`",
-        "API URL should have following format: `" +
-          config.baseUrl +
-          'yourEndpointName/["the","endpoint","arguments"]` (or with URL encoding: `%5B%22the%22%2C%22endpoint%22%2C%22arguments%22%5D`)',
-      ].join("\n"),
+      errorText: getUsageError("Malformatted API URL"),
     };
   }
 
@@ -713,11 +697,13 @@ function parsePathname({ pathname, config }) {
     malformationError,
     endpointName,
     urlArgs__string,
-    pathname__prettified,
   };
 }
 
-function HttpIntrospectionResponse({ endpointsProxy, config }) {
+function HttpIntrospectionResponse({
+  endpointsProxy,
+  config,
+}): HttpResponseProps {
   if (!isDev()) {
     return get_html_response(
       "This page is available " + getDevModeNote(),
@@ -741,8 +727,8 @@ function getEndpointNames({ endpointsProxy }): EndpointName[] {
   return Object.keys(endpointsProxy);
 }
 
-function HttpErrorResponse({ endpointError, isHumanMode }) {
-  const responseProps = {
+function HttpErrorResponse({ endpointError, isHumanMode }): HttpResponseProps {
+  const responseProps: HttpResponseProps = {
     body: "Internal Server Error",
     statusCode: 500,
     contentType: "text/plain",
@@ -758,7 +744,11 @@ function HttpErrorResponse({ endpointError, isHumanMode }) {
     return responseProps;
   }
 }
-function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
+function HttpResponse({
+  endpointResult,
+  isHumanMode,
+  endpointName,
+}): HttpResponseProps {
   const responseProps = {
     statusCode: 200,
     contentType: "application/json",
@@ -770,15 +760,14 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   try {
     responseProps.body = stringify(valueToStringify);
   } catch (stringifyError) {
-    const usageError = UsageError(
+    endpointError = getUsageError(
       [
-        `Couldn't serialize value returned by endpoint function \`${endpointName}\`.`,
-        "Make sure the returned value only contains supported types: `Object`, `string`, `number`, `Date`, `null`, `undefined`, `RegExp`, `Inifinity`, `NaN`.",
+        `Couldn't serialize value returned by endpoint \`${endpointName}\`.`,
+        "Make sure the returned value contains only the following supported types: `Object`, `string`, `number`, `Date`, `null`, `undefined`, `RegExp`, `Inifinity`, `NaN`.",
         "Serialization Error: " + stringifyError.message,
       ].join(" ")
     );
-    console.error(usageError);
-    endpointError = usageError;
+    console.error(endpointError);
   }
   if (endpointError) {
     return HttpErrorResponse({ endpointError, isHumanMode });
@@ -791,50 +780,32 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   }
 }
 
-function HttpMalformationResponse({ malformationError }) {
+function HttpMalformationResponse({ malformationError }): HttpResponseProps {
   return {
     statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
     contentType: "text/plain",
-    body: malformationError.errorText,
+    body: malformationError.errorText.stack,
   };
 }
 
 function assert_request(requestProps: RequestProps) {
-  const correctUsageNote = requestProps.comesFromUniversalAdapter
-    ? []
-    : [getApiHttpResponse__usageNote()];
+  assert(
+    (requestProps.url && requestProps.method) ||
+      !requestProps.comesFromUniversalAdapter
+  );
 
   assertUsage(
     requestProps.url,
-    ...correctUsageNote,
-    colorizeError("`url` is missing."),
-    "(`url==" + requestProps.url + "`)",
-    ""
+    "Argument `url` is missing while calling `getApiHttpResponse()`."
   );
 
   assertUsage(
     requestProps.method,
-    ...correctUsageNote,
-    colorizeError("`method` is missing."),
-    "(`method==" + requestProps.method + "`)",
-    ""
+    "Argument `method` is missing while calling `getApiHttpResponse()`."
   );
 }
-function getApiHttpResponse__usageNote() {
-  return [
-    "Usage:",
-    "",
-    "  `const apiResponse = await getApiHttpResponse({method, url, body}, context);`",
-    "",
-    "where",
-    "  - `method` is the HTTP method of the request",
-    "  - `url` is the HTTP URL of the request",
-    "  - `body` is the HTTP body of the request",
-    "  - `context` is the context passed to your endpoint functions as `this`.",
-    "",
-  ].join("\n");
-}
-function getBodyUsageNote({ requestProps }) {
+
+function getBodyUsageNote(requestProps: RequestProps) {
   const expressNote =
     "make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.";
   const koaNote =
@@ -850,29 +821,9 @@ function getBodyUsageNote({ requestProps }) {
   }
   return [
     "If you are using Express: " + expressNote,
-    "If you are using Hapi: no plugin is required and the body is available at `request.payload`.",
+    "If you are using Hapi: the HTTP request body is available at `request.payload`.",
     "If you are using Koa: " + koaNote,
-  ].join("\n");
-}
-
-function logError(err: EndpointError) {
-  console.error(err);
-  /* TODO
-  console.error("");
-  console.error(err);
-  console.error("");
-  console.error(
-    colorizeError(
-      "Error thrown by endpoint function" +
-        (!endpointName ? "" : " `" + endpointName + "`") +
-        "."
-    )
-  ) + console.error("Error is printed above.");
-  console.error(
-    'Read the "Error Handling" documentation for how to handle errors.'
-  );
-  console.error("");
-  */
+  ].join(" ");
 }
 
 function doesEndpointExist(
@@ -887,47 +838,41 @@ function noEndpoints({ endpointsProxy }) {
   return endpointNames.length === 0;
 }
 
-function getEndpointMissingError(
+function getEndpointMissingText(
   endpointName: EndpointName,
   endpointsProxy: EndpointsProxy,
-  { calledInBrowser }: { calledInBrowser: CalledInBrowser }
-) {
+  { calledInBrowser }: { calledInBrowser: boolean }
+): string {
   const endpointNames = getEndpointNames({ endpointsProxy });
 
-  const errorText = [
-    colorizeError("Endpoint `" + endpointName + "` doesn't exist."),
+  const endpointMissingText = [
+    "Endpoint `" + endpointName + "` doesn't exist.",
   ];
 
   if (noEndpoints({ endpointsProxy })) {
-    errorText.push(colorizeError("You didn't define any endpoints."));
+    endpointMissingText.push("You didn't define any endpoints.");
   }
 
   assert([true, false].includes(calledInBrowser));
   if (!noEndpoints({ endpointsProxy }) && (!calledInBrowser || isDev())) {
-    errorText.push(
+    endpointMissingText.push(
       "List of existing endpoints:",
-      ...endpointNames.map((endpointName) => " - " + endpointName)
+      endpointNames.join(",")
     );
   }
 
-  errorText.push(
-    colorizeEmphasis(
-      "Make sure that the file that defines `" +
-        endpointName +
-        "` is named `endpoints.js` or `*.endpoints.js`: Wildcard automatically loads any file with such a name."
-    ),
+  endpointMissingText.push(
+    "Make sure that the file that defines `" +
+      endpointName +
+      "` is named `endpoints.js` or `*.endpoints.js`: Wildcard automatically loads any file with such a name.",
     "Alternatively, you can manually load your endpoint files: `require('./path/to/file-that-defines-" +
       endpointName +
       ".js').`"
   );
 
-  return errorText.join("\n");
+  return endpointMissingText.join(" ");
 }
 
 function getDevModeNote() {
   return "only in dev mode. (When <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)";
-}
-
-function UsageError(msg: string) {
-  return new Error("[@wildcard-api/server] " + msg);
 }

@@ -80,7 +80,7 @@ async function wrongUrl3({ server, browserEval }) {
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
     assert(text.includes("Malformatted API"));
-    assert(text.includes("The URL arguments should be an array."));
+    assert(text.includes("The endpoint arguments should be an array."));
   });
 }
 
@@ -146,7 +146,7 @@ async function endpointReturnsFunction1({ server, browserEval, assertStderr }) {
   });
 
   assertStderr(
-    "Couldn't serialize value returned by endpoint function `fnEndpoint1`",
+    "Couldn't serialize value returned by endpoint `fnEndpoint1`",
     "Cannot serialize function `heloFn`"
   );
 }

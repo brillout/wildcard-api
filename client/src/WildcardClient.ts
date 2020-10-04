@@ -373,7 +373,11 @@ function getConfigProxy(configDefaults: ConfigPrivate) {
   function validateNewConfig(obj: ConfigPrivate, prop: string, value: any) {
     assertUsage(
       prop in configDefaults,
-      `Unkown config \`${prop}\`. Make sure that the config is a \`@wildcard-api/client\` config and not a \`@wildcard-api/server\` one.`
+      [
+        `Unkown config \`${prop}\`.`,
+        "Make sure that the config is a `@wildcard-api/client` config",
+        "and not a `@wildcard-api/server` one.",
+      ].join(" ")
     );
     return (obj[prop] = value);
   }
