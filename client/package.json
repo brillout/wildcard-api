@@ -10,7 +10,7 @@
     "@lsos/donation-reminder": "^0.1.7"
   },
   "scripts": {
-    "prepublishOnly": "parcel build dist/index.js --out-dir dist/umd --out-file wildcard-api-client.production.min.js --global WildcardApiClient"
+    "prepublishOnly": "parcel build dist/index.js --out-dir dist/umd --out-file wildcard-client.production.min.js --global WildcardApiClient"
   },
   "devDependencies": {
     "parcel": "^1.12.4"

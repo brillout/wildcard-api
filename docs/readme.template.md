@@ -335,7 +335,7 @@ Is your API meant to be used by yourself? Use RPC.
    // Browser
 
    // npm install @wildcard-api/client
-   // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-api-client.production.min.js"/>
+   // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"/>
    import {endpoints} from '@wildcard-api/client';
 
    (async () => {
