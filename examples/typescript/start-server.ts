@@ -1,5 +1,5 @@
 import express from "express";
-import wildcard from "@wildcard-api/server/express";
+import { wildcard } from "@wildcard-api/server/express";
 import "./endpoints.ts";
 
 const app = express();

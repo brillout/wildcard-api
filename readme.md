@@ -806,7 +806,7 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ~~~ts
 // /examples/typescript/endpoints.ts
 
-import wildcard from "@wildcard-api/server";
+import { endpoints as _endpoints } from "@wildcard-api/server";
 
 interface Person {
   firstName: string;
@@ -829,7 +829,7 @@ const endpoints = {
 };
 export type Endpoints = typeof endpoints;
 
-Object.assign(wildcard.endpoints, endpoints);
+Object.assign(_endpoints, endpoints);
 ~~~
 ~~~ts
 // /examples/typescript/client/index.ts

@@ -231,7 +231,7 @@ With Express:
 // ./start-with-express
 
 const express = require("express");
-const wildcard = require("@wildcard-api/server/express");
+const { wildcard } = require("@wildcard-api/server/express");
 
 const app = express();
 
@@ -263,7 +263,7 @@ With Hapi
 const assert = require("@brillout/assert");
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
-const wildcard = require("@wildcard-api/server/hapi");
+const { wildcard } = require("@wildcard-api/server/hapi");
 
 startServer();
 
@@ -310,7 +310,7 @@ With Koa
 
 const Koa = require("koa");
 const Static = require("koa-static");
-const wildcard = require("@wildcard-api/server/koa");
+const { wildcard } = require("@wildcard-api/server/koa");
 
 const app = new Koa();
 

@@ -201,7 +201,7 @@ Is your API meant to be used by yourself? Use RPC.
    With Express:
    ~~~js
    const express = require('express');
-   const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
    const app = express();
 
@@ -225,7 +225,7 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Hapi = require('hapi');
-   const wildcard = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
 
    const server = Hapi.Server();
 
@@ -250,7 +250,7 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Koa = require('koa');
-   const wildcard = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
 
    const app = new Koa();
 
@@ -358,7 +358,7 @@ Use the context object to authenticate requests. For example:
 // Node.js server
 
 const express = require('express');
-const wildcard = require('@wildcard-api/server/express');
+const {wildcard} = require('@wildcard-api/server/express');
 
 const app = express();
 

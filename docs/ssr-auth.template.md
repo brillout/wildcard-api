@@ -107,7 +107,7 @@ The HTTP request that the Wildcard client made is handled by the Wildcard middle
 // Node.js
 
 const express = require('express');
-const wildcard = require('@wildcard-api/server/express');
+const {wildcard} = require('@wildcard-api/server/express');
 
 const app = express();
 

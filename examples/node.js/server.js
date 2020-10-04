@@ -1,5 +1,5 @@
 const express = require("express");
-const wildcardMiddleware = require("@wildcard-api/server/express");
+const { wildcard } = require("@wildcard-api/server/express");
 const { endpoints } = require("@wildcard-api/server");
 
 endpoints.hello = async function () {
@@ -9,5 +9,5 @@ endpoints.hello = async function () {
 
 const app = express();
 
-app.use(wildcardMiddleware());
+app.use(wildcard());
 app.listen(3000);

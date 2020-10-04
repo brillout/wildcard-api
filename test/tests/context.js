@@ -117,8 +117,8 @@ async function test_failedEndpointCall({ wildcardApi, ...args }) {
 
 async function createServer({ setContext, staticDir, httpPort }) {
   const express = require("express");
-  const {wildcard} = require("@wildcard-api/server/express");
-  const {WildcardApi} = require("@wildcard-api/server");
+  const { wildcard } = require("@wildcard-api/server/express");
+  const { WildcardApi } = require("@wildcard-api/server");
   const { stop, start } = require("../setup/servers/express");
 
   const wildcardApi = new WildcardApi();
