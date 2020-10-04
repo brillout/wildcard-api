@@ -1,6 +1,6 @@
-const { projectDir, findFiles } = require("@brillout/project-files");
+import { findFiles } from "@brillout/project-files";
 
-module.exports = autoLoadEndpointFiles;
+export { autoLoadEndpointFiles };
 
 function autoLoadEndpointFiles() {
   [...findFiles("*.endpoints.js"), ...findFiles("endpoints.js")].forEach(

@@ -1,5 +1,5 @@
 const express = require("express");
-const wildcard = require("@wildcard-api/server/express");
+const {wildcard} = require("@wildcard-api/server/express");
 
 module.exports = startServer;
 module.exports.start = start;

@@ -1,11 +1,11 @@
-const assert = require("@brillout/assert");
-const autoLoadEndpointFiles = require("./autoLoadEndpointFiles");
-const wilcardApi_ = require("./index");
+import assert = require("@brillout/assert");
+import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
+import { wildcardApi as wilcardApi_ } from "./index";
 
-module.exports = MiddlewareFactory;
+export { MiddlewareFactory };
 
-function MiddlewareFactory(ServerAdapter, opts) {
-  return (contextGetter, { __INTERNAL__wildcardApiHolder } = {}) => {
+function MiddlewareFactory(ServerAdapter, opts?) {
+  return (contextGetter, { __INTERNAL__wildcardApiHolder }: {__INTERNAL__wildcardApiHolder?: any}  = {}) => {
     return ServerAdapter(
       [
         async (requestObject, { requestProps }) => {

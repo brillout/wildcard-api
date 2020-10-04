@@ -6,7 +6,7 @@ const assert = require("@brillout/assert");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
-const WildcardApi = require("@wildcard-api/server/WildcardApi");
+const { WildcardApi } = require("@wildcard-api/server");
 const { WildcardClient } = require("@wildcard-api/client");
 
 const bundle = require("./browser/bundle");

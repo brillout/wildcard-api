@@ -1,9 +1,9 @@
-const assert = require("@brillout/assert");
-const { stringify, parse } = require("@brillout/json-s");
-const chalk = require("chalk");
-const docsUrl = eval("require")("../package.json").repository;
-const getUrlProps = require("@brillout/url-props");
-const autoLoadEndpointFiles = require("./autoLoadEndpointFiles");
+import { stringify, parse } from "@brillout/json-s";
+import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
+import assert = require("@brillout/assert");
+import getUrlProps = require("@brillout/url-props");
+
+export { WildcardApi };
 
 const DEBUG_CACHE =
   /*/
@@ -19,9 +19,7 @@ assert.usage(
   "That is: `import {endpoints} from '@wildcard-api/client'"
 );
 
-module.exports = WildcardApi;
-
-function WildcardApi() {
+function WildcardApi(): void {
   const options = this;
 
   const endpointsObject = getEndpointsObject();
@@ -296,7 +294,7 @@ The call stack is shown ${getDevModeNote()}
   return get_html_response(html__error);
 }
 
-function get_html_response(htmlBody, note) {
+function get_html_response(htmlBody, note?) {
   if (note === undefined) {
     note = [
       "This page exists " + getDevModeNote(),
@@ -409,10 +407,16 @@ function isPropNameNormal(prop) {
 }
 
 function colorizeError(text) {
+  return text;
+  /*
   return chalk.bold.red(text);
+  */
 }
 function colorizeEmphasis(text) {
+  return text;
+  /*
   return chalk.cyan(text);
+  */
 }
 
 function isPathanameBase({ pathname, options }) {
@@ -516,7 +520,7 @@ function getEndpointArgs({
                     " server does not provide the HTTP request body."
                 )
               : [
-                  getApiHttpResponse__usageNote({ requestProps }),
+                  getApiHttpResponse__usageNote(),
                   colorizeError("`body` is missing."),
                 ].join("\n"),
             colorizeEmphasis(
@@ -660,6 +664,7 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   const responseProps = {
     statusCode: 200,
     contentType: "application/json",
+    body: undefined,
   };
   let endpointError;
   // TODO be able to stringify undefined instead of null
@@ -667,7 +672,7 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
   try {
     responseProps.body = stringify(valueToStringify);
   } catch (stringifyError) {
-    const usageError = new UsageError(
+    const usageError = UsageError(
       [
         `Couldn't serialize value returned by endpoint function \`${endpointName}\`.`,
         "Make sure the returned value only contains supported types: `Object`, `string`, `number`, `Date`, `null`, `undefined`, `RegExp`, `Inifinity`, `NaN`.",
@@ -689,18 +694,17 @@ function HttpResponse({ endpointResult, isHumanMode, endpointName }) {
 }
 
 function HttpMalformationResponse({ malformationError }) {
-  const stripAnsi = require("strip-ansi");
   return {
     statusCode: malformationError.endpointDoesNotExist ? 404 : 400,
     contentType: "text/plain",
-    body: stripAnsi(malformationError.errorText),
+    body: malformationError.errorText,
   };
 }
 
 function assert_request({ requestProps, method }) {
   const correctUsageNote = requestProps.comesFromUniversalAdapter
     ? []
-    : [getApiHttpResponse__usageNote({ requestProps })];
+    : [getApiHttpResponse__usageNote()];
 
   assert.usage(
     requestProps.url,
@@ -754,6 +758,8 @@ function getBodyUsageNote({ requestProps }) {
 }
 
 function logError({ err, endpointName }) {
+  console.error(err);
+  /* TODO
   console.error("");
   console.error(err);
   console.error("");
@@ -768,6 +774,7 @@ function logError({ err, endpointName }) {
     'Read the "Error Handling" documentation for how to handle errors.'
   );
   console.error("");
+  */
 }
 
 function endpointExists({ endpointName, endpointsObject }) {
