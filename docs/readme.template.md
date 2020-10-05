@@ -548,11 +548,11 @@ server.createAccount = async function({email, password}) {
 ## Error Handling
 
 Calling an endpoint throws an error if and only if:
-- the browser couldn't connect to the server (the browser is offline or your server is down), or
-- the endpoint threw an error.
+- the browser couldn't connect to the server (`isConnectionError`), or
+- the endpoint threw an error or doesn't exist (`isCodeError`).
 
-The thrown error has properties `isServerError` and `isNetworkError`
-enabling you to handle errors precisely, for example:
+The client-side thrown error has the properties `isCodeError` and `isConnectionError`
+enabling you to handle errors with precision, for example:
 
 ~~~js
 // Browser
@@ -567,15 +567,15 @@ import { server } from '@wildcard-api/client';
     err = _err;
   }
 
-  if( err.isServerError ){
-    // Your endpoint function threw an uncaught error: there is a bug in your server code.
+  if( err.isCodeError ){
+    // The endpoint function threw an uncaught error (there is a bug in your server code)
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
     );
   }
-  if( err.isNetworkError ){
-    // The browser couldn't connect to the server; your user is offline or your server is down.
+  if( err.isConnectionError ){
+    // The browser couldn't connect to the server; the user is offline or the server is down.
     alert("We couldn't perform your request. Please try again.");
   }
 

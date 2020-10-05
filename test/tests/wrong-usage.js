@@ -4,19 +4,22 @@
 // - Non-async endpoint functions not ok
 
 module.exports = [
-  validUsage1,
-  validUsage2,
-  wrongUrl1,
-  wrongUrl2,
-  wrongUrl3,
-  noEndpoints,
+  noEndpoints1,
   noEndpoints2,
+  noEndpoints3,
   endpointDoesNotExist,
   endpointReturnsFunction1,
   endpointReturnsFunction2,
+
+  /* When user enters endpoint URL manually */
+  validUrl1,
+  validUrl1,
+  wrongUrl1,
+  wrongUrl2,
+  wrongUrl3,
 ];
 
-async function validUsage1({ server, browserEval }) {
+async function validUrl1({ server, browserEval }) {
   server.hello = async function (name) {
     return "Yo " + name + "!";
   };
@@ -31,7 +34,7 @@ async function validUsage1({ server, browserEval }) {
   });
 }
 
-async function validUsage2({ server, browserEval }) {
+async function validUrl2({ server, browserEval }) {
   server.hello = async function (name) {
     return "Yo " + name + "!";
   };
@@ -84,7 +87,36 @@ async function wrongUrl3({ server, browserEval }) {
   });
 }
 
-async function noEndpoints({ browserEval }) {
+async function noEndpoints1({ browserEval, assertStderr }) {
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.server.iDoNotExist({ some: 42, arg: "rom" });
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.message === "Internal Server Error");
+    console.log(err.message);
+    console.log(Object.keys(err));
+    console.log(err.code);
+    console.log(err.statusCode);
+    console.log(err.statusCode);
+    throw new Error("oooo");
+  });
+  assertStderr("Endpoint `iDoNotExist` doesn't exist.");
+}
+async function noEndpoints2({ wildcardClient }) {
+  let err;
+  try {
+    await wildcardClient.endpoints.helloSsr();
+  } catch (_err) {
+    err = _err;
+  }
+  assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."));
+  assertStderr("Endpoint `helloSsr` doesn't exist.");
+  assertStderr("You didn't define any endpoints.");
+}
+async function noEndpoints3({ browserEval }) {
   await browserEval(async () => {
     const resp = await window.fetch("/_wildcard_api/hello");
     const text = await resp.text();
@@ -96,24 +128,6 @@ async function noEndpoints({ browserEval }) {
       { text }
     );
   });
-}
-
-async function noEndpoints2({ wildcardClient }) {
-  let errorThrown = false;
-  try {
-    await wildcardClient.endpoints.helloSsr();
-  } catch (err) {
-    errorThrown = true;
-    assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."), err.stack);
-    assert(err.stack.includes("You didn't define any endpoints."), err.stack);
-    assert(
-      err.stack.includes(
-        "Make sure that the file that defines `helloSsr` is named"
-      ),
-      err.stack
-    );
-  }
-  assert(errorThrown === true);
 }
 
 async function endpointDoesNotExist({ server, browserEval }) {
@@ -145,10 +159,8 @@ async function endpointReturnsFunction1({ server, browserEval, assertStderr }) {
     assert(err.message === "Internal Server Error");
   });
 
-  assertStderr(
-    "Couldn't serialize value returned by endpoint `fnEndpoint1`",
-    "Cannot serialize function `heloFn`"
-  );
+  assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint1`");
+  assertStderr("Cannot serialize function `heloFn`");
 }
 
 async function endpointReturnsFunction2({ server, browserEval, assertStderr }) {

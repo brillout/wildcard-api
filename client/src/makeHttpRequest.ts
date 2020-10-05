@@ -4,11 +4,11 @@ import fetch = require("@brillout/fetch");
 export { makeHttpRequest };
 
 type EndpointError = Error & {
-  isNetworkError: boolean;
-  isServerError: boolean;
+  isConnectionError: boolean;
+  isCodeError: boolean;
 };
 
-async function makeHttpRequest({ url, parse, body }) {
+async function makeHttpRequest({ url, parse, body, endpointName }) {
   const makeRequest = addHandli(() =>
     fetch(url, {
       /* Also enable `DEBUG_CACHE` flag on server-side.
@@ -25,33 +25,24 @@ async function makeHttpRequest({ url, parse, body }) {
   );
 
   let response;
-  let isNetworkError = false;
-  let isServerError = null;
-  let networkError;
+  let connectionError: Error;
   try {
     response = await makeRequest();
   } catch (err) {
-    isNetworkError = true;
-    networkError = err;
+    connectionError = err;
   }
-  if (isNetworkError) {
-    const err: EndpointError = Object.assign(
-      new Error("No Server Connection"),
-      {
-        isNetworkError,
-        isServerError,
-      }
-    );
-    assert(err.isNetworkError === true);
-    throw err;
+
+  if (connectionError) {
+    throw Object.assign(new Error("No Server Connection"), {
+      isConnectionError: true,
+      isCodeError: false,
+    });
   }
+
   const responseBody = await response.text();
   const contentType = response.headers.get("content-type");
   const isOk = response.ok;
   assert([true, false].includes(isOk));
-  const statusCode = response.status;
-  assert(statusCode.constructor === Number);
-  isServerError = 500 <= statusCode && statusCode <= 599;
 
   const value =
     // TODO use mime type instead
@@ -59,19 +50,31 @@ async function makeHttpRequest({ url, parse, body }) {
       ? parse(responseBody)
       : responseBody;
 
-  if (!isOk) {
-    const err: EndpointError = Object.assign(
-      new Error("Internal Server Error"),
-      {
-        isNetworkError,
-        isServerError,
-      }
-    );
-    assert(err.isNetworkError === false);
-    throw err;
+  const statusCode = response.status;
+
+  if (isOk) {
+    assert(statusCode === 200);
+    return value;
   }
 
-  return value;
+  assert(
+    statusCode !== 400,
+    "The Wildcard client issued a malformatted request."
+  );
+
+  assert(
+    [500, 400].includes(statusCode),
+    `Unexpected HTTP response status code \`${statusCode}\``
+  );
+  const codeErrorText =
+    statusCode === 404
+      ? `Endpoint \`${endpointName}\` does not exist.`
+      : `Endpoint function \`${endpointName}\` threw an error.`;
+
+  throw Object.assign(new Error(codeErrorText), {
+    isConnectionError: false,
+    isCodeError: true,
+  });
 }
 
 function addHandli(fetch_) {

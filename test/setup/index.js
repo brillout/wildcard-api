@@ -101,9 +101,15 @@ async function runTest({
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
 
-  let stderrContents;
+  const stderrContents = [];
+  const assertStderr = (content, ...rest) => {
+    assert(rest.length === 0);
+    assert(content);
+    stderrContents.push(content);
+  };
+
   try {
-    await testFn({ ...testArgs, assertStderr: (...c) => (stderrContents = c) });
+    await testFn({ ...testArgs, assertStderr });
     await checkStderr({ stderrContents, stderrLogs });
     assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
   } catch (err) {
@@ -192,23 +198,51 @@ function getTests() {
   const selectedTest = getSelectedTest();
 
   const testFiles = glob.sync(projectRoot + "/tests/*.js");
-  const standardTests = [];
-  const integrationTests = [];
-  testFiles.forEach((filePath) => {
+  testsAll = testFiles.map((filePath) => {
     require(filePath).forEach((testFn) => {
       const testFile = path.relative(projectRoot, filePath);
-      const args = { testFile, testFn };
-      if (!selectedTest || selectedTest === testFn.name) {
-        if (testFn.isIntegrationTest) {
-          integrationTests.push(args);
-        } else {
-          standardTests.push(args);
-        }
-      }
+      return { testFile, testFn };
     });
   });
 
+  const standardTests = [];
+  const integrationTests = [];
+  testFiles.forEach(({ testFile, testFn }) => {
+    if (!selectedTest) {
+      addTest({ testFile, testFn });
+      return;
+    }
+
+    if (selectedTest === testFn.name) {
+      addTest({ testFile, testFn });
+      return;
+    }
+  });
+
+  if (selectedTest && noTest()) {
+    testFiles.forEach(({ testFile, testFn }) => {
+      if (testFile.includes(selectedTest)) {
+        addTest({ testFile, testFn });
+        return;
+      }
+    });
+  }
+
+  assert(!noTest(), `No test \`${selectedTest}\` found.`);
+
   return { standardTests, integrationTests };
+
+  function noTest() {
+    return standardTests.length === 0 && integrationTests.length === 0;
+  }
+
+  function addTest(testInfo) {
+    if (testFn.isIntegrationTest) {
+      integrationTests.push(testInfo);
+    } else {
+      standardTests.push(testInfo);
+    }
+  }
 }
 function getSelectedTest() {
   return getCLIArgument();

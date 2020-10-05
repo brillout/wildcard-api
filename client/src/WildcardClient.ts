@@ -121,7 +121,7 @@ function WildcardClient(): void {
       url += "/" + encodeURIComponent(urlArgs__string);
     }
 
-    return makeHttpRequest({ url, parse, body });
+    return makeHttpRequest({ url, parse, body, endpointName });
   }
 
   // TODO-eventually improve error messages
