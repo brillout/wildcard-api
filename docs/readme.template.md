@@ -27,6 +27,8 @@ Basics
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Permissions](#permissions)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Validation](#validation)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Error Handling](#error-handling)
 <br/>
 <sub>
@@ -424,7 +426,7 @@ permissions are defined programmatically.
 server.deletePost = async function(){
   // Only admins are allowed to remove a post
   if( !user.isAdmin ) {
-    // The user is not admin — we abort.
+    // The user is not an admin — we abort.
     return;
   }
 
@@ -444,7 +446,7 @@ server.executeQuery = async function(query) {
 };
 ~~~
 
-That's a bad idea since anyone in the world can go to your website,
+That's a bad idea since anyone can go to your website,
 open the browser's web dev console, and call your endpoint.
 ~~~js
 // Browser
@@ -456,7 +458,7 @@ users.forEach(({login, password}) => {
 });
 ~~~
 
-Instead, you should define permissions, such as:
+Instead, you should define permissions, for example:
 ~~~js
 // Node.js server
 
@@ -492,18 +494,17 @@ if( !this.user ){
 
 The reason is simple:
 when we develop the frontend we know what is allowed and we can
-develop the frontend to always call endpoints in an authorized way.
-If an endpoint call isn't allowed, either there is a bug in our code or an attacker is trying to hack us.
-If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
+develop the frontend to always call endpoints in an authorized way;
+the `return;` sole goal are to protect our server from unsafe requests and
+there is no need to return information.
 
-That said,
-there are situations when it is expected that a permission may fail. For example:
+That said, there are exceptions, for example:
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
 server.getTodoList = async function() {
-  const isLoggedIn = !!this.user;
-  if( !isLoggedIn ) {
+  const isLoggedOut = !this.user;
+  if( isLoggedOut ) {
     // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
     // the frontend knows that the user should be redirected to the login page.
     return {isNotLoggedIn: true};
@@ -512,69 +513,18 @@ server.getTodoList = async function() {
 };
 ~~~
 
-You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
-~~~js
-server.getTodoList = async function() {
-  if( !this.user ) {
-    /* Don't do this:
-    throw new Error('User is not logged in.');
-    */
-    // Do this instead:
-    return {isNotLoggedIn: true};
-  }
-  // ...
-~~~
+In any case,
+as long as you protect your endpoints from unsafe requests,
+you can do whatever works for you.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 
+## Validation
 
-## Error Handling
+You shouldn't throw exceptions upon validation failures,
+instead return an object containing the validation failure reason.
 
-Calling an endpoint throws an error if and only if:
-- the browser couldn't connect to the server (the browser is offline or your server is down), or
-- the endpoint function threw an error.
-
-~~~js
-// Browser
-
-import { server } from '@wildcard-api/client';
-import assert from 'assert';
-
-callEndpoint();
-
-async function callEndpoint() {
-  let err;
-  try {
-    await server.myEndpoint();
-  } catch(_err) {
-    err = _err;
-  }
-
-  if( !err ){
-    // Success: the browser could connect to the server and
-    // the endpoint `myEndpoint` didn't throw any error.
-  } else {
-    // Something went wrong.
-
-    // Either there was a network problem or your endpoint threw an error.
-    assert(err.isNetworkError || err.isServerError);
-
-    if( err.isNetworkError ){
-      // The browser couldn't connect to the server
-      assert(err.message==='No Server Connection');
-    }
-
-    if( err.isServerError ){
-      // The endpoint `myEndpoint` threw an error.
-      assert(err.message==='Internal Server Error');
-    }
-  }
-}
-~~~
-
-You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
-In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
 
@@ -583,10 +533,10 @@ const isStrongPassword = require('./path/to/isStrongPassword');
 
 server.createAccount = async function({email, password}) {
   if( !isStrongPassword(password) ){
-    /* Don't do this:
+    /* Don't deliberately throw exceptions
     throw new Error("Password is too weak.");
     */
-    // Return a JavaScript value instead:
+    // Return a value instead:
     return {validationError: "Password is too weak."};
   }
 
@@ -594,7 +544,16 @@ server.createAccount = async function({email, password}) {
 };
 ~~~
 
-The `isServerError` and `isNetworkError` flags can be used to handle errors more precisely. For example:
+
+## Error Handling
+
+Calling an endpoint throws an error if and only if:
+- the browser couldn't connect to the server (the browser is offline or your server is down), or
+- the endpoint threw an error.
+
+The thrown error has properties `isServerError` and `isNetworkError`
+enabling you to handle errors precisely, for example:
+
 ~~~js
 // Browser
 
@@ -616,8 +575,7 @@ import { server } from '@wildcard-api/client';
     );
   }
   if( err.isNetworkError ){
-    // The browser couldn't connect to the server.
-    // The user is offline or your server is down.
+    // The browser couldn't connect to the server; your user is offline or your server is down.
     alert("We couldn't perform your request. Please try again.");
   }
 
