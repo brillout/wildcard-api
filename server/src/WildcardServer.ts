@@ -470,10 +470,6 @@ function isPropNameNormal(prop: ContextProp) {
   return propStr === prop && /^[a-zA-Z0-9_]+$/.test(prop);
 }
 
-function isPathanameBase({ pathname, config }) {
-  return [config.baseUrl, config.baseUrl.slice(0, -1)].includes(pathname);
-}
-
 function parseRequestInfo({
   requestProps,
   endpointsProxy,
@@ -492,8 +488,7 @@ function parseRequestInfo({
 
   if (
     !["GET", "POST"].includes(method) ||
-    (!isPathanameBase({ pathname, config }) &&
-      !pathname.startsWith(config.baseUrl))
+    !pathname.startsWith(config.baseUrl)
   ) {
     return { isNotWildcardRequest: true, isHumanMode };
   }

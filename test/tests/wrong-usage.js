@@ -3,6 +3,7 @@
 // - Arrow endpoint functions not ok
 // - Non-async endpoint functions not ok
 // - Reading from `server` functions directly without going through Wildcard client
+// - All `assertUsage`
 
 module.exports = [
   noEndpoints1,
