@@ -4,7 +4,7 @@ const { wildcard } = require("@wildcard-api/server/koa");
 
 const app = new Koa();
 
-// Server our API endpoints
+// Serve our Wilcard API
 app.use(
   wildcard(async (ctx) => {
     const { headers } = ctx.request;

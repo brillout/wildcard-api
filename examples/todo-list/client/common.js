@@ -1,9 +1,9 @@
 import "babel-polyfill";
-import { wildcardClient, endpoints } from "@wildcard-api/client";
+import { config, server } from "@wildcard-api/client";
 
-// Make wildcardClient available to play with in the dev console.
-// For example: `window.wildcardClient.argumentsAlwaysInHttpBody = true`;
-window.wildcardClient = wildcardClient;
+// Make config available to play with in the dev console.
+// For example: `window.config.argumentsAlwaysInHttpBody = true`;
+window.config = config;
 
-// Make endpoints available to play with in the dev console.
-window.endpoints = endpoints;
+// Make server available to play with in the dev console.
+window.server = server;

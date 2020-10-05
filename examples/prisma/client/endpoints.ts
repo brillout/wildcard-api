@@ -1,6 +1,6 @@
-import { Endpoints } from "../endpoints";
-import { endpoints as endpointsUntyped } from "@wildcard-api/client";
+import { Server } from "../endpoints";
+import { server as serverUntyped } from "@wildcard-api/client";
 
-const endpoints: Endpoints = endpointsUntyped;
+const server: Server = serverUntyped;
 
-export default endpoints;
+export default server;

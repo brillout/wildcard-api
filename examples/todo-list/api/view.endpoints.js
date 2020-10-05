@@ -1,11 +1,11 @@
-const { endpoints } = require("@wildcard-api/server");
+const { server } = require("@wildcard-api/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
 // Our view endpoints are tailored to the frontend. For example, the endpoint
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
-endpoints.getLandingPageData = async function () {
+server.getLandingPageData = async function () {
   // `this` holds request information such as HTTP headers
   const user = await getLoggedUser(this.headers);
   if (!user) return { userIsNotLoggedIn: true };
@@ -19,7 +19,7 @@ endpoints.getLandingPageData = async function () {
   return { user, todos };
 };
 
-endpoints.getCompletedPageData = async function () {
+server.getCompletedPageData = async function () {
   const user = await getLoggedUser(this.headers);
   if (!user) return { userIsNotLoggedIn: true };
 

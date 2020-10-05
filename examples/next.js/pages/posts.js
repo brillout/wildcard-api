@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { endpoints } from "@wildcard-api/client";
+import { server } from "@wildcard-api/client";
 
 export default class extends Component {
   static async getInitialProps({ query: { id } }) {
     const postId = id;
-    const { title, content, noPostFound } = await endpoints.getPostData({
+    const { title, content, noPostFound } = await server.getPostData({
       postId,
     });
     return { title, content, noPostFound, postId };

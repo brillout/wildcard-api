@@ -1,9 +1,8 @@
-const { wildcard } = require("@wildcard-api/client");
-const { endpoints } = require("@wildcard-api/client");
+const { server, config } = require("@wildcard-api/client");
 
-wildcard.serverUrl = "http://localhost:3000";
+config.serverUrl = "http://localhost:3000";
 
 (async () => {
-  const msg = await endpoints.hello();
+  const msg = await server.hello();
   console.log(msg);
 })();

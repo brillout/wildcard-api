@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Link from "next/link";
-import { endpoints } from "@wildcard-api/client";
+import { server } from "@wildcard-api/client";
 
 export default class extends Component {
   static async getInitialProps() {
-    const posts = await endpoints.getPostList();
+    const posts = await server.getPostList();
     return { posts };
   }
 

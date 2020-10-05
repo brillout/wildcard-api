@@ -1,13 +1,13 @@
-import { endpoints as _endpoints } from "@wildcard-api/server";
+import { server as _server } from "@wildcard-api/server";
 import { Photon } from "@prisma/photon";
 
 const photon = new Photon();
 
-const endpoints = {
+const server = {
   getPosts,
 };
-Object.assign(_endpoints, endpoints);
-export type Endpoints = typeof endpoints;
+Object.assign(_server, server);
+export type Server = typeof server;
 
 async function getPosts() {
   const posts = await photon.posts.findMany({ where: { published: true } });

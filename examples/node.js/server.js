@@ -1,8 +1,8 @@
 const express = require("express");
 const { wildcard } = require("@wildcard-api/server/express");
-const { endpoints } = require("@wildcard-api/server");
+const { server } = require("@wildcard-api/server");
 
-endpoints.hello = async function () {
+server.hello = async function () {
   const msg = "Hello from server";
   return msg;
 };

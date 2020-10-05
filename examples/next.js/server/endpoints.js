@@ -1,12 +1,12 @@
-const { endpoints } = require("@wildcard-api/server");
+const { server } = require("@wildcard-api/server");
 
 const posts = require("./db/posts.json");
 
-endpoints.getPostList = async function () {
+server.getPostList = async function () {
   return posts.map(({ title }, id) => ({ id, title }));
 };
 
-endpoints.getPostData = async function ({ postId } = {}) {
+server.getPostData = async function ({ postId } = {}) {
   if (!postId) {
     return;
   }

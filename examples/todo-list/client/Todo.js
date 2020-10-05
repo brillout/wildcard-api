@@ -1,5 +1,5 @@
 import React from "react";
-import { endpoints } from "@wildcard-api/client";
+import { server } from "@wildcard-api/client";
 import { TodoCheckbox, TodoText } from "./TodoComponents";
 
 export default Todo;
@@ -13,7 +13,7 @@ function Todo({ todo, updateTodo }) {
   );
 
   async function onCompleteToggle() {
-    const completed = await endpoints.toggleComplete(todo.id);
+    const completed = await server.toggleComplete(todo.id);
     updateTodo(todo, { completed });
   }
 }

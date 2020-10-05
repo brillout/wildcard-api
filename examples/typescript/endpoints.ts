@@ -1,4 +1,4 @@
-import { endpoints as _endpoints } from "@wildcard-api/server";
+import { server as _server } from "@wildcard-api/server";
 
 interface Person {
   firstName: string;
@@ -16,9 +16,9 @@ async function getPerson(id: number): Promise<Person> {
   return persons.find((person) => person.id === id);
 }
 
-const endpoints = {
+const server = {
   getPerson,
 };
-export type Endpoints = typeof endpoints;
+export type Server = typeof server;
 
-Object.assign(_endpoints, endpoints);
+Object.assign(_server, server);
