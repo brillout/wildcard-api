@@ -877,13 +877,20 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.1.0", "@brillout/assert@^0.1.1":
+"@brillout/assert@^0.1.0":
   version "0.1.7"
   resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.1.7.tgz#8b3877e9c5b45304b4f908d0e70d1df0fc7361a7"
   integrity sha512-nCxDDqA/V05ff6Tz8iMfE3hyi8h2JpImnDuP/OkqAy65JogsXuu71uE4q5sG3/OEe7xKIuiziWWRZX9mhASeOQ==
   dependencies:
     "@brillout/format-text" "^0.1.3"
     "@brillout/json-s" "^0.1.0"
+
+"@brillout/assert@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.0.tgz#18613de387194daa3a63e90d139e0c594ef3b76b"
+  integrity sha512-xIW8LrdX50s99ugTngMmcsrRAbm3trlvngrkJPF7nfgJjUCsiTGx7B/D4+8CHj31dADNGudq2jnCciBCcAlQoA==
+  dependencies:
+    "@types/node" "^14.11.2"
 
 "@brillout/cli-theme@^0.3.1":
   version "0.3.4"

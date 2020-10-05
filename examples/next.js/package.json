@@ -7,8 +7,6 @@
     "start": "cross-env NODE_ENV=production node server/start.js"
   },
   "dependencies": {
-    "@wildcard-api/client": "^0.2.10",
-    "@wildcard-api/server": "^0.2.10",
     "cross-env": "^5.2.0",
     "express": "^4.14.0",
     "next": "latest",
