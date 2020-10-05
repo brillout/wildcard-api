@@ -57,15 +57,12 @@ async function makeHttpRequest({ url, parse, body, endpointName }) {
     return value;
   }
 
-  assert(
-    statusCode !== 400,
-    "The Wildcard client issued a malformatted request."
-  );
+  // The Wildcard client issued a malformatted request.
+  assert(statusCode !== 400);
 
-  assert(
-    [500, 400].includes(statusCode),
-    `Unexpected HTTP response status code \`${statusCode}\``
-  );
+  // Unexpected HTTP response status code
+  assert([500, 404].includes(statusCode));
+
   const codeErrorText =
     statusCode === 404
       ? `Endpoint \`${endpointName}\` does not exist.`

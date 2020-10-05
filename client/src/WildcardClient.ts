@@ -6,9 +6,8 @@ import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 export { WildcardClient };
 
 setProjectInfo({
-  projectName: "@wildcard-api",
+  projectName: "Wildcard API",
   projectGithub: "https://github.com/reframejs/wildcard-api",
-  projectDocs: "https://github.com/reframejs/wildcard-api",
 });
 
 printDonationReminder({
@@ -174,24 +173,30 @@ function WildcardClient(): void {
       ].join("\n");
       assertUsage(
         isNodejs(),
-        errorIntro,
-        "But you are trying to do so in the browser which doesn't make sense.",
-        "Running endpoints directly should be done in Node.js only."
+        [
+          errorIntro,
+          "But you are trying to do so in the browser which doesn't make sense.",
+          "Running endpoints directly should be done in Node.js only.",
+        ].join("\n")
       );
       assertUsage(
         wildcardServerFound.__directCall,
-        errorIntro,
-        "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`."
+        [
+          errorIntro,
+          "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`.",
+        ].join("\n")
       );
     } else {
       assertUsage(
         Object.keys(context || {}).length === 0,
-        "Wrong SSR usage.",
-        "You are:",
-        "  - Using the Wildcard client on the browser-side",
-        "  - Manually providing the `context` object (you are using `bind`)",
-        "But you should manually provide the `context` object only on the server-side while doing server-side rendering.",
-        "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
+        [
+          "Wrong SSR usage.",
+          "You are:",
+          "  - Using the Wildcard client on the browser-side",
+          "  - Manually providing the `context` object (you are using `bind`)",
+          "But you should manually provide the `context` object only on the server-side while doing server-side rendering.",
+          "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+        ].join("\n")
       );
     }
   }
@@ -253,8 +258,7 @@ function WildcardClient(): void {
         assert(
           this === undefined ||
             (typeof window !== "undefined" && this === window) ||
-            (typeof global !== "undefined" && this === global),
-          this
+            (typeof global !== "undefined" && this === global)
         );
       })();
 
@@ -275,11 +279,13 @@ function WildcardClient(): void {
     function set() {
       assertUsage(
         false,
-        "You cannot add/modify endpoint functions with the client module `@wildcard-api/client`.",
-        "Instead, define your endpoint functions with the `@wildcard-api/server` module:",
-        "    const {endpoints} = require('@wildcard-api/server');",
-        "    endpoints.newEndpoint = function(){return 'hello'};",
-        "Note how we load `endpoints` from `require('@wildcard-api/server')` and not `require('@wildcard-api/client')`."
+        [
+          "You cannot add/modify endpoint functions with the client module `@wildcard-api/client`.",
+          "Instead, define your endpoint functions with the `@wildcard-api/server` module:",
+          "    const {endpoints} = require('@wildcard-api/server');",
+          "    endpoints.newEndpoint = function(){return 'hello'};",
+          "Note how we load `endpoints` from `require('@wildcard-api/server')` and not `require('@wildcard-api/client')`.",
+        ].join("\n")
       );
 
       // Make TS happy
@@ -341,8 +347,10 @@ function serializeArgs({ endpointArgs, endpointName, stringify }) {
     console.log("\n");
     assertUsage(
       false,
-      "Couldn't serialize arguments for `" + endpointName + "`.",
-      "The endpoint arguments in question and the serialization error are printed above."
+      [
+        "Couldn't serialize arguments for `" + endpointName + "`.",
+        "The endpoint arguments in question and the serialization error are printed above.",
+      ].join("\n")
     );
   }
   return serializedArgs;
@@ -357,8 +365,7 @@ function assert_serverUrl(serverUrl) {
         (serverUrl.startsWith("http") ||
           // Or an IP address
           /^\d/.test(serverUrl))),
-    "You provided a wrong value for the option `serverUrl`.",
-    { serverUrl }
+    "You provided a wrong value for the option `serverUrl`."
   );
 
   assertUsage(

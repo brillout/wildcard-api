@@ -1,8 +1,14 @@
+// TODO
+// - Test the testing infra
+//   - `grep 'browserEval\('` to ensure `await browserEval`
+
 process.on("unhandledRejection", (err) => {
   throw err;
 });
 
-const { assert } = require("@brillout/assert");
+const { assertUsage } = require("@brillout/assert");
+const assert = require("assert");
+const util = require("util");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
@@ -37,21 +43,33 @@ const httpPort = 3442;
 
   const { standardTests, integrationTests } = getTests();
 
-  await runStandardTests({ standardTests, browserEval });
+  await runStandardTests({
+    standardTests,
+    browserEval,
+    serverFrameworks: ["getApiHttpResponse"],
+  });
 
   await runIntegrationTests({ integrationTests, browserEval });
+
+  if (!getSelectedTest()) {
+    await runStandardTests({
+      standardTests,
+      browserEval,
+      serverFrameworks: ["express", "koa", "hapi"],
+    });
+  }
 
   await browser.close();
 
   console.log(chalk.bold.green("All tests successfully passed."));
 })();
 
-async function runStandardTests({ standardTests, browserEval }) {
+async function runStandardTests({
+  standardTests,
+  browserEval,
+  serverFrameworks,
+}) {
   const wildcardServerHolder = {};
-
-  const serverFrameworks = getSelectedTest()
-    ? ["express"]
-    : ["getApiHttpResponse", "express", "koa", "hapi"];
 
   for (let serverFramework of serverFrameworks) {
     let stop;
@@ -97,30 +115,44 @@ async function runTest({
   const testName =
     "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
 
+  let stderrContents;
+  const assertStderr = (content, ...rest) => {
+    assert(rest.length === 0);
+
+    if (content === null) {
+      assert(stderrContents === undefined);
+      stderrContents = null;
+      return;
+    }
+
+    assert(content.constructor === String);
+    stderrContents = stderrContents || [];
+    stderrContents.push(content);
+  };
+
   const log_collector = new LogCollector({ silenceLogs: !DEBUG });
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
 
-  const stderrContents = [];
-  const assertStderr = (content, ...rest) => {
-    assert(rest.length === 0);
-    assert(content);
-    stderrContents.push(content);
-  };
-
+  let testFailure;
   try {
     await testFn({ ...testArgs, assertStderr });
-    await checkStderr({ stderrContents, stderrLogs });
-    assert(noStdoutSpam(stdoutLogs), { stdoutLogs });
   } catch (err) {
     log_collector.flush();
+    testFailure = err;
+  } finally {
     log_collector.disable();
-
-    console.log(colorError(symbolError + "Failed test: " + testName));
-
-    throw err;
   }
-  log_collector.disable();
+
+  try {
+    if (testFailure) throw testFailure;
+    await checkStderr({ stderrContents, stderrLogs });
+    await checkStdout(stdoutLogs);
+  } catch (err) {
+    console.error(err);
+    console.log(colorError(symbolError + "Failed test: " + testName));
+    process.exit();
+  }
 
   console.log(symbolSuccess + testName);
 
@@ -128,58 +160,92 @@ async function runTest({
 }
 
 async function checkStderr({ stderrContents, stderrLogs }) {
-  if (!stderrContents || stderrContents.length === 0) {
-    return;
-  }
-
   // Express seems to rethrow errors asyncronously; we need to wait for express to rethrow errors.
   await new Promise((r) => setTimeout(r, 0));
 
   stderrLogs = removeHiddenLog(stderrLogs);
-
   const stderrLogsLength = stderrLogs.length;
-  assert(stderrLogsLength === 1, { stderrLogsLength, stderrLogs });
+
+  checkStderrFormat(stderrLogs);
+
+  if (stderrContents === undefined) {
+    return;
+  }
+
+  if (stderrContents === null) {
+    assert(
+      stderrLogsLength === 0,
+      util.inspect({ stderrLogsLength, stderrLogs })
+    );
+    return;
+  }
+
+  assert(
+    stderrLogsLength === 1,
+    util.inspect({ stderrLogsLength, stderrLogs })
+  );
   const stderrLog = stderrLogs[0];
   stderrContents.forEach((stderrContent) => {
-    assert(stderrLog.includes(stderrContent), { stderrContent, stderrLog });
+    assert(
+      stderrLog.includes(stderrContent),
+      util.inspect({ stderrContent, stderrLog })
+    );
   });
+
+  return;
+
+  function checkStderrFormat(stderrLogs) {
+    stderrLogs.forEach((stderrLog) => {
+      const debug = util.inspect(stderrLog);
+
+      const [firstLine, ...errorStackLines] = stderrLog;
+
+      // Always start with a single-line error message
+      assert(!firstLine.startsWith(" "), debug);
+
+      // Always show a stack trace
+      assert(errorStackLines.length >= 1, debug);
+
+      // Rest is stack trace
+      errorStackLines.forEach((errStackLine) => {
+        assert(!errStackLine.startsWith("    at"), debug);
+      });
+    });
+  }
 }
 
-function noStdoutSpam(stdoutLogs) {
+async function checkStdout(stdoutLogs) {
   stdoutLogs = removeHiddenLog(stdoutLogs);
+  stdoutLogs = removePuppeteerLogs(stdoutLogs);
 
-  if (stdoutLogs.length === 0) {
-    return true;
-  }
+  assert(stdoutLogs.length === 0, util.inspect(stdoutLogs));
 
-  if (stdoutLogs.length === 1) {
-    return (
-      // Browser-side puppeteer log when endpoint failed
-      [
-        "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
-        "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",
-        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n",
-        "Failed to load resource: the server responded with a status of 400 (Bad Request)\n",
-        "Failed to load resource: the server responded with a status of 404 (Not Found)\n",
-      ].includes(stdoutLogs[0])
+  return;
+
+  function removePuppeteerLogs(stdoutLogs) {
+    return stdoutLogs.filter(
+      (log) =>
+        // Browser-side puppeteer logs when endpoint failed
+        ![
+          "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
+          "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",
+          "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n",
+          "Failed to load resource: the server responded with a status of 400 (Bad Request)\n",
+          "Failed to load resource: the server responded with a status of 404 (Not Found)\n",
+        ].includes(log)
     );
   }
-
-  return false;
 }
 
 function removeHiddenLog(stdLogs) {
-  const [last, ...rest] = stdLogs.slice().reverse();
-  // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
-  if (
-    last &&
-    last.includes(
-      "This conditional evaluates to true if and only if there was an error"
-    )
-  ) {
-    stdLogs = rest;
-  }
-  return stdLogs;
+  return stdLogs.filter(
+    (log) =>
+      !log ||
+      !log.includes(
+        // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
+        "This conditional evaluates to true if and only if there was an error"
+      )
+  );
 }
 
 async function runIntegrationTests({ integrationTests, browserEval }) {
@@ -197,17 +263,11 @@ function getTests() {
 
   const selectedTest = getSelectedTest();
 
-  const testFiles = glob.sync(projectRoot + "/tests/*.js");
-  testsAll = testFiles.map((filePath) => {
-    require(filePath).forEach((testFn) => {
-      const testFile = path.relative(projectRoot, filePath);
-      return { testFile, testFn };
-    });
-  });
+  const testsAll = getTestsAll();
 
   const standardTests = [];
   const integrationTests = [];
-  testFiles.forEach(({ testFile, testFn }) => {
+  testsAll.forEach(({ testFile, testFn }) => {
     if (!selectedTest) {
       addTest({ testFile, testFn });
       return;
@@ -220,7 +280,7 @@ function getTests() {
   });
 
   if (selectedTest && noTest()) {
-    testFiles.forEach(({ testFile, testFn }) => {
+    testsAll.forEach(({ testFile, testFn }) => {
       if (testFile.includes(selectedTest)) {
         addTest({ testFile, testFn });
         return;
@@ -228,19 +288,34 @@ function getTests() {
     });
   }
 
-  assert(!noTest(), `No test \`${selectedTest}\` found.`);
+  assertUsage(!noTest(), `No test \`${selectedTest}\` found.`);
 
   return { standardTests, integrationTests };
 
   function noTest() {
     return standardTests.length === 0 && integrationTests.length === 0;
   }
-
   function addTest(testInfo) {
-    if (testFn.isIntegrationTest) {
+    if (testInfo.testFn.isIntegrationTest) {
       integrationTests.push(testInfo);
     } else {
       standardTests.push(testInfo);
+    }
+  }
+  function getTestsAll() {
+    const testsAll = [];
+    const testFiles = glob.sync(projectRoot + "/tests/*.js");
+    testFiles.forEach((filePath) => {
+      require(filePath).forEach((testFn) => {
+        assertTest(testFn);
+        const testFile = path.relative(projectRoot, filePath);
+        testsAll.push({ testFile, testFn });
+      });
+    });
+    return testsAll;
+    function assertTest(testFn) {
+      assert(testFn.name);
+      assert(testFn.constructor.name === "AsyncFunction");
     }
   }
 }

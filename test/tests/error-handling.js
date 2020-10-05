@@ -1,6 +1,11 @@
-module.exports = [endpointBug, noConnection, endpointDoesntExist];
+module.exports = [
+  endpointBug,
+  noConnection,
+  endpointMissing,
+  endpointMissing_SSR,
+];
 
-async function endpointBug({ server, browserEval }) {
+async function endpointBug({ server, browserEval, assertStderr }) {
   server.buggyEndpoint1 = async function () {
     throw new Error("This is a simulated bug");
     // @ts-ignore
@@ -20,10 +25,10 @@ async function endpointBug({ server, browserEval }) {
       err.message === "Endpoint function `buggyEndpoint1` threw an error."
     );
   });
-  assertStderr('This is a simulated bug');
+  assertStderr("This is a simulated bug");
 }
 
-async function noConnection({ server, browserEval }) {
+async function noConnection({ server, browserEval, assertStderr }) {
   const offlineMode = true;
 
   server.unreachableEndpoint = async function () {
@@ -39,7 +44,7 @@ async function noConnection({ server, browserEval }) {
         err = err_;
       }
       assert(err.isConnectionError === true);
-      assert(err.isCodeError === null);
+      assert(err.isCodeError === false);
       assert(err.message === "No Server Connection");
     },
     { offlineMode }
@@ -47,7 +52,7 @@ async function noConnection({ server, browserEval }) {
   assertStderr(null);
 }
 
-function endpointDoesntExist({ browserEval, assertStderr }) {
+async function endpointMissing({ browserEval, assertStderr }) {
   await browserEval(async () => {
     let err;
     try {
@@ -57,7 +62,19 @@ function endpointDoesntExist({ browserEval, assertStderr }) {
     }
     assert(err.isCodeError === true);
     assert(err.isConnectionError === false);
-    assert(err.message === 'Endpoint `iDoNotExist` does not exist.');
+    assert(err.message === "Endpoint `iDoNotExist` does not exist.");
   });
+  assertStderr(null);
+}
+
+async function endpointMissing_SSR({ wildcardClient, assertStderr }) {
+  let errStack;
+  try {
+    await wildcardClient.endpoints.missingEndpoint();
+  } catch (err) {
+    errStack = err.stack;
+  }
+  assert(errStack.includes("Endpoint `missingEndpoint` doesn't exist."));
+  assert(errStack.includes("You didn't define any endpoints."));
   assertStderr(null);
 }

@@ -103,14 +103,25 @@ async function wrongContextObject({ assertStderr, ...args }) {
   );
 }
 
-async function test_failedEndpointCall({ server, ...args }) {
+async function test_failedEndpointCall({ server, browserEval }) {
   let endpointCalled = false;
   server.failingEndpoint = async function (name) {
     endpointCalled = true;
     return "Dear " + name;
   };
 
-  await callFailaingEndpoint(args);
+  await browserEval(async () => {
+    let err;
+    try {
+      const ret = await window.server.failingEndpoint("rom");
+      console.log("ret: ", ret);
+    } catch (_err) {
+      err = _err;
+    }
+    assert(
+      err.message === "Endpoint function `failingEndpoint` threw an error."
+    );
+  });
 
   assert(endpointCalled === false);
 }
@@ -142,18 +153,4 @@ async function createServer({ setContext, staticDir, httpPort }) {
     stopApp,
     server: wildcardServer.endpoints,
   };
-}
-
-async function callFailaingEndpoint({ browserEval }) {
-  await browserEval(async () => {
-    let errorThrown = false;
-    try {
-      const ret = await window.server.failingEndpoint("rom");
-      console.log("ret: ", ret);
-    } catch (err) {
-      assert(err.message === "Internal Server Error");
-      errorThrown = true;
-    }
-    assert(errorThrown === true);
-  });
 }

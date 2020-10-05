@@ -34,7 +34,6 @@ function MiddlewareFactory(ServerAdapter, opts?) {
             );
             assertUsage(
               context instanceof Object,
-              { context },
               "Your context getter should return an object but it returns `context.constructor===" +
                 context.constructor.name +
                 "`."
