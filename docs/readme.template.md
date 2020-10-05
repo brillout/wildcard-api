@@ -38,8 +38,6 @@ More
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [TypeScript](#typescript)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Dev Tools](#dev-tools)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [API Documentation](#api-documentation)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Caching](#caching)
@@ -629,30 +627,9 @@ TypeScript usage examples:
 
 
 
-## Dev Tools
-
-Wildcard is in *dev mode* when `[undefined, 'development'].includes(process.env.NODE_ENV)`.
-
-In dev mode you can:
-- List all API endpoints.
-- Call endpoints directly in the browser.
-
-<p align="left">
-  <a href="#dev-tools">
-    <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" height="187" align="left"/>
-    <img src="/docs/images/dev-mode_endpoint.png" width="515" height="290"/>
-  </a>
-</p>
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-
-
 ## API Documentation
 
-You can browse your API by using [Wildcard's dev tools](#dev-tools).
-
-More evolved API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
+API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
 
 A Wildcard API is meant to be used by your own developers;
 instead of using OpenAPI,

@@ -78,7 +78,6 @@ type MalformedRequest = {
 };
 type MalformedIntegration = UsageError;
 
-type IsDevTool = boolean & { _brand?: "IsDevTool" };
 type IsNotWildcardRequest = boolean & { _brand?: "IsNotWildcardRequest" };
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
@@ -86,7 +85,6 @@ type RequestInfo = {
   endpointArgs?: EndpointArgs;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
-  isDevTool?: IsDevTool;
   isNotWildcardRequest?: IsNotWildcardRequest;
   isHumanMode: IsHumanMode;
 };
@@ -124,7 +122,6 @@ function WildcardServer(): void {
       endpointArgs,
       malformedRequest,
       malformedIntegration,
-      isDevTool,
       isNotWildcardRequest,
       isHumanMode,
     }: RequestInfo = parseRequestInfo({ requestProps, endpointsProxy, config });
@@ -139,10 +136,6 @@ function WildcardServer(): void {
 
     if (malformedIntegration) {
       return httpResponse_malformedIntegration(malformedIntegration);
-    }
-
-    if (isDevTool) {
-      return httpResponse_devTool({ endpointsProxy, config });
     }
 
     const { endpointResult, endpointError } = await runEndpoint({
@@ -171,9 +164,7 @@ function WildcardServer(): void {
 
     assertUsage(
       doesEndpointExist(endpointName, endpointsProxy),
-      getEndpointMissingText(endpointName, endpointsProxy, {
-        calledInBrowser: false,
-      }).join(" ")
+      getEndpointMissingText(endpointName, endpointsProxy).join(" ")
     );
 
     const resultObject = await runEndpoint({
@@ -329,13 +320,6 @@ function isHumanReadableMode({ method }) {
   }
 }
 
-function isDev() {
-  if ([undefined, "development"].includes(process.env.NODE_ENV)) {
-    return true;
-  }
-  return false;
-}
-
 function makeHumanReadable(
   responseProps: HttpResponseProps,
   endpointResult: EndpointResult
@@ -363,16 +347,9 @@ Status code: <b>${responseProps.statusCode}</b>
   );
 }
 
-function get_html_response(
-  htmlBody: HttpResponseBody,
-  note?: string
-): HttpResponseProps {
-  if (note === undefined) {
-    note = [
-      "This page exists " + getDevModeNote(),
-      "Showing HTML because the request's method is <code>GET</code>. Make a <code>POST</code> request to get JSON.",
-    ].join("\n");
-  }
+function get_html_response(htmlBody: HttpResponseBody): HttpResponseProps {
+  const note =
+    "Showing HTML because the request's method is <code>GET</code>. Make a <code>POST</code> request to get JSON.";
 
   let body = `<html><body>
 <style>
@@ -391,15 +368,13 @@ function get_html_response(
 ${htmlBody}
 `;
 
-  if (note) {
-    body += `
+  body += `
 <br/>
 <br/>
 <small>
 ${note.split("\n").join("<br/>\n")}
 </small>
 `;
-  }
 
   body += `
 </body></html>
@@ -522,9 +497,6 @@ function parseRequestInfo({
   ) {
     return { isNotWildcardRequest: true, isHumanMode };
   }
-  if (isPathanameBase({ pathname, config }) && isHumanMode) {
-    return { isDevTool: true, isHumanMode };
-  }
 
   const {
     malformedRequest: malformationError__pathname,
@@ -543,10 +515,7 @@ function parseRequestInfo({
   if (!doesEndpointExist(endpointName, endpointsProxy)) {
     const endpointMissingText = getEndpointMissingText(
       endpointName,
-      endpointsProxy,
-      {
-        calledInBrowser: true,
-      }
+      endpointsProxy
     );
     return {
       malformedRequest: {
@@ -708,26 +677,6 @@ function httpResponse_endpoint(
   return responseProps;
 }
 
-function httpResponse_devTool({ endpointsProxy, config }): HttpResponseProps {
-  if (!isDev()) {
-    return get_html_response(
-      "This page is available " + getDevModeNote(),
-      null
-    );
-  }
-  const htmlBody = `
-Endpoints:
-<ul>
-${getEndpointNames({ endpointsProxy })
-  .map((endpointName) => {
-    const endpointURL = config.baseUrl + endpointName;
-    return '    <li><a href="' + endpointURL + '">' + endpointURL + "</a></li>";
-  })
-  .join("\n")}
-</ul>
-`;
-  return get_html_response(htmlBody, "This page exists " + getDevModeNote());
-}
 function getEndpointNames({ endpointsProxy }): EndpointName[] {
   return Object.keys(endpointsProxy);
 }
@@ -860,25 +809,14 @@ function noEndpoints({ endpointsProxy }) {
 
 function getEndpointMissingText(
   endpointName: EndpointName,
-  endpointsProxy: EndpointsProxy,
-  { calledInBrowser }: { calledInBrowser: boolean }
+  endpointsProxy: EndpointsProxy
 ): string[] {
-  const endpointNames = getEndpointNames({ endpointsProxy });
-
   const endpointMissingText = [
     "Endpoint `" + endpointName + "` doesn't exist.",
   ];
 
   if (noEndpoints({ endpointsProxy })) {
     endpointMissingText.push("You didn't define any endpoints.");
-  }
-
-  assert([true, false].includes(calledInBrowser));
-  if (!noEndpoints({ endpointsProxy }) && (!calledInBrowser || isDev())) {
-    endpointMissingText.push(
-      "List of existing endpoints:",
-      endpointNames.join(",")
-    );
   }
 
   endpointMissingText.push(
@@ -891,8 +829,4 @@ function getEndpointMissingText(
   );
 
   return endpointMissingText;
-}
-
-function getDevModeNote() {
-  return "only in dev mode. (When <code>[undefined, 'development'].includes(process.env.NODE_ENV)</code> on the server.)";
 }

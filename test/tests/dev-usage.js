@@ -1,4 +1,4 @@
-module.exports = [listAllEndpoints, browseEndpoint, browseEndpoint__unescaped];
+module.exports = [browseEndpoint, browseEndpoint__unescaped];
 
 async function browseEndpoint({ server, browserEval }) {
   server.hello = async function (name) {
@@ -23,20 +23,5 @@ async function browseEndpoint__unescaped({ server, browserEval }) {
     const text = await resp.text();
     assert(text.startsWith("<html>"), { text });
     assert(text.includes("Greetings Liza"), { text });
-  });
-}
-
-async function listAllEndpoints({ server, browserEval }) {
-  server.firstEndpoint = async function (name) {
-    return "Greetings " + name;
-  };
-  server.secondEndpoint = async function () {};
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/");
-    const text = await resp.text();
-    assert(text.includes("firstEndpoint") && text.includes("secondEndpoint"), {
-      text,
-    });
   });
 }
