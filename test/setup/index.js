@@ -43,19 +43,23 @@ const httpPort = 3442;
 
   const { standardTests, integrationTests } = getTests();
 
+  const silentMode = standardTests.length + integrationTests.length > 1;
+
   await runStandardTests({
     standardTests,
     browserEval,
     serverFrameworks: ["getApiHttpResponse"],
+    silentMode,
   });
 
-  await runIntegrationTests({ integrationTests, browserEval });
+  await runIntegrationTests({ integrationTests, browserEval, silentMode });
 
   if (!getSelectedTest()) {
     await runStandardTests({
       standardTests,
       browserEval,
       serverFrameworks: ["express", "koa", "hapi"],
+      silentMode,
     });
   }
 
@@ -68,6 +72,7 @@ async function runStandardTests({
   standardTests,
   browserEval,
   serverFrameworks,
+  silentMode,
 }) {
   const __INTERNAL_wildcardServer_middleware = {};
 
@@ -104,7 +109,7 @@ async function runStandardTests({
         test,
         testArgs,
         serverFramework,
-        silentMode: standardTests.length > 1,
+        silentMode,
       });
     }
 
@@ -254,14 +259,18 @@ function removeHiddenLog(stdLogs) {
   );
 }
 
-async function runIntegrationTests({ integrationTests, browserEval }) {
+async function runIntegrationTests({
+  integrationTests,
+  browserEval,
+  silentMode,
+}) {
   for (test of integrationTests) {
     const testArgs = { browserEval, staticDir, httpPort };
     await runTest({
       test,
       testArgs,
       serverFramework: "custom-server",
-      silentMode: integrationTests.length > 1,
+      silentMode,
     });
   }
 }

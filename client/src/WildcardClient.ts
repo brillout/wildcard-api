@@ -80,9 +80,12 @@ function WildcardClient(): void {
       );
     }
 
-    // Browser-side usage, or cross-server servide-side usage
-    // Server URL is needed
-    assert_serverUrl(config.serverUrl);
+    // Browser-side usage
+    // Or cross-server servide-side usage -- server URL is then needed
+    assertUsage(
+      config.serverUrl || isBrowser(),
+      "`config.serverUrl` missing. You are using the Wildcard client in Node.js and on a different server; the `config.serverUrl` configuration is required."
+    );
 
     assertUsage(
       !context,
@@ -296,7 +299,7 @@ function serializeArgs(
     assertUsage(
       false,
       [
-        `Couldn't serialize arguments of \`${endpointName}\`.`,
+        `Couldn't serialize arguments for endpoint \`${endpointName}\`.`,
         `Make sure all arguments passed to \`${endpointName}()\``,
         "are only of the following types:",
         "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
@@ -306,7 +309,34 @@ function serializeArgs(
   return serializedArgs;
 }
 
-function assert_serverUrl(serverUrl: string) {
+function getConfigProxy(configDefaults: ConfigPrivate) {
+  return new Proxy({ ...configDefaults }, { set: validateConfig });
+
+  function validateConfig(
+    obj: ConfigPrivate,
+    configName: string,
+    configValue: any
+  ) {
+    validateConfigExistence(configName);
+    if (configName === "serverUrl") {
+      const serverUrl = configValue;
+      validateServerUrl(serverUrl);
+    }
+    return (obj[configName] = configValue);
+  }
+
+  function validateConfigExistence(configName: string) {
+    assertUsage(
+      configName in configDefaults,
+      [
+        `Unkown config \`${configName}\`.`,
+        "Make sure that the config is a `@wildcard-api/client` config",
+        "and not a `@wildcard-api/server` one.",
+      ].join(" ")
+    );
+  }
+}
+function validateServerUrl(serverUrl: string) {
   assertUsage(
     serverUrl === null ||
       // Should be an HTTP URL
@@ -315,29 +345,8 @@ function assert_serverUrl(serverUrl: string) {
         (serverUrl.startsWith("http") ||
           // Or an IP address
           /^\d/.test(serverUrl))),
-    "You provided a wrong value for the option `serverUrl`."
+    `You set \`config.serverUrl==${serverUrl}\` but it should be an HTTP address.`
   );
-
-  assertUsage(
-    serverUrl || isBrowser(),
-    "You are running the Wildcard client in Node.js; you need to provide the `serverUrl` option."
-  );
-}
-
-function getConfigProxy(configDefaults: ConfigPrivate) {
-  return new Proxy({ ...configDefaults }, { set: validateNewConfig });
-
-  function validateNewConfig(obj: ConfigPrivate, prop: string, value: any) {
-    assertUsage(
-      prop in configDefaults,
-      [
-        `Unkown config \`${prop}\`.`,
-        "Make sure that the config is a `@wildcard-api/client` config",
-        "and not a `@wildcard-api/server` one.",
-      ].join(" ")
-    );
-    return (obj[prop] = value);
-  }
 }
 
 function isBinded(that: unknown, defaultBind: unknown): boolean {
