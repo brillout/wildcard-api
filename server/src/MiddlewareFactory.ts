@@ -8,17 +8,17 @@ function MiddlewareFactory(ServerAdapter, opts?) {
   return (
     contextGetter,
     {
-      __INTERNAL__wildcardServerHolder,
-    }: { __INTERNAL__wildcardServerHolder?: any } = {}
+      __INTERNAL_wildcardServer_middleware,
+    }: { __INTERNAL_wildcardServer_middleware?: any } = {}
   ) => {
     return ServerAdapter(
       [
         async (requestObject, { requestProps }) => {
-          const wildcardServer = __INTERNAL__wildcardServerHolder
-            ? __INTERNAL__wildcardServerHolder.wildcardServer
+          const wildcardServer = __INTERNAL_wildcardServer_middleware
+            ? __INTERNAL_wildcardServer_middleware.wildcardServer
             : wildcardServer_;
           if (
-            !__INTERNAL__wildcardServerHolder &&
+            !__INTERNAL_wildcardServer_middleware &&
             Object.keys(wildcardServer.endpoints).length === 0
           ) {
             autoLoadEndpointFiles();

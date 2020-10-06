@@ -6,7 +6,11 @@ const { start, stop } = require("./express");
 
 module.exports = startServer;
 
-async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
+async function startServer({
+  __INTERNAL_wildcardServer_middleware,
+  httpPort,
+  staticDir,
+}) {
   const app = new Koa();
 
   app.use(bodyParser());
@@ -18,7 +22,7 @@ async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
         const context = { headers };
         return context;
       },
-      { __INTERNAL__wildcardServerHolder: wildcardServerHolder }
+      { __INTERNAL_wildcardServer_middleware }
     )
   );
 

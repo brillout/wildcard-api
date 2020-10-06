@@ -69,14 +69,14 @@ async function runStandardTests({
   browserEval,
   serverFrameworks,
 }) {
-  const wildcardServerHolder = {};
+  const __INTERNAL_wildcardServer_middleware = {};
 
   for (let serverFramework of serverFrameworks) {
     let stop;
     const _startServer = require("./servers/" + serverFramework);
     const startServer = async (args) => {
       stop = await _startServer({
-        wildcardServerHolder,
+        __INTERNAL_wildcardServer_middleware,
         httpPort,
         staticDir,
         ...args,
@@ -87,9 +87,9 @@ async function runStandardTests({
     for (let test of standardTests) {
       const wildcardServer = new WildcardServer();
       const { endpoints: server, config } = wildcardServer;
-      wildcardServerHolder.wildcardServer = wildcardServer;
+      __INTERNAL_wildcardServer_middleware.wildcardServer = wildcardServer;
       const wildcardClient = new WildcardClient();
-      wildcardClient.config.__INTERNAL__wildcardServer = wildcardServer;
+      wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
 
       const testArgs = {
         server,

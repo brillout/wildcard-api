@@ -4,7 +4,11 @@ const { wildcard } = require("@wildcard-api/server/hapi");
 
 module.exports = startServer;
 
-async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
+async function startServer({
+  __INTERNAL_wildcardServer_middleware,
+  httpPort,
+  staticDir,
+}) {
   const server = Hapi.Server({
     port: httpPort,
     debug: { request: ["internal"] },
@@ -17,7 +21,7 @@ async function startServer({ wildcardServerHolder, httpPort, staticDir }) {
         const context = { headers };
         return context;
       },
-      { __INTERNAL__wildcardServerHolder: wildcardServerHolder }
+      { __INTERNAL_wildcardServer_middleware }
     )
   );
 

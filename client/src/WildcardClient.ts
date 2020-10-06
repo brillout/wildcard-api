@@ -27,7 +27,7 @@ type Config = {
 };
 
 type ConfigPrivate = Config & {
-  __INTERNAL__wildcardServer: any;
+  __INTERNAL_wildcardServer_test: any;
 };
 
 type EndpointName = string & { _brand?: "EndpointName" };
@@ -50,7 +50,7 @@ function WildcardClient(): void {
     serverUrl: null,
     baseUrl: "/_wildcard_api/",
     argumentsAlwaysInHttpBody: false,
-    __INTERNAL__wildcardServer: null,
+    __INTERNAL_wildcardServer_test: null,
   });
 
   Object.assign(this, {
@@ -68,10 +68,10 @@ function WildcardClient(): void {
     endpointArgs = endpointArgs || [];
 
     const wildcardServer: WildcardServer =
-      config.__INTERNAL__wildcardServer ||
+      config.__INTERNAL_wildcardServer_test ||
       (typeof global !== "undefined" &&
         global &&
-        global.__globalWildcardServer);
+        global.__INTERNAL_wildcardServer_nodejs);
     const runDirectlyWithoutHTTP = !!wildcardServer;
 
     validateArgs({
@@ -162,7 +162,7 @@ function WildcardClient(): void {
         wildcardServer.__directCall,
         [
           errorIntro,
-          "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`.",
+          "You are providing the `__INTERNAL_wildcardServer_test` option but it isn't an instance of `new WildcardServer()`.",
         ].join("\n")
       );
     } else {
@@ -402,7 +402,7 @@ function isBinded(that: unknown, defaultBind: unknown): boolean {
 declare global {
   namespace NodeJS {
     interface Global {
-      __globalWildcardServer: any;
+      __INTERNAL_wildcardServer_nodejs: any;
     }
   }
 }

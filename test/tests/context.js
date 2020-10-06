@@ -142,7 +142,7 @@ async function createServer({ setContext, staticDir, httpPort }) {
 
   app.use(
     wildcard(setContext, {
-      __INTERNAL__wildcardServerHolder: { wildcardServer },
+      __INTERNAL_wildcardServer_middleware: { wildcardServer },
     })
   );
 

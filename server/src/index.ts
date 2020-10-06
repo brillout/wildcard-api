@@ -1,7 +1,7 @@
 import { WildcardServer } from "./WildcardServer";
 
 export { WildcardServer };
-export const wildcardServer = (global.__globalWildcardServer = new WildcardServer());
+export const wildcardServer = (global.__INTERNAL_wildcardServer_nodejs = new WildcardServer());
 export const server = wildcardServer.endpoints;
 export const { config } = wildcardServer;
 export const { getApiHttpResponse } = wildcardServer;
@@ -9,7 +9,7 @@ export const { getApiHttpResponse } = wildcardServer;
 declare global {
   namespace NodeJS {
     interface Global {
-      __globalWildcardServer: any;
+      __INTERNAL_wildcardServer_nodejs: any;
     }
   }
 }
