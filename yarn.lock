@@ -878,9 +878,9 @@
     to-fast-properties "^2.0.0"
 
 "@brillout/assert@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.1.tgz#13b731f33bb3b22079445a0d18438c121abe1933"
-  integrity sha512-SljBDJSjk8H7GuIh5MKPDJQ4IskJgkcsKu0xf3SXhrdY9Djzv95JrqEmOKOvjRKnJwcrlNDGWiXi6hFi2EenhQ==
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.2.tgz#6686738526d8f9909abf9d838f7e8480d579e727"
+  integrity sha512-yYNE+wh4lNrRRkPScj9eRn0dHfNg+7fZANTgrn7tN9TMhED0CasKL4EzJmgTM2eDgIGt7XazlIr7tjQ9gE8o6Q==
   dependencies:
     "@types/node" "^14.11.2"
 
