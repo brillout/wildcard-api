@@ -18,6 +18,8 @@ printDonationReminder({
   minNumberOfAuthors: 0,
 });
 
+assertProxySupport();
+
 type Config = {
   serverUrl?: string;
   baseUrl: string;
@@ -28,7 +30,20 @@ type ConfigPrivate = Config & {
   __INTERNAL__wildcardServer: any;
 };
 
-const IS_CALLED_BY_PROXY = Symbol();
+type EndpointName = string & { _brand?: "EndpointName" };
+type EndpointArgs = string[] & { _brand?: "EndpointArgs" };
+type Context = object & { _brand?: "Context" };
+type EndpointResult = unknown & { _brand?: "EndpointResult" };
+type EndpointError = Error & { _brand?: "EndpointError" };
+type EndpointOutcome = Promise<EndpointResult | EndpointError>;
+
+type WildcardServer = {
+  __directCall: (
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs,
+    context: Context
+  ) => EndpointOutcome;
+};
 
 function WildcardClient(): void {
   const config = getConfigProxy({
@@ -45,65 +60,60 @@ function WildcardClient(): void {
 
   return this;
 
-  function fetchEndpoint(endpointName, endpointArgs, generalArgs, ...restArgs) {
-    generalArgs = generalArgs || {};
+  function callEndpoint(
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs,
+    context: Context
+  ): EndpointOutcome {
     endpointArgs = endpointArgs || [];
 
-    const { context } = generalArgs;
-
-    const wildcardServerFound =
+    const wildcardServer: WildcardServer =
       config.__INTERNAL__wildcardServer ||
       (typeof global !== "undefined" &&
         global &&
         global.__globalWildcardServer);
-    const runDirectlyWithoutHTTP = !!wildcardServerFound;
+    const runDirectlyWithoutHTTP = !!wildcardServer;
 
     validateArgs({
       endpointName,
       endpointArgs,
-      generalArgs,
-      restArgs,
-      wildcardServerFound,
+      context,
+      wildcardServer,
       runDirectlyWithoutHTTP,
     });
 
     if (runDirectlyWithoutHTTP) {
       assert(isNodejs());
-      return callEndpointDirectly({
+      return callEndpointDirectly(
         endpointName,
         endpointArgs,
-        wildcardServerFound,
-        context,
-      });
+        wildcardServer,
+        context
+      );
     } else {
       assert(!context);
       assert_serverUrl(config.serverUrl);
-      return callEndpointOverHttp({ endpointName, endpointArgs });
+      return callEndpointOverHttp(endpointName, endpointArgs);
     }
   }
 
-  function callEndpointDirectly({
-    endpointName,
-    endpointArgs,
-    wildcardServerFound,
-    context,
-  }) {
-    return wildcardServerFound.__directCall({
-      endpointName,
-      endpointArgs,
-      context,
-    });
+  function callEndpointDirectly(
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs,
+    wildcardServer: WildcardServer,
+    context: Context
+  ): EndpointOutcome {
+    return wildcardServer.__directCall(endpointName, endpointArgs, context);
   }
 
-  function callEndpointOverHttp({ endpointName, endpointArgs }) {
-    let body;
-    let urlArgs__string;
+  function callEndpointOverHttp(
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs
+  ): EndpointOutcome {
+    let body: string;
+    let urlArgs__string: string;
     const ARGS_IN_BODY = "args-in-body";
-    let endpointArgsStr = serializeArgs({
-      endpointArgs,
-      endpointName,
-      stringify,
-    });
+    let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
     if (endpointArgsStr) {
       // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
       if (endpointArgsStr.length >= 2000 || config.argumentsAlwaysInHttpBody) {
@@ -115,7 +125,7 @@ function WildcardClient(): void {
       }
     }
 
-    let url = getEndpointUrl({ endpointName, endpointArgs });
+    let url = getEndpointUrl(endpointName);
     if (urlArgs__string) {
       url += "/" + encodeURIComponent(urlArgs__string);
     }
@@ -127,45 +137,14 @@ function WildcardClient(): void {
   function validateArgs({
     endpointName,
     endpointArgs,
-    generalArgs,
-    restArgs,
-    wildcardServerFound,
+    context,
+    wildcardServer,
     runDirectlyWithoutHTTP,
   }) {
-    assert(generalArgs);
     const fetchEndpoint__validArgs =
-      (endpointName && endpointArgs.constructor === Array,
-      restArgs.length === 0,
-      generalArgs.constructor === Object &&
-        Object.keys(generalArgs).every((arg) =>
-          ["context", IS_CALLED_BY_PROXY].includes(arg)
-        ));
+      endpointName && endpointArgs.constructor === Array;
+    assert(fetchEndpoint__validArgs);
 
-    if (generalArgs[IS_CALLED_BY_PROXY]) {
-      assert(fetchEndpoint__validArgs);
-    } else {
-      // TODO remove all code related to directly calling `fetchEndpoint`
-      assert(false);
-      /*
-      assertUsage(
-        fetchEndpoint__validArgs,
-        "Usage:"+
-        "",
-        "  `fetchEndpoint(endpointName, endpointArgs, {context})`",
-        "",
-        "    Where:",
-        "      - `endpointName` is the name of the endpoint (required string)",
-        "      - `endpointArgs` is the argument list of the endpoint (optional array)",
-        "      - `context` is the HTTP request object (optional object)",
-        "",
-        "    Examples:",
-        "      `fetchEndpoint('getTodos')`",
-        "      `fetchEndpoint('getTodos', [{tags: ['food']}, {onlyCompleted: true}])`",
-      );
-      */
-    }
-
-    const { context } = generalArgs;
     if (runDirectlyWithoutHTTP) {
       const errorIntro = [
         "You are trying to run an endpoint directly.",
@@ -180,7 +159,7 @@ function WildcardClient(): void {
         ].join("\n")
       );
       assertUsage(
-        wildcardServerFound.__directCall,
+        wildcardServer.__directCall,
         [
           errorIntro,
           "You are providing the `__INTERNAL__wildcardServer` option but it isn't an instance of `new WildcardServer()`.",
@@ -201,8 +180,8 @@ function WildcardClient(): void {
     }
   }
 
-  function getEndpointUrl({ endpointName, endpointArgs }) {
-    let url;
+  function getEndpointUrl(endpointName: EndpointName): string {
+    let url: string;
 
     const { serverUrl } = config;
     assert(serverUrl || isBrowser());
@@ -232,47 +211,49 @@ function WildcardClient(): void {
   }
 
   function getEndpointsProxy() {
-    assertProxySupport();
+    const emptyObject = {};
 
-    const dummyObject = {};
+    const endpointsProxy = new Proxy(emptyObject, { get, set });
+    return endpointsProxy;
 
-    const proxy = new Proxy(dummyObject, { get, set });
-    return proxy;
-
-    function get(target, prop) {
-      if (typeof prop !== "string" || prop in dummyObject) {
-        return dummyObject[prop];
+    function get({}, endpointName: EndpointName) {
+      //*
+      // Return native methods
+      if (endpointName in emptyObject) {
+        return emptyObject[endpointName];
       }
 
-      // TODO-enventually
-      if (prop === "inspect") {
+      // We assume `endpointName` to always be a string
+      if (typeof endpointName !== "string") {
         return undefined;
       }
 
-      // console.log(prop, target===dummyObject, typeof prop, new Error().stack);
+      // TODO handle this more properly
+      // Ideally: throw a usage error
+      // But: `inspect` seems to be called automatically (by Node.js if I remember correclty)
+      // Hence I'm not sure how to handle this. Maybe by checking if the caller is Node.js or the user.
+      if (endpointName === "inspect") {
+        return undefined;
+      }
+      //*/
 
-      (function () {
-        // Webpack: `this===undefined`
-        // New webpack version: `this===global`
-        // Parcel: `this===window`
-        assert(
-          this === undefined ||
-            (typeof window !== "undefined" && this === window) ||
-            (typeof global !== "undefined" && this === global)
-        );
-      })();
+      if (typeof endpointName !== "string") {
+        return undefined;
+      }
 
-      return function (...endpointArgs) {
-        const noBind =
-          this === proxy ||
-          this === undefined ||
-          (typeof window !== "undefined" && this === window) ||
-          (typeof global !== "undefined" && this === global);
-        const context = noBind ? undefined : this;
-        return fetchEndpoint(prop, endpointArgs, {
-          context,
-          [IS_CALLED_BY_PROXY]: true,
-        });
+      return function (...endpointArgs: EndpointArgs) {
+        let context: Context = undefined;
+        if (isBinded(this, endpointsProxy)) {
+          context = this;
+          assert(context !== emptyObject);
+          assert(context !== endpointsProxy);
+          assertUsage(
+            context instanceof Object,
+            `You should \`bind(obj)\` an endpoint with an object(-like) \`obj\`. Instead you called \`bind(obj)\` with \`obj==${context}\`.`
+          );
+        }
+
+        return callEndpoint(endpointName, endpointArgs, context);
       };
     }
 
@@ -320,23 +301,25 @@ function assertProxySupport() {
   assertUsage(
     envSupportsProxy(),
     [
-      "This JavaScript environment doesn't seem to support Proxy.",
-      "",
-      "Note that all browsers support Proxy with the exception of Internet Explorer.",
-      "If you want support for IE then open a GitHub issue.",
-    ].join("\n")
+      "Your JavaScript environment doesn't seem to support Proxy.",
+      "Note that all browsers and Node.js support Proxy, with the exception of Internet Explorer.",
+      "If you need IE support then open a GitHub issue.",
+    ].join(" ")
   );
 }
 function envSupportsProxy() {
   return typeof "Proxy" !== "undefined";
 }
 
-function serializeArgs({ endpointArgs, endpointName, stringify }) {
+function serializeArgs(
+  endpointArgs: EndpointArgs,
+  endpointName: EndpointName
+): string {
   assert(endpointArgs.length >= 0);
   if (endpointArgs.length === 0) {
     return undefined;
   }
-  let serializedArgs;
+  let serializedArgs: string;
   try {
     serializedArgs = stringify(endpointArgs);
   } catch (err_) {
@@ -356,7 +339,7 @@ function serializeArgs({ endpointArgs, endpointName, stringify }) {
   return serializedArgs;
 }
 
-function assert_serverUrl(serverUrl) {
+function assert_serverUrl(serverUrl: string) {
   assertUsage(
     serverUrl === null ||
       // Should be an HTTP URL
@@ -387,6 +370,32 @@ function getConfigProxy(configDefaults: ConfigPrivate) {
       ].join(" ")
     );
     return (obj[prop] = value);
+  }
+}
+
+function isBinded(that: unknown, defaultBind: unknown): boolean {
+  // Old webpack version: `this===undefined`
+  // New webpack version: `this===global`
+  // Parcel: `this===window`
+  // Node.js: `this===global`, or `this===undefined` (https://stackoverflow.com/questions/22770299/meaning-of-this-in-node-js-modules-and-functions)
+  // Chrome (without bundler): `this===window`
+
+  assertUsage(
+    (function () {
+      return notBinded(this);
+    })() === true,
+    "You seem to be using `@wildcard-api/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/reframejs/wildcard-api/issues/new for adding support for your environemnt/bundler."
+  );
+
+  return !notBinded(that, defaultBind);
+
+  function notBinded(that: unknown, defaultBind?: unknown) {
+    return (
+      that === undefined ||
+      (defaultBind && that === defaultBind) ||
+      (typeof window !== "undefined" && that === window) ||
+      (typeof global !== "undefined" && that === global)
+    );
   }
 }
 

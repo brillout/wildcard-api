@@ -89,13 +89,7 @@ type RequestInfo = {
   isHumanMode: IsHumanMode;
 };
 
-assertUsage(
-  isNodejs(),
-  [
-    "You are loading the module `@wildcard-api/server` in the browser.",
-    "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
-  ].join(" ")
-);
+assertNodejs();
 
 function WildcardServer(): void {
   const endpointsProxy: EndpointsProxy = getEndpointsProxy();
@@ -154,7 +148,11 @@ function WildcardServer(): void {
     );
   }
 
-  async function __directCall({ endpointName, endpointArgs, context }) {
+  async function __directCall(
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs,
+    context: ContextObject
+  ) {
     assert(endpointName);
     assert(endpointArgs.constructor === Array);
 
@@ -222,15 +220,6 @@ function WildcardServer(): void {
 
     return { endpointResult, endpointError };
   }
-}
-
-function isNodejs() {
-  return (
-    typeof "process" !== "undefined" &&
-    process &&
-    process.versions &&
-    process.versions.node
-  );
 }
 
 function endpointIsValid(endpoint: EndpointFunction) {
@@ -824,4 +813,19 @@ function getEndpointMissingText(
   );
 
   return endpointMissingText;
+}
+
+function assertNodejs() {
+  const isNodejs =
+    typeof "process" !== "undefined" &&
+    process &&
+    process.versions &&
+    process.versions.node;
+  assertUsage(
+    isNodejs,
+    [
+      "You are loading the module `@wildcard-api/server` in the browser.",
+      "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
+    ].join(" ")
+  );
 }
