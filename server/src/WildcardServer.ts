@@ -248,7 +248,7 @@ function validateEndpoint(
   assertUsage(
     !isArrowFunction(endpointFunction),
     [
-      "The endpoint function `" + endpointName + "` is an arrow function",
+      "The endpoint function `" + endpointName + "` is an arrow function.",
       "Endpoints cannot be defined with arrow functions (`() => {}`),",
       "use a plain function (`function(){}`) instead.",
     ].join(" ")

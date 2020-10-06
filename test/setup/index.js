@@ -126,12 +126,12 @@ async function runTest({
   const testName =
     "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
 
-  let stderrContents;
+  let stderrContents = null;
   const assertStderr = (content, ...rest) => {
     assert(rest.length === 0);
 
     if (content === null) {
-      assert(stderrContents === undefined);
+      assert(stderrContents === null);
       stderrContents = null;
       return;
     }
@@ -179,9 +179,7 @@ async function checkStderr({ stderrContents, stderrLogs }) {
 
   checkStderrFormat(stderrLogs);
 
-  if (stderrContents === undefined) {
-    return;
-  }
+  assert(stderrContents === null || stderrContents.length >= 1);
 
   if (stderrContents === null) {
     assert(
@@ -229,7 +227,7 @@ async function checkStdout(stdoutLogs) {
   stdoutLogs = removeHiddenLog(stdoutLogs);
   stdoutLogs = removePuppeteerLogs(stdoutLogs);
 
-  assert(stdoutLogs.length === 0, util.inspect(stdoutLogs));
+  assert(stdoutLogs.length === 0);
 
   return;
 
@@ -299,13 +297,25 @@ function getTests() {
     }
   });
 
-  if (selectedTest && noTest()) {
-    testsAll.forEach(({ testFile, testFn }) => {
-      if (testFile.includes(selectedTest)) {
-        addTest({ testFile, testFn });
-        return;
-      }
-    });
+  if (selectedTest) {
+    if (noTest()) {
+      testsAll.forEach((testInfo) => {
+        const { testFile } = testInfo;
+        if (testFile.includes(selectedTest)) {
+          addTest(testInfo);
+          return;
+        }
+      });
+    }
+    if (noTest()) {
+      testsAll.forEach((testInfo) => {
+        const functionName = testInfo.testFn.name;
+        if (functionName.includes(selectedTest)) {
+          addTest(testInfo);
+          return;
+        }
+      });
+    }
   }
 
   assertUsage(!noTest(), `No test \`${selectedTest}\` found.`);
