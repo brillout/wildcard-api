@@ -877,10 +877,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.0.tgz#18613de387194daa3a63e90d139e0c594ef3b76b"
-  integrity sha512-xIW8LrdX50s99ugTngMmcsrRAbm3trlvngrkJPF7nfgJjUCsiTGx7B/D4+8CHj31dADNGudq2jnCciBCcAlQoA==
+"@brillout/assert@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.1.tgz#13b731f33bb3b22079445a0d18438c121abe1933"
+  integrity sha512-SljBDJSjk8H7GuIh5MKPDJQ4IskJgkcsKu0xf3SXhrdY9Djzv95JrqEmOKOvjRKnJwcrlNDGWiXi6hFi2EenhQ==
   dependencies:
     "@types/node" "^14.11.2"
 
