@@ -99,9 +99,11 @@ async function runStandardTests({
       const testArgs = {
         server,
         config,
+        browserEval,
+        WildcardServer,
+        wildcardServer,
         wildcardClient,
         WildcardClient,
-        browserEval,
         httpPort,
       };
 
@@ -263,7 +265,13 @@ async function runIntegrationTests({
   silentMode,
 }) {
   for (test of integrationTests) {
-    const testArgs = { browserEval, staticDir, httpPort };
+    const testArgs = {
+      browserEval,
+      staticDir,
+      httpPort,
+      WildcardClient,
+      WildcardServer,
+    };
     await runTest({
       test,
       testArgs,

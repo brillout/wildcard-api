@@ -113,8 +113,7 @@ async function test_failedEndpointCall({ server, browserEval }) {
   await browserEval(async () => {
     let err;
     try {
-      const ret = await window.server.failingEndpoint("rom");
-      console.log("ret: ", ret);
+      await window.server.failingEndpoint("rom");
     } catch (_err) {
       err = _err;
     }
@@ -126,10 +125,14 @@ async function test_failedEndpointCall({ server, browserEval }) {
   assert(endpointCalled === false);
 }
 
-async function createServer({ setContext, staticDir, httpPort }) {
+async function createServer({
+  WildcardServer,
+  setContext,
+  staticDir,
+  httpPort,
+}) {
   const express = require("express");
   const { wildcard } = require("@wildcard-api/server/express");
-  const { WildcardServer } = require("@wildcard-api/server");
   const { stop, start } = require("../setup/servers/express");
 
   const wildcardServer = new WildcardServer();

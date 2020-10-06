@@ -1,10 +1,15 @@
 import { assertUsage } from "@brillout/assert";
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { wildcardServer as wildcardServer_ } from "./index";
+import { UniversalAdapter } from "./WildcardServer";
 
 export { MiddlewareFactory };
 
-function MiddlewareFactory(ServerAdapter, opts?) {
+function MiddlewareFactory(
+  ServerAdapter,
+  __INTERNAL_universalAdapter: UniversalAdapter,
+  adapterOptions?: object
+) {
   return (
     contextGetter,
     {
@@ -41,12 +46,13 @@ function MiddlewareFactory(ServerAdapter, opts?) {
           }
           const responseProps = await wildcardServer.getApiHttpResponse(
             requestProps,
-            context
+            context,
+            __INTERNAL_universalAdapter
           );
           return responseProps;
         },
       ],
-      opts
+      adapterOptions
     );
   };
 }

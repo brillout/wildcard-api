@@ -24,19 +24,14 @@ type Config = {
 };
 
 type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
+const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
-type ComesFromUniversalAdapter =
-  | "express"
-  | "koa"
-  | ("hapi" & {
-      _brand?: "ComesFromUniversalAdapter";
-    });
+export type UniversalAdapter = "express" | "koa" | "hapi";
 type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
   body?: HttpRequestBody;
-  comesFromUniversalAdapter?: ComesFromUniversalAdapter;
 };
 
 type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
@@ -56,7 +51,9 @@ type EndpointResult = unknown & { _brand?: "EndpointResult" };
 type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
 type EndpointArg = string & { _brand?: "EndpointArg" };
 type EndpointArgs = EndpointArg[];
-type EndpointArgsSerialized = string & { _brand?: "EndpointArgsSerialized" };
+type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
+type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
+type EndpointArgsSerialized = ArgsInUrl | ArgsInHttpBody;
 
 type ObjectKey = string | number;
 
@@ -71,9 +68,9 @@ type EndpointsObject = Record<EndpointName, EndpointFunction>;
 type EndpointsProxy = EndpointsObject;
 
 type EndpointDoesNotExist = boolean & { _brand?: "EndpointDoesNotExist" };
-type MalformationError = string & { _brand?: "MalformationError" };
+type HttpBodyErrorText = string & { _brand?: "HttpBodyErrorText" };
 type MalformedRequest = {
-  malformationError: MalformationError;
+  httpBodyErrorText: HttpBodyErrorText;
   endpointDoesNotExist?: EndpointDoesNotExist;
 };
 type MalformedIntegration = UsageError;
@@ -109,8 +106,15 @@ function WildcardServer(): void {
 
   async function getApiHttpResponse(
     requestProps: HttpRequestProps,
-    context: ContextObject
+    context: ContextObject,
+    {
+      __INTERNAL_universalAdapter,
+    }: { __INTERNAL_universalAdapter: UniversalAdapter } = {
+      __INTERNAL_universalAdapter: null,
+    }
   ): Promise<HttpResponseProps> {
+    validateArgs(requestProps, context, __INTERNAL_universalAdapter);
+
     const {
       endpointName,
       endpointArgs,
@@ -118,7 +122,12 @@ function WildcardServer(): void {
       malformedIntegration,
       isNotWildcardRequest,
       isHumanMode,
-    }: RequestInfo = parseRequestInfo({ requestProps, endpointsProxy, config });
+    }: RequestInfo = parseRequestInfo(
+      requestProps,
+      endpointsProxy,
+      config,
+      __INTERNAL_universalAdapter
+    );
 
     if (isNotWildcardRequest) {
       return null;
@@ -459,14 +468,13 @@ function isPropNameNormal(prop: ContextProp) {
   return propStr === prop && /^[a-zA-Z0-9_]+$/.test(prop);
 }
 
-function parseRequestInfo({
-  requestProps,
-  endpointsProxy,
-  config,
-}): RequestInfo {
+function parseRequestInfo(
+  requestProps: HttpRequestProps,
+  endpointsProxy: EndpointsProxy,
+  config: Config,
+  __INTERNAL_universalAdapter: UniversalAdapter
+): RequestInfo {
   const method = requestProps.method.toUpperCase();
-
-  assert_request(requestProps);
 
   const urlProps = getUrlProps(requestProps.url);
   assert(urlProps.pathname.startsWith("/"));
@@ -485,7 +493,7 @@ function parseRequestInfo({
   const {
     malformedRequest: malformationError__pathname,
     endpointName,
-    urlArgs__string,
+    argsInUrl,
   } = parsePathname({ pathname, config });
 
   if (malformationError__pathname) {
@@ -504,7 +512,7 @@ function parseRequestInfo({
     return {
       malformedRequest: {
         endpointDoesNotExist: true,
-        malformationError: endpointMissingText.join("\n\n"),
+        httpBodyErrorText: endpointMissingText.join("\n\n"),
       },
       endpointName,
       isHumanMode,
@@ -515,11 +523,12 @@ function parseRequestInfo({
     endpointArgs,
     malformedRequest,
     malformedIntegration,
-  } = getEndpointArgs({
-    urlArgs__string,
+  } = getEndpointArgs(
+    argsInUrl,
     requestBody,
     requestProps,
-  });
+    __INTERNAL_universalAdapter
+  );
   if (malformedRequest || malformedIntegration) {
     assert(!malformedIntegration || !malformedRequest);
     return {
@@ -538,47 +547,49 @@ function parseRequestInfo({
   };
 }
 
-function getEndpointArgs({
-  urlArgs__string,
-  requestBody,
-  requestProps,
-}): {
+function getEndpointArgs(
+  argsInUrl: ArgsInUrl,
+  requestBody: HttpRequestBody,
+  requestProps: HttpRequestProps,
+  __INTERNAL_universalAdapter: UniversalAdapter
+): {
   endpointArgs?: EndpointArgs;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
 } {
   const ARGS_IN_BODY = "args-in-body";
-  const args_are_in_body = urlArgs__string === ARGS_IN_BODY;
+  const args_are_in_body = argsInUrl === ARGS_IN_BODY;
 
   let endpointArgs__string: EndpointArgsSerialized;
   if (args_are_in_body) {
     if (!requestBody) {
       const malformedIntegration = getUsageError(
         [
-          urlArgs__string.comesFromUniversalAdapter
-            ? `Your ${urlArgs__string.comesFromUniversalAdapter} server is not providing the HTTP request body.`
+          __INTERNAL_universalAdapter
+            ? `Your ${__INTERNAL_universalAdapter} server is not providing the HTTP request body.`
             : "Argument `body` missing when calling `getApiHttpResponse()`.",
           "You need to provide the HTTP request body when calling an endpoint with arguments serialized to >=2000 characters.",
-          getBodyUsageNote(requestProps),
+          getBodyUsageNote(requestProps, __INTERNAL_universalAdapter),
         ].join(" ")
       );
       return {
         malformedIntegration,
       };
     }
-    endpointArgs__string =
+    const argsInHttpBody: ArgsInHttpBody =
       requestBody.constructor === Array
         ? // Server framework already parsed HTTP Request body with JSON
           JSON.stringify(requestBody)
         : // Server framework didn't parse HTTP Request body
           requestBody;
+    endpointArgs__string = argsInHttpBody;
   } else {
-    if (!urlArgs__string) {
+    if (!argsInUrl) {
       return {
         endpointArgs: [],
       };
     }
-    endpointArgs__string = urlArgs__string;
+    endpointArgs__string = argsInUrl;
   }
 
   assert(endpointArgs__string);
@@ -587,19 +598,19 @@ function getEndpointArgs({
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch (err_) {
-    const malformationError = [
+    const httpBodyErrorText = [
       "Malformatted API request.",
       "Cannot parse `" + endpointArgs__string + "`.",
     ].join(" ");
     return {
-      malformedRequest: { malformationError },
+      malformedRequest: { httpBodyErrorText },
     };
   }
   if (!endpointArgs || endpointArgs.constructor !== Array) {
-    const malformationError =
+    const httpBodyErrorText =
       "Malformatted API request. The parsed serialized endpoint arguments should be an array.";
     return {
-      malformedRequest: { malformationError },
+      malformedRequest: { httpBodyErrorText },
     };
   }
   return { endpointArgs };
@@ -612,23 +623,23 @@ function parsePathname({ pathname, config }) {
     urlParts.length < 1 || urlParts.length > 2 || !urlParts[0];
 
   const endpointName = urlParts[0];
-  const urlArgs__string = urlParts[1] && decodeURIComponent(urlParts[1]);
+  const argsInUrl: ArgsInUrl = urlParts[1] && decodeURIComponent(urlParts[1]);
   /*
   const pathname__prettified = isMalformatted
     ? pathname
-    : config.baseUrl + endpointName + "/" + urlArgs__string;
+    : config.baseUrl + endpointName + "/" + argsInUrl;
   */
   let malformedRequest: MalformedRequest;
   if (isMalformatted) {
     malformedRequest = {
-      malformationError: "Malformatted API URL",
+      httpBodyErrorText: "Malformatted API URL",
     };
   }
 
   return {
     malformedRequest,
     endpointName,
-    urlArgs__string,
+    argsInUrl,
   };
 }
 
@@ -691,16 +702,16 @@ function httpResponse_malformedRequest(
   // We only print the malformation error on the browser-side
   // Because it's not a server-side bug but a browser-side bug
   const statusCode = malformedRequest.endpointDoesNotExist ? 404 : 400;
-  const errorText = malformedRequest.malformationError;
-  return HttpResponse_browserSideError(statusCode, errorText);
+  const { httpBodyErrorText } = malformedRequest;
+  return HttpResponse_browserSideError(statusCode, httpBodyErrorText);
 }
 function HttpResponse_browserSideError(
   errorCode: number,
-  errorText: string
+  httpBodyErrorText: string
 ): HttpResponseProps {
   return {
     statusCode: errorCode,
-    body: errorText,
+    body: httpBodyErrorText,
     contentType: "text/plain",
   };
 }
@@ -742,35 +753,50 @@ function httpResponse_endpointResult({
   }
 }
 
-function assert_request(requestProps: HttpRequestProps) {
+function validateArgs(
+  requestProps: HttpRequestProps,
+  context: ContextObject,
+  __INTERNAL_universalAdapter: UniversalAdapter
+) {
   assert(
-    (requestProps.url && requestProps.method) ||
-      !requestProps.comesFromUniversalAdapter
+    (requestProps && requestProps.url && requestProps.method) ||
+      !__INTERNAL_universalAdapter
   );
 
-  assertUsage(
-    requestProps.url,
-    "Argument `url` is missing while calling `getApiHttpResponse()`."
-  );
+  const missArg = (args: string[]) =>
+    `Missing argument${args.length === 1 ? "" : "s"} ${args
+      .map((s) => "`" + s + "`")
+      .join(" and ")} while calling \`getApiHttpResponse()\`.`;
 
+  assertUsage(requestProps, missArg(["url", "method"]));
+
+  assertUsage(requestProps.url, missArg(["url", "method"]));
+
+  const { method } = requestProps;
+  assertUsage(method, missArg(["url", "method"]));
   assertUsage(
-    requestProps.method,
-    "Argument `method` is missing while calling `getApiHttpResponse()`."
+    HttpRequestMethod.includes(method),
+    `Http request method must be one of [${HttpRequestMethod.map(
+      (m) => `"${m}"`
+    ).join(", ")}] but is \`${method}\`.`
   );
 }
 
-function getBodyUsageNote(requestProps: HttpRequestProps) {
+function getBodyUsageNote(
+  requestProps: HttpRequestProps,
+  __INTERNAL_universalAdapter: UniversalAdapter
+) {
   const expressNote =
     "make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.";
   const koaNote =
     "make sure to parse the body, for example: `app.use(require('koa-bodyparser')())`.";
-  if (requestProps.comesFromUniversalAdapter === "express") {
+  if (__INTERNAL_universalAdapter === "express") {
     return "You seem to be using Express; " + expressNote;
   }
-  if (requestProps.comesFromUniversalAdapter === "koa") {
+  if (__INTERNAL_universalAdapter === "koa") {
     return "You seem to be using Koa; " + expressNote;
   }
-  if (requestProps.comesFromUniversalAdapter === "hapi") {
+  if (__INTERNAL_universalAdapter === "hapi") {
     assert("body" in requestProps);
   }
   return [

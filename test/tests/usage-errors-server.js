@@ -16,6 +16,8 @@ module.exports = [
 
   endpointThrowsError,
 
+  wrongUsage_getApiHttpResponse,
+
   wrongHttpRequest1,
   wrongHttpRequest2,
   wrongHttpRequest3,
@@ -148,6 +150,30 @@ async function endpointThrowsError({ server, browserEval, assertStderr }) {
   });
 
   assertStderr(errorText);
+}
+
+async function wrongUsage_getApiHttpResponse({ wildcardServer }) {
+  /*
+  try {
+    wildcardServer.getApiHttpResponse();
+  } catch (err) {
+    assert(err.includes("Missing arguments `url` and `method`"));
+  }
+
+  const url = "https://example.org/_wildcard_api/ummm";
+  try {
+    wildcardServer.getApiHttpResponse({ url });
+  } catch (err) {
+    assert(err.includes("Missing argument `method`"));
+  }
+
+  let method = "PUT";
+  try {
+    wildcardServer.getApiHttpResponse({ url, method });
+  } catch (err) {
+    assert(err.includes("method should be `method`"));
+  }
+  */
 }
 
 async function wrongHttpRequest1({ server, browserEval }) {
