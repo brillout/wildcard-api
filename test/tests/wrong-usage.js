@@ -171,7 +171,6 @@ async function endpointReturnsFunction1({ server, browserEval, assertStderr }) {
   });
 
   assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint1`");
-  assertStderr("Cannot serialize function `heloFn`");
 }
 
 async function endpointReturnsFunction2({ server, browserEval, assertStderr }) {
@@ -190,5 +189,5 @@ async function endpointReturnsFunction2({ server, browserEval, assertStderr }) {
     assert(err.message === "Endpoint function `fnEndpoint2` threw an error.");
   });
 
-  assertStderr("Cannot serialize function");
+  assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint2`");
 }

@@ -35,14 +35,14 @@ type EndpointArgs = string[] & { _brand?: "EndpointArgs" };
 type Context = object & { _brand?: "Context" };
 type EndpointResult = unknown & { _brand?: "EndpointResult" };
 type EndpointError = Error & { _brand?: "EndpointError" };
-type EndpointOutcome = Promise<EndpointResult | EndpointError>;
+type EndpointOutput = Promise<EndpointResult | EndpointError>;
 
 type WildcardServer = {
   __directCall: (
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
     context: Context
-  ) => EndpointOutcome;
+  ) => EndpointOutput;
 };
 
 function WildcardClient(): void {
@@ -64,25 +64,13 @@ function WildcardClient(): void {
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
     context: Context
-  ): EndpointOutcome {
+  ): EndpointOutput {
     endpointArgs = endpointArgs || [];
 
-    const wildcardServer: WildcardServer =
-      config.__INTERNAL_wildcardServer_test ||
-      (typeof global !== "undefined" &&
-        global &&
-        global.__INTERNAL_wildcardServer_nodejs);
-    const runDirectlyWithoutHTTP = !!wildcardServer;
+    const wildcardServer: WildcardServer = getWildcardServer();
 
-    validateArgs({
-      endpointName,
-      endpointArgs,
-      context,
-      wildcardServer,
-      runDirectlyWithoutHTTP,
-    });
-
-    if (runDirectlyWithoutHTTP) {
+    if (wildcardServer) {
+      // Server-side usage
       assert(isNodejs());
       return callEndpointDirectly(
         endpointName,
@@ -90,11 +78,42 @@ function WildcardClient(): void {
         wildcardServer,
         context
       );
-    } else {
-      assert(!context);
-      assert_serverUrl(config.serverUrl);
-      return callEndpointOverHttp(endpointName, endpointArgs);
     }
+
+    // Browser-side usage, or cross-server servide-side usage
+    // Server URL is needed
+    assert_serverUrl(config.serverUrl);
+
+    assertUsage(
+      !context,
+      [
+        "Using `bind` to provide the context object is forbidden on the browser-side.",
+        "You should use `bind` only on the server-side.",
+        "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+      ].join(" ")
+    );
+
+    return callEndpointOverHttp(endpointName, endpointArgs);
+  }
+
+  function getWildcardServer() {
+    const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
+    const wildcardServer__serverSideUsage =
+      typeof global !== "undefined" &&
+      global &&
+      global.__INTERNAL_wildcardServer_nodejs;
+    const wildcardServer =
+      wildcardServer__testing || wildcardServer__serverSideUsage || null;
+
+    // The purpose of providing `wildcardServer` to `wildcardClient` is for server-side client usage.
+    // It doesn't make sense to provide `wildcardServer` on the browser-side.
+    assert(wildcardServer === null || isNodejs());
+
+    // The whole purpose of providing `wildcardServer` is to be able to call `wildcardServer.__directCall`
+    // Bypassing making an unecessary HTTP request.
+    assert(wildcardServer === null || wildcardServer.__directCall);
+
+    return wildcardServer;
   }
 
   function callEndpointDirectly(
@@ -102,14 +121,14 @@ function WildcardClient(): void {
     endpointArgs: EndpointArgs,
     wildcardServer: WildcardServer,
     context: Context
-  ): EndpointOutcome {
+  ): EndpointOutput {
     return wildcardServer.__directCall(endpointName, endpointArgs, context);
   }
 
   function callEndpointOverHttp(
     endpointName: EndpointName,
     endpointArgs: EndpointArgs
-  ): EndpointOutcome {
+  ): EndpointOutput {
     let body: string;
     let urlArgs__string: string;
     const ARGS_IN_BODY = "args-in-body";
@@ -131,53 +150,6 @@ function WildcardClient(): void {
     }
 
     return makeHttpRequest({ url, parse, body, endpointName });
-  }
-
-  // TODO-eventually improve error messages
-  function validateArgs({
-    endpointName,
-    endpointArgs,
-    context,
-    wildcardServer,
-    runDirectlyWithoutHTTP,
-  }) {
-    const fetchEndpoint__validArgs =
-      endpointName && endpointArgs.constructor === Array;
-    assert(fetchEndpoint__validArgs);
-
-    if (runDirectlyWithoutHTTP) {
-      const errorIntro = [
-        "You are trying to run an endpoint directly.",
-        "(Instead of doing an HTTP request).",
-      ].join("\n");
-      assertUsage(
-        isNodejs(),
-        [
-          errorIntro,
-          "But you are trying to do so in the browser which doesn't make sense.",
-          "Running endpoints directly should be done in Node.js only.",
-        ].join("\n")
-      );
-      assertUsage(
-        wildcardServer.__directCall,
-        [
-          errorIntro,
-          "You are providing the `__INTERNAL_wildcardServer_test` option but it isn't an instance of `new WildcardServer()`.",
-        ].join("\n")
-      );
-    } else {
-      assertUsage(
-        Object.keys(context || {}).length === 0,
-        [
-          "Wrong SSR usage.",
-          "You are:",
-          "  - Using the Wildcard client on the browser-side",
-          "  - Manually providing the `context` object (you are using `bind`)",
-          "But you should manually provide the `context` object only on the server-side while doing server-side rendering.",
-          "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
-        ].join("\n")
-      );
-    }
   }
 
   function getEndpointUrl(endpointName: EndpointName): string {
@@ -243,6 +215,7 @@ function WildcardClient(): void {
 
       return function (...endpointArgs: EndpointArgs) {
         let context: Context = undefined;
+
         if (isBinded(this, endpointsProxy)) {
           context = this;
           assert(context !== emptyObject);
@@ -261,12 +234,9 @@ function WildcardClient(): void {
       assertUsage(
         false,
         [
-          "You cannot add/modify endpoint functions with the client module `@wildcard-api/client`.",
-          "Instead, define your endpoint functions with the `@wildcard-api/server` module:",
-          "    const {endpoints} = require('@wildcard-api/server');",
-          "    endpoints.newEndpoint = function(){return 'hello'};",
-          "Note how we load `endpoints` from `require('@wildcard-api/server')` and not `require('@wildcard-api/client')`.",
-        ].join("\n")
+          "You cannot add/modify endpoint functions with the Wildcard client `@wildcard-api/client`.",
+          "Instead, define your endpoint functions with the Wildcard server `@wildcard-api/server`.",
+        ].join(" ")
       );
 
       // Make TS happy
@@ -323,17 +293,14 @@ function serializeArgs(
   try {
     serializedArgs = stringify(endpointArgs);
   } catch (err_) {
-    console.error(err_);
-    console.log("\n");
-    console.log("Endpoint arguments:");
-    console.log(endpointArgs);
-    console.log("\n");
     assertUsage(
       false,
       [
-        "Couldn't serialize arguments for `" + endpointName + "`.",
-        "The endpoint arguments in question and the serialization error are printed above.",
-      ].join("\n")
+        `Couldn't serialize arguments of \`${endpointName}\`.`,
+        `Make sure all arguments passed to \`${endpointName}()\``,
+        "are only of the following types:",
+        "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
+      ].join(" ")
     );
   }
   return serializedArgs;

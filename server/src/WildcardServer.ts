@@ -724,8 +724,9 @@ function httpResponse_endpointResult({
     endpointError = getUsageError(
       [
         `Couldn't serialize value returned by endpoint \`${endpointName}\`.`,
-        "Make sure the returned value contains only the following supported types: `Object`, `string`, `number`, `Date`, `null`, `undefined`, `RegExp`, `Inifinity`, `NaN`.",
-        "Serialization Error: " + stringifyError.message,
+        "Make sure the returned values",
+        "are only of the following types:",
+        "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
       ].join(" ")
     );
   }

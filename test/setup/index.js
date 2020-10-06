@@ -100,7 +100,12 @@ async function runStandardTests({
         httpPort,
       };
 
-      await runTest({ test, testArgs, serverFramework });
+      await runTest({
+        test,
+        testArgs,
+        serverFramework,
+        silentMode: standardTests.length > 1,
+      });
     }
 
     await stop();
@@ -111,6 +116,7 @@ async function runTest({
   test: { testFn, testFile },
   serverFramework,
   testArgs,
+  silentMode,
 }) {
   const testName =
     "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
@@ -130,7 +136,7 @@ async function runTest({
     stderrContents.push(content);
   };
 
-  const log_collector = new LogCollector({ silenceLogs: !DEBUG });
+  const log_collector = new LogCollector({ silenceLogs: silentMode && !DEBUG });
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
 
@@ -251,7 +257,12 @@ function removeHiddenLog(stdLogs) {
 async function runIntegrationTests({ integrationTests, browserEval }) {
   for (test of integrationTests) {
     const testArgs = { browserEval, staticDir, httpPort };
-    await runTest({ test, testArgs, serverFramework: "custom-server" });
+    await runTest({
+      test,
+      testArgs,
+      serverFramework: "custom-server",
+      silentMode: integrationTests.length > 1,
+    });
   }
 }
 

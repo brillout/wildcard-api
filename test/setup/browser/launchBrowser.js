@@ -53,22 +53,9 @@ async function launchBrowser() {
     try {
       ret = await page.evaluate(fn, browserArgs);
     } catch (err) {
-      /*
-      // Callstack is now shown in latest puppeteer version, but without the proper line numbers.
+      // Callstack is now shown in latest puppeteer version, but without the proper line numbers and filenames.
       // Previous bug "Evaluation failed: [object Object]": https://github.com/GoogleChrome/puppeteer/issues/4651
-      console.log("before");
-      console.log();
-      console.log(Object.getOwnPropertyNames(err));
-      console.log();
-      console.log(err);
-      console.log();
-      console.log(err.stack);
-      console.log();
-      console.log(err.message);
-      console.log();
-      console.log("after");
-      //*/
-      throw err;
+      console.error(err);
     } finally {
       _onHttpRequest = null;
     }
