@@ -225,7 +225,7 @@ function WildcardClient(): void {
           assert(context !== endpointsProxy);
           assertUsage(
             context instanceof Object,
-            `You should \`bind(obj)\` an endpoint with an object(-like) \`obj\`. Instead you called \`bind(obj)\` with \`obj==${context}\`.`
+            "You should `bind(obj)` an endpoint with an object(-like) `obj`."
           );
         }
 

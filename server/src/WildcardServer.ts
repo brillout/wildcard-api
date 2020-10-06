@@ -74,6 +74,7 @@ type MalformedRequest = {
   endpointDoesNotExist?: EndpointDoesNotExist;
 };
 type MalformedIntegration = UsageError;
+type WrongApiUsage = UsageError;
 
 type IsNotWildcardRequest = boolean & { _brand?: "IsNotWildcardRequest" };
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
@@ -113,7 +114,14 @@ function WildcardServer(): void {
       __INTERNAL_universalAdapter: null,
     }
   ): Promise<HttpResponseProps> {
-    validateArgs(requestProps, context, __INTERNAL_universalAdapter);
+    const wrongApiUsage = validateApiUsage(
+      requestProps,
+      context,
+      __INTERNAL_universalAdapter
+    );
+    if (wrongApiUsage) {
+      return httpResponse_wrongApiUsage(wrongApiUsage);
+    }
 
     const {
       endpointName,
@@ -474,6 +482,8 @@ function parseRequestInfo(
   config: Config,
   __INTERNAL_universalAdapter: UniversalAdapter
 ): RequestInfo {
+  assert(requestProps.url && requestProps.method);
+
   const method = requestProps.method.toUpperCase();
 
   const urlProps = getUrlProps(requestProps.url);
@@ -682,6 +692,12 @@ function httpResponse_endpointError(
   console.error(endpointError);
   return HttpResponse_serverSideError();
 }
+function httpResponse_wrongApiUsage(
+  wrongApiUsage: WrongApiUsage
+): HttpResponseProps {
+  console.error(wrongApiUsage);
+  return HttpResponse_serverSideError();
+}
 function httpResponse_malformedIntegration(
   malformedIntegration: MalformedIntegration
 ): HttpResponseProps {
@@ -753,33 +769,49 @@ function httpResponse_endpointResult({
   }
 }
 
-function validateArgs(
+function validateApiUsage(
   requestProps: HttpRequestProps,
   context: ContextObject,
   __INTERNAL_universalAdapter: UniversalAdapter
 ) {
-  assert(
-    (requestProps && requestProps.url && requestProps.method) ||
-      !__INTERNAL_universalAdapter
-  );
+  try {
+    validate();
+  } catch (wrongApiUsage) {
+    return wrongApiUsage;
+  }
+  return;
+  function validate() {
+    assert(
+      (requestProps && requestProps.url && requestProps.method) ||
+        !__INTERNAL_universalAdapter
+    );
 
-  const missArg = (args: string[]) =>
-    `Missing argument${args.length === 1 ? "" : "s"} ${args
-      .map((s) => "`" + s + "`")
-      .join(" and ")} while calling \`getApiHttpResponse()\`.`;
+    const missArg = (args: string[]) =>
+      `Missing argument${args.length === 1 ? "" : "s"} ${args
+        .map((s) => "`" + s + "`")
+        .join(" and ")} while calling \`getApiHttpResponse()\`.`;
 
-  assertUsage(requestProps, missArg(["url", "method"]));
+    const missingArguments = [
+      !requestProps?.url && "url",
+      !requestProps?.method && "method",
+    ].filter(Boolean);
+    assertUsage(missingArguments.length === 0, missArg(missingArguments));
 
-  assertUsage(requestProps.url, missArg(["url", "method"]));
+    {
+      const { method } = requestProps;
+      assertUsage(
+        HttpRequestMethod.includes(method),
+        `Http request method must be one of [${HttpRequestMethod.map(
+          (m) => `"${m}"`
+        ).join(", ")}] but is \`${method}\`.`
+      );
+    }
 
-  const { method } = requestProps;
-  assertUsage(method, missArg(["url", "method"]));
-  assertUsage(
-    HttpRequestMethod.includes(method),
-    `Http request method must be one of [${HttpRequestMethod.map(
-      (m) => `"${m}"`
-    ).join(", ")}] but is \`${method}\`.`
-  );
+    assertUsage(
+      context === undefined || context instanceof Object,
+      "`context` should be an object(-like) or `undefined`."
+    );
+  }
 }
 
 function getBodyUsageNote(

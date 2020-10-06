@@ -16,7 +16,11 @@ module.exports = [
 
   endpointThrowsError,
 
-  wrongUsage_getApiHttpResponse,
+  wrongUsage_getApiHttpResponse_1,
+  wrongUsage_getApiHttpResponse_2,
+  wrongUsage_getApiHttpResponse_3,
+  wrongUsage_getApiHttpResponse_4,
+  wrongUsage_getApiHttpResponse_5,
 
   wrongHttpRequest1,
   wrongHttpRequest2,
@@ -152,28 +156,65 @@ async function endpointThrowsError({ server, browserEval, assertStderr }) {
   assertStderr(errorText);
 }
 
-async function wrongUsage_getApiHttpResponse({ wildcardServer }) {
-  /*
-  try {
-    wildcardServer.getApiHttpResponse();
-  } catch (err) {
-    assert(err.includes("Missing arguments `url` and `method`"));
-  }
-
+async function wrongUsage_getApiHttpResponse_1({
+  wildcardServer,
+  assertStderr,
+}) {
+  const responseProps = await wildcardServer.getApiHttpResponse();
+  assertErrorResponse(responseProps);
+  assertStderr("Missing arguments `url` and `method`");
+}
+async function wrongUsage_getApiHttpResponse_2({
+  wildcardServer,
+  assertStderr,
+}) {
+  const responseProps = await wildcardServer.getApiHttpResponse({
+    method: "post",
+  });
+  assertErrorResponse(responseProps);
+  assertStderr("Missing argument `url`");
+}
+async function wrongUsage_getApiHttpResponse_3({
+  wildcardServer,
+  assertStderr,
+}) {
   const url = "https://example.org/_wildcard_api/ummm";
-  try {
-    wildcardServer.getApiHttpResponse({ url });
-  } catch (err) {
-    assert(err.includes("Missing argument `method`"));
-  }
-
-  let method = "PUT";
-  try {
-    wildcardServer.getApiHttpResponse({ url, method });
-  } catch (err) {
-    assert(err.includes("method should be `method`"));
-  }
-  */
+  const responseProps = await wildcardServer.getApiHttpResponse({ url });
+  assertErrorResponse(responseProps);
+  assertStderr("Missing argument `method`");
+}
+async function wrongUsage_getApiHttpResponse_4({
+  wildcardServer,
+  assertStderr,
+}) {
+  const url = "https://example.org/_wildcard_api/ummm";
+  const method = "PUT";
+  const responseProps = await wildcardServer.getApiHttpResponse({
+    url,
+    method,
+  });
+  assertErrorResponse(responseProps);
+  assertStderr('method must be one of ["POST", "GET", "post", "get"]');
+}
+async function wrongUsage_getApiHttpResponse_5({
+  wildcardServer,
+  assertStderr,
+}) {
+  const url = "https://example.org/_wildcard_api/ummm";
+  const method = "GET";
+  const context = null;
+  const responseProps = await wildcardServer.getApiHttpResponse(
+    { url, method },
+    context
+  );
+  assertErrorResponse(responseProps);
+  assertStderr("`context` should be an object(-like) or `undefined`.");
+}
+function assertErrorResponse(responseProps) {
+  assert(responseProps.body === "Internal Server Error");
+  assert(responseProps.statusCode === 500);
+  assert(responseProps.contentType === "text/plain");
+  assert(Object.keys(responseProps).length === 3);
 }
 
 async function wrongHttpRequest1({ server, browserEval }) {
