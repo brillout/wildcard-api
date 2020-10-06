@@ -9,15 +9,15 @@ async function launchBrowser() {
   page.on("console", (consoleObj) => console.log(consoleObj.text()));
 
   /*
-	page.on("pageerror", function(err) {
-			const theTempValue = err.toString();
-			console.log("Browser-side Error [pageerror]: " + theTempValue);
-	});
-	page.on("error", function (err) {
-			const theTempValue = err.toString();
-			console.log("Browser-side Error [error]: " + theTempValue);
-	});
-	//*/
+  page.on("pageerror", function (err) {
+    const theTempValue = err.toString();
+    console.log("Browser-side Error [pageerror]: " + theTempValue);
+  });
+  page.on("error", function (err) {
+    const theTempValue = err.toString();
+    console.log("Browser-side Error [error]: " + theTempValue);
+  });
+  //*/
 
   let _onHttpRequest;
   page.on("request", async (request) => {
@@ -54,16 +54,20 @@ async function launchBrowser() {
       ret = await page.evaluate(fn, browserArgs);
     } catch (err) {
       /*
-      // Non-helpful error "Evaluation failed: [object Object]" is a bug:
-      // - https://github.com/GoogleChrome/puppeteer/issues/4651
-      console.log('bef');
+      // Callstack is now shown in latest puppeteer version, but without the proper line numbers.
+      // Previous bug "Evaluation failed: [object Object]": https://github.com/GoogleChrome/puppeteer/issues/4651
+      console.log("before");
+      console.log();
       console.log(Object.getOwnPropertyNames(err));
+      console.log();
       console.log(err);
+      console.log();
       console.log(err.stack);
+      console.log();
       console.log(err.message);
-      console.log(2321);
-      process.exit();
-      */
+      console.log();
+      console.log("after");
+      //*/
       throw err;
     } finally {
       _onHttpRequest = null;
