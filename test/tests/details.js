@@ -12,7 +12,8 @@ module.exports = [
   noContext1,
   noContext2,
   noContext3,
-  asyncContextGetter,
+  contextGetterAsync,
+  contextGetterSync,
 
   // Integration
   serverSideEndpointCalling,
@@ -126,10 +127,17 @@ async function serverSideEndpointCalling({ server }) {
   assert(ret === val);
 }
 
-asyncContextGetter.isIntegrationTest = true;
-async function asyncContextGetter({ browserEval, ...args }) {
+contextGetterAsync.isIntegrationTest = true;
+async function contextGetterAsync(args) {
   const setContext = async () => ({ userId: 4242 });
-
+  await testContextGetter({ setContext, ...args });
+}
+contextGetterSync.isIntegrationTest = true;
+async function contextGetterSync(args) {
+  const setContext = () => ({ userId: 4242 });
+  await testContextGetter({ setContext, ...args });
+}
+async function testContextGetter({ setContext, browserEval, ...args }) {
   const { stopApp, server } = await createServer({
     setContext,
     ...args,
