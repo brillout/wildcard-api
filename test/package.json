@@ -6,7 +6,7 @@
     "run-tests": "node ./index.js"
   },
   "dependencies": {
-    "@brillout/assert": "^0.2.1",
+    "@brillout/assert": "^0.2.2",
     "@brillout/cli-theme": "^0.3.1",
     "babel-polyfill": "^6.26.0",
     "chalk": "^2.4.2",

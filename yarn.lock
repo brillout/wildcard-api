@@ -877,7 +877,7 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.1":
+"@brillout/assert@^0.2.2":
   version "0.2.2"
   resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.2.tgz#6686738526d8f9909abf9d838f7e8480d579e727"
   integrity sha512-yYNE+wh4lNrRRkPScj9eRn0dHfNg+7fZANTgrn7tN9TMhED0CasKL4EzJmgTM2eDgIGt7XazlIr7tjQ9gE8o6Q==
@@ -2455,9 +2455,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.571:
-  version "1.3.577"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.577.tgz#9885f3f72c6e3367010b461ff6f2d9624a929720"
-  integrity sha512-dSb64JQSFif/pD8mpVAgSFkbVi6YHbK6JeEziwNNmXlr/Ne2rZtseFK5SM7JoWSLf6gP0gVvRGi4/2ZRhSX/rA==
+  version "1.3.578"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.578.tgz#e6671936f4571a874eb26e2e833aa0b2c0b776e0"
+  integrity sha512-z4gU6dA1CbBJsAErW5swTGAaU2TBzc2mPAonJb00zqW1rOraDo2zfBMDRvaz9cVic+0JEZiYbHWPw/fTaZlG2Q==
 
 elliptic@^6.5.3:
   version "6.5.3"
