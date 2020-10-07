@@ -107,6 +107,8 @@ Basics
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Permissions](#permissions)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
+[Validation](#validation)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Error Handling](#error-handling)
 <br/>
 <sub>
@@ -115,8 +117,6 @@ More
 </sub>
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [TypeScript](#typescript)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Dev Tools](#dev-tools)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [API Documentation](#api-documentation)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -138,10 +138,10 @@ creating an API endpoint is as easy as creating a JavaScript function.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
 // We define a `hello` function on the server
-endpoints.hello = function(name) {
+server.hello = function(name) {
   return {message: 'Welcome '+name};
 };
 ~~~
@@ -149,11 +149,11 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import { server } from '@wildcard-api/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
-  const {message} = await endpoints.hello('Elisabeth');
+  const {message} = await server.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
@@ -169,10 +169,10 @@ To retrieve and mutate data, you can direclty use SQL or an ORM.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 const Todo = require('./path/to/your/data/models/Todo');
 
-endpoints.createTodoItem = async function(text) {
+server.createTodoItem = async function(text) {
   if( !this.user ) {
     // The user is not logged-in. We abort.
     // With Wildcard, you define permissions programmatically
@@ -281,7 +281,7 @@ Is your API meant to be used by yourself? Use RPC.
    With Express:
    ~~~js
    const express = require('express');
-   const wildcard = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
 
    const app = express();
 
@@ -305,7 +305,7 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Hapi = require('hapi');
-   const wildcard = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
 
    const server = Hapi.Server();
 
@@ -330,7 +330,7 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Koa = require('koa');
-   const wildcard = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
+   const {wildcard} = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
 
    const app = new Koa();
 
@@ -391,14 +391,14 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~
    </details>
 
-2. Define an endpoint function `endpoints.myFirstEndpoint` in a file called `endpoints.js`.
+2. Define an endpoint function `myFirstEndpoint` in a file called `endpoints.js`.
 
    ~~~js
    // Node.js server
 
-   const {endpoints} = require('@wildcard-api/server');
+   const { server } = require('@wildcard-api/server');
 
-   endpoints.myFirstEndpoint = async function () {
+   server.myFirstEndpoint = async function () {
      // The `this` object is the `context` object we defined in `setContext`.
      console.log('The logged-in user is: ', this.user.username);
 
@@ -416,10 +416,10 @@ Is your API meant to be used by yourself? Use RPC.
 
    // npm install @wildcard-api/client
    // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"/>
-   import {endpoints} from '@wildcard-api/client';
+   import { server } from '@wildcard-api/client';
 
    (async () => {
-     const {msg} = await endpoints.myFirstEndpoint();
+     const {msg} = await server.myFirstEndpoint();
      console.log(msg);
    })();
    ~~~
@@ -457,7 +457,7 @@ Use the context object to authenticate requests. For example:
 // Node.js server
 
 const express = require('express');
-const wildcard = require('@wildcard-api/server/express');
+const {wildcard} = require('@wildcard-api/server/express');
 
 const app = express();
 
@@ -489,19 +489,19 @@ The context object is available to endpoint functions as `this`.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 
-endpoints.whoAmI = async function() {
+server.whoAmI = async function() {
   const {user} = this;
   return user.name;
 };
 
-endpoints.login = async function(username, password) {
+server.login = async function(username, password) {
   const user = await this.login(username, password);
   return user;
 };
 
-endpoints.logout = async function() {
+server.logout = async function() {
   await this.logout();
 };
 ~~~
@@ -539,10 +539,10 @@ permissions are defined programmatically.
 ~~~js
 // Node.js server
 
-endpoints.deletePost = async function(){
+server.deletePost = async function(){
   // Only admins are allowed to remove a post
   if( !user.isAdmin ) {
-    // The user is not admin — we abort.
+    // The user is not an admin — we abort.
     return;
   }
 
@@ -556,31 +556,31 @@ It is crucial to define permissions; never do something like this:
 
 const db = require('your-favorite-sql-query-builder');
 
-endpoints.executeQuery = async function(query) {
+server.executeQuery = async function(query) {
   const result = await db.run(query);
   return result;
 };
 ~~~
 
-That's a bad idea since anyone in the world can go to your website,
+That's a bad idea since anyone can go to your website,
 open the browser's web dev console, and call your endpoint.
 ~~~js
 // Browser
 
-const users = await endpoints.executeQuery('SELECT login, password FROM users;');
+const users = await server.executeQuery('SELECT login, password FROM users;');
 users.forEach(({login, password}) => {
   // W00t I have all passwords ｡^‿^｡
   console.log(login, password);
 });
 ~~~
 
-Instead, you should define permissions, such as:
+Instead, you should define permissions, for example:
 ~~~js
 // Node.js server
 
 // This endpoint allows a to-do item's text to be modified only by its author.
 
-endpoints.updateTodoText = async function(todoId, newText) {
+server.updateTodoText = async function(todoId, newText) {
   // The user is not logged in — we abort.
   if( !this.user ) return;
 
@@ -610,18 +610,17 @@ if( !this.user ){
 
 The reason is simple:
 when we develop the frontend we know what is allowed and we can
-develop the frontend to always call endpoints in an authorized way.
-If an endpoint call isn't allowed, either there is a bug in our code or an attacker is trying to hack us.
-If someone is trying to hack us, we want to give him the least amount of information and we just return `undefined`.
+develop the frontend to always call endpoints in an authorized way;
+the `return;` sole goal are to protect our server from unsafe requests and
+there is no need to return information.
 
-That said,
-there are situations when it is expected that a permission may fail. For example:
+That said, there are exceptions, for example:
 ~~~js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
-endpoints.getTodoList = async function() {
-  const isLoggedIn = !!this.user;
-  if( !isLoggedIn ) {
+server.getTodoList = async function() {
+  const isLoggedOut = !this.user;
+  if( isLoggedOut ) {
     // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
     // the frontend knows that the user should be redirected to the login page.
     return {isNotLoggedIn: true};
@@ -630,18 +629,9 @@ endpoints.getTodoList = async function() {
 };
 ~~~
 
-You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
-~~~js
-endpoints.getTodoList = async function() {
-  if( !this.user ) {
-    /* Don't do this:
-    throw new Error('User is not logged in.');
-    */
-    // Do this instead:
-    return {isNotLoggedIn: true};
-  }
-  // ...
-~~~
+In any case,
+as long as you protect your endpoints from unsafe requests,
+you can do whatever works for you.
 
 
 <br/>
@@ -665,65 +655,23 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 
 
+## Validation
 
-## Error Handling
+You shouldn't throw exceptions upon validation failures,
+instead return an object containing the validation failure reason.
 
-Calling an endpoint throws an error if and only if:
-- the browser couldn't connect to the server (the browser is offline or your server is down), or
-- the endpoint function threw an error.
-
-~~~js
-// Browser
-
-import {endpoints} from '@wildcard-api/client';
-import assert from 'assert';
-
-callEndpoint();
-
-async function callEndpoint() {
-  let err;
-  try {
-    await endpoints.myEndpoint();
-  } catch(_err) {
-    err = _err;
-  }
-
-  if( !err ){
-    // Success: the browser could connect to the server and
-    // the endpoint `myEndpoint` didn't throw any error.
-  } else {
-    // Something went wrong.
-
-    // Either there was a network problem or your endpoint threw an error.
-    assert(err.isNetworkError || err.isServerError);
-
-    if( err.isNetworkError ){
-      // The browser couldn't connect to the server
-      assert(err.message==='No Server Connection');
-    }
-
-    if( err.isServerError ){
-      // The endpoint `myEndpoint` threw an error.
-      assert(err.message==='Internal Server Error');
-    }
-  }
-}
-~~~
-
-You should never deliberately throw exceptions; Wildcard treats any uncaught error as a bug in your code.
-In particular, don't throw an error upon validation failure.
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const { server } = require('@wildcard-api/server');
 const isStrongPassword = require('./path/to/isStrongPassword');
 
-endpoints.createAccount = async function({email, password}) {
+server.createAccount = async function({email, password}) {
   if( !isStrongPassword(password) ){
-    /* Don't do this:
+    /* Don't deliberately throw exceptions
     throw new Error("Password is too weak.");
     */
-    // Return a JavaScript value instead:
+    // Return a value instead:
     return {validationError: "Password is too weak."};
   }
 
@@ -731,30 +679,38 @@ endpoints.createAccount = async function({email, password}) {
 };
 ~~~
 
-The `isServerError` and `isNetworkError` flags can be used to handle errors more precisely. For example:
+
+## Error Handling
+
+Calling an endpoint throws an error if and only if:
+- the browser couldn't connect to the server (`isConnectionError`), or
+- the endpoint threw an error or doesn't exist (`isCodeError`).
+
+The client-side thrown error has the properties `isCodeError` and `isConnectionError`
+enabling you to handle errors with precision, for example:
+
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import { server } from '@wildcard-api/client';
 
 (async () => {
   let data, err;
   try {
-    data = await endpoints.getSomeData();
+    data = await server.getSomeData();
   } catch(_err) {
     err = _err;
   }
 
-  if( err.isServerError ){
-    // Your endpoint function threw an uncaught error: there is a bug in your server code.
+  if( err.isCodeError ){
+    // The endpoint function threw an uncaught error (there is a bug in your server code)
     alert(
       'Something went wrong on our side. We have been notified and we are working on a fix.' +
       'Sorry... Please try again later.'
     );
   }
-  if( err.isNetworkError ){
-    // The browser couldn't connect to the server.
-    // The user is offline or your server is down.
+  if( err.isConnectionError ){
+    // The browser couldn't connect to the server; the user is offline or the server is down.
     alert("We couldn't perform your request. Please try again.");
   }
 
@@ -806,7 +762,7 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ~~~ts
 // /examples/typescript/endpoints.ts
 
-import { endpoints as _endpoints } from "@wildcard-api/server";
+import { server as _server } from "@wildcard-api/server";
 
 interface Person {
   firstName: string;
@@ -824,25 +780,25 @@ async function getPerson(id: number): Promise<Person> {
   return persons.find((person) => person.id === id);
 }
 
-const endpoints = {
+const server = {
   getPerson,
 };
-export type Endpoints = typeof endpoints;
+export type Server = typeof server;
 
-Object.assign(_endpoints, endpoints);
+Object.assign(_server, server);
 ~~~
 ~~~ts
 // /examples/typescript/client/index.ts
 
 import "babel-polyfill";
-import { Endpoints } from "../endpoints";
-import { endpoints as endpointsUntyped } from "@wildcard-api/client";
+import { Server } from "../endpoints";
+import { server as serverUntyped } from "@wildcard-api/client";
 
-export const endpoints: Endpoints = endpointsUntyped;
+export const server: Server = serverUntyped;
 
 (async () => {
   const id = Math.floor(Math.random() * 3);
-  const person = await endpoints.getPerson(id);
+  const person = await server.getPerson(id);
   const personHtml =
     person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
   document.body.innerHTML = personHtml;
@@ -885,49 +841,9 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 
 
-## Dev Tools
-
-Wildcard is in *dev mode* when `[undefined, 'development'].includes(process.env.NODE_ENV)`.
-
-In dev mode you can:
-- List all API endpoints.
-- Call endpoints directly in the browser.
-
-<p align="left">
-  <a href="#dev-tools">
-    <img src="/docs/images/dev-mode_list-of-endpoints.png" width="301" height="187" align="left"/>
-    <img src="/docs/images/dev-mode_endpoint.png" width="515" height="290"/>
-  </a>
-</p>
-
-
-<br/>
-
-<p align="center">
-
-<sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
-if you have questions or something's not clear &mdash; we enjoy talking with our users.
-</sup>
-
-<br/>
-
-<sup>
-<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
-</sup>
-
-</p>
-
-<br/>
-<br/>
-
-
-
 ## API Documentation
 
-You can browse your API by using [Wildcard's dev tools](#dev-tools).
-
-More evolved API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
+API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
 
 A Wildcard API is meant to be used by your own developers;
 instead of using OpenAPI,
@@ -1021,27 +937,31 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## Options
 
-Quick overview of all available options with their default value:
+All options with their default value:
 ~~~js
-import wildcardClient from '@wildcard-api/client';
+// Browser (or Node.js)
+
+import { config } from '@wildcard-api/client';
 
 // The URL of the Node.js server that serves the API
-wildcardClient.serverUrl = null;
+config.serverUrl = null;
 
 // The base URL of Wildcard HTTP requests
-wildcardClient.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_wildcard_api/';
 
 // Whether the endpoint arguments are always passed in the HTTP body
-wildcardClient.argumentsAlwaysInHttpBody = false;
+config.argumentsAlwaysInHttpBody = false;
 ~~~
 ~~~js
-import wildcardServer from '@wildcard-api/server';
+// Node.js
+
+import { config } from '@wildcard-api/server';
 
 // Whether Wildcard generates an ETag header.
-wildcardServer.disableEtag = false;
+config.disableEtag = false;
 
 // The base URL of Wildcard HTTP requests
-wildcardServer.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_wildcard_api/';
 ~~~
 
 - [`serverUrl`](#serverurl)
@@ -1065,15 +985,15 @@ then you need to provide a `serverUrl`.
 When `serverUrl` is `null`, the Wildcard client uses `window.location.origin` as server URL.
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.serverUrl = 'https://api.example.com:1337';
+config.serverUrl = 'https://api.example.com:1337';
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint();
+  await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make an HTTP request to the same origin:
@@ -1093,15 +1013,15 @@ By default, the pathname of any HTTP request that Wildcard makes starts with `/_
 You can change this base URL by using the `baseUrl` option.
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 import assert from 'assert';
 
-wildcardClient.baseUrl = '/_my_custom_api_base_url/';
+config.baseUrl = '/_my_custom_api_base_url/';
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint();
+  await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make an HTTP request to `/_wildcard_api/`:
@@ -1117,9 +1037,9 @@ If you change the `baseUrl` option of your Wildcard client,
 then make sure that the `baseUrl` of your Wildcard server is the same:
 
 ~~~js
-import wildcardServer from '@wildcard-api/server';
+import { config } from '@wildcard-api/server';
 
-wildcardServer.baseUrl = '/_my_custom_api_base_url/';
+config.baseUrl = '/_my_custom_api_base_url/';
 ~~~
 
 <br/>
@@ -1131,14 +1051,14 @@ arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
 ~~~js
-import wildcardClient, {endpoints} from '@wildcard-api/client';
+import { server, config } from '@wildcard-api/client';
 
-wildcardClient.argumentsAlwaysInHttpBody = true; // Default value is `false`
+config.argumentsAlwaysInHttpBody = true; // Default value is `false`
 
 callEndpoint();
 
 async function callEndpoint() {
-  await endpoints.myEndpoint({some: 'arguments' }, 'second arg');
+  await server.myEndpoint({some: 'arguments' }, 'second arg');
 
   // Normally, Wildcard would pass the arguments in the HTTP request URL:
   //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1

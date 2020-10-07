@@ -167,14 +167,14 @@ This section highlights the interesting parts of the example.
 ~~~js
 // ./api/view.endpoints.js
 
-const { endpoints } = require("@wildcard-api/server");
+const { server } = require("@wildcard-api/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
 // Our view endpoints are tailored to the frontend. For example, the endpoint
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
-endpoints.getLandingPageData = async function () {
+server.getLandingPageData = async function () {
   // `this` holds request information such as HTTP headers
   const user = await getLoggedUser(this.headers);
   if (!user) return { userIsNotLoggedIn: true };
@@ -188,7 +188,7 @@ endpoints.getLandingPageData = async function () {
   return { user, todos };
 };
 
-endpoints.getCompletedPageData = async function () {
+server.getCompletedPageData = async function () {
   const user = await getLoggedUser(this.headers);
   if (!user) return { userIsNotLoggedIn: true };
 
@@ -260,7 +260,6 @@ With Hapi
 ~~~js
 // ./start-with-hapi
 
-const assert = require("@brillout/assert");
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
 const { wildcard } = require("@wildcard-api/server/hapi");
@@ -314,7 +313,7 @@ const { wildcard } = require("@wildcard-api/server/koa");
 
 const app = new Koa();
 
-// Server our API endpoints
+// Serve our Wilcard API
 app.use(
   wildcard(async (ctx) => {
     const { headers } = ctx.request;
@@ -361,13 +360,13 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 ~~~js
 // ./api/mutation.endpoints.js
 
-const { endpoints } = require("@wildcard-api/server");
+const { server } = require("@wildcard-api/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
 // We tailor mutation endpoints to the frontend as well
 
-endpoints.toggleComplete = async function (todoId) {
+server.toggleComplete = async function (todoId) {
   const user = await getLoggedUser(this.headers);
   // Do nothing if user is not logged in
   if (!user) return;
@@ -431,7 +430,7 @@ and to update a todo.
 
 import "./common";
 import React from "react";
-import { endpoints } from "@wildcard-api/client";
+import { server } from "@wildcard-api/client";
 import renderPage from "./renderPage";
 import LoadingWrapper from "./LoadingWrapper";
 import Todo from "./Todo";
@@ -440,7 +439,7 @@ renderPage(<LandingPage />);
 
 function LandingPage() {
   // We use our Wildcard endpoint to get user information and the user's todos
-  const fetchData = async () => await endpoints.getLandingPageData();
+  const fetchData = async () => await server.getLandingPageData();
 
   return (
     <LoadingWrapper fetchData={fetchData}>
@@ -474,7 +473,7 @@ function LandingPage() {
 // ./client/Todo
 
 import React from "react";
-import { endpoints } from "@wildcard-api/client";
+import { server } from "@wildcard-api/client";
 import { TodoCheckbox, TodoText } from "./TodoComponents";
 
 export default Todo;
@@ -488,7 +487,7 @@ function Todo({ todo, updateTodo }) {
   );
 
   async function onCompleteToggle() {
-    const completed = await endpoints.toggleComplete(todo.id);
+    const completed = await server.toggleComplete(todo.id);
     updateTodo(todo, { completed });
   }
 }
