@@ -20,6 +20,7 @@ module.exports = [
 ];
 module.exports.createServer = createServer;
 
+// Endpoints can return undefined
 async function endpointReturnsUndefined_serverSide({ server, wildcardClient }) {
   server.helloUndefined = async function () {};
   const endpointResult = await wildcardClient.endpoints.helloUndefined();
@@ -33,6 +34,7 @@ async function endpointReturnsUndefined_browserSide({ server, browserEval }) {
   });
 }
 
+// Tyring to read an undefined context prop returns undefined
 async function contextDoesNotExist({ server, browserEval }) {
   let endpointFunctionCalled = false;
   server.ctxEndpoint = async function () {
@@ -48,6 +50,7 @@ async function contextDoesNotExist({ server, browserEval }) {
   assert(endpointFunctionCalled === true);
 }
 
+// The context can be undefined
 noContext1.isIntegrationTest = true;
 async function noContext1(args) {
   const setContext = undefined;
@@ -118,6 +121,7 @@ async function createServer({
   };
 }
 
+// Calling a server endpoint without using the `@wilcard-api/client` is fine
 async function serverSideEndpointCalling({ server }) {
   const val = "yep this works" + Math.random();
   server.writeOnlyEndpoint = function () {
@@ -127,6 +131,7 @@ async function serverSideEndpointCalling({ server }) {
   assert(ret === val);
 }
 
+// The context getter can be async as well as sync
 contextGetterAsync.isIntegrationTest = true;
 async function contextGetterAsync(args) {
   const setContext = async () => ({ userId: 4242 });
