@@ -11,7 +11,7 @@ function MiddlewareFactory(
   adapterOptions?: object
 ) {
   return (
-    contextGetter,
+    setContext,
     {
       __INTERNAL_wildcardServer_middleware,
     }: { __INTERNAL_wildcardServer_middleware?: any } = {}
@@ -40,8 +40,8 @@ function MiddlewareFactory(
 
           async function getContext(): Promise<ContextObject> {
             let context: ContextObject;
-            if (contextGetter) {
-              context = await contextGetter(requestObject);
+            if (setContext) {
+              context = await setContext(requestObject);
             }
             return context;
           }
