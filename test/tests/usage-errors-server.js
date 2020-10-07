@@ -9,6 +9,7 @@ module.exports = [
 
   missingContextSSR,
   wrongContextObject,
+  contextGetterThrowsError,
 
   wrongUsage_getApiHttpResponse_1,
   wrongUsage_getApiHttpResponse_2,
@@ -251,20 +252,19 @@ async function missingContextSSR({ server, wildcardClient }) {
 wrongContextObject.isIntegrationTest = true;
 async function wrongContextObject({ assertStderr, ...args }) {
   const setContext = () => "wrong-context-type";
-  const { stopApp, server } = await createServer({
-    setContext,
-    ...args,
-  });
 
-  await test_failedEndpointCall({ server, ...args });
-
-  await stopApp();
+  await _createAndCallAnEndpoint({ setContext, ...args });
 
   assertStderr(
     "The context object should be a `instanceof Object` or `undefined`."
   );
 }
-async function test_failedEndpointCall({ server, browserEval }) {
+async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
+  const { stopApp, server } = await createServer({
+    setContext,
+    ...args,
+  });
+
   let endpointCalled = false;
   server.failingEndpoint = async function (name) {
     endpointCalled = true;
@@ -286,4 +286,18 @@ async function test_failedEndpointCall({ server, browserEval }) {
   });
 
   assert(endpointCalled === false);
+
+  await stopApp();
+}
+
+contextGetterThrowsError.isIntegrationTest = true;
+async function contextGetterThrowsError({ assertStderr, ...args }) {
+  const errText = "err" + Math.random();
+  const setContext = async () => {
+    throw new Error(errText);
+  };
+
+  await _createAndCallAnEndpoint({ setContext, ...args });
+
+  assertStderr(errText);
 }

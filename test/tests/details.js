@@ -3,11 +3,17 @@
 // Should include all possible details
 
 module.exports = [
+  // Endpoint functions
   endpointReturnsUndefined_serverSide,
   endpointReturnsUndefined_browserSide,
+
+  // Context
   contextDoesNotExist,
-  noContextFunction,
-  noContextObject1,
+  noContext1,
+  noContext2,
+  noContext3,
+
+  // Integration
   serverSideEndpointCalling,
 ];
 module.exports.createServer = createServer;
@@ -40,18 +46,21 @@ async function contextDoesNotExist({ server, browserEval }) {
   assert(endpointFunctionCalled === true);
 }
 
-noContextFunction.isIntegrationTest = true;
-async function noContextFunction(args) {
+noContext1.isIntegrationTest = true;
+async function noContext1(args) {
   const setContext = undefined;
   await undefinedContext({ setContext, ...args });
 }
-
-noContextObject1.isIntegrationTest = true;
-async function noContextObject1(args) {
+noContext2.isIntegrationTest = true;
+async function noContext2(args) {
   const setContext = () => undefined;
   await undefinedContext({ setContext, ...args });
 }
-
+noContext3.isIntegrationTest = true;
+async function noContext3(args) {
+  const setContext = async () => undefined;
+  await undefinedContext({ setContext, ...args });
+}
 async function undefinedContext({ setContext, browserEval, ...args }) {
   const { stopApp, server } = await createServer({
     setContext,
