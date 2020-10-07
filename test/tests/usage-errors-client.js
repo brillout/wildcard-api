@@ -4,7 +4,7 @@ module.exports = [
   clientSideEndpointManipulation,
   cannotSerialize,
   wrongServerUrl,
-  unknownConfig,
+  unknownConfigServer,
   missingServerUrl,
 ];
 
@@ -34,7 +34,7 @@ async function wrongBindUsage2({ server, wildcardClient, assertStderr }) {
   }
 
   assertStderr(
-    "You should `bind(obj)` an endpoint with an object(-like) `obj`"
+    "The context object you `bind()` should be a `instanceof Object`."
   );
 }
 
@@ -75,14 +75,12 @@ async function wrongServerUrl({ wildcardClient, assertStderr }) {
   );
 }
 
-async function unknownConfig({ wildcardClient, assertStderr }) {
+async function unknownConfigServer({ wildcardClient }) {
   try {
     wildcardClient.config.blablub = undefined;
   } catch (err) {
-    console.error(err);
+    assert(err.message.includes("Unkown config `blablub`"));
   }
-
-  assertStderr("Unkown config `blablub`");
 }
 
 missingServerUrl.isIntegrationTest = true;

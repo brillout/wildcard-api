@@ -59,7 +59,8 @@ type ObjectKey = string | number;
 
 type ContextValue = unknown & { _brand?: "ContextValue" };
 type ContextProp = ObjectKey & { _brand?: "ContextProp" };
-type ContextObject = Record<ContextProp, ContextValue>;
+export type ContextObject = Record<ContextProp, ContextValue>;
+type ContextFunction = () => Promise<ContextObject>;
 type ContextProxy = ContextObject;
 
 type EndpointName = string & { _brand?: "EndpointName" };
@@ -107,13 +108,15 @@ function WildcardServer(): void {
 
   async function getApiHttpResponse(
     requestProps: HttpRequestProps,
-    context: ContextObject,
+    context: ContextObject | ContextFunction,
     {
       __INTERNAL_universalAdapter,
     }: { __INTERNAL_universalAdapter: UniversalAdapter } = {
       __INTERNAL_universalAdapter: null,
     }
   ): Promise<HttpResponseProps> {
+    context = await getContext(context);
+
     const wrongApiUsage = validateApiUsage(
       requestProps,
       context,
@@ -254,11 +257,11 @@ function validateEndpoint(
   assertUsage(
     isCallable(endpointFunction),
     [
-      "An endpoint must be function,",
-      `but \`endpoints['${endpointName}']\` is`,
+      "An endpoint must be a function,",
+      `but the endpoint \`${endpointName}\` is`,
       endpointFunction && endpointFunction.constructor
-        ? `a ${endpointFunction.constructor}`
-        : endpointFunction,
+        ? `a \`${endpointFunction.constructor.name}\``
+        : "`" + endpointFunction + "`",
     ].join(" ")
   );
 
@@ -743,10 +746,8 @@ function httpResponse_endpointResult({
     body: undefined,
   };
   let endpointError: EndpointError;
-  // TODO be able to stringify undefined instead of null
-  const valueToStringify = endpointResult === undefined ? null : endpointResult;
   try {
-    responseProps.body = stringify(valueToStringify);
+    responseProps.body = stringify(endpointResult);
   } catch (stringifyError) {
     endpointError = getUsageError(
       [
@@ -809,7 +810,7 @@ function validateApiUsage(
 
     assertUsage(
       context === undefined || context instanceof Object,
-      "`context` should be an object(-like) or `undefined`."
+      "The context object should be a `instanceof Object` or `undefined`."
     );
   }
 }
@@ -887,4 +888,13 @@ function assertNodejs() {
       "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
     ].join(" ")
   );
+}
+
+async function getContext(
+  context: ContextObject | ContextFunction
+): Promise<ContextObject> {
+  if (!isCallable(context)) {
+    return context as ContextObject;
+  }
+  return await (context as ContextFunction)();
 }

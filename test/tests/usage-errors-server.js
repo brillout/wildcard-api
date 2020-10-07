@@ -1,20 +1,14 @@
-// TODO
-// - Returning undefined is ok
-// - Arrow endpoint functions not ok
-// - Non-async endpoint functions not ok
-// - Reading from `server` functions directly without going through Wildcard client
-// - All `assertUsage`
+const { createServer } = require("./details");
 
 module.exports = [
   endpointMissing_noEndpoints_serverSide,
   endpointMissing_noEndpoints_clientSide,
-  endpointMissing_noEndpoints_httpRequest,
-  endpointMissing_notDefined_httpRequest,
-
-  endpointReturnsFunction,
-  endpointReturnsFunction_httpRequest,
 
   endpointThrowsError,
+  endpointReturnsUnserializable,
+
+  missingContextSSR,
+  wrongContextObject,
 
   wrongUsage_getApiHttpResponse_1,
   wrongUsage_getApiHttpResponse_2,
@@ -22,11 +16,9 @@ module.exports = [
   wrongUsage_getApiHttpResponse_4,
   wrongUsage_getApiHttpResponse_5,
 
-  wrongHttpRequest1,
-  wrongHttpRequest2,
-  wrongHttpRequest3,
+  wrongEndpointFunction,
 
-  validRequest_httpStatusCode,
+  unknownConfigSever,
 ];
 
 async function endpointMissing_noEndpoints_serverSide({
@@ -71,33 +63,11 @@ async function endpointMissing_noEndpoints_clientSide({
   assertStderr(null);
 }
 
-async function endpointMissing_noEndpoints_httpRequest({ browserEval }) {
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello");
-    const text = await resp.text();
-    assert(resp.status === 404, resp.status);
-    assert(text.includes("Endpoint `hello` doesn't exist."));
-    assert(text.includes("You didn't define any endpoints."));
-    assert_noErrorStack(text);
-  });
-}
-
-async function endpointMissing_notDefined_httpRequest({ server, browserEval }) {
-  server.hello = async function (name) {
-    return "Greetings " + name;
-  };
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/blub");
-    const text = await resp.text();
-    assert(resp.status === 404, resp.status);
-    assert(text.includes("Endpoint `blub` doesn't exist."), { text });
-    assert(!text.includes("You didn't define any endpoints."), { text });
-    assert_noErrorStack(text);
-  });
-}
-
-async function endpointReturnsFunction({ server, browserEval, assertStderr }) {
+async function endpointReturnsUnserializable({
+  server,
+  browserEval,
+  assertStderr,
+}) {
   server.fnEndpoint1 = async function () {
     return function heloFn() {};
   };
@@ -114,25 +84,6 @@ async function endpointReturnsFunction({ server, browserEval, assertStderr }) {
   });
 
   assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint1`");
-}
-
-async function endpointReturnsFunction_httpRequest({
-  server,
-  browserEval,
-  assertStderr,
-}) {
-  server.fnEndpoint2 = async function () {
-    return async () => {};
-  };
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/fnEndpoint2");
-    const text = await resp.text();
-    assert(resp.status === 500, resp.status);
-    assert(text === "Internal Server Error");
-  });
-
-  assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint2`");
 }
 
 async function endpointThrowsError({ server, browserEval, assertStderr }) {
@@ -208,7 +159,9 @@ async function wrongUsage_getApiHttpResponse_5({
     context
   );
   assertErrorResponse(responseProps);
-  assertStderr("`context` should be an object(-like) or `undefined`.");
+  assertStderr(
+    "The context object should be a `instanceof Object` or `undefined`."
+  );
 }
 function assertErrorResponse(responseProps) {
   assert(responseProps.body === "Internal Server Error");
@@ -217,62 +170,120 @@ function assertErrorResponse(responseProps) {
   assert(Object.keys(responseProps).length === 3);
 }
 
-async function wrongHttpRequest1({ server, browserEval }) {
-  server.hello = async function () {};
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api//hello");
-    const text = await resp.text();
-    assert(resp.status === 400, resp.status);
-    assert(text.includes("Malformatted API"));
-    assert_noErrorStack(text);
-  });
-}
-
-async function wrongHttpRequest2({ server, browserEval }) {
-  server.hello = async function (name) {
-    return "Greetings " + name;
-  };
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/wrongArgSyntax");
-    const text = await resp.text();
-    assert(resp.status === 400, resp.status);
-    assert(text.includes("Malformatted API"));
-    assert_noErrorStack(text);
-  });
-}
-
-async function wrongHttpRequest3({ server, browserEval }) {
-  server.hello = async function (name) {
-    return "Greetings " + name;
-  };
-
-  await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/{}");
-    const text = await resp.text();
-    assert(resp.status === 400, resp.status);
-    assert(text.includes("Malformatted API request."));
+async function wrongEndpointFunction({ server }) {
+  try {
+    server.arrowFunc = async () => {};
+  } catch (err) {
     assert(
-      text.includes(
-        "The parsed serialized endpoint arguments should be an array."
+      err.stack.includes(
+        "The endpoint function `arrowFunc` is an arrow function."
       )
     );
-    assert_noErrorStack(text);
-  });
+  }
+
+  try {
+    server.undi = undefined;
+  } catch (err) {
+    assert(
+      err.message.includes(
+        "An endpoint must be a function, but the endpoint `undi` is `undefined`"
+      )
+    );
+  }
+
+  try {
+    server.nulli = null;
+  } catch (err) {
+    assert(
+      err.message.includes(
+        "An endpoint must be a function, but the endpoint `nulli` is `null`"
+      )
+    );
+  }
+
+  try {
+    server.stringi = "bubbabi";
+  } catch (err) {
+    assert(
+      err.message.includes(
+        "An endpoint must be a function, but the endpoint `stringi` is a `String`"
+      )
+    );
+  }
 }
 
-async function validRequest_httpStatusCode({ server, browserEval }) {
-  server.hello = async function (name) {
-    return "Yo " + name + "!";
+async function unknownConfigSever({ wildcardServer }) {
+  try {
+    wildcardServer.config.bliblab = undefined;
+  } catch (err) {
+    assert(err.message.includes("Unkown config `bliblab`"));
+  }
+}
+
+async function missingContextSSR({ server, wildcardClient }) {
+  let endpointFunctionCalled = false;
+  server.ssrTest = async function () {
+    let errorThrown = false;
+    try {
+      this.headers;
+    } catch (err) {
+      errorThrown = true;
+      assert(err);
+      assert(
+        err.stack.includes(
+          "Cannot get `this.headers` because you didn't provide `headers`."
+        )
+      );
+      assert(
+        err.stack.includes(
+          "Make sure to provide `headers` by using `bind({headers})` when calling your `ssrTest` endpoint in Node.js"
+        )
+      );
+    }
+    assert(errorThrown === true);
+    endpointFunctionCalled = true;
+  };
+
+  await wildcardClient.endpoints.ssrTest();
+  assert(endpointFunctionCalled === true);
+}
+
+wrongContextObject.isIntegrationTest = true;
+async function wrongContextObject({ assertStderr, ...args }) {
+  const setContext = () => "wrong-context-type";
+  const { stopApp, server } = await createServer({
+    setContext,
+    ...args,
+  });
+
+  await test_failedEndpointCall({ server, ...args });
+
+  await stopApp();
+
+  assertStderr(
+    "The context object should be a `instanceof Object` or `undefined`."
+  );
+}
+async function test_failedEndpointCall({ server, browserEval }) {
+  let endpointCalled = false;
+  server.failingEndpoint = async function (name) {
+    endpointCalled = true;
+    return "Dear " + name;
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]', {
-      method: "POST",
-    });
-    const text = await resp.text();
-    assert(resp.status === 200, resp.status);
-    assert(text === '"Yo Mom!"');
+    let err;
+    try {
+      await window.server.failingEndpoint("rom");
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
+    assert(
+      err.message === "Endpoint function `failingEndpoint` threw an error."
+    );
   });
+
+  assert(endpointCalled === false);
 }

@@ -31,7 +31,7 @@ async function basic_clientSide({ server, browserEval }) {
   };
   await browserEval(async () => {
     const ret = await window.server.hello("rom");
-    assert(ret === "Dear rom", { ret });
+    assert(ret === "Dear rom");
   });
 }
 
@@ -43,6 +43,6 @@ async function basic_clientSide_withContext({ server, browserEval }) {
   };
   await browserEval(async () => {
     const ret = await window.server.hello("Romuald");
-    assert(ret === "Servus Romuald", { ret });
+    assert(ret === "Servus Romuald");
   });
 }

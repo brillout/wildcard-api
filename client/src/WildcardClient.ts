@@ -225,7 +225,7 @@ function WildcardClient(): void {
           assert(context !== endpointsProxy);
           assertUsage(
             context instanceof Object,
-            "You should `bind(obj)` an endpoint with an object(-like) `obj`."
+            "The context object you `bind()` should be a `instanceof Object`."
           );
         }
 
