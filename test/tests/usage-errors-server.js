@@ -3,6 +3,8 @@ const { createServer } = require("./details");
 module.exports = [
   endpointMissing_noEndpoints_serverSide,
   endpointMissing_noEndpoints_clientSide,
+  endpointMissing_notDefined_clientSide,
+  endpointMissing_notDefined_serverSide,
 
   endpointThrowsError,
   endpointReturnsUnserializable,
@@ -42,7 +44,6 @@ async function endpointMissing_noEndpoints_serverSide({
   // No collected stderr because we catched the error
   assertStderr(null);
 }
-
 async function endpointMissing_noEndpoints_clientSide({
   browserEval,
   assertStderr,
@@ -55,12 +56,57 @@ async function endpointMissing_noEndpoints_clientSide({
       err = _err;
     }
     assert(err.message === "Endpoint `iDoNotExist` does not exist.");
-    assert(err.isCodeError);
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
   });
 
   // We don't throw any error on the server-side
   // Since the bug lives in browser-side code
   // To avoid malintentioned flooding of server error logs
+  assertStderr(null);
+}
+async function endpointMissing_notDefined_clientSide({
+  server,
+  browserEval,
+  assertStderr,
+}) {
+  server.servus = async function ({ name: { oe } }) {
+    return "Bonjour " + oe;
+  };
+
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.server.iDoNotExist();
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.message === "Endpoint `iDoNotExist` does not exist.");
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
+  });
+
+  assertStderr(null);
+}
+async function endpointMissing_notDefined_serverSide({
+  server,
+  wildcardClient,
+  assertStderr,
+}) {
+  server.servus = async function (oe) {
+    return "Bonjour " + oe;
+  };
+
+  let err;
+  try {
+    await wildcardClient.endpoints.helloSsr();
+  } catch (_err) {
+    err = _err;
+  }
+
+  assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."));
+  assert(!err.stack.includes("You didn't define any endpoints."));
+  assert(!err.stack.includes("servus"));
   assertStderr(null);
 }
 
@@ -80,7 +126,8 @@ async function endpointReturnsUnserializable({
     } catch (_err) {
       err = _err;
     }
-    assert(err.isCodeError);
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
     assert(err.message === "Endpoint function `fnEndpoint1` threw an error.");
   });
 
@@ -101,7 +148,8 @@ async function endpointThrowsError({ server, browserEval, assertStderr }) {
     } catch (_err) {
       err = _err;
     }
-    assert(err.isCodeError);
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
     assert(err.message === "Endpoint function `aintWorking` threw an error.");
   });
 
