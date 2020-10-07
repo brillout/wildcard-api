@@ -4,6 +4,7 @@
 
 module.exports = [
   // Endpoint functions
+  endpointSyncFunction,
   endpointReturnsUndefined_serverSide,
   endpointReturnsUndefined_browserSide,
 
@@ -20,6 +21,18 @@ module.exports = [
 ];
 module.exports.createServer = createServer;
 
+// Endpoints can return undefined
+async function endpointSyncFunction({ server, wildcardClient }) {
+  const n = Math.random();
+  server.syncFunc = function () {
+    return n;
+  };
+  const promise = wildcardClient.endpoints.syncFunc();
+  assert(!promise !== n);
+  assert(promise.then);
+  const ret = await promise;
+  assert(ret === n);
+}
 // Endpoints can return undefined
 async function endpointReturnsUndefined_serverSide({ server, wildcardClient }) {
   server.helloUndefined = async function () {};
