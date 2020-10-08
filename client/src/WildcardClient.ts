@@ -49,209 +49,214 @@ class WildcardClient {
   config: Config;
   endpoints;
 
-  constructor () {
-  this.config = getConfigProxy({
-    serverUrl: null,
-    baseUrl: "/_wildcard_api/",
-    argumentsAlwaysInHttpBody: false,
-    __INTERNAL_wildcardServer_test: null,
-  });
+  constructor() {
+    this.config = getConfigProxy({
+      serverUrl: null,
+      baseUrl: "/_wildcard_api/",
+      argumentsAlwaysInHttpBody: false,
+      __INTERNAL_wildcardServer_test: null,
+    });
 
-  this.endpoints = getEndpointsProxy(this.config);
+    this.endpoints = getEndpointsProxy(this.config);
   }
 }
 
-  function callEndpoint(
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
-    context: Context,
-    endpointsProxy,
-    config,
-  ): EndpointOutput {
-    endpointArgs = endpointArgs || [];
+function callEndpoint(
+  endpointName: EndpointName,
+  endpointArgs: EndpointArgs,
+  context: Context,
+  endpointsProxy,
+  config
+): EndpointOutput {
+  endpointArgs = endpointArgs || [];
 
-    const wildcardServer: WildcardServer = getWildcardServer(config);
+  const wildcardServer: WildcardServer = getWildcardServer(config);
 
-    if (wildcardServer) {
-      // Server-side usage
-      assert(isNodejs());
-      return callEndpointDirectly(
-        endpointName,
-        endpointArgs,
-        wildcardServer,
-        context
-      );
+  if (wildcardServer) {
+    // Server-side usage
+    assert(isNodejs());
+    return callEndpointDirectly(
+      endpointName,
+      endpointArgs,
+      wildcardServer,
+      context
+    );
+  }
+
+  // Browser-side usage
+  // Or cross-server servide-side usage -- server URL is then needed
+  assertUsage(
+    config.serverUrl || isBrowser(),
+    "`config.serverUrl` missing. You are using the Wildcard client in Node.js and on a different server; the `config.serverUrl` configuration is required."
+  );
+
+  assertUsage(
+    !context,
+    [
+      "Using `bind` to provide the context object is forbidden on the browser-side.",
+      "You should use `bind` only on the server-side.",
+      "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+    ].join(" ")
+  );
+
+  return callEndpointOverHttp(endpointName, endpointArgs, config);
+}
+
+function getWildcardServer(config: ConfigPrivate) {
+  const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
+  const wildcardServer__serverSideUsage =
+    typeof global !== "undefined" &&
+    global &&
+    global.__INTERNAL_wildcardServer_nodejs;
+  const wildcardServer =
+    wildcardServer__testing || wildcardServer__serverSideUsage || null;
+
+  // The purpose of providing `wildcardServer` to `wildcardClient` is for server-side client usage.
+  // It doesn't make sense to provide `wildcardServer` on the browser-side.
+  assert(wildcardServer === null || isNodejs());
+
+  // The whole purpose of providing `wildcardServer` is to be able to call `wildcardServer.__directCall`
+  // Bypassing making an unecessary HTTP request.
+  assert(wildcardServer === null || wildcardServer.__directCall);
+
+  return wildcardServer;
+}
+
+function callEndpointDirectly(
+  endpointName: EndpointName,
+  endpointArgs: EndpointArgs,
+  wildcardServer: WildcardServer,
+  context: Context
+): EndpointOutput {
+  return wildcardServer.__directCall(endpointName, endpointArgs, context);
+}
+
+function callEndpointOverHttp(
+  endpointName: EndpointName,
+  endpointArgs: EndpointArgs,
+  config
+): EndpointOutput {
+  let body: string;
+  let urlArgs__string: string;
+  const ARGS_IN_BODY = "args-in-body";
+  let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
+  if (endpointArgsStr) {
+    // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
+    if (endpointArgsStr.length >= 2000 || config.argumentsAlwaysInHttpBody) {
+      body = endpointArgsStr;
+      urlArgs__string = ARGS_IN_BODY;
+    } else {
+      urlArgs__string = endpointArgsStr;
+      assert(!urlArgs__string.startsWith(ARGS_IN_BODY));
+    }
+  }
+
+  let url = getEndpointUrl(endpointName, config);
+  if (urlArgs__string) {
+    url += "/" + encodeURIComponent(urlArgs__string);
+  }
+
+  return makeHttpRequest({ url, parse, body, endpointName });
+}
+
+function getEndpointUrl(endpointName: EndpointName, config): string {
+  let url: string;
+
+  const { serverUrl } = config;
+  assert(serverUrl || isBrowser());
+  if (serverUrl) {
+    url = serverUrl;
+  } else {
+    url = "";
+  }
+
+  if (config.baseUrl) {
+    if (!url.endsWith("/") && !config.baseUrl.startsWith("/")) {
+      url += "/";
+    }
+    if (url.endsWith("/") && config.baseUrl.startsWith("/")) {
+      url = url.slice(0, -1);
+      assert("bla/".slice(0, -1) === "bla");
+    }
+    url += config.baseUrl;
+  }
+
+  if (!url.endsWith("/")) {
+    url += "/";
+  }
+  url += endpointName;
+
+  return url;
+}
+
+function getEndpointsProxy(config: Config) {
+  const emptyObject = {};
+
+  const endpointsProxy = new Proxy(emptyObject, { get, set });
+
+  return endpointsProxy;
+
+  function get({}, endpointName: EndpointName) {
+    //*
+    // Return native methods
+    if (endpointName in emptyObject) {
+      return emptyObject[endpointName];
     }
 
-    // Browser-side usage
-    // Or cross-server servide-side usage -- server URL is then needed
-    assertUsage(
-      config.serverUrl || isBrowser(),
-      "`config.serverUrl` missing. You are using the Wildcard client in Node.js and on a different server; the `config.serverUrl` configuration is required."
-    );
+    // We assume `endpointName` to always be a string
+    if (typeof endpointName !== "string") {
+      return undefined;
+    }
 
+    // TODO handle this more properly
+    // Ideally: throw a usage error
+    // But: `inspect` seems to be called automatically (by Node.js if I remember correclty)
+    // Hence I'm not sure how to handle this. Maybe by checking if the caller is Node.js or the user.
+    if (endpointName === "inspect") {
+      return undefined;
+    }
+    //*/
+
+    if (typeof endpointName !== "string") {
+      return undefined;
+    }
+
+    return function (...endpointArgs: EndpointArgs) {
+      let context: Context = undefined;
+
+      if (isBinded(this, endpointsProxy)) {
+        context = this;
+        assert(context !== emptyObject);
+        assert(context !== endpointsProxy);
+        assertUsage(
+          context instanceof Object,
+          "The context object you `bind()` should be a `instanceof Object`."
+        );
+      }
+
+      return callEndpoint(
+        endpointName,
+        endpointArgs,
+        context,
+        endpointsProxy,
+        config
+      );
+    };
+  }
+
+  function set() {
     assertUsage(
-      !context,
+      false,
       [
-        "Using `bind` to provide the context object is forbidden on the browser-side.",
-        "You should use `bind` only on the server-side.",
-        "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+        "You cannot add/modify endpoint functions with the Wildcard client `@wildcard-api/client`.",
+        "Instead, define your endpoint functions with the Wildcard server `@wildcard-api/server`.",
       ].join(" ")
     );
 
-    return callEndpointOverHttp(endpointName, endpointArgs, config);
+    // Make TS happy
+    return false;
   }
-
-  function getWildcardServer(config: ConfigPrivate) {
-    const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
-    const wildcardServer__serverSideUsage =
-      typeof global !== "undefined" &&
-      global &&
-      global.__INTERNAL_wildcardServer_nodejs;
-    const wildcardServer =
-      wildcardServer__testing || wildcardServer__serverSideUsage || null;
-
-    // The purpose of providing `wildcardServer` to `wildcardClient` is for server-side client usage.
-    // It doesn't make sense to provide `wildcardServer` on the browser-side.
-    assert(wildcardServer === null || isNodejs());
-
-    // The whole purpose of providing `wildcardServer` is to be able to call `wildcardServer.__directCall`
-    // Bypassing making an unecessary HTTP request.
-    assert(wildcardServer === null || wildcardServer.__directCall);
-
-    return wildcardServer;
-  }
-
-  function callEndpointDirectly(
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
-    wildcardServer: WildcardServer,
-    context: Context
-  ): EndpointOutput {
-    return wildcardServer.__directCall(endpointName, endpointArgs, context);
-  }
-
-  function callEndpointOverHttp(
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
-    config
-  ): EndpointOutput {
-    let body: string;
-    let urlArgs__string: string;
-    const ARGS_IN_BODY = "args-in-body";
-    let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
-    if (endpointArgsStr) {
-      // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-      if (endpointArgsStr.length >= 2000 || config.argumentsAlwaysInHttpBody) {
-        body = endpointArgsStr;
-        urlArgs__string = ARGS_IN_BODY;
-      } else {
-        urlArgs__string = endpointArgsStr;
-        assert(!urlArgs__string.startsWith(ARGS_IN_BODY));
-      }
-    }
-
-    let url = getEndpointUrl(endpointName, config);
-    if (urlArgs__string) {
-      url += "/" + encodeURIComponent(urlArgs__string);
-    }
-
-    return makeHttpRequest({ url, parse, body, endpointName });
-  }
-
-  function getEndpointUrl(endpointName: EndpointName, config): string {
-    let url: string;
-
-    const { serverUrl } = config;
-    assert(serverUrl || isBrowser());
-    if (serverUrl) {
-      url = serverUrl;
-    } else {
-      url = "";
-    }
-
-    if (config.baseUrl) {
-      if (!url.endsWith("/") && !config.baseUrl.startsWith("/")) {
-        url += "/";
-      }
-      if (url.endsWith("/") && config.baseUrl.startsWith("/")) {
-        url = url.slice(0, -1);
-        assert("bla/".slice(0, -1) === "bla");
-      }
-      url += config.baseUrl;
-    }
-
-    if (!url.endsWith("/")) {
-      url += "/";
-    }
-    url += endpointName;
-
-    return url;
-  }
-
-
-  function getEndpointsProxy(config: Config) {
-    const emptyObject = {};
-
-    const endpointsProxy = new Proxy(emptyObject, { get, set });
-
-    return endpointsProxy;
-
-    function get({}, endpointName: EndpointName) {
-      //*
-      // Return native methods
-      if (endpointName in emptyObject) {
-        return emptyObject[endpointName];
-      }
-
-      // We assume `endpointName` to always be a string
-      if (typeof endpointName !== "string") {
-        return undefined;
-      }
-
-      // TODO handle this more properly
-      // Ideally: throw a usage error
-      // But: `inspect` seems to be called automatically (by Node.js if I remember correclty)
-      // Hence I'm not sure how to handle this. Maybe by checking if the caller is Node.js or the user.
-      if (endpointName === "inspect") {
-        return undefined;
-      }
-      //*/
-
-      if (typeof endpointName !== "string") {
-        return undefined;
-      }
-
-      return function (...endpointArgs: EndpointArgs) {
-        let context: Context = undefined;
-
-        if (isBinded(this, endpointsProxy)) {
-          context = this;
-          assert(context !== emptyObject);
-          assert(context !== endpointsProxy);
-          assertUsage(
-            context instanceof Object,
-            "The context object you `bind()` should be a `instanceof Object`."
-          );
-        }
-
-        return callEndpoint(endpointName, endpointArgs, context, endpointsProxy, config);
-      };
-    }
-
-    function set() {
-      assertUsage(
-        false,
-        [
-          "You cannot add/modify endpoint functions with the Wildcard client `@wildcard-api/client`.",
-          "Instead, define your endpoint functions with the Wildcard server `@wildcard-api/server`.",
-        ].join(" ")
-      );
-
-      // Make TS happy
-      return false;
-    }
-  }
+}
 
 function isNodejs() {
   const itIs = __nodeTest();
