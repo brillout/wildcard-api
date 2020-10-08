@@ -45,29 +45,32 @@ type WildcardServer = {
   ) => EndpointOutput;
 };
 
-function WildcardClient(): void {
-  const config = getConfigProxy({
+class WildcardClient {
+  config: Config;
+  endpoints;
+
+  constructor () {
+  this.config = getConfigProxy({
     serverUrl: null,
     baseUrl: "/_wildcard_api/",
     argumentsAlwaysInHttpBody: false,
     __INTERNAL_wildcardServer_test: null,
   });
 
-  Object.assign(this, {
-    endpoints: getEndpointsProxy(),
-    config: config as Config,
-  });
-
-  return this;
+  this.endpoints = getEndpointsProxy(this.config);
+  }
+}
 
   function callEndpoint(
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
-    context: Context
+    context: Context,
+    endpointsProxy,
+    config,
   ): EndpointOutput {
     endpointArgs = endpointArgs || [];
 
-    const wildcardServer: WildcardServer = getWildcardServer();
+    const wildcardServer: WildcardServer = getWildcardServer(config);
 
     if (wildcardServer) {
       // Server-side usage
@@ -96,10 +99,10 @@ function WildcardClient(): void {
       ].join(" ")
     );
 
-    return callEndpointOverHttp(endpointName, endpointArgs);
+    return callEndpointOverHttp(endpointName, endpointArgs, config);
   }
 
-  function getWildcardServer() {
+  function getWildcardServer(config: ConfigPrivate) {
     const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
     const wildcardServer__serverSideUsage =
       typeof global !== "undefined" &&
@@ -130,7 +133,8 @@ function WildcardClient(): void {
 
   function callEndpointOverHttp(
     endpointName: EndpointName,
-    endpointArgs: EndpointArgs
+    endpointArgs: EndpointArgs,
+    config
   ): EndpointOutput {
     let body: string;
     let urlArgs__string: string;
@@ -147,7 +151,7 @@ function WildcardClient(): void {
       }
     }
 
-    let url = getEndpointUrl(endpointName);
+    let url = getEndpointUrl(endpointName, config);
     if (urlArgs__string) {
       url += "/" + encodeURIComponent(urlArgs__string);
     }
@@ -155,7 +159,7 @@ function WildcardClient(): void {
     return makeHttpRequest({ url, parse, body, endpointName });
   }
 
-  function getEndpointUrl(endpointName: EndpointName): string {
+  function getEndpointUrl(endpointName: EndpointName, config): string {
     let url: string;
 
     const { serverUrl } = config;
@@ -185,10 +189,12 @@ function WildcardClient(): void {
     return url;
   }
 
-  function getEndpointsProxy() {
+
+  function getEndpointsProxy(config: Config) {
     const emptyObject = {};
 
     const endpointsProxy = new Proxy(emptyObject, { get, set });
+
     return endpointsProxy;
 
     function get({}, endpointName: EndpointName) {
@@ -229,7 +235,7 @@ function WildcardClient(): void {
           );
         }
 
-        return callEndpoint(endpointName, endpointArgs, context);
+        return callEndpoint(endpointName, endpointArgs, context, endpointsProxy, config);
       };
     }
 
@@ -246,7 +252,6 @@ function WildcardClient(): void {
       return false;
     }
   }
-}
 
 function isNodejs() {
   const itIs = __nodeTest();
