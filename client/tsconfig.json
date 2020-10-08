@@ -7,6 +7,7 @@
     "declaration": true,
     "composite": true,
     "sourceMap": true,
+    "declarationMap": true,
     "allowJs": true,
     // "strict": true,
     "lib": ["ES2020", "ES2019.Object", "DOM"],

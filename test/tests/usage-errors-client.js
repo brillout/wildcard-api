@@ -84,8 +84,7 @@ async function unknownConfigServer({ wildcardClient }) {
 }
 
 missingServerUrl.isIntegrationTest = true;
-async function missingServerUrl({ assertStderr }) {
-  const { WildcardClient } = require("@wildcard-api/client");
+async function missingServerUrl({ assertStderr, WildcardClient }) {
   const wildcardClient = new WildcardClient();
 
   const save = global.__INTERNAL_wildcardServer_nodejs;

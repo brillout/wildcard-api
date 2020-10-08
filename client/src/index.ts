@@ -1,6 +1,3 @@
-import { WildcardClient } from "./WildcardClient";
-
-export { WildcardClient };
-export const wildcardClient = new WildcardClient();
+import { wildcardClient } from "./global-instance";
 export const server = wildcardClient.endpoints;
 export const { config } = wildcardClient;

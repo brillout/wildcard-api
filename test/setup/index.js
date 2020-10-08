@@ -12,8 +12,8 @@ const util = require("util");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
-const { WildcardServer } = require("@wildcard-api/server");
-const { WildcardClient } = require("@wildcard-api/client");
+const { WildcardServer } = require("@wildcard-api/server/dist/WildcardServer");
+const { WildcardClient } = require("@wildcard-api/client/dist/WildcardClient");
 
 const bundle = require("./browser/bundle");
 const launchBrowser = require("./browser/launchBrowser");

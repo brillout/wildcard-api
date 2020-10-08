@@ -27,7 +27,7 @@ type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
-export type UniversalAdapter = "express" | "koa" | "hapi";
+export type UniversalAdapterName = "express" | "koa" | "hapi";
 type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
@@ -60,7 +60,7 @@ type ObjectKey = string | number;
 type ContextValue = unknown & { _brand?: "ContextValue" };
 type ContextProp = ObjectKey & { _brand?: "ContextProp" };
 export type ContextObject = Record<ContextProp, ContextValue>;
-type ContextFunction = () => Promise<ContextObject>;
+export type ContextGetter = () => Promise<ContextObject>;
 type ContextProxy = ContextObject;
 
 type EndpointName = string & { _brand?: "EndpointName" };
@@ -108,10 +108,10 @@ function WildcardServer(): void {
 
   async function getApiHttpResponse(
     requestProps: HttpRequestProps,
-    context: ContextObject | ContextFunction,
+    context: ContextObject | ContextGetter,
     {
       __INTERNAL_universalAdapter,
-    }: { __INTERNAL_universalAdapter: UniversalAdapter } = {
+    }: { __INTERNAL_universalAdapter: UniversalAdapterName } = {
       __INTERNAL_universalAdapter: null,
     }
   ): Promise<HttpResponseProps> {
@@ -483,7 +483,7 @@ function parseRequestInfo(
   requestProps: HttpRequestProps,
   endpointsProxy: EndpointsProxy,
   config: Config,
-  __INTERNAL_universalAdapter: UniversalAdapter
+  __INTERNAL_universalAdapter: UniversalAdapterName
 ): RequestInfo {
   assert(requestProps.url && requestProps.method);
 
@@ -564,7 +564,7 @@ function getEndpointArgs(
   argsInUrl: ArgsInUrl,
   requestBody: HttpRequestBody,
   requestProps: HttpRequestProps,
-  __INTERNAL_universalAdapter: UniversalAdapter
+  __INTERNAL_universalAdapter: UniversalAdapterName
 ): {
   endpointArgs?: EndpointArgs;
   malformedRequest?: MalformedRequest;
@@ -773,7 +773,7 @@ function httpResponse_endpointResult({
 function validateApiUsage(
   requestProps: HttpRequestProps,
   context: ContextObject,
-  __INTERNAL_universalAdapter: UniversalAdapter
+  __INTERNAL_universalAdapter: UniversalAdapterName
 ) {
   try {
     validate();
@@ -817,7 +817,7 @@ function validateApiUsage(
 
 function getBodyUsageNote(
   requestProps: HttpRequestProps,
-  __INTERNAL_universalAdapter: UniversalAdapter
+  __INTERNAL_universalAdapter: UniversalAdapterName
 ) {
   const expressNote =
     "make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.";
@@ -891,10 +891,10 @@ function assertNodejs() {
 }
 
 async function getContext(
-  context: ContextObject | ContextFunction
+  context: ContextObject | ContextGetter
 ): Promise<ContextObject> {
   if (!isCallable(context)) {
     return context as ContextObject;
   }
-  return await (context as ContextFunction)();
+  return await (context as ContextGetter)();
 }
