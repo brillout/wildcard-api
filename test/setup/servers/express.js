@@ -16,6 +16,10 @@ async function startServer({
 
   app.use(express.static(staticDir, { extensions: ["html"] }));
 
+  app.get("/hey-before", (_, res) => {
+    res.send("Hello darling");
+  });
+
   app.use(
     wildcard(
       async (req) => {
@@ -26,6 +30,10 @@ async function startServer({
       { __INTERNAL_wildcardServer_middleware }
     )
   );
+
+  app.post("/hey/after", (_, res) => {
+    res.send("Hello again");
+  });
 
   const server = await start(app, httpPort);
 

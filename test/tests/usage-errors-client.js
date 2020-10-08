@@ -1,7 +1,7 @@
 module.exports = [
   wrongBindUsage1,
   wrongBindUsage2,
-  clientSideEndpointManipulation,
+  endpointManipulationWithClient,
   cannotSerialize,
   wrongServerUrl,
   unknownConfigServer,
@@ -38,7 +38,7 @@ async function wrongBindUsage2({ server, wildcardClient, assertStderr }) {
   );
 }
 
-async function clientSideEndpointManipulation({
+async function endpointManipulationWithClient({
   wildcardClient,
   assertStderr,
 }) {

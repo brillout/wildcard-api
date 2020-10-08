@@ -13,6 +13,8 @@ import getUrlProps = require("@brillout/url-props");
 
 export { WildcardServer };
 
+loadTimeStuff();
+
 // Endpoints
 type EndpointName = string & { _brand?: "EndpointName" };
 type EndpointArgs = unknown[] & { _brand?: "EndpointArgs" };
@@ -85,15 +87,6 @@ type RequestInfo = {
   malformedIntegration?: MalformedIntegration;
   isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
 };
-
-// Some infos for `assertUsage` and `assert`
-setProjectInfo({
-  projectName: "Wildcard API",
-  projectGithub: "https://github.com/reframejs/wildcard-api",
-});
-
-// The Wildcard server only works with Node.js
-assertNodejs();
 
 class WildcardServer {
   endpoints: Endpoints;
@@ -410,10 +403,15 @@ function getEndpointsProxy(): Endpoints {
 
 function getConfigProxy(configDefaults: Config): Config {
   const configObject: Config = { ...configDefaults };
-  const configProxy: Config = new Proxy(configObject, { set });
+
+  const configProxy: Config = new Proxy(configObject, { set: validateConfig });
   return configProxy;
 
-  function set(_: Config, configName: ConfigName, configValue: unknown) {
+  function validateConfig(
+    _: Config,
+    configName: ConfigName,
+    configValue: unknown
+  ) {
     assertUsage(
       configName in configDefaults,
       [
@@ -443,11 +441,9 @@ function createContextProxy(
   }
   function get(_: Context, contextProp: string) {
     assertUsage(
-      contextObject || !isDirectCall,
+      context || !isDirectCall,
       getNodejsContextUsageNote(endpointName, contextProp)
     );
-
-    if (!contextObject) return undefined;
 
     return contextObject[contextProp];
   }
@@ -905,4 +901,15 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
     return context as Context;
   }
   return await (context as ContextGetter)();
+}
+
+function loadTimeStuff() {
+  // Some infos for `assertUsage` and `assert`
+  setProjectInfo({
+    projectName: "Wildcard API",
+    projectGithub: "https://github.com/reframejs/wildcard-api",
+  });
+
+  // The Wildcard server only works with Node.js
+  assertNodejs();
 }

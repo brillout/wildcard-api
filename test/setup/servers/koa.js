@@ -1,4 +1,5 @@
 const Koa = require("koa");
+const Router = require("koa-router");
 const Static = require("koa-static");
 const bodyParser = require("koa-bodyparser");
 const { wildcard } = require("@wildcard-api/server/koa");
@@ -12,8 +13,15 @@ async function startServer({
   staticDir,
 }) {
   const app = new Koa();
+  const router = new Router();
+
+  router.get("/hey-before", (ctx, next) => {
+    ctx.body = "Hello darling";
+  });
 
   app.use(bodyParser());
+
+  app.use(router.routes());
 
   app.use(
     wildcard(
@@ -27,6 +35,10 @@ async function startServer({
   );
 
   app.use(Static(staticDir, { extensions: [".html"] }));
+
+  router.post("/hey/after", (ctx, next) => {
+    ctx.body = "Hello again";
+  });
 
   // Not sure why `.callback()` is needed
   //  - Source: https://github.com/koajs/koa/pull/1102#issue-154979875

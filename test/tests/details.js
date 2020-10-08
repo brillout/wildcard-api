@@ -13,6 +13,7 @@ module.exports = [
   contextUndefined1,
   contextUndefined2,
   contextUndefined3,
+  contextUndefined4,
   contextGetterAsync,
   contextGetterSync,
 
@@ -79,13 +80,8 @@ async function contextUndefined3(args) {
   const setContext = async () => undefined;
   await undefinedContext({ setContext, ...args });
 }
-async function undefinedContext({
-  setContext,
-  wildcardClient,
-  browserEval,
-  ...args
-}) {
-  const { stopApp, server } = await createServer({
+async function undefinedContext({ setContext, browserEval, ...args }) {
+  const { stopApp, server, wildcardClient } = await createServer({
     setContext,
     ...args,
   });
@@ -94,19 +90,45 @@ async function undefinedContext({
     return this.notExistingContext + " blib";
   };
 
-  const ret_serverSide = await wildcardClient.endpoints.ctxEndpoint();
-  assert(ret_serverSide === "undefined blib");
-
   await browserEval(async () => {
     const ret_browserSide = await window.server.ctxEndpoint();
     assert(ret_browserSide === "undefined blib");
   });
 
+  // This is unfortunately inconsistent with the browser-side
+  // But worth it in order to catch wrong SSG usage
+  let err;
+  try {
+    await wildcardClient.endpoints.ctxEndpoint();
+  } catch (_err) {
+    err = _err;
+  }
+  assert(
+    err.stack.includes(
+      "Cannot get `this.notExistingContext` because you didn't provide `notExistingContext`."
+    )
+  );
+
   await stopApp();
+}
+async function contextUndefined4({ server, wildcardServer }) {
+  server.contexti = function () {
+    return this.doesNotExist + " abc";
+  };
+  const url = "https://example.org/_wildcard_api/contexti";
+  const method = "POST";
+  const context = undefined;
+  const responseProps = await wildcardServer.getApiHttpResponse(
+    { url, method },
+    context
+  );
+  assert(responseProps.statusCode === 200);
+  assert(responseProps.body === `"undefined abc"`);
 }
 
 async function createServer({
   WildcardServer,
+  WildcardClient,
   setContext,
   staticDir,
   httpPort,
@@ -116,6 +138,8 @@ async function createServer({
   const { stop, start } = require("../setup/servers/express");
 
   const wildcardServer = new WildcardServer();
+  const wildcardClient = new WildcardClient();
+  wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
 
   const app = express();
 
@@ -130,11 +154,14 @@ async function createServer({
   );
 
   const server = await start(app, httpPort);
-  const stopApp = () => stop(server);
+  const stopApp = async () => {
+    await stop(server);
+  };
 
   return {
     stopApp,
     server: wildcardServer.endpoints,
+    wildcardClient,
   };
 }
 

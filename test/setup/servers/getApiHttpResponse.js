@@ -14,6 +14,14 @@ async function startServer({
     debug: { request: ["internal"] },
   });
 
+  server.route({
+    method: "POST",
+    path: "/hey/after",
+    handler: () => {
+      return "Hello again";
+    },
+  });
+
   server.ext("onPreResponse", wildcardHandler);
 
   await server.register(Inert);
@@ -24,6 +32,14 @@ async function startServer({
       directory: {
         path: staticDir,
       },
+    },
+  });
+
+  server.route({
+    method: "GET",
+    path: "/hey-before",
+    handler: () => {
+      return "Hello darling";
     },
   });
 

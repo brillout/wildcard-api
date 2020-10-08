@@ -272,24 +272,22 @@ async function unknownConfigSever({ wildcardServer }) {
 async function missingContextSSR({ server, wildcardClient }) {
   let endpointFunctionCalled = false;
   server.ssrTest = async function () {
-    let errorThrown = false;
+    let err;
     try {
       this.headers;
-    } catch (err) {
-      errorThrown = true;
-      assert(err);
-      assert(
-        err.stack.includes(
-          "Cannot get `this.headers` because you didn't provide `headers`."
-        )
-      );
-      assert(
-        err.stack.includes(
-          "Make sure to provide `headers` by using `bind({headers})` when calling your `ssrTest` endpoint in Node.js"
-        )
-      );
+    } catch (_err) {
+      err = _err;
     }
-    assert(errorThrown === true);
+    assert(
+      err.stack.includes(
+        "Cannot get `this.headers` because you didn't provide `headers`."
+      )
+    );
+    assert(
+      err.stack.includes(
+        "Make sure to provide `headers` by using `bind({headers})` when calling your `ssrTest` endpoint in Node.js"
+      )
+    );
     endpointFunctionCalled = true;
   };
 

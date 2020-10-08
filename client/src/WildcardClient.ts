@@ -7,35 +7,11 @@ import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 
 export { WildcardClient };
 
-setProjectInfo({
-  projectName: "Wildcard API",
-  projectGithub: "https://github.com/reframejs/wildcard-api",
-});
+loadTimeStuff();
 
-printDonationReminder({
-  npmName: "@wildcard-api",
-  projectName: "Wildcard API",
-  donationText:
-    "Servus :beers:, I'm Romuald, any gesture is greatly appreciated! :heart:",
-  minNumberOfAuthors: 0,
-});
-
-assertProxySupport();
-
-type ServerURL = (string & { _brand?: "ServerURL" }) | null;
-type ConfigPublic = {
-  serverUrl: ServerURL;
-  baseUrl: string;
-  argumentsAlwaysInHttpBody: boolean;
-};
-type ConfigPrivate = ConfigPublic & {
-  __INTERNAL_wildcardServer_test: any;
-};
-type ConfigName = keyof ConfigPrivate;
-
+// Endpoints
 export type EndpointName = string & { _brand?: "EndpointName" };
 type EndpointArgs = string[] & { _brand?: "EndpointArgs" };
-type Context = (object & { _brand?: "Context" }) | undefined;
 type EndpointResult = unknown & { _brand?: "EndpointResult" };
 export type EndpointError = Error & {
   isConnectionError: boolean;
@@ -43,9 +19,27 @@ export type EndpointError = Error & {
 };
 export type EndpointOutput = Promise<EndpointResult | EndpointError>;
 
+// Context
+type Context = (object & { _brand?: "Context" }) | undefined;
+
+// Config
+type ConfigPublic = {
+  serverUrl: ServerURL;
+  baseUrl: string;
+  argumentsAlwaysInHttpBody: boolean;
+};
+type ServerURL = (string & { _brand?: "ServerURL" }) | null;
+type ConfigPrivate = ConfigPublic & {
+  __INTERNAL_wildcardServer_test: any;
+};
+type ConfigName = keyof ConfigPrivate;
+
+// Http request
 export type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 
+// Wildcard server instance
+// For when using the Wildcard client server-side
 type WildcardServer = {
   __directCall: (
     endpointName: EndpointName,
@@ -202,12 +196,14 @@ function getEndpointUrl(
 function getEndpointsProxy(config: ConfigPrivate) {
   const emptyObject = {};
 
-  const endpointsProxy = new Proxy(emptyObject, { get, set });
+  const endpointsProxy = new Proxy(emptyObject, {
+    get,
+    set: forbidManipulation,
+  });
 
   return endpointsProxy;
 
   function get({}, endpointName: EndpointName) {
-    //*
     // Return native methods
     if (endpointName in emptyObject) {
       // @ts-ignore
@@ -226,7 +222,6 @@ function getEndpointsProxy(config: ConfigPrivate) {
     if (endpointName === "inspect") {
       return undefined;
     }
-    //*/
 
     if (typeof endpointName !== "string") {
       return undefined;
@@ -249,7 +244,7 @@ function getEndpointsProxy(config: ConfigPrivate) {
     };
   }
 
-  function set() {
+  function forbidManipulation() {
     assertUsage(
       false,
       [
@@ -326,10 +321,16 @@ function serializeArgs(
 
 function getConfigProxy(configDefaults: ConfigPrivate): ConfigPrivate {
   const configObject: ConfigPrivate = { ...configDefaults };
-  const configProxy: ConfigPrivate = new Proxy(configObject, { set });
+  const configProxy: ConfigPrivate = new Proxy(configObject, {
+    set: validateConfig,
+  });
   return configProxy;
 
-  function set(_: ConfigPrivate, configName: ConfigName, configValue: unknown) {
+  function validateConfig(
+    _: ConfigPrivate,
+    configName: ConfigName,
+    configValue: unknown
+  ) {
     assertUsage(
       configName in configDefaults,
       [
@@ -393,4 +394,23 @@ declare global {
       __INTERNAL_wildcardServer_nodejs: any;
     }
   }
+}
+
+function loadTimeStuff() {
+  // Some infos for `assertUsage` and `assert`
+  setProjectInfo({
+    projectName: "Wildcard API",
+    projectGithub: "https://github.com/reframejs/wildcard-api",
+  });
+
+  printDonationReminder({
+    npmName: "@wildcard-api",
+    projectName: "Wildcard API",
+    donationText:
+      "Servus :beers:, I'm Romuald, any gesture is greatly appreciated! :heart:",
+    minNumberOfAuthors: 0,
+  });
+
+  // We need ES6 `Proxy`
+  assertProxySupport();
 }

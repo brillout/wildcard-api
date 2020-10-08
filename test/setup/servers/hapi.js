@@ -14,6 +14,14 @@ async function startServer({
     debug: { request: ["internal"] },
   });
 
+  server.route({
+    method: "GET",
+    path: "/hey-before",
+    handler: () => {
+      return "Hello darling";
+    },
+  });
+
   server.register(
     wildcard(
       async (request) => {
@@ -24,6 +32,14 @@ async function startServer({
       { __INTERNAL_wildcardServer_middleware }
     )
   );
+
+  server.route({
+    method: "POST",
+    path: "/hey/after",
+    handler: () => {
+      return "Hello again";
+    },
+  });
 
   await server.register(Inert);
   server.route({
