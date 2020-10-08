@@ -447,7 +447,7 @@ Is your API meant to be used by yourself? Use RPC.
    </html>
    ~~~
    ~~~js
-   // Browser
+   // my-script-using-wildcard.js
 
    (async () => {
      const {msg} = await wildcard.server.myFirstEndpoint();
