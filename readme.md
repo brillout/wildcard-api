@@ -281,7 +281,8 @@ Is your API meant to be used by yourself? Use RPC.
    With Express:
    ~~~js
    const express = require('express');
-   const {wildcard} = require('@wildcard-api/server/express'); // npm install @wildcard-api/server
+   // npm install @wildcard-api/server
+   const { wildcard } = require('@wildcard-api/server/express');
 
    const app = express();
 
@@ -305,7 +306,8 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Hapi = require('hapi');
-   const {wildcard} = require('@wildcard-api/server/hapi'); // npm install @wildcard-api/server
+   // npm install @wildcard-api/server
+   const { wildcard } = require('@wildcard-api/server/hapi');
 
    const server = Hapi.Server();
 
@@ -330,7 +332,8 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Koa = require('koa');
-   const {wildcard} = require('@wildcard-api/server/koa'); // npm install @wildcard-api/server
+   // npm install @wildcard-api/server
+   const { wildcard } = require('@wildcard-api/server/koa');
 
    const app = new Koa();
 
@@ -359,10 +362,11 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
-   const {getApiHttpResponse} = require('@wildcard-api/server'); // npm i @wildcard-api/server
+   // npm install @wildcard-api/server
+   const { getApiHttpResponse } = require('@wildcard-api/server');
 
    // A server framework usually provides a way to add a route and define an HTTP response.
-   const {addRoute, HttpResponse} = require('your-favorite-server-framework');
+   const { addRoute, HttpResponse } = require('your-favorite-server-framework');
 
    // Add a new route `/_wildcard_api/*` to your server
    addRoute(
@@ -457,7 +461,7 @@ Use the context object to authenticate requests. For example:
 // Node.js server
 
 const express = require('express');
-const {wildcard} = require('@wildcard-api/server/express');
+const { wildcard } = require('@wildcard-api/server/express');
 
 const app = express();
 
