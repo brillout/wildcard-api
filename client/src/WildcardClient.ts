@@ -65,7 +65,6 @@ function callEndpoint(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
   context: Context,
-  endpointsProxy,
   config
 ): EndpointOutput {
   endpointArgs = endpointArgs || [];
@@ -234,13 +233,7 @@ function getEndpointsProxy(config: Config) {
         );
       }
 
-      return callEndpoint(
-        endpointName,
-        endpointArgs,
-        context,
-        endpointsProxy,
-        config
-      );
+      return callEndpoint(endpointName, endpointArgs, context, config);
     };
   }
 
