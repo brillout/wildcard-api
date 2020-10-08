@@ -430,7 +430,7 @@ Is your API meant to be used by yourself? Use RPC.
 
    <details>
    <summary>
-   Without bundler:
+   Without bundler
    </summary>
 
    ~~~html
@@ -439,9 +439,7 @@ Is your API meant to be used by yourself? Use RPC.
      <body>
        <!-- Your HTML content here -->
 
-       <!-- =============== -->
-       <!-- Load JavaScript -->
-       <!-- =============== -->
+       <!-- Load JavaScript at the end of HTML -->
        <script crossorigin src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"></script>
        <!-- Your script using Wildcard need to be loaded after loading the Wildcard client -->
        <script src="my-script-using-wildcard.js"></script>
