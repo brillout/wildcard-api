@@ -68,7 +68,7 @@ function createMiddleware<ServerMiddleware>(
     const responseProps = await wildcardServer.getApiHttpResponse(
       requestProps,
       getContext,
-      {__INTERNAL_universalAdapter}
+      { __INTERNAL_universalAdapter }
     );
 
     return responseProps;

@@ -95,11 +95,11 @@ class WildcardServer {
   config: Config;
 
   constructor() {
-  this.endpoints = getEndpointsProxy();
-  this.config = getConfigProxy({
-    disableEtag: false,
-    baseUrl: "/_wildcard_api/",
-  });
+    this.endpoints = getEndpointsProxy();
+    this.config = getConfigProxy({
+      disableEtag: false,
+      baseUrl: "/_wildcard_api/",
+    });
   }
 
   async getApiHttpResponse(
@@ -198,44 +198,43 @@ class WildcardServer {
       return endpointResult;
     }
   }
-
 }
 
-  async function runEndpoint(
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
-    context: ContextObject,
-    isDirectCall: IsDirectCall,
-    endpoints: EndpointsProxy,
-  ): Promise<{
-    endpointResult: EndpointResult;
-    endpointError: EndpointError;
-  }> {
-    assert(endpointName);
-    assert(endpointArgs.constructor === Array);
-    assert([true, false].includes(isDirectCall));
+async function runEndpoint(
+  endpointName: EndpointName,
+  endpointArgs: EndpointArgs,
+  context: ContextObject,
+  isDirectCall: IsDirectCall,
+  endpoints: EndpointsProxy
+): Promise<{
+  endpointResult: EndpointResult;
+  endpointError: EndpointError;
+}> {
+  assert(endpointName);
+  assert(endpointArgs.constructor === Array);
+  assert([true, false].includes(isDirectCall));
 
-    const endpoint: EndpointFunction = endpoints[endpointName];
-    assert(endpoint);
-    assert(endpointIsValid(endpoint));
+  const endpoint: EndpointFunction = endpoints[endpointName];
+  assert(endpoint);
+  assert(endpointIsValid(endpoint));
 
-    const contextProxy = createContextProxy({
-      context,
-      endpointName,
-      isDirectCall,
-    });
+  const contextProxy = createContextProxy({
+    context,
+    endpointName,
+    isDirectCall,
+  });
 
-    let endpointResult: EndpointResult;
-    let endpointError: EndpointError;
+  let endpointResult: EndpointResult;
+  let endpointError: EndpointError;
 
-    try {
-      endpointResult = await endpoint.apply(contextProxy, endpointArgs);
-    } catch (err) {
-      endpointError = err;
-    }
-
-    return { endpointResult, endpointError };
+  try {
+    endpointResult = await endpoint.apply(contextProxy, endpointArgs);
+  } catch (err) {
+    endpointError = err;
   }
+
+  return { endpointResult, endpointError };
+}
 
 function endpointIsValid(endpoint: EndpointFunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
@@ -513,10 +512,7 @@ function parseRequestInfo(
   }
 
   if (!doesEndpointExist(endpointName, endpoints)) {
-    const endpointMissingText = getEndpointMissingText(
-      endpointName,
-      endpoints
-    );
+    const endpointMissingText = getEndpointMissingText(endpointName, endpoints);
     return {
       malformedRequest: {
         endpointDoesNotExist: true,
