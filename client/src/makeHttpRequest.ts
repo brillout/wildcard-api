@@ -60,7 +60,11 @@ async function makeHttpRequest({ url, parse, body, endpointName }) {
   // The Wildcard client issued a malformatted request.
   assert(statusCode !== 400);
 
-  // Unexpected HTTP response status code
+  // Status codes ever returned by the Wilcard server:
+  //  - 200
+  //  - 400
+  //  - 404
+  //  - 500
   assert([500, 404].includes(statusCode));
 
   const codeErrorText =
