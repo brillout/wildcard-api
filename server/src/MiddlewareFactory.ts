@@ -1,7 +1,7 @@
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { wildcardServer as wildcardServer_ } from "./global-instance";
 import {
-  ContextObject,
+  Context,
   HttpRequestProps,
   HttpResponseProps,
   UniversalAdapterName,
@@ -17,15 +17,13 @@ type ServerAdapterOptions = any & { _brand: "ServerAdapterOptions" };
 
 type RequestHandlerArg0 = ServerFrameworkRequestObject;
 type RequestHandlerArg1 = { requestProps: HttpRequestProps };
-type RequestHandlerReturn = Promise<HttpResponseProps>;
+type RequestHandlerReturn = Promise<HttpResponseProps | null>;
 type RequestHandler = (
   arg0: RequestHandlerArg0,
   arg1: RequestHandlerArg1
 ) => RequestHandlerReturn;
 
-type SetContext = (
-  arg0: ServerFrameworkRequestObject
-) => Promise<ContextObject>;
+type SetContext = (arg0: ServerFrameworkRequestObject) => Promise<Context>;
 
 type ServerAdapter<ServerMiddleware> = (
   arg0: RequestHandler[],
@@ -41,7 +39,7 @@ type WildcardServerOption = {
 
 function createMiddleware<ServerMiddleware>(
   serverAdapter: ServerAdapter<ServerMiddleware>,
-  __INTERNAL_wildcardServer_middleware: WildcardServerHolder,
+  __INTERNAL_wildcardServer_middleware: WildcardServerHolder | undefined,
   adapterOptions: ServerAdapterOptions,
   setContext: SetContext,
   __INTERNAL_universalAdapter: UniversalAdapterName
@@ -73,8 +71,8 @@ function createMiddleware<ServerMiddleware>(
 
     return responseProps;
 
-    async function getContext(): Promise<ContextObject> {
-      let context: ContextObject;
+    async function getContext(): Promise<Context | undefined> {
+      let context: Context | undefined;
       if (setContext) {
         context = await setContext(requestObject);
       }

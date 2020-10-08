@@ -10,9 +10,9 @@ module.exports = [
 
   // Context
   contextDoesNotExist,
-  noContext1,
-  noContext2,
-  noContext3,
+  contextUndefined1,
+  contextUndefined2,
+  contextUndefined3,
   contextGetterAsync,
   contextGetterSync,
 
@@ -21,7 +21,7 @@ module.exports = [
 ];
 module.exports.createServer = createServer;
 
-// Endpoints can return undefined
+// Endpoints can be synchronous
 async function endpointSyncFunction({ server, wildcardClient }) {
   const n = Math.random();
   server.syncFunc = function () {
@@ -64,39 +64,43 @@ async function contextDoesNotExist({ server, browserEval }) {
 }
 
 // The context can be undefined
-noContext1.isIntegrationTest = true;
-async function noContext1(args) {
+contextUndefined1.isIntegrationTest = true;
+async function contextUndefined1(args) {
   const setContext = undefined;
   await undefinedContext({ setContext, ...args });
 }
-noContext2.isIntegrationTest = true;
-async function noContext2(args) {
+contextUndefined2.isIntegrationTest = true;
+async function contextUndefined2(args) {
   const setContext = () => undefined;
   await undefinedContext({ setContext, ...args });
 }
-noContext3.isIntegrationTest = true;
-async function noContext3(args) {
+contextUndefined3.isIntegrationTest = true;
+async function contextUndefined3(args) {
   const setContext = async () => undefined;
   await undefinedContext({ setContext, ...args });
 }
-async function undefinedContext({ setContext, browserEval, ...args }) {
+async function undefinedContext({
+  setContext,
+  wildcardClient,
+  browserEval,
+  ...args
+}) {
   const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
 
-  let endpointFunctionCalled = false;
   server.ctxEndpoint = async function () {
-    endpointFunctionCalled = true;
     return this.notExistingContext + " blib";
   };
 
-  await browserEval(async () => {
-    const ret = await window.server.ctxEndpoint();
-    assert(ret === "undefined blib");
-  });
+  const ret_serverSide = await wildcardClient.endpoints.ctxEndpoint();
+  assert(ret_serverSide === "undefined blib");
 
-  assert(endpointFunctionCalled === true);
+  await browserEval(async () => {
+    const ret_browserSide = await window.server.ctxEndpoint();
+    assert(ret_browserSide === "undefined blib");
+  });
 
   await stopApp();
 }

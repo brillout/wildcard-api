@@ -13,17 +13,38 @@ import getUrlProps = require("@brillout/url-props");
 
 export { WildcardServer };
 
-setProjectInfo({
-  projectName: "Wildcard API",
-  projectGithub: "https://github.com/reframejs/wildcard-api",
-});
+// Endpoints
+type EndpointName = string & { _brand?: "EndpointName" };
+type EndpointArgs = unknown[] & { _brand?: "EndpointArgs" };
+type EndpointFunction = (
+  ...args: EndpointArgs
+) => Promise<EndpointResult> & { _brand?: "EndpointFunction" };
+type Endpoints = { [key: /*EndpointName*/ string]: EndpointFunction };
+//type Endpoints = Record<EndpointName, EndpointFunction>;
+type EndpointResult = unknown & { _brand?: "EndpointResult" };
+type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
 
+// Context
+type ContextObject = { [key: string]: any };
+export type Context = ContextObject | undefined;
+type ContextGetter = () => Promise<Context> | Context;
+
+// Config
 type Config = {
   disableEtag: boolean;
   baseUrl: string;
 };
 type ConfigName = keyof Config;
 
+// Usage Error
+type MalformedRequest = {
+  httpBodyErrorText: string & { _brand?: "HttpBodyErrorText" };
+  endpointDoesNotExist?: boolean & { _brand?: "endpointDoesNotExist" };
+};
+type MalformedIntegration = UsageError;
+type WrongApiUsage = UsageError;
+
+// HTTP Request
 type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
@@ -34,7 +55,7 @@ export type HttpRequestProps = {
   method: HttpRequestMethod;
   body?: HttpRequestBody;
 };
-
+// HTTP Response
 type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
@@ -46,57 +67,36 @@ export type HttpResponseProps = {
   etag?: HttpResponseEtag;
 };
 
+// Whether to call the endpoint:
+// 1. over HTTP (browser-side <-> Node.js communication) or
+// 2. directly (communication whithin a single Node.js process, e.g. when doing SSR).
 type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 
-type EndpointResult = unknown & { _brand?: "EndpointResult" };
-type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
-type EndpointArg = unknown & { _brand?: "EndpointArg" };
-type EndpointArgs = EndpointArg[];
+// Parsing & (de-)serialization
 type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
 type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
 type EndpointArgsSerialized = ArgsInUrl | ArgsInHttpBody;
-
-type ContextValue = unknown & { _brand?: "ContextValue" };
-type ContextProp = string & { _brand?: "ContextProp" };
-export type ContextObject = { [key: /*ContextProp*/ string]: ContextValue };
-//export type ContextObject = Record<ContextProp, ContextValue>;
-export type ContextGetter = () => Promise<ContextObject>;
-type ContextProxy = ContextObject;
-
-type EndpointName = string & { _brand?: "EndpointName" };
-type EndpointFunction = (
-  ...args: EndpointArgs
-) => Promise<EndpointResult> & { _brand?: "EndpointFunction" };
-type EndpointsObject = { [key: /*EndpointName*/ string]: EndpointFunction };
-//type EndpointsObject = Record<EndpointName, EndpointFunction>;
-type EndpointsProxy = EndpointsObject;
-
-type EndpointDoesNotExist = boolean & { _brand?: "EndpointDoesNotExist" };
-type HttpBodyErrorText = string & { _brand?: "HttpBodyErrorText" };
-type MalformedRequest = {
-  httpBodyErrorText: HttpBodyErrorText;
-  endpointDoesNotExist?: EndpointDoesNotExist;
-};
-type MalformedIntegration = UsageError;
-type WrongApiUsage = UsageError;
-
-type IsNotWildcardRequest = boolean & { _brand?: "IsNotWildcardRequest" };
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
   endpointName?: EndpointName;
   endpointArgs?: EndpointArgs;
-
   isHumanMode: IsHumanMode;
-
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
-  isNotWildcardRequest?: IsNotWildcardRequest;
+  isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
 };
 
+// Some infos for `assertUsage` and `assert`
+setProjectInfo({
+  projectName: "Wildcard API",
+  projectGithub: "https://github.com/reframejs/wildcard-api",
+});
+
+// The Wildcard server only works with Node.js
 assertNodejs();
 
 class WildcardServer {
-  endpoints: EndpointsProxy;
+  endpoints: Endpoints;
   config: Config;
 
   constructor() {
@@ -109,7 +109,7 @@ class WildcardServer {
 
   async getApiHttpResponse(
     requestProps: HttpRequestProps,
-    context: ContextObject | ContextGetter,
+    context: Context | ContextGetter,
     {
       __INTERNAL_universalAdapter,
     }: { __INTERNAL_universalAdapter?: UniversalAdapterName } = {}
@@ -177,7 +177,7 @@ class WildcardServer {
   async __directCall(
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
-    context: ContextObject
+    context: Context
   ) {
     assert(endpointName);
     assert(endpointArgs.constructor === Array);
@@ -212,9 +212,9 @@ class WildcardServer {
 async function runEndpoint(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
-  context: ContextObject,
+  context: Context,
   isDirectCall: IsDirectCall,
-  endpoints: EndpointsProxy
+  endpoints: Endpoints
 ): Promise<{
   endpointResult?: EndpointResult;
   endpointError?: EndpointError;
@@ -227,11 +227,13 @@ async function runEndpoint(
   assert(endpoint);
   assert(endpointIsValid(endpoint));
 
-  const contextProxy = createContextProxy({
+  const contextProxy: ContextObject = createContextProxy(
     context,
     endpointName,
-    isDirectCall,
-  });
+    isDirectCall
+  );
+  assert(contextProxy !== undefined);
+  assert(contextProxy instanceof Object);
 
   let endpointResult: EndpointResult | undefined;
   let endpointError: EndpointError | undefined;
@@ -250,7 +252,7 @@ function endpointIsValid(endpoint: EndpointFunction) {
 }
 
 function validateEndpoint(
-  obj: EndpointsObject,
+  obj: Endpoints,
   prop: EndpointName,
   value: EndpointFunction
 ) {
@@ -401,9 +403,9 @@ ${note.split("\n").join("<br/>\n")}
   return responseProps;
 }
 
-function getEndpointsProxy(): EndpointsProxy {
-  const endpointsObject: EndpointsObject = {};
-  return new Proxy(endpointsObject, { set: validateEndpoint });
+function getEndpointsProxy(): Endpoints {
+  const Endpoints: Endpoints = {};
+  return new Proxy(Endpoints, { set: validateEndpoint });
 }
 
 function getConfigProxy(configDefaults: Config): Config {
@@ -426,39 +428,32 @@ function getConfigProxy(configDefaults: Config): Config {
   }
 }
 
-function createContextProxy({
-  context,
-  endpointName,
-  isDirectCall,
-}: {
-  context: ContextObject;
-  endpointName: EndpointName;
-  isDirectCall: IsDirectCall;
-}) {
-  const contextObject: ContextObject = context || {};
-  const contextProxy: ContextProxy = new Proxy(contextObject, { get, set });
+function createContextProxy(
+  context: Context,
+  endpointName: EndpointName,
+  isDirectCall: IsDirectCall
+): ContextObject {
+  let contextObject: ContextObject = context || {};
+  const contextProxy: ContextObject = new Proxy(contextObject, { get, set });
   return contextProxy;
 
-  function set(_: ContextObject, prop: ContextProp, newVal: ContextValue) {
-    context[prop] = newVal;
+  function set(_: Context, contextProp: string, contextValue: unknown) {
+    contextObject[contextProp] = contextValue;
     return true;
   }
-  function get(_: ContextObject, prop: ContextProp) {
+  function get(_: Context, contextProp: string) {
     assertUsage(
-      context || !isDirectCall,
-      getNodejsContextUsageNote(endpointName, prop)
+      contextObject || !isDirectCall,
+      getNodejsContextUsageNote(endpointName, contextProp)
     );
 
-    if (!context) return undefined;
+    if (!contextObject) return undefined;
 
-    return context[prop];
+    return contextObject[contextProp];
   }
 }
 
-function getNodejsContextUsageNote(
-  endpointName: EndpointName,
-  prop: ContextProp
-) {
+function getNodejsContextUsageNote(endpointName: EndpointName, prop: string) {
   const propNameIsNormal = isPropNameNormal(prop);
   const contextUsageNote = ["Wrong usage of the Wildcard client in Node.js."];
 
@@ -480,7 +475,7 @@ function getNodejsContextUsageNote(
   return contextUsageNote.join(" ");
 }
 
-function isPropNameNormal(prop: ContextProp) {
+function isPropNameNormal(prop: string) {
   let propStr: string | undefined;
   try {
     propStr = prop.toString();
@@ -491,7 +486,7 @@ function isPropNameNormal(prop: ContextProp) {
 
 function parseRequestInfo(
   requestProps: HttpRequestProps,
-  endpoints: EndpointsProxy,
+  endpoints: Endpoints,
   config: Config,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ): RequestInfo {
@@ -692,7 +687,7 @@ function httpResponse_endpoint(
   return responseProps;
 }
 
-function getEndpointNames(endpoints: EndpointsProxy): EndpointName[] {
+function getEndpointNames(endpoints: Endpoints): EndpointName[] {
   return Object.keys(endpoints);
 }
 
@@ -788,7 +783,7 @@ function httpResponse_endpointResult(
 
 function validateApiUsage(
   requestProps: HttpRequestProps,
-  context: ContextObject,
+  context: Context,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ) {
   try {
@@ -854,21 +849,18 @@ function getBodyUsageNote(
   ].join(" ");
 }
 
-function doesEndpointExist(
-  endpointName: EndpointName,
-  endpoints: EndpointsProxy
-) {
+function doesEndpointExist(endpointName: EndpointName, endpoints: Endpoints) {
   const endpoint: EndpointFunction | undefined = endpoints[endpointName];
   return !!endpoint;
 }
-function noEndpoints(endpoints: EndpointsProxy) {
+function noEndpoints(endpoints: Endpoints) {
   const endpointNames = getEndpointNames(endpoints);
   return endpointNames.length === 0;
 }
 
 function getEndpointMissingText(
   endpointName: EndpointName,
-  endpoints: EndpointsProxy
+  endpoints: Endpoints
 ): string[] {
   const endpointMissingText = [
     "Endpoint `" + endpointName + "` doesn't exist.",
@@ -905,11 +897,12 @@ function assertNodejs() {
   );
 }
 
-async function getContext(
-  context: ContextObject | ContextGetter
-): Promise<ContextObject> {
+async function getContext(context: Context | ContextGetter): Promise<Context> {
+  if (!context) {
+    return context;
+  }
   if (!isCallable(context)) {
-    return context as ContextObject;
+    return context as Context;
   }
   return await (context as ContextGetter)();
 }
