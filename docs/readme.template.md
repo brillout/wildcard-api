@@ -352,6 +352,7 @@ Is your API meant to be used by yourself? Use RPC.
    <summary>
    Without bundler:
    </summary>
+
    ~~~html
    <!DOCTYPE html>
    <html>
