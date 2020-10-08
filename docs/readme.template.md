@@ -335,11 +335,11 @@ Is your API meant to be used by yourself? Use RPC.
 
 3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
+   With a bundler:
    ~~~js
    // Browser
 
    // npm install @wildcard-api/client
-   // <script src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"/>
    import { server } from '@wildcard-api/client';
 
    (async () => {
@@ -347,6 +347,36 @@ Is your API meant to be used by yourself? Use RPC.
      console.log(msg);
    })();
    ~~~
+
+   <details>
+   <summary>
+   Without bundler:
+   </summary>
+   ~~~html
+   <!DOCTYPE html>
+   <html>
+     <body>
+       <!-- Your HTML content here -->
+
+       <!-- =============== -->
+       <!-- Load JavaScript -->
+       <!-- =============== -->
+       <script crossorigin src="https://unpkg.com/@wildcard-api/client/umd/wildcard-client.production.min.js"></script>
+       <!-- Your script using Wildcard need to be loaded after loading the Wildcard client -->
+       <script src="my-script-using-wildcard.js"></script>
+     </body>
+   </html>
+   ~~~
+   ~~~js
+   // Browser
+
+   (async () => {
+     const {msg} = await wildcard.server.myFirstEndpoint();
+     console.log(msg);
+   })();
+   ~~~
+   </details>
+
 
 That's it.
 
