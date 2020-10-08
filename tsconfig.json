@@ -1,8 +1,16 @@
 {
-  "references": [
-    { "path": "./client" },
-    { "path": "./server" }
-  ],
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "declaration": true,
+    "composite": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "allowJs": true,
+    "resolveJsonModule": true
+  },
+
+  "references": [{ "path": "./client" }, { "path": "./server" }],
 
   // This is important; otherwise tsc will try
   // to compile the source 2x times
