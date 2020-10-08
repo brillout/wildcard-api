@@ -1,4 +1,5 @@
 import { MiddlewareFactory } from "./MiddlewareFactory";
+// @ts-ignore
 import ExpressAdapter = require("@universal-adapter/express");
 import { RequestHandler } from "express";
 

@@ -1,4 +1,6 @@
+// @ts-ignore
 import { printDonationReminder } from "@lsos/donation-reminder";
+// @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";

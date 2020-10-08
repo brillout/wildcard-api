@@ -27,7 +27,7 @@ type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
-export type UniversalAdapterName = "express" | "koa" | "hapi";
+export type UniversalAdapterName = "express" | "koa" | "hapi" | undefined;
 export type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
@@ -49,23 +49,25 @@ type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 
 type EndpointResult = unknown & { _brand?: "EndpointResult" };
 type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
-type EndpointArg = string & { _brand?: "EndpointArg" };
+type EndpointArg = unknown & { _brand?: "EndpointArg" };
 type EndpointArgs = EndpointArg[];
 type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
 type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
 type EndpointArgsSerialized = ArgsInUrl | ArgsInHttpBody;
 
-type ObjectKey = string | number;
-
 type ContextValue = unknown & { _brand?: "ContextValue" };
-type ContextProp = ObjectKey & { _brand?: "ContextProp" };
-export type ContextObject = Record<ContextProp, ContextValue>;
+type ContextProp = string & { _brand?: "ContextProp" };
+export type ContextObject = { [key: /*ContextProp*/ string]: ContextValue };
+//export type ContextObject = Record<ContextProp, ContextValue>;
 export type ContextGetter = () => Promise<ContextObject>;
 type ContextProxy = ContextObject;
 
 type EndpointName = string & { _brand?: "EndpointName" };
-type EndpointFunction = () => {} & { _brand?: "EndpointFunction" };
-type EndpointsObject = Record<EndpointName, EndpointFunction>;
+type EndpointFunction = (
+  ...args: EndpointArgs
+) => Promise<EndpointResult> & { _brand?: "EndpointFunction" };
+type EndpointsObject = { [key: /*EndpointName*/ string]: EndpointFunction };
+//type EndpointsObject = Record<EndpointName, EndpointFunction>;
 type EndpointsProxy = EndpointsObject;
 
 type EndpointDoesNotExist = boolean & { _brand?: "EndpointDoesNotExist" };
@@ -82,10 +84,12 @@ type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
   endpointName?: EndpointName;
   endpointArgs?: EndpointArgs;
+
+  isHumanMode: IsHumanMode;
+
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
   isNotWildcardRequest?: IsNotWildcardRequest;
-  isHumanMode: IsHumanMode;
 };
 
 assertNodejs();
@@ -107,10 +111,8 @@ class WildcardServer {
     context: ContextObject | ContextGetter,
     {
       __INTERNAL_universalAdapter,
-    }: { __INTERNAL_universalAdapter: UniversalAdapterName } = {
-      __INTERNAL_universalAdapter: null,
-    }
-  ): Promise<HttpResponseProps> {
+    }: { __INTERNAL_universalAdapter?: UniversalAdapterName } = {}
+  ): Promise<HttpResponseProps | null> {
     context = await getContext(context);
 
     const wrongApiUsage = validateApiUsage(
@@ -146,6 +148,12 @@ class WildcardServer {
 
     if (malformedIntegration) {
       return httpResponse_malformedIntegration(malformedIntegration);
+    }
+
+    if (!endpointName || !endpointArgs) {
+      assert(false);
+      // Make TS happy
+      throw new Error();
     }
 
     const { endpointResult, endpointError } = await runEndpoint(
@@ -207,8 +215,8 @@ async function runEndpoint(
   isDirectCall: IsDirectCall,
   endpoints: EndpointsProxy
 ): Promise<{
-  endpointResult: EndpointResult;
-  endpointError: EndpointError;
+  endpointResult?: EndpointResult;
+  endpointError?: EndpointError;
 }> {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
@@ -224,8 +232,8 @@ async function runEndpoint(
     isDirectCall,
   });
 
-  let endpointResult: EndpointResult;
-  let endpointError: EndpointError;
+  let endpointResult: EndpointResult | undefined;
+  let endpointError: EndpointError | undefined;
 
   try {
     endpointResult = await endpoint.apply(contextProxy, endpointArgs);
@@ -279,7 +287,7 @@ function isCallable(thing: unknown) {
   return thing instanceof Function || typeof thing === "function";
 }
 
-function isArrowFunction(fn: unknown) {
+function isArrowFunction(fn: () => any) {
   // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
   // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
 
@@ -290,7 +298,7 @@ function isArrowFunction(fn: unknown) {
 
   return yes(fn);
 
-  function yes(fn: unknown) {
+  function yes(fn: () => any) {
     if (fn.hasOwnProperty("prototype")) {
       return false;
     }
@@ -302,7 +310,7 @@ function isArrowFunction(fn: unknown) {
   }
 }
 
-function isHumanReadableMode({ method }) {
+function isHumanReadableMode(method: HttpRequestMethod) {
   const DEBUG_CACHE =
     /*/
   true
@@ -400,7 +408,7 @@ function getEndpointsProxy(): EndpointsProxy {
 function getConfigProxy(configDefaults: Config) {
   return new Proxy({ ...configDefaults }, { set: validateNewConfig });
 
-  function validateNewConfig(obj: Config, prop: string, value: any) {
+  function validateNewConfig(obj: any, prop: string, value: any) {
     assertUsage(
       prop in configDefaults,
       [
@@ -409,7 +417,8 @@ function getConfigProxy(configDefaults: Config) {
         "and not a `@wildcard-api/client` one.",
       ].join(" ")
     );
-    return (obj[prop] = value);
+    obj[prop] = value;
+    return true;
   }
 }
 
@@ -433,7 +442,7 @@ function createContextProxy({
   function get(_: ContextObject, prop: ContextProp) {
     assertUsage(
       context || !isDirectCall,
-      getNodejsContextUsageNote({ endpointName, prop })
+      getNodejsContextUsageNote(endpointName, prop)
     );
 
     if (!context) return undefined;
@@ -442,7 +451,10 @@ function createContextProxy({
   }
 }
 
-function getNodejsContextUsageNote({ endpointName, prop }) {
+function getNodejsContextUsageNote(
+  endpointName: EndpointName,
+  prop: ContextProp
+) {
   const propNameIsNormal = isPropNameNormal(prop);
   const contextUsageNote = ["Wrong usage of the Wildcard client in Node.js."];
 
@@ -465,7 +477,7 @@ function getNodejsContextUsageNote({ endpointName, prop }) {
 }
 
 function isPropNameNormal(prop: ContextProp) {
-  let propStr: string;
+  let propStr: string | undefined;
   try {
     propStr = prop.toString();
   } catch (err) {}
@@ -481,14 +493,14 @@ function parseRequestInfo(
 ): RequestInfo {
   assert(requestProps.url && requestProps.method);
 
-  const method = requestProps.method.toUpperCase();
+  const method: HttpRequestMethod = requestProps.method.toUpperCase() as HttpRequestMethod;
 
   const urlProps = getUrlProps(requestProps.url);
   assert(urlProps.pathname.startsWith("/"));
 
   const { pathname } = urlProps;
   const { body: requestBody } = requestProps;
-  const isHumanMode = isHumanReadableMode({ method });
+  const isHumanMode = isHumanReadableMode(method);
 
   if (
     !["GET", "POST"].includes(method) ||
@@ -501,7 +513,7 @@ function parseRequestInfo(
     malformedRequest: malformationError__pathname,
     endpointName,
     argsInUrl,
-  } = parsePathname({ pathname, config });
+  } = parsePathname(pathname, config);
 
   if (malformationError__pathname) {
     return {
@@ -543,7 +555,7 @@ function parseRequestInfo(
     };
   }
 
-  assert(endpointArgs.constructor === Array);
+  assert(endpointArgs && endpointArgs.constructor === Array);
   return {
     endpointArgs,
     endpointName,
@@ -553,7 +565,7 @@ function parseRequestInfo(
 
 function getEndpointArgs(
   argsInUrl: ArgsInUrl,
-  requestBody: HttpRequestBody,
+  requestBody: HttpRequestBody | undefined,
   requestProps: HttpRequestProps,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ): {
@@ -619,7 +631,7 @@ function getEndpointArgs(
   }
   return { endpointArgs };
 }
-function parsePathname({ pathname, config }) {
+function parsePathname(pathname: string, config: Config) {
   assert(pathname.startsWith(config.baseUrl));
   const urlParts = pathname.slice(config.baseUrl.length).split("/");
 
@@ -633,7 +645,7 @@ function parsePathname({ pathname, config }) {
     ? pathname
     : config.baseUrl + endpointName + "/" + argsInUrl;
   */
-  let malformedRequest: MalformedRequest;
+  let malformedRequest: MalformedRequest | undefined;
   if (isMalformatted) {
     malformedRequest = {
       httpBodyErrorText: "Malformatted API URL",
@@ -648,8 +660,8 @@ function parsePathname({ pathname, config }) {
 }
 
 function httpResponse_endpoint(
-  endpointResult: EndpointResult,
-  endpointError: EndpointError,
+  endpointResult: EndpointResult | undefined,
+  endpointError: EndpointError | undefined,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName,
   config: Config
@@ -658,11 +670,11 @@ function httpResponse_endpoint(
   if (endpointError) {
     responseProps = httpResponse_endpointError(endpointError);
   } else {
-    responseProps = httpResponse_endpointResult({
-      endpointResult,
+    responseProps = httpResponse_endpointResult(
+      endpointResult as EndpointResult,
       isHumanMode,
-      endpointName,
-    });
+      endpointName
+    );
   }
   assert(responseProps.body.constructor === String);
 
@@ -726,19 +738,16 @@ function HttpResponse_browserSideError(
   };
 }
 
-function httpResponse_endpointResult({
-  endpointResult,
-  isHumanMode,
-  endpointName,
-}): HttpResponseProps {
-  const responseProps = {
-    statusCode: 200,
-    contentType: "application/json",
-    body: undefined,
-  };
-  let endpointError: EndpointError;
+function httpResponse_endpointResult(
+  endpointResult: EndpointResult,
+  isHumanMode: IsHumanMode,
+  endpointName: EndpointName
+): HttpResponseProps {
+  let body: HttpResponseBody | undefined;
+  let endpointError: EndpointError | undefined;
   try {
-    responseProps.body = stringify(endpointResult);
+    const ret: string = stringify(endpointResult);
+    body = ret;
   } catch (stringifyError) {
     endpointError = getUsageError(
       [
@@ -752,7 +761,19 @@ function httpResponse_endpointResult({
   if (endpointError) {
     return httpResponse_endpointError(endpointError);
   }
-  assert(responseProps.body.constructor === String);
+
+  if (body === undefined) {
+    assert(false);
+    // Make TS happy
+    throw new Error();
+  }
+  assert(body.constructor === String);
+
+  const responseProps: HttpResponseProps = {
+    statusCode: 200,
+    contentType: "application/json",
+    body,
+  };
 
   if (isHumanMode) {
     return makeHumanReadable(responseProps, endpointResult);
@@ -783,10 +804,9 @@ function validateApiUsage(
         .map((s) => "`" + s + "`")
         .join(" and ")} while calling \`getApiHttpResponse()\`.`;
 
-    const missingArguments = [
-      !requestProps?.url && "url",
-      !requestProps?.method && "method",
-    ].filter(Boolean);
+    const missingArguments = [];
+    if (!requestProps?.url) missingArguments.push("url");
+    if (!requestProps?.method) missingArguments.push("method");
     assertUsage(missingArguments.length === 0, missArg(missingArguments));
 
     {

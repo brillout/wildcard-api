@@ -5,7 +5,8 @@
     "declaration": true,
     "composite": true,
     "sourceMap": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "strict": true
   },
 
   "references": [{ "path": "./client" }, { "path": "./server" }],
