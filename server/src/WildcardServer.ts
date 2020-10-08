@@ -22,6 +22,7 @@ type Config = {
   disableEtag: boolean;
   baseUrl: string;
 };
+type ConfigName = keyof Config;
 
 type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
@@ -405,19 +406,22 @@ function getEndpointsProxy(): EndpointsProxy {
   return new Proxy(endpointsObject, { set: validateEndpoint });
 }
 
-function getConfigProxy(configDefaults: Config) {
-  return new Proxy({ ...configDefaults }, { set: validateNewConfig });
+function getConfigProxy(configDefaults: Config): Config {
+  const configObject: Config = { ...configDefaults };
+  const configProxy: Config = new Proxy(configObject, { set });
+  return configProxy;
 
-  function validateNewConfig(obj: any, prop: string, value: any) {
+  function set(_: Config, configName: ConfigName, configValue: unknown) {
     assertUsage(
-      prop in configDefaults,
+      configName in configDefaults,
       [
-        `Unkown config \`${prop}\`.`,
+        `Unknown config \`${configName}\`.`,
         "Make sure that the config is a `@wildcard-api/server` config",
         "and not a `@wildcard-api/client` one.",
       ].join(" ")
     );
-    obj[prop] = value;
+
+    configObject[configName] = configValue as never;
     return true;
   }
 }

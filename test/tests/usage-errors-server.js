@@ -265,7 +265,7 @@ async function unknownConfigSever({ wildcardServer }) {
   try {
     wildcardServer.config.bliblab = undefined;
   } catch (err) {
-    assert(err.message.includes("Unkown config `bliblab`"));
+    assert(err.message.includes("Unknown config `bliblab`"));
   }
 }
 

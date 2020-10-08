@@ -1,14 +1,23 @@
 import { assert } from "@brillout/assert";
+// @ts-ignore
+import { parse } from "@brillout/json-s";
+// @ts-ignore
 import fetch = require("@brillout/fetch");
+import {
+  EndpointName,
+  HttpRequestBody,
+  HttpRequestUrl,
+  EndpointError,
+  EndpointOutput,
+} from "./WildcardClient";
 
 export { makeHttpRequest };
 
-type EndpointError = Error & {
-  isConnectionError: boolean;
-  isCodeError: boolean;
-};
-
-async function makeHttpRequest({ url, parse, body, endpointName }) {
+async function makeHttpRequest(
+  url: HttpRequestUrl,
+  body: HttpRequestBody | undefined,
+  endpointName: EndpointName
+): EndpointOutput {
   const makeRequest = addHandli(() =>
     fetch(url, {
       /* Also enable `DEBUG_CACHE` flag on server-side.
@@ -25,7 +34,7 @@ async function makeHttpRequest({ url, parse, body, endpointName }) {
   );
 
   let response;
-  let connectionError: Error;
+  let connectionError: EndpointError | undefined;
   try {
     response = await makeRequest();
   } catch (err) {
@@ -72,22 +81,24 @@ async function makeHttpRequest({ url, parse, body, endpointName }) {
       ? `Endpoint \`${endpointName}\` does not exist.`
       : `Endpoint function \`${endpointName}\` threw an error.`;
 
-  throw Object.assign(new Error(codeErrorText), {
+  const codeError: EndpointError = Object.assign(new Error(codeErrorText), {
     isConnectionError: false,
     isCodeError: true,
   });
+
+  throw codeError;
 }
 
-function addHandli(fetch_) {
+function addHandli(fetcher: () => EndpointOutput) {
   return () => {
     if (
       typeof window !== "undefined" &&
       window.handli &&
       window.handli.constructor === Function
     ) {
-      return window.handli(fetch_);
+      return window.handli(fetcher);
     }
-    return fetch_();
+    return fetcher();
   };
 }
 

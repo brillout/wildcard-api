@@ -1,3 +1,4 @@
+// @ts-ignore
 import { findFiles } from "@brillout/project-files";
 
 export { autoLoadEndpointFiles };

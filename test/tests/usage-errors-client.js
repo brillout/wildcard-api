@@ -79,7 +79,7 @@ async function unknownConfigServer({ wildcardClient }) {
   try {
     wildcardClient.config.blablub = undefined;
   } catch (err) {
-    assert(err.message.includes("Unkown config `blablub`"));
+    assert(err.message.includes("Unknown config `blablub`"));
   }
 }
 

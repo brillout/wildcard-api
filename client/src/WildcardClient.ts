@@ -1,7 +1,7 @@
 // @ts-ignore
 import { printDonationReminder } from "@lsos/donation-reminder";
 // @ts-ignore
-import { stringify, parse } from "@brillout/json-s";
+import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 
@@ -22,22 +22,29 @@ printDonationReminder({
 
 assertProxySupport();
 
-type Config = {
-  serverUrl?: string;
+type ServerURL = (string & { _brand?: "ServerURL" }) | null;
+type ConfigPublic = {
+  serverUrl: ServerURL;
   baseUrl: string;
   argumentsAlwaysInHttpBody: boolean;
 };
-
-type ConfigPrivate = Config & {
+type ConfigPrivate = ConfigPublic & {
   __INTERNAL_wildcardServer_test: any;
 };
+type ConfigName = keyof ConfigPrivate;
 
-type EndpointName = string & { _brand?: "EndpointName" };
+export type EndpointName = string & { _brand?: "EndpointName" };
 type EndpointArgs = string[] & { _brand?: "EndpointArgs" };
-type Context = object & { _brand?: "Context" };
+type Context = (object & { _brand?: "Context" }) | undefined;
 type EndpointResult = unknown & { _brand?: "EndpointResult" };
-type EndpointError = Error & { _brand?: "EndpointError" };
-type EndpointOutput = Promise<EndpointResult | EndpointError>;
+export type EndpointError = Error & {
+  isConnectionError: boolean;
+  isCodeError: boolean;
+};
+export type EndpointOutput = Promise<EndpointResult | EndpointError>;
+
+export type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
+export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 
 type WildcardServer = {
   __directCall: (
@@ -48,18 +55,19 @@ type WildcardServer = {
 };
 
 class WildcardClient {
-  config: Config;
+  config: ConfigPublic;
   endpoints;
 
   constructor() {
-    this.config = getConfigProxy({
+    const config: ConfigPrivate = getConfigProxy({
       serverUrl: null,
       baseUrl: "/_wildcard_api/",
       argumentsAlwaysInHttpBody: false,
       __INTERNAL_wildcardServer_test: null,
     });
+    this.config = config as ConfigPublic;
 
-    this.endpoints = getEndpointsProxy(this.config);
+    this.endpoints = getEndpointsProxy(config);
   }
 }
 
@@ -67,7 +75,7 @@ function callEndpoint(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
   context: Context,
-  config
+  config: ConfigPrivate
 ): EndpointOutput {
   endpointArgs = endpointArgs || [];
 
@@ -135,10 +143,10 @@ function callEndpointDirectly(
 function callEndpointOverHttp(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
-  config
+  config: ConfigPrivate
 ): EndpointOutput {
-  let body: string;
-  let urlArgs__string: string;
+  let body: HttpRequestBody | undefined;
+  let urlArgs__string: string | undefined;
   const ARGS_IN_BODY = "args-in-body";
   let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
   if (endpointArgsStr) {
@@ -152,23 +160,24 @@ function callEndpointOverHttp(
     }
   }
 
-  let url = getEndpointUrl(endpointName, config);
+  let url: HttpRequestUrl = getEndpointUrl(endpointName, config);
   if (urlArgs__string) {
     url += "/" + encodeURIComponent(urlArgs__string);
   }
 
-  return makeHttpRequest({ url, parse, body, endpointName });
+  return makeHttpRequest(url, body, endpointName);
 }
 
-function getEndpointUrl(endpointName: EndpointName, config): string {
-  let url: string;
+function getEndpointUrl(
+  endpointName: EndpointName,
+  config: ConfigPrivate
+): HttpRequestUrl {
+  let url: HttpRequestUrl = "";
 
   const { serverUrl } = config;
   assert(serverUrl || isBrowser());
   if (serverUrl) {
-    url = serverUrl;
-  } else {
-    url = "";
+    url = serverUrl as string;
   }
 
   if (config.baseUrl) {
@@ -190,7 +199,7 @@ function getEndpointUrl(endpointName: EndpointName, config): string {
   return url;
 }
 
-function getEndpointsProxy(config: Config) {
+function getEndpointsProxy(config: ConfigPrivate) {
   const emptyObject = {};
 
   const endpointsProxy = new Proxy(emptyObject, { get, set });
@@ -201,6 +210,7 @@ function getEndpointsProxy(config: Config) {
     //*
     // Return native methods
     if (endpointName in emptyObject) {
+      // @ts-ignore
       return emptyObject[endpointName];
     }
 
@@ -222,7 +232,7 @@ function getEndpointsProxy(config: Config) {
       return undefined;
     }
 
-    return function (...endpointArgs: EndpointArgs) {
+    return function (this: Context, ...endpointArgs: EndpointArgs) {
       let context: Context = undefined;
 
       if (isBinded(this, endpointsProxy)) {
@@ -292,12 +302,12 @@ function envSupportsProxy() {
 function serializeArgs(
   endpointArgs: EndpointArgs,
   endpointName: EndpointName
-): string {
+): string | undefined {
   assert(endpointArgs.length >= 0);
   if (endpointArgs.length === 0) {
     return undefined;
   }
-  let serializedArgs: string;
+  let serializedArgs: string | undefined;
   try {
     serializedArgs = stringify(endpointArgs);
   } catch (err_) {
@@ -314,34 +324,31 @@ function serializeArgs(
   return serializedArgs;
 }
 
-function getConfigProxy(configDefaults: ConfigPrivate) {
-  return new Proxy({ ...configDefaults }, { set: validateConfig });
+function getConfigProxy(configDefaults: ConfigPrivate): ConfigPrivate {
+  const configObject: ConfigPrivate = { ...configDefaults };
+  const configProxy: ConfigPrivate = new Proxy(configObject, { set });
+  return configProxy;
 
-  function validateConfig(
-    obj: ConfigPrivate,
-    configName: string,
-    configValue: any
-  ) {
-    validateConfigExistence(configName);
-    if (configName === "serverUrl") {
-      const serverUrl = configValue;
-      validateServerUrl(serverUrl);
-    }
-    return (obj[configName] = configValue);
-  }
-
-  function validateConfigExistence(configName: string) {
+  function set(_: ConfigPrivate, configName: ConfigName, configValue: unknown) {
     assertUsage(
       configName in configDefaults,
       [
-        `Unkown config \`${configName}\`.`,
+        `Unknown config \`${configName}\`.`,
         "Make sure that the config is a `@wildcard-api/client` config",
         "and not a `@wildcard-api/server` one.",
       ].join(" ")
     );
+
+    if (configName === "serverUrl") {
+      const serverUrl = configValue as ServerURL;
+      validateServerUrl(serverUrl);
+    }
+
+    configObject[configName] = configValue as never;
+    return true;
   }
 }
-function validateServerUrl(serverUrl: string) {
+function validateServerUrl(serverUrl: ServerURL) {
   assertUsage(
     serverUrl === null ||
       // Should be an HTTP URL
@@ -362,7 +369,7 @@ function isBinded(that: unknown, defaultBind: unknown): boolean {
   // Chrome (without bundler): `this===window`
 
   assertUsage(
-    (function () {
+    (function (this: unknown) {
       return notBinded(this);
     })() === true,
     "You seem to be using `@wildcard-api/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/reframejs/wildcard-api/issues/new for adding support for your environemnt/bundler."
