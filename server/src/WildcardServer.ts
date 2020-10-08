@@ -28,7 +28,7 @@ const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 export type UniversalAdapterName = "express" | "koa" | "hapi";
-type HttpRequestProps = {
+export type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
   body?: HttpRequestBody;
@@ -38,7 +38,7 @@ type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
 type HttpResponseEtag = string & { _brand?: "HttpResponseEtag" };
-type HttpResponseProps = {
+export type HttpResponseProps = {
   body: HttpResponseBody;
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
@@ -90,23 +90,19 @@ type RequestInfo = {
 
 assertNodejs();
 
-function WildcardServer(): void {
-  const endpointsProxy: EndpointsProxy = getEndpointsProxy();
-  const config = getConfigProxy({
+class WildcardServer {
+  endpoints: EndpointsProxy;
+  config: Config;
+
+  constructor() {
+  this.endpoints = getEndpointsProxy();
+  this.config = getConfigProxy({
     disableEtag: false,
     baseUrl: "/_wildcard_api/",
   });
+  }
 
-  Object.assign(this, {
-    endpoints: endpointsProxy,
-    config: config as Config,
-    getApiHttpResponse,
-    __directCall,
-  });
-
-  return this;
-
-  async function getApiHttpResponse(
+  async getApiHttpResponse(
     requestProps: HttpRequestProps,
     context: ContextObject | ContextGetter,
     {
@@ -135,8 +131,8 @@ function WildcardServer(): void {
       isHumanMode,
     }: RequestInfo = parseRequestInfo(
       requestProps,
-      endpointsProxy,
-      config,
+      this.endpoints,
+      this.config,
       __INTERNAL_universalAdapter
     );
 
@@ -152,23 +148,24 @@ function WildcardServer(): void {
       return httpResponse_malformedIntegration(malformedIntegration);
     }
 
-    const { endpointResult, endpointError } = await runEndpoint({
+    const { endpointResult, endpointError } = await runEndpoint(
       endpointName,
       endpointArgs,
       context,
-      isDirectCall: false,
-    });
+      false,
+      this.endpoints
+    );
 
     return httpResponse_endpoint(
       endpointResult,
       endpointError,
       isHumanMode,
       endpointName,
-      config
+      this.config
     );
   }
 
-  async function __directCall(
+  async __directCall(
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
     context: ContextObject
@@ -176,21 +173,22 @@ function WildcardServer(): void {
     assert(endpointName);
     assert(endpointArgs.constructor === Array);
 
-    if (noEndpoints({ endpointsProxy })) {
+    if (noEndpoints(this.endpoints)) {
       autoLoadEndpointFiles();
     }
 
     assertUsage(
-      doesEndpointExist(endpointName, endpointsProxy),
-      getEndpointMissingText(endpointName, endpointsProxy).join(" ")
+      doesEndpointExist(endpointName, this.endpoints),
+      getEndpointMissingText(endpointName, this.endpoints).join(" ")
     );
 
-    const resultObject = await runEndpoint({
+    const resultObject = await runEndpoint(
       endpointName,
       endpointArgs,
       context,
-      isDirectCall: true,
-    });
+      true,
+      this.endpoints
+    );
 
     const { endpointResult, endpointError } = resultObject;
 
@@ -201,17 +199,15 @@ function WildcardServer(): void {
     }
   }
 
-  async function runEndpoint({
-    endpointName,
-    endpointArgs,
-    context,
-    isDirectCall,
-  }: {
-    endpointName: EndpointName;
-    endpointArgs: EndpointArgs;
-    context: ContextObject;
-    isDirectCall: IsDirectCall;
-  }): Promise<{
+}
+
+  async function runEndpoint(
+    endpointName: EndpointName,
+    endpointArgs: EndpointArgs,
+    context: ContextObject,
+    isDirectCall: IsDirectCall,
+    endpoints: EndpointsProxy,
+  ): Promise<{
     endpointResult: EndpointResult;
     endpointError: EndpointError;
   }> {
@@ -219,7 +215,7 @@ function WildcardServer(): void {
     assert(endpointArgs.constructor === Array);
     assert([true, false].includes(isDirectCall));
 
-    const endpoint: EndpointFunction = endpointsProxy[endpointName];
+    const endpoint: EndpointFunction = endpoints[endpointName];
     assert(endpoint);
     assert(endpointIsValid(endpoint));
 
@@ -240,7 +236,6 @@ function WildcardServer(): void {
 
     return { endpointResult, endpointError };
   }
-}
 
 function endpointIsValid(endpoint: EndpointFunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
@@ -481,7 +476,7 @@ function isPropNameNormal(prop: ContextProp) {
 
 function parseRequestInfo(
   requestProps: HttpRequestProps,
-  endpointsProxy: EndpointsProxy,
+  endpoints: EndpointsProxy,
   config: Config,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ): RequestInfo {
@@ -517,10 +512,10 @@ function parseRequestInfo(
     };
   }
 
-  if (!doesEndpointExist(endpointName, endpointsProxy)) {
+  if (!doesEndpointExist(endpointName, endpoints)) {
     const endpointMissingText = getEndpointMissingText(
       endpointName,
-      endpointsProxy
+      endpoints
     );
     return {
       malformedRequest: {
@@ -685,8 +680,8 @@ function httpResponse_endpoint(
   return responseProps;
 }
 
-function getEndpointNames({ endpointsProxy }): EndpointName[] {
-  return Object.keys(endpointsProxy);
+function getEndpointNames(endpoints: EndpointsProxy): EndpointName[] {
+  return Object.keys(endpoints);
 }
 
 function httpResponse_endpointError(
@@ -841,25 +836,25 @@ function getBodyUsageNote(
 
 function doesEndpointExist(
   endpointName: EndpointName,
-  endpointsProxy: EndpointsProxy
+  endpoints: EndpointsProxy
 ) {
-  const endpoint: EndpointFunction | undefined = endpointsProxy[endpointName];
+  const endpoint: EndpointFunction | undefined = endpoints[endpointName];
   return !!endpoint;
 }
-function noEndpoints({ endpointsProxy }) {
-  const endpointNames = getEndpointNames({ endpointsProxy });
+function noEndpoints(endpoints: EndpointsProxy) {
+  const endpointNames = getEndpointNames(endpoints);
   return endpointNames.length === 0;
 }
 
 function getEndpointMissingText(
   endpointName: EndpointName,
-  endpointsProxy: EndpointsProxy
+  endpoints: EndpointsProxy
 ): string[] {
   const endpointMissingText = [
     "Endpoint `" + endpointName + "` doesn't exist.",
   ];
 
-  if (noEndpoints({ endpointsProxy })) {
+  if (noEndpoints(endpoints)) {
     endpointMissingText.push("You didn't define any endpoints.");
   }
 

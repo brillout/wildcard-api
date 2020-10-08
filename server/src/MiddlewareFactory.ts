@@ -2,20 +2,13 @@ import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { wildcardServer as wildcardServer_ } from "./global-instance";
 import {
   ContextObject,
+  HttpRequestProps,
+  HttpResponseProps,
   UniversalAdapterName,
   WildcardServer,
 } from "./WildcardServer";
 
 export { MiddlewareFactory };
-
-type RequestProps = {};
-
-type ResponseProps = {
-  body: string;
-  contentType: string;
-  statusCode: string;
-  etag?: string;
-};
 
 type ServerFrameworkRequestObject = unknown & {
   _brand: "ServerFrameworkRequestObject";
@@ -23,8 +16,8 @@ type ServerFrameworkRequestObject = unknown & {
 type ServerAdapterOptions = any & { _brand: "ServerAdapterOptions" };
 
 type RequestHandlerArg0 = ServerFrameworkRequestObject;
-type RequestHandlerArg1 = { requestProps: RequestProps };
-type RequestHandlerReturn = Promise<ResponseProps>;
+type RequestHandlerArg1 = { requestProps: HttpRequestProps };
+type RequestHandlerReturn = Promise<HttpResponseProps>;
 type RequestHandler = (
   arg0: RequestHandlerArg0,
   arg1: RequestHandlerArg1
@@ -40,7 +33,7 @@ type ServerAdapter<ServerMiddleware> = (
 ) => ServerMiddleware;
 
 type WildcardServerHolder = {
-  wildcardServer: typeof WildcardServer;
+  wildcardServer: WildcardServer;
 };
 type WildcardServerOption = {
   __INTERNAL_wildcardServer_middleware?: WildcardServerHolder;
@@ -75,7 +68,7 @@ function createMiddleware<ServerMiddleware>(
     const responseProps = await wildcardServer.getApiHttpResponse(
       requestProps,
       getContext,
-      __INTERNAL_universalAdapter
+      {__INTERNAL_universalAdapter}
     );
 
     return responseProps;
