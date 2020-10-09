@@ -5,11 +5,15 @@ import { parse } from "@brillout/json-s";
 import fetch = require("@brillout/fetch");
 import {
   EndpointName,
+  EndpointResult,
   HttpRequestBody,
   HttpRequestUrl,
-  EndpointError,
-  EndpointOutput,
 } from "./WildcardClient";
+
+type EndpointError = Error & {
+  isConnectionError: boolean;
+  isCodeError: boolean;
+};
 
 export { makeHttpRequest };
 
@@ -17,7 +21,7 @@ async function makeHttpRequest(
   url: HttpRequestUrl,
   body: HttpRequestBody | undefined,
   endpointName: EndpointName
-): EndpointOutput {
+): Promise<EndpointResult> {
   const makeRequest = addHandli(() =>
     fetch(url, {
       /* Also enable `DEBUG_CACHE` flag on server-side.
@@ -89,7 +93,7 @@ async function makeHttpRequest(
   throw codeError;
 }
 
-function addHandli(fetcher: () => EndpointOutput) {
+function addHandli(fetcher: () => Promise<EndpointResult>) {
   return () => {
     if (
       typeof window !== "undefined" &&

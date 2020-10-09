@@ -16,25 +16,28 @@ export { WildcardServer };
 loadTimeStuff();
 
 // Endpoints
-type EndpointName = string & { _brand?: "EndpointName" };
-type EndpointArgs = unknown[] & { _brand?: "EndpointArgs" };
-type EndpointFunction = (
-  ...args: EndpointArgs
-) => Promise<EndpointResult> & { _brand?: "EndpointFunction" };
-type Endpoints = { [key: /*EndpointName*/ string]: EndpointFunction };
-//type Endpoints = Record<EndpointName, EndpointFunction>;
-type EndpointResult = unknown & { _brand?: "EndpointResult" };
-type EndpointError = (Error & { _brand?: "EndpointError" }) | UsageError;
+type EndpointName = string;
+type EndpointArgs = any[];
+type EndpointFunction = (...args: EndpointArgs) => EndpointResult;
+type Endpoints = Record<EndpointName, EndpointFunction>;
+type EndpointResult = any;
+type EndpointError = Error | UsageError;
 
 // Context
-type ContextObject = { [key: string]: any };
+type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = () => Promise<Context> | Context;
 
-// Config
+/**
+ * Wildcard Server Configuration
+ */
 type Config = {
-  disableEtag: boolean;
+  /**
+   * Serve Wildcard API at `/${baseUrl}/*`. Default: `_wildcard_api`.
+   */
   baseUrl: string;
+  /** Disable caching. (Wildcard will not generate the HTTP ETag header) */
+  disableEtag: boolean;
 };
 type ConfigName = keyof Config;
 
@@ -283,7 +286,7 @@ function isCallable(thing: unknown) {
   return thing instanceof Function || typeof thing === "function";
 }
 
-function isArrowFunction(fn: () => any) {
+function isArrowFunction(fn: () => unknown) {
   // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
   // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
 
@@ -294,7 +297,7 @@ function isArrowFunction(fn: () => any) {
 
   return yes(fn);
 
-  function yes(fn: () => any) {
+  function yes(fn: () => unknown) {
     if (fn.hasOwnProperty("prototype")) {
       return false;
     }
@@ -435,11 +438,11 @@ function createContextProxy(
   const contextProxy: ContextObject = new Proxy(contextObject, { get, set });
   return contextProxy;
 
-  function set(_: Context, contextProp: string, contextValue: unknown) {
+  function set(_: ContextObject, contextProp: string, contextValue: unknown) {
     contextObject[contextProp] = contextValue;
     return true;
   }
-  function get(_: Context, contextProp: string) {
+  function get(_: ContextObject, contextProp: string) {
     assertUsage(
       context || !isDirectCall,
       getNodejsContextUsageNote(endpointName, contextProp)

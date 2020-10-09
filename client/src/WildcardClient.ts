@@ -10,14 +10,11 @@ export { WildcardClient };
 loadTimeStuff();
 
 // Endpoints
-export type EndpointName = string & { _brand?: "EndpointName" };
-type EndpointArgs = string[] & { _brand?: "EndpointArgs" };
-type EndpointResult = unknown & { _brand?: "EndpointResult" };
-export type EndpointError = Error & {
-  isConnectionError: boolean;
-  isCodeError: boolean;
-};
-export type EndpointOutput = Promise<EndpointResult | EndpointError>;
+export type EndpointName = string;
+type EndpointArgs = any[];
+export type EndpointResult = any;
+type EndpointFunction = (...args: EndpointArgs) => EndpointResult;
+type Endpoints = Record<EndpointName, EndpointFunction>;
 
 // Context
 type Context = (object & { _brand?: "Context" }) | undefined;
@@ -28,7 +25,7 @@ type ConfigPublic = {
   baseUrl: string;
   argumentsAlwaysInHttpBody: boolean;
 };
-type ServerURL = (string & { _brand?: "ServerURL" }) | null;
+type ServerURL = string | null;
 type ConfigPrivate = ConfigPublic & {
   __INTERNAL_wildcardServer_test: any;
 };
@@ -45,12 +42,13 @@ type WildcardServer = {
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
     context: Context
-  ) => EndpointOutput;
+  ) => // Doesn't have to be a promise; an endpoint can return its value synchronously
+  Promise<EndpointResult> | EndpointResult;
 };
 
 class WildcardClient {
   config: ConfigPublic;
-  endpoints;
+  endpoints: Endpoints;
 
   constructor() {
     const config: ConfigPrivate = getConfigProxy({
@@ -70,7 +68,7 @@ function callEndpoint(
   endpointArgs: EndpointArgs,
   context: Context,
   config: ConfigPrivate
-): EndpointOutput {
+): EndpointResult {
   endpointArgs = endpointArgs || [];
 
   const wildcardServer: WildcardServer = getWildcardServer(config);
@@ -125,12 +123,12 @@ function getWildcardServer(config: ConfigPrivate) {
   return wildcardServer;
 }
 
-function callEndpointDirectly(
+async function callEndpointDirectly(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
   wildcardServer: WildcardServer,
   context: Context
-): EndpointOutput {
+): Promise<EndpointResult> {
   return wildcardServer.__directCall(endpointName, endpointArgs, context);
 }
 
@@ -138,7 +136,7 @@ function callEndpointOverHttp(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
   config: ConfigPrivate
-): EndpointOutput {
+): EndpointResult {
   let body: HttpRequestBody | undefined;
   let urlArgs__string: string | undefined;
   const ARGS_IN_BODY = "args-in-body";
@@ -193,20 +191,19 @@ function getEndpointUrl(
   return url;
 }
 
-function getEndpointsProxy(config: ConfigPrivate) {
-  const emptyObject = {};
+function getEndpointsProxy(config: ConfigPrivate): Endpoints {
+  const emptyObject: Endpoints = {};
 
-  const endpointsProxy = new Proxy(emptyObject, {
+  const endpointsProxy: Endpoints = new Proxy(emptyObject, {
     get,
     set: forbidManipulation,
-  });
+  }) as Endpoints;
 
   return endpointsProxy;
 
   function get({}, endpointName: EndpointName) {
     // Return native methods
     if (endpointName in emptyObject) {
-      // @ts-ignore
       return emptyObject[endpointName];
     }
 
@@ -403,6 +400,7 @@ function loadTimeStuff() {
     projectGithub: "https://github.com/reframejs/wildcard-api",
   });
 
+  // Lsos donation reminder
   printDonationReminder({
     npmName: "@wildcard-api",
     projectName: "Wildcard API",
