@@ -1,6 +1,6 @@
 require("babel-polyfill");
 const { server, config } = require("@wildcard-api/client");
-const { WildcardClient } = require("@wildcard-api/client/dist/WildcardClient");
+const { WildcardClient } = require("@wildcard-api/client/WildcardClient");
 const assert = require("assert");
 Object.assign(window, { assert, server, config, WildcardClient });
 Object.assign(window, {

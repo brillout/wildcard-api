@@ -1,13 +1,19 @@
 node_modules/
 
-# TypeScript & Parcel build directory
+# Parcel
 dist/
-
-# Parcel's cache
 .cache/
 
+# Typescript
+client/*.js*
+server/*.js*
+client/*.d.ts*
+server/*.d.ts*
 tsconfig.tsbuildinfo
 
+# Npm
 npm-debug.log*
-yarn-error.log
 package-lock.json
+
+# Yarn
+yarn-error.log
