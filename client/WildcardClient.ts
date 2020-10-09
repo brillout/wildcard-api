@@ -20,13 +20,13 @@ type Endpoints = Record<EndpointName, EndpointFunction>;
 type Context = (object & { _brand?: "Context" }) | undefined;
 
 // Config
-type ConfigPublic = {
+type Config = {
   serverUrl: ServerURL;
   baseUrl: string;
   argumentsAlwaysInHttpBody: boolean;
 };
 type ServerURL = string | null;
-type ConfigPrivate = ConfigPublic & {
+type ConfigPrivate = Config & {
   __INTERNAL_wildcardServer_test: any;
 };
 type ConfigName = keyof ConfigPrivate;
@@ -46,9 +46,19 @@ type WildcardServer = {
   Promise<EndpointResult> | EndpointResult;
 };
 
+/** Wildcard Client */
 class WildcardClient {
-  config: ConfigPublic;
+  /**
+   * The object holding the endpoint functions.
+   */
   endpoints: Endpoints;
+
+  /**
+   * Wildcard Client Configuration
+   * @property [baseUrl] Make Wildcard API HTTP requests to `/${baseUrl}/*`. Default: `_wildcard_api`.
+   * @property [disableEtag] Disable caching; Wildcard should not generate HTTP ETag headers
+   */
+  config: Config;
 
   constructor() {
     const config: ConfigPrivate = getConfigProxy({
@@ -57,7 +67,7 @@ class WildcardClient {
       argumentsAlwaysInHttpBody: false,
       __INTERNAL_wildcardServer_test: null,
     });
-    this.config = config as ConfigPublic;
+    this.config = config as Config;
 
     this.endpoints = getEndpointsProxy(config);
   }

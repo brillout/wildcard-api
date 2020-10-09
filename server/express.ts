@@ -1,9 +1,12 @@
 import { MiddlewareFactory } from "./MiddlewareFactory";
 // @ts-ignore
 import ExpressAdapter = require("@universal-adapter/express");
-import { RequestHandler } from "express";
+import { RequestHandler, Request } from "express";
 
-export const wildcard = MiddlewareFactory<RequestHandler>(
+type ExpressMiddleware = RequestHandler;
+type HttpRequest = Request;
+
+export const wildcard = MiddlewareFactory<ExpressMiddleware, HttpRequest>(
   ExpressAdapter,
   "express"
 );

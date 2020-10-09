@@ -2,10 +2,11 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "declaration": true,
-    "composite": true,
     "sourceMap": true,
+    "declaration": true,
     "declarationMap": true,
+    "stripInternal": true,
+    "composite": true,
     "strict": true
   },
 

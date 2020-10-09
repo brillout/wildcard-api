@@ -28,15 +28,11 @@ type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = () => Promise<Context> | Context;
 
-/**
- * Wildcard Server Configuration
- */
+/** Configure Wildcard Server */
 type Config = {
-  /**
-   * Serve Wildcard API at `/${baseUrl}/*`. Default: `_wildcard_api`.
-   */
+  /** Set the root path directory of API URLs */
   baseUrl: string;
-  /** Disable caching. (Wildcard will not generate the HTTP ETag header) */
+  /** Disable HTTP ETag header generation */
   disableEtag: boolean;
 };
 type ConfigName = keyof Config;
@@ -91,8 +87,18 @@ type RequestInfo = {
   isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
 };
 
+/** Wildcard Server */
 class WildcardServer {
+  /**
+   * The object holding the endpoint functions.
+   */
   endpoints: Endpoints;
+
+  /**
+   * Wildcard Server Configuration
+   * @property [baseUrl] - Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`.
+   * @property [disableEtag] - Disable caching; Wildcard should not generate HTTP ETag headers
+   */
   config: Config;
 
   constructor() {
@@ -103,9 +109,18 @@ class WildcardServer {
     });
   }
 
+  /**
+   * Return the HTTP API response of an API HTTP request. For custom Wildcard integrations.
+   * @param requestProps.url HTTP request URL
+   * @param requestProps.method HTTP request method
+   * @param requestProps.body HTTP request body
+   * @param context The context object; the endpoint functions' `this`.
+   * @returns HTTP API response
+   */
   async getApiHttpResponse(
     requestProps: HttpRequestProps,
-    context: Context | ContextGetter,
+    context?: Context | ContextGetter,
+    /** @ignore */
     {
       __INTERNAL_universalAdapter,
     }: { __INTERNAL_universalAdapter?: UniversalAdapterName } = {}

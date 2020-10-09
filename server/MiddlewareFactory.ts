@@ -10,23 +10,19 @@ import {
 
 export { MiddlewareFactory };
 
-type ServerFrameworkRequestObject = unknown & {
-  _brand: "ServerFrameworkRequestObject";
-};
+type SetContext<HttpRequest> = (req: HttpRequest) => Promise<Context> | Context;
+
 type ServerAdapterOptions = any & { _brand: "ServerAdapterOptions" };
 
-type RequestHandlerArg0 = ServerFrameworkRequestObject;
 type RequestHandlerArg1 = { requestProps: HttpRequestProps };
 type RequestHandlerReturn = Promise<HttpResponseProps | null>;
-type RequestHandler = (
-  arg0: RequestHandlerArg0,
+type RequestHandler<HttpRequest> = (
+  req: HttpRequest,
   arg1: RequestHandlerArg1
 ) => RequestHandlerReturn;
 
-type SetContext = (arg0: ServerFrameworkRequestObject) => Promise<Context>;
-
-type ServerAdapter<ServerMiddleware> = (
-  arg0: RequestHandler[],
+type ServerAdapter<ServerMiddleware, HttpRequest> = (
+  arg0: RequestHandler<HttpRequest>[],
   arg1: ServerAdapterOptions
 ) => ServerMiddleware;
 
@@ -37,11 +33,11 @@ type WildcardServerOption = {
   __INTERNAL_wildcardServer_middleware?: WildcardServerHolder;
 };
 
-function createMiddleware<ServerMiddleware>(
-  serverAdapter: ServerAdapter<ServerMiddleware>,
+function createMiddleware<ServerMiddleware, HttpRequest>(
+  serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
   __INTERNAL_wildcardServer_middleware: WildcardServerHolder | undefined,
   adapterOptions: ServerAdapterOptions,
-  setContext: SetContext,
+  setContext: SetContext<HttpRequest> | undefined,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ): ServerMiddleware {
   const middleware = serverAdapter([requestHandler], adapterOptions);
@@ -49,7 +45,7 @@ function createMiddleware<ServerMiddleware>(
   return middleware;
 
   async function requestHandler(
-    requestObject: RequestHandlerArg0,
+    requestObject: HttpRequest,
     { requestProps }: RequestHandlerArg1
   ): RequestHandlerReturn {
     const wildcardServer = __INTERNAL_wildcardServer_middleware
@@ -81,17 +77,29 @@ function createMiddleware<ServerMiddleware>(
   }
 }
 
-function MiddlewareFactory<ServerMiddleware>(
-  serverAdapter: ServerAdapter<ServerMiddleware>,
+function MiddlewareFactory<ServerMiddleware, HttpRequest>(
+  serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
   __INTERNAL_universalAdapter: UniversalAdapterName,
   adapterOptions?: ServerAdapterOptions
-): (arg0: SetContext) => ServerMiddleware {
+): (setContext?: SetContext<HttpRequest>) => ServerMiddleware {
   return wildcard;
+  /**
+   * Set the context object - the endpoint functions' `this`.
+   * @callback setContext
+   * @param req The request object provided by your server framework (Epxress, Koa, or Hapi).
+   * @returns The context object; the endpoint functions' `this`.
+   */
+  /**
+   * Create a Wildcard server middleware.
+   * @param [setContext] Set the context object; the endpoint functions' `this`.
+   * @returns Server middleware.
+   */
   function wildcard(
-    setContext: SetContext,
+    setContext?: SetContext<HttpRequest>,
+    /** @ignore */
     { __INTERNAL_wildcardServer_middleware }: WildcardServerOption = {}
   ): ServerMiddleware {
-    const middleware = createMiddleware<ServerMiddleware>(
+    const middleware = createMiddleware<ServerMiddleware, HttpRequest>(
       serverAdapter,
       __INTERNAL_wildcardServer_middleware,
       adapterOptions,
