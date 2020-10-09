@@ -19,10 +19,13 @@ type Endpoints = Record<EndpointName, EndpointFunction>;
 // Context
 type Context = (object & { _brand?: "Context" }) | undefined;
 
-// Config
+/** Wildcard Client Configuration */
 type Config = {
+  /** The address of the server, e.g. `https://api.example.org/`. */
   serverUrl: ServerURL;
+  /** Make API HTTP requests to `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
+  /** Make API HTTP request URLs short: always use the the HTTP request body to transport endpoint arguments (instead of serializing endpoint arguments into the HTTP request URL). */
   argumentsAlwaysInHttpBody: boolean;
 };
 type ServerURL = string | null;
@@ -46,18 +49,9 @@ type WildcardServer = {
   Promise<EndpointResult> | EndpointResult;
 };
 
-/** Wildcard Client */
 class WildcardClient {
-  /**
-   * The object holding the endpoint functions.
-   */
   endpoints: Endpoints;
 
-  /**
-   * Wildcard Client Configuration
-   * @property [baseUrl] Make Wildcard API HTTP requests to `/${baseUrl}/*`. Default: `_wildcard_api`.
-   * @property [disableEtag] Disable caching; Wildcard should not generate HTTP ETag headers
-   */
   config: Config;
 
   constructor() {

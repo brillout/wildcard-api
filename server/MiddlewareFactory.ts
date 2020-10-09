@@ -86,7 +86,7 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
   /**
    * Set the context object - the endpoint functions' `this`.
    * @callback setContext
-   * @param req The request object provided by your server framework (Epxress, Koa, or Hapi).
+   * @param req The request object provided by server framework (Epxress, Koa, or Hapi).
    * @returns The context object; the endpoint functions' `this`.
    */
   /**

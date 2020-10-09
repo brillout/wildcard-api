@@ -28,11 +28,11 @@ type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = () => Promise<Context> | Context;
 
-/** Configure Wildcard Server */
+/** Wildcard Server Configuration */
 type Config = {
-  /** Set the root path directory of API URLs */
+  /** Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
-  /** Disable HTTP ETag header generation */
+  /** Disable caching; Wildcard will not generate HTTP ETag headers. */
   disableEtag: boolean;
 };
 type ConfigName = keyof Config;
@@ -87,22 +87,14 @@ type RequestInfo = {
   isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
 };
 
-/** Wildcard Server */
 class WildcardServer {
-  /**
-   * The object holding the endpoint functions.
-   */
   endpoints: Endpoints;
 
-  /**
-   * Wildcard Server Configuration
-   * @property [baseUrl] - Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`.
-   * @property [disableEtag] - Disable caching; Wildcard should not generate HTTP ETag headers
-   */
   config: Config;
 
   constructor() {
     this.endpoints = getEndpointsProxy();
+
     this.config = getConfigProxy({
       disableEtag: false,
       baseUrl: "/_wildcard_api/",
