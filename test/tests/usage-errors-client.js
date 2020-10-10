@@ -4,7 +4,6 @@ module.exports = [
   endpointManipulationWithClient,
   cannotSerialize,
   wrongServerUrl,
-  unknownConfigServer,
   missingServerUrl,
 ];
 
@@ -73,14 +72,6 @@ async function wrongServerUrl({ wildcardClient, assertStderr }) {
   assertStderr(
     "You set `config.serverUrl==undefined` but it should be an HTTP address"
   );
-}
-
-async function unknownConfigServer({ wildcardClient }) {
-  try {
-    wildcardClient.config.blablub = undefined;
-  } catch (err) {
-    assert(err.message.includes("Unknown config `blablub`"));
-  }
 }
 
 missingServerUrl.isIntegrationTest = true;

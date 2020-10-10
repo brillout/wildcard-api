@@ -20,8 +20,6 @@ module.exports = [
   wrongUsage_getApiHttpResponse_5,
 
   wrongEndpointFunction,
-
-  unknownConfigSever,
 ];
 
 async function endpointMissing_noEndpoints_serverSide({
@@ -258,14 +256,6 @@ async function wrongEndpointFunction({ server }) {
         "An endpoint must be a function, but the endpoint `stringi` is a `String`"
       )
     );
-  }
-}
-
-async function unknownConfigSever({ wildcardServer }) {
-  try {
-    wildcardServer.config.bliblab = undefined;
-  } catch (err) {
-    assert(err.message.includes("Unknown config `bliblab`"));
   }
 }
 
