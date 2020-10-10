@@ -117,98 +117,134 @@ class WildcardServer {
       __INTERNAL_universalAdapter,
     }: { __INTERNAL_universalAdapter?: UniversalAdapterName } = {}
   ): Promise<HttpResponseProps | null> {
-    context = await getContext(context);
-
-    const wrongApiUsage = validateApiUsage(
-      requestProps,
-      context,
-      __INTERNAL_universalAdapter
-    );
-    if (wrongApiUsage) {
-      return httpResponse_wrongApiUsage(wrongApiUsage);
+    try {
+      return await _getApiHttpResponse(
+        requestProps,
+        context,
+        this.endpoints,
+        this.config,
+        __INTERNAL_universalAdapter
+      );
+    } catch (internalError) {
+      // There is a bug in the Wildcard source code
+      return handle_internalError(internalError);
     }
-
-    const {
-      endpointName,
-      endpointArgs,
-      malformedRequest,
-      malformedIntegration,
-      isNotWildcardRequest,
-      isHumanMode,
-    }: RequestInfo = parseRequestInfo(
-      requestProps,
-      this.endpoints,
-      this.config,
-      __INTERNAL_universalAdapter
-    );
-
-    if (isNotWildcardRequest) {
-      return null;
-    }
-
-    if (malformedRequest) {
-      return httpResponse_malformedRequest(malformedRequest);
-    }
-
-    if (malformedIntegration) {
-      return httpResponse_malformedIntegration(malformedIntegration);
-    }
-
-    if (!endpointName || !endpointArgs) {
-      assert(false);
-      // Make TS happy
-      throw new Error();
-    }
-
-    const { endpointResult, endpointError } = await runEndpoint(
-      endpointName,
-      endpointArgs,
-      context,
-      false,
-      this.endpoints
-    );
-
-    return httpResponse_endpoint(
-      endpointResult,
-      endpointError,
-      isHumanMode,
-      endpointName,
-      this.config
-    );
   }
 
+  /** @private */
   async __directCall(
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
     context: Context
   ) {
-    assert(endpointName);
-    assert(endpointArgs.constructor === Array);
-
-    if (noEndpoints(this.endpoints)) {
-      autoLoadEndpointFiles();
-    }
-
-    assertUsage(
-      doesEndpointExist(endpointName, this.endpoints),
-      getEndpointMissingText(endpointName, this.endpoints).join(" ")
-    );
-
-    const resultObject = await runEndpoint(
+    return await directCall(
       endpointName,
       endpointArgs,
       context,
-      true,
       this.endpoints
     );
+  }
+}
 
-    const { endpointResult, endpointError } = resultObject;
+async function _getApiHttpResponse(
+  requestProps: HttpRequestProps,
+  context: Context | ContextGetter | undefined,
+  endpoints: Endpoints,
+  config: Config,
+  __INTERNAL_universalAdapter: UniversalAdapterName | undefined
+): Promise<HttpResponseProps | null> {
+  context = await getContext(context);
 
-    if (endpointError) {
-      throw endpointError;
-    } else {
-      return endpointResult;
-    }
+  const wrongApiUsage = validateApiUsage(
+    requestProps,
+    context,
+    __INTERNAL_universalAdapter
+  );
+  if (wrongApiUsage) {
+    return httpResponse_wrongApiUsage(wrongApiUsage);
+  }
+
+  const {
+    endpointName,
+    endpointArgs,
+    malformedRequest,
+    malformedIntegration,
+    isNotWildcardRequest,
+    isHumanMode,
+  }: RequestInfo = parseRequestInfo(
+    requestProps,
+    endpoints,
+    config,
+    __INTERNAL_universalAdapter
+  );
+
+  if (isNotWildcardRequest) {
+    return null;
+  }
+
+  if (malformedRequest) {
+    return httpResponse_malformedRequest(malformedRequest);
+  }
+
+  if (malformedIntegration) {
+    return httpResponse_malformedIntegration(malformedIntegration);
+  }
+
+  if (!endpointName || !endpointArgs) {
+    assert(false);
+    // Make TS happy
+    throw new Error();
+  }
+
+  const { endpointResult, endpointError } = await runEndpoint(
+    endpointName,
+    endpointArgs,
+    context,
+    false,
+    endpoints
+  );
+
+  return httpResponse_endpoint(
+    endpointResult,
+    endpointError,
+    isHumanMode,
+    endpointName,
+    config
+  );
+}
+
+async function directCall(
+  endpointName: EndpointName,
+  endpointArgs: EndpointArgs,
+  context: Context,
+  endpoints: Endpoints
+) {
+  assert(endpointName);
+  assert(endpointArgs.constructor === Array);
+
+  if (noEndpoints(endpoints)) {
+    autoLoadEndpointFiles();
+  }
+
+  assertUsage(
+    doesEndpointExist(endpointName, endpoints),
+    getEndpointMissingText(endpointName, endpoints).join(" ")
+  );
+
+  const resultObject = await runEndpoint(
+    endpointName,
+    endpointArgs,
+    context,
+    true,
+    endpoints
+  );
+
+  const { endpointResult, endpointError } = resultObject;
+
+  if (endpointError) {
+    throw endpointError;
+  } else {
+    return endpointResult;
   }
 }
 
@@ -697,6 +733,10 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
   return Object.keys(endpoints);
 }
 
+function handle_internalError(internalError: Error): HttpResponseProps {
+  console.error(internalError);
+  return HttpResponse_serverSideError();
+}
 function httpResponse_endpointError(
   endpointError: EndpointError
 ): HttpResponseProps {
