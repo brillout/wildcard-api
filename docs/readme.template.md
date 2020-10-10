@@ -331,7 +331,7 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~
 
    > :information_source:
-   > Wildcard automatically loads any file named `endpoints.js` or `*.endpoints.js`.
+   > Wildcard automatically loads files named `endpoints.js` or `*.endpoints.js`.
 
 3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
