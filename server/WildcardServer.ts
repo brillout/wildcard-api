@@ -151,14 +151,15 @@ async function _getApiHttpResponse(
   context: Context | ContextGetter | undefined,
   endpoints: Endpoints,
   config: Config,
-  __INTERNAL_universalAdapter: UniversalAdapterName | undefined
+  universalAdapterName: UniversalAdapterName | undefined
 ): Promise<HttpResponseProps | null> {
   context = await getContext(context);
+  assert(context === undefined || context instanceof Object);
 
   const wrongApiUsage = validateApiUsage(
     requestProps,
     context,
-    __INTERNAL_universalAdapter
+    universalAdapterName
   );
   if (wrongApiUsage) {
     return handleWrongApiUsage(wrongApiUsage);
@@ -175,7 +176,7 @@ async function _getApiHttpResponse(
     requestProps,
     endpoints,
     config,
-    __INTERNAL_universalAdapter
+    universalAdapterName
   );
 
   if (isNotWildcardRequest) {
@@ -201,7 +202,8 @@ async function _getApiHttpResponse(
     endpointArgs,
     context,
     false,
-    endpoints
+    endpoints,
+    universalAdapterName
   );
 
   return httpResponse_endpoint(
@@ -236,7 +238,8 @@ async function directCall(
     endpointArgs,
     context,
     true,
-    endpoints
+    endpoints,
+    undefined
   );
 
   const { endpointResult, endpointError } = resultObject;
@@ -253,7 +256,8 @@ async function runEndpoint(
   endpointArgs: EndpointArgs,
   context: Context,
   isDirectCall: IsDirectCall,
-  endpoints: Endpoints
+  endpoints: Endpoints,
+  universalAdapterName: UniversalAdapterName
 ): Promise<{
   endpointResult?: EndpointResult;
   endpointError?: EndpointError;
@@ -269,7 +273,8 @@ async function runEndpoint(
   const contextProxy: ContextObject = createContextProxy(
     context,
     endpointName,
-    isDirectCall
+    isDirectCall,
+    universalAdapterName
   );
   assert(contextProxy !== undefined);
   assert(contextProxy instanceof Object);
@@ -475,62 +480,70 @@ function getConfigProxy(configDefaults: Config): Config {
 function createContextProxy(
   context: Context,
   endpointName: EndpointName,
-  isDirectCall: IsDirectCall
+  isDirectCall: IsDirectCall,
+  universalAdapterName: UniversalAdapterName
 ): ContextObject {
   let contextObject: ContextObject = context || {};
   const contextProxy: ContextObject = new Proxy(contextObject, { get, set });
   return contextProxy;
 
-  function set(_: ContextObject, contextProp: string, contextValue: unknown) {
-    contextObject[contextProp] = contextValue;
-    return true;
+  function set() {
+    assertUsage(false, "The context object cannot be modified.");
+    // Make TS happy
+    return false;
   }
   function get(_: ContextObject, contextProp: string) {
     assertUsage(
-      context || !isDirectCall,
-      getNodejsContextUsageNote(endpointName, contextProp)
+      context,
+      getContextUsageNote(
+        endpointName,
+        contextProp,
+        isDirectCall,
+        universalAdapterName
+      )
     );
 
     return contextObject[contextProp];
   }
 }
 
-function getNodejsContextUsageNote(endpointName: EndpointName, prop: string) {
-  const propNameIsNormal = isPropNameNormal(prop);
-  const contextUsageNote = ["Wrong usage of the Wildcard client in Node.js."];
+function getContextUsageNote(
+  endpointName: EndpointName,
+  prop: string,
+  isDirectCall: IsDirectCall,
+  universalAdapterName: UniversalAdapterName
+) {
+  const common = [
+    `Your endpoint function \`${endpointName}\` is trying to get \`this.${prop}\`,`,
+    "but you didn't define any context and",
+    "as a result `this` is `undefined`.",
+    `Make sure to provide a context`,
+  ].join(" ");
 
-  if (propNameIsNormal) {
-    contextUsageNote.push(
-      `Cannot get \`this.${prop}\` because you didn't provide \`${prop}\`.`,
-      `Make sure to provide \`${prop}\` by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`
-    );
-  } else {
-    contextUsageNote.push(
-      "When using the Wildcard client in Node.js, make sure to use `bind()` in order to provide the context."
-    );
+  if (!isDirectCall) {
+    const contextSource = universalAdapterName
+      ? `with the \`setContext\` function when using the \`wildcard(setContext)\` ${universalAdapterName} middleware.`
+      : "when using `getApiHttpResponse(requestProps, context)`.";
+
+    return [common, contextSource].join(" ");
   }
 
-  contextUsageNote.push(
-    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md"
-  );
+  assert(isDirectCall);
+  assert(universalAdapterName === undefined);
 
-  return contextUsageNote.join(" ");
-}
-
-function isPropNameNormal(prop: string) {
-  let propStr: string | undefined;
-  try {
-    propStr = prop.toString();
-  } catch (err) {}
-
-  return propStr === prop && /^[a-zA-Z0-9_]+$/.test(prop);
+  return [
+    "Wrong usage of the Wildcard client in Node.js.",
+    common,
+    `by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`,
+    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+  ].join(" ");
 }
 
 function parseRequestInfo(
   requestProps: HttpRequestProps,
   endpoints: Endpoints,
   config: Config,
-  __INTERNAL_universalAdapter: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName
 ): RequestInfo {
   assert(requestProps.url && requestProps.method);
 
@@ -584,7 +597,7 @@ function parseRequestInfo(
     argsInUrl,
     requestBody,
     requestProps,
-    __INTERNAL_universalAdapter
+    universalAdapterName
   );
   if (malformedRequest || malformedIntegration) {
     assert(!malformedIntegration || !malformedRequest);
@@ -608,7 +621,7 @@ function getEndpointArgs(
   argsInUrl: ArgsInUrl,
   requestBody: HttpRequestBody | undefined,
   requestProps: HttpRequestProps,
-  __INTERNAL_universalAdapter: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName
 ): {
   endpointArgs?: EndpointArgs;
   malformedRequest?: MalformedRequest;
@@ -622,11 +635,11 @@ function getEndpointArgs(
     if (!requestBody) {
       const malformedIntegration = getUsageError(
         [
-          __INTERNAL_universalAdapter
-            ? `Your ${__INTERNAL_universalAdapter} server is not providing the HTTP request body.`
+          universalAdapterName
+            ? `Your ${universalAdapterName} server is not providing the HTTP request body.`
             : "Argument `body` missing when calling `getApiHttpResponse()`.",
           "You need to provide the HTTP request body when calling an endpoint with arguments serialized to >=2000 characters.",
-          getBodyUsageNote(requestProps, __INTERNAL_universalAdapter),
+          getBodyUsageNote(requestProps, universalAdapterName),
         ].join(" ")
       );
       return {
@@ -826,7 +839,7 @@ function handleEndpointResult(
 function validateApiUsage(
   requestProps: HttpRequestProps,
   context: Context,
-  __INTERNAL_universalAdapter: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName
 ) {
   try {
     validate();
@@ -837,7 +850,7 @@ function validateApiUsage(
   function validate() {
     assert(
       (requestProps && requestProps.url && requestProps.method) ||
-        !__INTERNAL_universalAdapter
+        !universalAdapterName
     );
 
     const missArg = (args: string[]) =>
@@ -869,19 +882,19 @@ function validateApiUsage(
 
 function getBodyUsageNote(
   requestProps: HttpRequestProps,
-  __INTERNAL_universalAdapter: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName
 ) {
   const expressNote =
     "make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.";
   const koaNote =
     "make sure to parse the body, for example: `app.use(require('koa-bodyparser')())`.";
-  if (__INTERNAL_universalAdapter === "express") {
+  if (universalAdapterName === "express") {
     return "You seem to be using Express; " + expressNote;
   }
-  if (__INTERNAL_universalAdapter === "koa") {
+  if (universalAdapterName === "koa") {
     return "You seem to be using Koa; " + expressNote;
   }
-  if (__INTERNAL_universalAdapter === "hapi") {
+  if (universalAdapterName === "hapi") {
     assert("body" in requestProps);
   }
   return [
@@ -940,13 +953,27 @@ function assertNodejs() {
 }
 
 async function getContext(context: Context | ContextGetter): Promise<Context> {
+  if (context === undefined) {
+    return undefined;
+  }
   if (!context) {
     return context;
   }
-  if (!isCallable(context)) {
-    return context as Context;
+  if (isCallable(context)) {
+    const fnName = context.name;
+    context = await (context as ContextGetter)();
+    assertUsage(
+      context instanceof Object,
+      [
+        "Your context function",
+        ...(!fnName ? [] : ["`" + fnName + "`"]),
+        "should return a `instanceof Object`.",
+        "If there is no context, then return the empty object `{}`.",
+      ].join(" ")
+    );
   }
-  return await (context as ContextGetter)();
+  assert(context);
+  return context as Context;
 }
 
 function loadTimeStuff() {
