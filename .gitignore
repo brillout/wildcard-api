@@ -17,6 +17,3 @@ package-lock.json
 
 # Yarn
 yarn-error.log
-
-# Private todo-list
-todo.md
