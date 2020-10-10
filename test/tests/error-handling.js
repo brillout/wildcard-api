@@ -7,7 +7,7 @@ module.exports = [
 
 async function endpointBug({ server, browserEval, assertStderr }) {
   server.buggyEndpoint1 = async function () {
-    throw new Error("This is a simulated bug");
+    throw new Error("[TEST-ERROR] This is a simulated bug");
     // @ts-ignore
     return "You shouldn't see me";
   };
@@ -25,7 +25,7 @@ async function endpointBug({ server, browserEval, assertStderr }) {
       err.message === "Endpoint function `buggyEndpoint1` threw an error."
     );
   });
-  assertStderr("This is a simulated bug");
+  assertStderr("[TEST-ERROR] This is a simulated bug");
 }
 
 async function noConnection({ server, browserEval, assertStderr }) {

@@ -19,9 +19,11 @@ module.exports = [
 
   // The context is `undefined`
   undefinedContext1,
-  undefinedContext2,
-  undefinedContext3,
-  undefinedContext_getApiHttpResponse,
+  wrongSetContext2,
+  wrongSetContext3,
+  wrongSetContext4,
+  undefinedContext_getApiHttpResponse1,
+  undefinedContext_getApiHttpResponse2,
 
   // The context is the emtpy object `{}`
   emptyContext1,
@@ -70,7 +72,7 @@ async function defineWith_bind({ server, wildcardClient }) {
   let { hello } = wildcardClient.endpoints;
   hello = hello.bind({ numbers });
   const res = await hello("Total: ");
-  assert(res === "total: 6");
+  assert(res === "Total: 6");
 }
 
 undefinedContext1.isIntegrationTest = true;
@@ -137,17 +139,22 @@ async function undefinedContext({
   await stopApp();
 }
 
-undefinedContext2.isIntegrationTest = true;
-async function undefinedContext2(args) {
+wrongSetContext2.isIntegrationTest = true;
+async function wrongSetContext2(args) {
   const setContext = () => undefined;
   await wrongSetContext({ setContext, ...args });
 }
-undefinedContext3.isIntegrationTest = true;
-async function undefinedContext3(args) {
+wrongSetContext3.isIntegrationTest = true;
+async function wrongSetContext3(args) {
   const setContext = async () => undefined;
   await wrongSetContext({ setContext, ...args });
 }
-async function wrongSetContext({ setContext, browserEval, ...args }) {
+async function wrongSetContext({
+  setContext,
+  browserEval,
+  assertStderr,
+  ...args
+}) {
   const { stopApp, server } = await createServer({
     setContext,
     ...args,
@@ -234,11 +241,36 @@ async function defineWith_getApiHttpResponse({ server, wildcardServer }) {
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `9`);
 }
-async function undefinedContext_getApiHttpResponse({ server, wildcardServer }) {
-  server.contexti = function () {
+async function undefinedContext_getApiHttpResponse1({
+  server,
+  wildcardServer,
+  assertStderr,
+}) {
+  server.contexti1 = function () {
     return this.doesNotExist + " abc";
   };
-  const url = "https://example.org/_wildcard_api/contexti";
+  const url = "https://example.org/_wildcard_api/contexti1";
+  const method = "POST";
+  const context = async () => undefined;
+  const responseProps = await wildcardServer.getApiHttpResponse(
+    { url, method },
+    context
+  );
+  assert(responseProps.statusCode === 500);
+  assert(responseProps.body === `Internal Server Error`);
+  assertStderr(
+    "Your context function `context` should return a `instanceof Object`."
+  );
+}
+async function undefinedContext_getApiHttpResponse2({
+  server,
+  wildcardServer,
+  assertStderr,
+}) {
+  server.contexti2 = function () {
+    return this.doesNotExist + " abc";
+  };
+  const url = "https://example.org/_wildcard_api/contexti2";
   const method = "POST";
   const context = undefined;
   const responseProps = await wildcardServer.getApiHttpResponse(
@@ -246,16 +278,16 @@ async function undefinedContext_getApiHttpResponse({ server, wildcardServer }) {
     context
   );
   assert(responseProps.statusCode === 500);
-  assert(responseProps.body === `Interal Server Error`);
+  assert(responseProps.body === `Internal Server Error`);
   assertStderr(
-    "Your endpoint function `contexti` is trying to get `this.doesNotExist`, but you didn't define any context"
+    "Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context"
   );
 }
 async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
-  server.contexti = function () {
+  server.contexti3 = function () {
     return this.doesNotExist + " abc";
   };
-  const url = "https://example.org/_wildcard_api/contexti";
+  const url = "https://example.org/_wildcard_api/contexti3";
   const method = "POST";
   const context = {};
   const responseProps = await wildcardServer.getApiHttpResponse(
@@ -264,4 +296,22 @@ async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
   );
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"undefined abc"`);
+}
+async function wrongSetContext4({ server, wildcardServer }) {
+  server.contexti4 = function () {};
+
+  const url = "https://example.org/_wildcard_api/contexti4";
+  const method = "POST";
+  const context = async () => {
+    throw new Error("[TEST-ERROR] User-error in context function");
+  };
+  const responseProps = await wildcardServer.getApiHttpResponse(
+    { url, method },
+    context
+  );
+  assert(responseProps.statusCode === 500);
+  assert(responseProps.body === `Internal Server Error`);
+  assertStderr(
+    "Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context"
+  );
 }

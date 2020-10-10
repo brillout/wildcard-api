@@ -9,6 +9,7 @@ process.on("unhandledRejection", (err) => {
 const { assertUsage } = require("@brillout/assert");
 const assert = require("assert");
 const util = require("util");
+const stripAnsi = require("strip-ansi");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
@@ -43,23 +44,23 @@ const httpPort = 3442;
 
   const { standardTests, integrationTests } = getTests();
 
-  const silentMode = standardTests.length + integrationTests.length > 1;
+  const debugMode = standardTests.length + integrationTests.length <= 1;
 
   await runStandardTests({
     standardTests,
     browserEval,
     serverFrameworks: ["getApiHttpResponse"],
-    silentMode,
+    debugMode,
   });
 
-  await runIntegrationTests({ integrationTests, browserEval, silentMode });
+  await runIntegrationTests({ integrationTests, browserEval, debugMode });
 
   if (!getSelectedTest()) {
     await runStandardTests({
       standardTests,
       browserEval,
       serverFrameworks: ["express", "koa", "hapi"],
-      silentMode,
+      debugMode,
     });
   }
 
@@ -72,7 +73,7 @@ async function runStandardTests({
   standardTests,
   browserEval,
   serverFrameworks,
-  silentMode,
+  debugMode,
 }) {
   const __INTERNAL_wildcardServer_middleware = {};
 
@@ -111,7 +112,7 @@ async function runStandardTests({
         test,
         testArgs,
         serverFramework,
-        silentMode,
+        debugMode,
       });
     }
 
@@ -123,7 +124,7 @@ async function runTest({
   test: { testFn, testFile },
   serverFramework,
   testArgs,
-  silentMode,
+  debugMode,
 }) {
   const testName =
     "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
@@ -143,7 +144,11 @@ async function runTest({
     stderrContents.push(content);
   };
 
-  const log_collector = new LogCollector({ silenceLogs: silentMode && !DEBUG });
+  debugMode = debugMode || DEBUG;
+  if (debugMode) {
+    console.log("[DEBUG-MODE] Enabled.");
+  }
+  const log_collector = new LogCollector({ debugMode });
   log_collector.enable();
   const { stdoutLogs, stderrLogs } = log_collector;
 
@@ -179,6 +184,7 @@ async function checkStderr({ stderrContents, stderrLogs }) {
   stderrLogs = removeHiddenLog(stderrLogs);
   const stderrLogsLength = stderrLogs.length;
 
+  checkNoInternalError(stderrLogs);
   checkStderrFormat(stderrLogs);
 
   assert(stderrContents === null || stderrContents.length >= 1);
@@ -207,20 +213,51 @@ async function checkStderr({ stderrContents, stderrLogs }) {
 
   function checkStderrFormat(stderrLogs) {
     stderrLogs.forEach((stderrLog) => {
-      const debug = util.inspect(stderrLog);
-
-      const [firstLine, ...errorStackLines] = stderrLog;
+      assert(stderrLog.constructor === String);
+      const [firstLine, ...errorStackLines] = stderrLog.split("\n");
 
       // Always start with a single-line error message
-      assert(!firstLine.startsWith(" "), debug);
+      if (
+        !firstLine.includes("[Wildcard API][Wrong Usage] ") &&
+        !firstLine.includes("[TEST-ERROR]")
+      ) {
+        console.log(stderrLog);
+        assert(false);
+      }
 
       // Always show a stack trace
-      assert(errorStackLines.length >= 1, debug);
+      if (errorStackLines.length <= 5) {
+        console.log(stderrLog);
+        assert(false);
+      }
 
       // Rest is stack trace
       errorStackLines.forEach((errStackLine) => {
-        assert(!errStackLine.startsWith("    at"), debug);
+        if (errStackLine === "") {
+          return;
+        }
+        if (stripAnsi(errStackLine).startsWith("    at")) {
+          return;
+        }
+        console.log("==Error:");
+        console.log(stderrLog);
+        console.log("==Line:");
+        console.log(errStackLine);
+        assert(false);
       });
+    });
+  }
+  function checkNoInternalError(stderrLogs) {
+    stderrLogs.forEach((stderrLog) => {
+      if (
+        !stderrLog.includes("[Internal Error]") &&
+        (stderrLog.includes("[Wildcard API][Wrong Usage]") ||
+          stderrLog.includes("[TEST-ERROR]"))
+      ) {
+        return;
+      }
+      console.log(stderrLog);
+      assert(false);
     });
   }
 }
@@ -365,8 +402,8 @@ function getCLIArgument() {
   return process.argv[2];
 }
 
-function LogCollector({ silenceLogs }) {
-  assert([true, false].includes(silenceLogs));
+function LogCollector({ debugMode }) {
+  assert([true, false].includes(debugMode));
 
   let stdout_write;
   let stderr_write;
@@ -382,14 +419,14 @@ function LogCollector({ silenceLogs }) {
     stdout_write = process.stdout.write;
     stderr_write = process.stderr.write;
     process.stdout.write = (...args) => {
-      if (!silenceLogs) {
+      if (debugMode) {
         stdout_write.apply(process.stdout, args);
       }
       stdout_write_calls.push(args);
       stdoutLogs.push(...args.map((o) => o.toString()));
     };
     process.stderr.write = (...args) => {
-      if (!silenceLogs) {
+      if (debugMode) {
         stderr_write.apply(process.stderr, args);
       }
       stderr_write_calls.push(args);
@@ -401,7 +438,7 @@ function LogCollector({ silenceLogs }) {
     process.stderr.write = stderr_write;
   }
   function flush() {
-    if (!silenceLogs) {
+    if (debugMode) {
       return;
     }
     stdout_write_calls.forEach((args) =>

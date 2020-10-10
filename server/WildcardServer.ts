@@ -151,10 +151,14 @@ async function _getApiHttpResponse(
   context: Context | ContextGetter | undefined,
   endpoints: Endpoints,
   config: Config,
-  universalAdapterName: UniversalAdapterName | undefined
+  universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
   context = await getContext(context);
-  assert(context === undefined || context instanceof Object);
+  try {
+    assert(context === undefined || context instanceof Object);
+  } catch (err) {
+    throw err;
+  }
 
   const wrongApiUsage = validateApiUsage(
     requestProps,
@@ -747,8 +751,17 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 }
 
 function handleInternalError(internalError: Error): HttpResponseProps {
+  addMessage(internalError, "[Wildcard API][Internal Error]");
   console.error(internalError);
   return HttpResponse_serverSideError();
+}
+function addMessage(err: Error, msg: string) {
+  const prefix = "Error: ";
+  if (err.message.startsWith(prefix)) {
+    err.message = prefix + msg + err.message.slice(prefix.length);
+  } else {
+    err.message = msg + err.message;
+  }
 }
 function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
   console.error(endpointError);
