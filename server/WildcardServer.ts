@@ -127,7 +127,7 @@ class WildcardServer {
       );
     } catch (internalError) {
       // There is a bug in the Wildcard source code
-      return handle_internalError(internalError);
+      return handleInternalError(internalError);
     }
   }
 
@@ -161,7 +161,7 @@ async function _getApiHttpResponse(
     __INTERNAL_universalAdapter
   );
   if (wrongApiUsage) {
-    return httpResponse_wrongApiUsage(wrongApiUsage);
+    return handleWrongApiUsage(wrongApiUsage);
   }
 
   const {
@@ -183,11 +183,11 @@ async function _getApiHttpResponse(
   }
 
   if (malformedRequest) {
-    return httpResponse_malformedRequest(malformedRequest);
+    return handleMalformedRequest(malformedRequest);
   }
 
   if (malformedIntegration) {
-    return httpResponse_malformedIntegration(malformedIntegration);
+    return handleMalformedIntegration(malformedIntegration);
   }
 
   if (!endpointName || !endpointArgs) {
@@ -709,9 +709,9 @@ function httpResponse_endpoint(
 ) {
   let responseProps: HttpResponseProps;
   if (endpointError) {
-    responseProps = httpResponse_endpointError(endpointError);
+    responseProps = handleEndpointError(endpointError);
   } else {
-    responseProps = httpResponse_endpointResult(
+    responseProps = handleEndpointResult(
       endpointResult as EndpointResult,
       isHumanMode,
       endpointName
@@ -733,23 +733,19 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
   return Object.keys(endpoints);
 }
 
-function handle_internalError(internalError: Error): HttpResponseProps {
+function handleInternalError(internalError: Error): HttpResponseProps {
   console.error(internalError);
   return HttpResponse_serverSideError();
 }
-function httpResponse_endpointError(
-  endpointError: EndpointError
-): HttpResponseProps {
+function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
   console.error(endpointError);
   return HttpResponse_serverSideError();
 }
-function httpResponse_wrongApiUsage(
-  wrongApiUsage: WrongApiUsage
-): HttpResponseProps {
+function handleWrongApiUsage(wrongApiUsage: WrongApiUsage): HttpResponseProps {
   console.error(wrongApiUsage);
   return HttpResponse_serverSideError();
 }
-function httpResponse_malformedIntegration(
+function handleMalformedIntegration(
   malformedIntegration: MalformedIntegration
 ): HttpResponseProps {
   console.error(malformedIntegration);
@@ -762,7 +758,7 @@ function HttpResponse_serverSideError(): HttpResponseProps {
     contentType: "text/plain",
   };
 }
-function httpResponse_malformedRequest(
+function handleMalformedRequest(
   malformedRequest: MalformedRequest
 ): HttpResponseProps {
   // We do NOT print any error on the server-side
@@ -783,7 +779,7 @@ function HttpResponse_browserSideError(
   };
 }
 
-function httpResponse_endpointResult(
+function handleEndpointResult(
   endpointResult: EndpointResult,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName
@@ -804,7 +800,7 @@ function httpResponse_endpointResult(
     );
   }
   if (endpointError) {
-    return httpResponse_endpointError(endpointError);
+    return handleEndpointError(endpointError);
   }
 
   if (body === undefined) {
