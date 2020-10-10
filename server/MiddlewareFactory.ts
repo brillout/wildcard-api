@@ -87,11 +87,11 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
    * Set the context object - the endpoint functions' `this`.
    * @callback setContext
    * @param req The request object provided by server framework (Epxress, Koa, or Hapi).
-   * @returns The context object; the endpoint functions' `this`.
+   * @returns The context object - the endpoint functions' `this`.
    */
   /**
    * Create a Wildcard server middleware.
-   * @param [setContext] Set the context object; the endpoint functions' `this`.
+   * @param [setContext] Set the context object - the endpoint functions' `this`.
    * @returns Server middleware.
    */
   function wildcard(

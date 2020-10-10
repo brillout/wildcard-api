@@ -102,12 +102,12 @@ class WildcardServer {
   }
 
   /**
-   * Return the HTTP API response of an API HTTP request. For custom Wildcard integrations.
+   * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
    * @param requestProps.url HTTP request URL
    * @param requestProps.method HTTP request method
    * @param requestProps.body HTTP request body
-   * @param context The context object; the endpoint functions' `this`.
-   * @returns HTTP API response
+   * @param context The context object - the endpoint functions' `this`.
+   * @returns HTTP response
    */
   async getApiHttpResponse(
     requestProps: HttpRequestProps,

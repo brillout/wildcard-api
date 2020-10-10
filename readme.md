@@ -415,7 +415,6 @@ Is your API meant to be used by yourself? Use RPC.
 
 3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
-   With a bundler:
    ~~~js
    // Browser
 
