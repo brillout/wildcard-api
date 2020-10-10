@@ -318,7 +318,8 @@ Is your API meant to be used by yourself? Use RPC.
    // `request` is Hapi's request object
    async function setContext(request) {
      const context = {};
-     // Authentication plugins usually make user information available at `request.auth.credentials`.
+     // Authentication plugins usually make user information
+     // available at `request.auth.credentials`.
      context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
      return context;
    }
@@ -433,17 +434,8 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    ~~~html
-   <!DOCTYPE html>
-   <html>
-     <body>
-       <!-- Your HTML content here -->
-
-       <!-- Load JavaScript at the end of HTML -->
-       <script crossorigin src="https://unpkg.com/@wildcard-api/client/wildcard-client.production.min.js"></script>
-       <!-- Your script using Wildcard need to be loaded after loading the Wildcard client -->
-       <script src="my-script-using-wildcard.js"></script>
-     </body>
-   </html>
+   <script crossorigin src="https://unpkg.com/@wildcard-api/client/wildcard-client.production.min.js"></script>
+   <script src="my-script-using-wildcard.js"></script>
    ~~~
    ~~~js
    // my-script-using-wildcard.js
