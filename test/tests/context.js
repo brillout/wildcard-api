@@ -19,17 +19,24 @@ module.exports = [
 
   // The context is `undefined`
   undefinedContext1,
-  wrongSetContext2,
-  wrongSetContext3,
-  wrongSetContext4,
   undefinedContext_getApiHttpResponse1,
   undefinedContext_getApiHttpResponse2,
+
+  setContextReturnsUndefined1,
+  setContextReturnsUndefined2,
+  setContextReturnsWrongValue1,
+  wrongContext_getApiHttpResponse,
+
+  setContextError1,
+  setContextError2,
 
   // The context is the emtpy object `{}`
   emptyContext1,
   emptyContext2,
   emptyContext3,
   emptyContext_getApiHttpResponse,
+
+  contextImmutable,
 ];
 
 // Async `setContext`
@@ -116,7 +123,7 @@ async function undefinedContext({
   };
 
   const errMsg =
-    "Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context";
+    "[Wildcard API][Wrong Usage] Wrong usage of the Wildcard client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md";
   let err;
   try {
     await wildcardClient.endpoints.ctxFunc();
@@ -129,23 +136,25 @@ async function undefinedContext({
     try {
       await window.server.ctxFunc();
     } catch (err) {
-      assert(err.message === "Internal Server Error");
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
+      assert(err.message === "Endpoint function `ctxFunc` threw an error.");
     }
   });
-  assertStderr(errMsg);
+  assertStderr(
+    "[Wildcard API][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `wildcard(setContext)` express middleware."
+  );
 
   await stopApp();
 }
 
-wrongSetContext2.isIntegrationTest = true;
-async function wrongSetContext2(args) {
+setContextReturnsUndefined1.isIntegrationTest = true;
+async function setContextReturnsUndefined1(args) {
   const setContext = () => undefined;
   await wrongSetContext({ setContext, ...args });
 }
-wrongSetContext3.isIntegrationTest = true;
-async function wrongSetContext3(args) {
+setContextReturnsUndefined2.isIntegrationTest = true;
+async function setContextReturnsUndefined2(args) {
   const setContext = async () => undefined;
   await wrongSetContext({ setContext, ...args });
 }
@@ -155,7 +164,7 @@ async function wrongSetContext({
   assertStderr,
   ...args
 }) {
-  const { stopApp, server } = await createServer({
+  const { stopApp, server, wildcardClient } = await createServer({
     setContext,
     ...args,
   });
@@ -166,27 +175,20 @@ async function wrongSetContext({
 
   server.boringEndpoint = function () {};
 
-  const errMsg =
-    "Your context function `boringEndpoint` should return a `instanceof Object`.";
-
-  let err;
-  try {
-    await wildcardClient.endpoints.boringEndpoint();
-  } catch (_err) {
-    err = _err;
-  }
-  assert(err.stack.includes(errMsg));
-
   await browserEval(async () => {
     try {
       await window.server.boringEndpoint();
     } catch (err) {
-      assert(err.message === "Internal Server Error");
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
+      assert(
+        err.message === "Endpoint function `boringEndpoint` threw an error."
+      );
     }
   });
-  assertStderr(errMsg);
+  assertStderr(
+    "Your context function `setContext` should return a `instanceof Object`."
+  );
 
   await stopApp();
 }
@@ -221,7 +223,7 @@ async function emptyContext({ setContext, browserEval, ...args }) {
     assert(ret_browserSide === "undefined blib");
   });
 
-  const ret_serverSide = await wildcardClient.endpoints.ctxEndpoint();
+  const ret_serverSide = await wildcardClient.endpoints.ctxEndpoint.bind({})();
   assert(ret_serverSide === "undefined blib");
 
   await stopApp();
@@ -280,8 +282,23 @@ async function undefinedContext_getApiHttpResponse2({
   assert(responseProps.statusCode === 500);
   assert(responseProps.body === `Internal Server Error`);
   assertStderr(
-    "Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context"
+    "Error: [Wildcard API][Wrong Usage] Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
   );
+}
+async function wrongContext_getApiHttpResponse({
+  wildcardServer,
+  assertStderr,
+}) {
+  const url = "https://example.org/_wildcard_api/ummm";
+  const method = "GET";
+  const context = null;
+  const responseProps = await wildcardServer.getApiHttpResponse(
+    { url, method },
+    context
+  );
+  assert(responseProps.statusCode === 500);
+  assert(responseProps.body === `Internal Server Error`);
+  assertStderr("The context should be a `instanceof Object`.");
 }
 async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
   server.contexti3 = function () {
@@ -297,13 +314,14 @@ async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"undefined abc"`);
 }
-async function wrongSetContext4({ server, wildcardServer }) {
+async function setContextError1({ server, wildcardServer, assertStderr }) {
   server.contexti4 = function () {};
 
   const url = "https://example.org/_wildcard_api/contexti4";
   const method = "POST";
+  const errMsg = "[TEST-ERROR] User-error in context function";
   const context = async () => {
-    throw new Error("[TEST-ERROR] User-error in context function");
+    throw new Error(errMsg);
   };
   const responseProps = await wildcardServer.getApiHttpResponse(
     { url, method },
@@ -311,7 +329,88 @@ async function wrongSetContext4({ server, wildcardServer }) {
   );
   assert(responseProps.statusCode === 500);
   assert(responseProps.body === `Internal Server Error`);
+  assertStderr(errMsg);
+}
+
+setContextReturnsWrongValue1.isIntegrationTest = true;
+async function setContextReturnsWrongValue1({ assertStderr, ...args }) {
+  const setContext = () => "wrong-context-type";
+
+  await _createAndCallAnEndpoint({ setContext, ...args });
+
   assertStderr(
-    "Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context"
+    "Your context function `setContext` should return a `instanceof Object`."
   );
+}
+async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
+  const { stopApp, server } = await createServer({
+    setContext,
+    ...args,
+  });
+
+  let endpointCalled = false;
+  server.failingEndpoint = async function (name) {
+    endpointCalled = true;
+    return "Dear " + name;
+  };
+
+  await browserEval(async () => {
+    let err;
+    try {
+      await window.server.failingEndpoint("rom");
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.isCodeError === true);
+    assert(err.isConnectionError === false);
+    assert(
+      err.message === "Endpoint function `failingEndpoint` threw an error."
+    );
+  });
+
+  assert(endpointCalled === false);
+
+  await stopApp();
+}
+
+setContextError2.isIntegrationTest = true;
+async function setContextError2({ assertStderr, ...args }) {
+  const errText = "[TEST-ERROR] err" + Math.random();
+  const setContext = async () => {
+    throw new Error(errText);
+  };
+
+  await _createAndCallAnEndpoint({ setContext, ...args });
+
+  assertStderr(errText);
+}
+
+async function contextImmutable({
+  server,
+  wildcardClient,
+  browserEval,
+  assertStderr,
+}) {
+  server.he = async function () {
+    this.nop = 11;
+  };
+  const errMsg = "The context object cannot be modified.";
+
+  try {
+    await wildcardClient.endpoints.he();
+  } catch (err) {
+    assert(err.stack.includes(errMsg));
+  }
+
+  await browserEval(async () => {
+    try {
+      await window.server.he();
+    } catch (err) {
+      assert(err.isCodeError === true);
+      assert(err.isConnectionError === false);
+      assert(err.message === "Endpoint function `he` threw an error.");
+    }
+  });
+
+  assertStderr(errMsg);
 }

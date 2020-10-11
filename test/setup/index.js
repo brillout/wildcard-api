@@ -28,12 +28,6 @@ const {
 } = require("@brillout/cli-theme");
 const chalk = require("chalk");
 
-/*
-const DEBUG = true;
-/*/
-const DEBUG = false;
-//*/
-
 const httpPort = 3442;
 
 (async () => {
@@ -106,6 +100,7 @@ async function runStandardTests({
         wildcardClient,
         WildcardClient,
         httpPort,
+        serverFramework,
       };
 
       await runTest({
@@ -144,7 +139,6 @@ async function runTest({
     stderrContents.push(content);
   };
 
-  debugMode = debugMode || DEBUG;
   if (debugMode) {
     console.log("[DEBUG-MODE] Enabled.");
   }
@@ -156,7 +150,6 @@ async function runTest({
   try {
     await testFn({ ...testArgs, assertStderr });
   } catch (err) {
-    log_collector.flush();
     testFailure = err;
   } finally {
     log_collector.disable();
@@ -167,6 +160,7 @@ async function runTest({
     await checkStderr({ stderrContents, stderrLogs });
     await checkStdout(stdoutLogs);
   } catch (err) {
+    log_collector.flush();
     console.error(err);
     console.log(colorError(symbolError + "Failed test: " + testName));
     process.exit();
@@ -299,21 +293,21 @@ function removeHiddenLog(stdLogs) {
 async function runIntegrationTests({
   integrationTests,
   browserEval,
-  silentMode,
+  debugMode,
 }) {
   for (test of integrationTests) {
     const testArgs = {
       browserEval,
       staticDir,
-      httpPort,
       WildcardClient,
       WildcardServer,
+      httpPort,
     };
     await runTest({
       test,
       testArgs,
       serverFramework: "custom-server",
-      silentMode,
+      debugMode,
     });
   }
 }

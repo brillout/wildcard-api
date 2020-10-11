@@ -59,21 +59,17 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
       autoLoadEndpointFiles();
     }
 
+    const context = setContext?.bind
+      ? setContext.bind(null, requestObject)
+      : setContext;
+
     const responseProps = await wildcardServer.getApiHttpResponse(
       requestProps,
-      getContext,
+      context,
       { __INTERNAL_universalAdapter }
     );
 
     return responseProps;
-
-    async function getContext(): Promise<Context | undefined> {
-      let context: Context | undefined;
-      if (setContext) {
-        context = await setContext(requestObject);
-      }
-      return context;
-    }
   }
 }
 

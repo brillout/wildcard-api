@@ -44,6 +44,7 @@ type MalformedRequest = {
 };
 type MalformedIntegration = UsageError;
 type WrongApiUsage = UsageError;
+type SetContextError = UsageError | Error;
 
 // HTTP Request
 type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
@@ -153,18 +154,14 @@ async function _getApiHttpResponse(
   config: Config,
   universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
-  context = await getContext(context);
   try {
-    assert(context === undefined || context instanceof Object);
-  } catch (err) {
-    throw err;
+    context = await getContext(context);
+  } catch (setContextError) {
+    return handleSetContextError(setContextError);
   }
+  assert(context === undefined || context instanceof Object);
 
-  const wrongApiUsage = validateApiUsage(
-    requestProps,
-    context,
-    universalAdapterName
-  );
+  const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
   if (wrongApiUsage) {
     return handleWrongApiUsage(wrongApiUsage);
   }
@@ -488,7 +485,7 @@ function createContextProxy(
   universalAdapterName: UniversalAdapterName
 ): ContextObject {
   let contextObject: ContextObject = context || {};
-  const contextProxy: ContextObject = new Proxy(contextObject, { get, set });
+  const contextProxy: ContextObject = new Proxy(context || {}, { get, set });
   return contextProxy;
 
   function set() {
@@ -751,7 +748,9 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 }
 
 function handleInternalError(internalError: Error): HttpResponseProps {
-  addMessage(internalError, "[Wildcard API][Internal Error]");
+  const msg =
+    "[Wildcard API][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/reframejs/wildcard-api/issues/new and include this error stack. ";
+  addMessage(internalError, msg);
   console.error(internalError);
   return HttpResponse_serverSideError();
 }
@@ -765,6 +764,12 @@ function addMessage(err: Error, msg: string) {
 }
 function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
   console.error(endpointError);
+  return HttpResponse_serverSideError();
+}
+function handleSetContextError(
+  setContextError: SetContextError
+): HttpResponseProps {
+  console.error(setContextError);
   return HttpResponse_serverSideError();
 }
 function handleWrongApiUsage(wrongApiUsage: WrongApiUsage): HttpResponseProps {
@@ -851,7 +856,6 @@ function handleEndpointResult(
 
 function validateApiUsage(
   requestProps: HttpRequestProps,
-  context: Context,
   universalAdapterName: UniversalAdapterName
 ) {
   try {
@@ -885,11 +889,6 @@ function validateApiUsage(
         ).join(", ")}] but is \`${method}\`.`
       );
     }
-
-    assertUsage(
-      context === undefined || context instanceof Object,
-      "The context object should be a `instanceof Object` or `undefined`."
-    );
   }
 }
 
@@ -969,11 +968,8 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
   if (context === undefined) {
     return undefined;
   }
-  if (!context) {
-    return context;
-  }
   if (isCallable(context)) {
-    const fnName = context.name;
+    const fnName = getFunctionName(context as ContextGetter);
     context = await (context as ContextGetter)();
     assertUsage(
       context instanceof Object,
@@ -985,8 +981,26 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
       ].join(" ")
     );
   }
-  assert(context);
+  assertUsage(
+    context instanceof Object,
+    [
+      "The context should be a `instanceof Object`.",
+      "If there is no context, then return the empty object `{}`.",
+    ].join(" ")
+  );
   return context as Context;
+}
+
+function getFunctionName(fn: () => unknown): string {
+  let { name } = fn;
+  if (!name) {
+    return name;
+  }
+  const PREFIX = "bound ";
+  if (name.startsWith(PREFIX)) {
+    return name.slice(PREFIX.length);
+  }
+  return name;
 }
 
 function loadTimeStuff() {
