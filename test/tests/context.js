@@ -6,6 +6,15 @@
 // - Show an error when the user forgets to `bind()` while doing SSR
 // - Keep things JS-esque and simple
 
+// Use cases:
+// - [Server-side] Bind undefined - no context usage [valid]
+// - [Server-side] Bind undefined - context usage [invalid]
+// - [Server-side] Bind {} - missing context [valid]
+// - [Client-side] getApiHttpResponse/wildcard(setContext) undefined - no context usage [valid]
+// - [Client-side] getApiHttpResponse/wildcard(setContext) undefined - context usage [invalid]
+// - [Client-side] getApiHttpResponse/wildcard(setContext) ()=>(undefined) [invalid]
+// - [Client-side] getApiHttpResponse/wildcard(setContext) {}/()=>({}) - missing context [valid]
+
 const { createServer } = require("./details");
 
 module.exports = [
@@ -17,25 +26,45 @@ module.exports = [
   // Set context with `getApiHttpResponse`
   defineWith_getApiHttpResponse,
 
-  // The context is `undefined`
-  undefinedContext1,
-  undefinedContext_getApiHttpResponse1,
-  undefinedContext_getApiHttpResponse2,
+  // ### Context is `undefined`
+  // [Server-side] No `bind()`, not using context: valid
+  // [Server-side] `bind(undefined)`, not using context: valid
+  // [Server-side] No `bind()`, using context: invalid
+  // [Server-side] `bind(undefined)`, using context: invalid
+  // [Client-side] `wildcard(setContext)`, `setContext===undefined`, not using context: valid
+  // [Client-side] `wildcard(setContext)`, `setContext===undefined`, using context: invalid
+  undefinedContext,
+  // [Client-side] `getApiHttpResponse(_, context)`, `context===undefined`, not using context: valid
+  // [Client-side] `getApiHttpResponse(_, context)`, `context===undefined`, using context: invalid
+  undefinedContext_getApiHttpResponse,
 
+  // ### Wrong context function
+  // [Client-side] `wildcard(() => undefined)`: invalid
   setContextReturnsUndefined1,
+  // [Client-side] `wildcard(async () => undefined)`: invalid
   setContextReturnsUndefined2,
+  // [Client-side] `getApiHttpResponse(_, () => undefined)`: invalid
+  setContextReturnsUndefined_getApiHttpResponse,
+  // [Client-side] `wildcard(() => 'string')`, `context === `: invalid
   setContextReturnsWrongValue1,
+  // [Client-side] `wildcard(() => throw)`
+  setContextThrows,
+  // [Client-side] `getApiHttpResponse(_, () => throw)`
+  setContextThrows_getApiHttpResponse,
+  // [Client-side] `getApiHttpResponse(_, null)`: invalid
   wrongContext_getApiHttpResponse,
 
-  setContextError1,
-  setContextError2,
-
-  // The context is the emtpy object `{}`
+  // ### Context is `{}`
+  // [Client-side] `wildcard({})`, using missing context: valid
   emptyContext1,
+  // [Client-side] `wildcard(() => {})`, using missing context: valid
   emptyContext2,
+  // [Client-side] `wildcard(async () => {})`, using missing context: valid
   emptyContext3,
+  // [Client-side] `getApiHttpResponse(_, {})`, using missing context: valid
   emptyContext_getApiHttpResponse,
 
+  // `server.someEndpoint = function() { this.newCtx = 'bla' }`: invalid
   contextImmutable,
 ];
 
@@ -82,11 +111,7 @@ async function defineWith_bind({ server, wildcardClient }) {
   assert(res === "Total: 6");
 }
 
-undefinedContext1.isIntegrationTest = true;
-async function undefinedContext1(args) {
-  const setContext = undefined;
-  await undefinedContext({ setContext, ...args });
-}
+undefinedContext.isIntegrationTest = true;
 async function undefinedContext({
   setContext,
   browserEval,
@@ -94,7 +119,7 @@ async function undefinedContext({
   ...args
 }) {
   const { stopApp, server, wildcardClient } = await createServer({
-    setContext,
+    setContext: undefined,
     ...args,
   });
 
@@ -106,8 +131,13 @@ async function undefinedContext({
     return "works fine " + msg;
   };
 
-  const ret_serverSide = await wildcardClient.endpoints.contextLessFunc("rom");
-  assert(ret_serverSide === "works fine rom");
+  const ret_serverSide1 = await wildcardClient.endpoints.contextLessFunc("rom");
+  assert(ret_serverSide1 === "works fine rom");
+
+  const ret_serverSide2 = await wildcardClient.endpoints.contextLessFunc.bind(
+    undefined
+  )("brillout");
+  assert(ret_serverSide2 === "works fine brillout");
 
   await browserEval(async () => {
     const ret_browserSide = await window.server.contextLessFunc("romi");
@@ -127,6 +157,12 @@ async function undefinedContext({
   let err;
   try {
     await wildcardClient.endpoints.ctxFunc();
+  } catch (_err) {
+    err = _err;
+  }
+  assert(err.stack.includes(errMsg));
+  try {
+    await wildcardClient.endpoints.ctxFunc.bind(undefined)();
   } catch (_err) {
     err = _err;
   }
@@ -164,7 +200,7 @@ async function wrongSetContext({
   assertStderr,
   ...args
 }) {
-  const { stopApp, server, wildcardClient } = await createServer({
+  const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
@@ -243,47 +279,63 @@ async function defineWith_getApiHttpResponse({ server, wildcardServer }) {
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `9`);
 }
-async function undefinedContext_getApiHttpResponse1({
+async function setContextReturnsUndefined_getApiHttpResponse({
   server,
   wildcardServer,
   assertStderr,
 }) {
-  server.contexti1 = function () {
-    return this.doesNotExist + " abc";
-  };
-  const url = "https://example.org/_wildcard_api/contexti1";
+  server.boringEndpoint = function () {};
+  const url = "https://example.org/_wildcard_api/boringEndpoint";
   const method = "POST";
-  const context = async () => undefined;
+  const myCtxFunc = async () => undefined;
   const responseProps = await wildcardServer.getApiHttpResponse(
     { url, method },
-    context
+    myCtxFunc
   );
   assert(responseProps.statusCode === 500);
   assert(responseProps.body === `Internal Server Error`);
   assertStderr(
-    "Your context function `context` should return a `instanceof Object`."
+    "Your context function `myCtxFunc` should return a `instanceof Object`."
   );
 }
-async function undefinedContext_getApiHttpResponse2({
+async function undefinedContext_getApiHttpResponse({
   server,
   wildcardServer,
   assertStderr,
 }) {
-  server.contexti2 = function () {
+  server.without_context = function () {
+    return " cba";
+  };
+  server.with_context = function () {
     return this.doesNotExist + " abc";
   };
-  const url = "https://example.org/_wildcard_api/contexti2";
-  const method = "POST";
-  const context = undefined;
-  const responseProps = await wildcardServer.getApiHttpResponse(
-    { url, method },
-    context
-  );
-  assert(responseProps.statusCode === 500);
-  assert(responseProps.body === `Internal Server Error`);
-  assertStderr(
-    "Error: [Wildcard API][Wrong Usage] Your endpoint function `contexti2` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
-  );
+
+  {
+    const url = "https://example.org/_wildcard_api/without_context/";
+    const method = "POST";
+    const context = undefined;
+    const responseProps = await wildcardServer.getApiHttpResponse(
+      { url, method },
+      context
+    );
+    assert(responseProps.statusCode === 200);
+    assert(responseProps.body === `" cba"`);
+  }
+
+  {
+    const url = "https://example.org/_wildcard_api/with_context";
+    const method = "POST";
+    const context = undefined;
+    const responseProps = await wildcardServer.getApiHttpResponse(
+      { url, method },
+      context
+    );
+    assert(responseProps.statusCode === 500);
+    assert(responseProps.body === `Internal Server Error`);
+    assertStderr(
+      "Error: [Wildcard API][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
+    );
+  }
 }
 async function wrongContext_getApiHttpResponse({
   wildcardServer,
@@ -314,7 +366,11 @@ async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"undefined abc"`);
 }
-async function setContextError1({ server, wildcardServer, assertStderr }) {
+async function setContextThrows_getApiHttpResponse({
+  server,
+  wildcardServer,
+  assertStderr,
+}) {
   server.contexti4 = function () {};
 
   const url = "https://example.org/_wildcard_api/contexti4";
@@ -373,8 +429,8 @@ async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
   await stopApp();
 }
 
-setContextError2.isIntegrationTest = true;
-async function setContextError2({ assertStderr, ...args }) {
+setContextThrows.isIntegrationTest = true;
+async function setContextThrows({ assertStderr, ...args }) {
   const errText = "[TEST-ERROR] err" + Math.random();
   const setContext = async () => {
     throw new Error(errText);
