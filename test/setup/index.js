@@ -191,15 +191,16 @@ async function checkStderr({ stderrContents, stderrLogs }) {
     return;
   }
 
+  assert(stderrLogs.length === stderrLogsLength);
   assert(
-    stderrLogsLength === 1,
-    util.inspect({ stderrLogsLength, stderrLogs })
+    stderrLogs.length === stderrContents.length,
+    util.inspect({ stderrLogs, stderrContents })
   );
-  const stderrLog = stderrLogs[0];
-  stderrContents.forEach((stderrContent) => {
+  stderrLogs.forEach((stderrLog, i) => {
+    const stderrContent = stderrContents[i];
     assert(
       stderrLog.includes(stderrContent),
-      util.inspect({ stderrContent, stderrLog })
+      util.inspect({ stderrLog, stderrContent })
     );
   });
 
