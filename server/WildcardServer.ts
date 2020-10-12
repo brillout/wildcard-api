@@ -88,19 +88,15 @@ type RequestInfo = {
   isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
 };
 
+const configDefault: Config = {
+  disableEtag: false,
+  baseUrl: "/_wildcard_api/",
+};
+
 class WildcardServer {
-  endpoints: Endpoints;
+  endpoints: Endpoints = getEndpointsProxy();
 
-  config: Config;
-
-  constructor() {
-    this.endpoints = getEndpointsProxy();
-
-    this.config = getConfigProxy({
-      disableEtag: false,
-      baseUrl: "/_wildcard_api/",
-    });
-  }
+  config: Config = getConfigProxy(configDefault);
 
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
