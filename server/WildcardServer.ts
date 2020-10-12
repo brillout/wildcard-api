@@ -32,7 +32,7 @@ type ContextGetter = () => Promise<Context> | Context;
 type Config = {
   /** Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
-  /** Whether Wildcard generates the HTTP ETag header. */
+  /** Whether Wildcard generates HTTP ETag headers. */
   disableCache: boolean;
 };
 type ConfigName = keyof Config;
