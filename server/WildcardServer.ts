@@ -95,7 +95,6 @@ const configDefault: Config = {
 
 class WildcardServer {
   endpoints: Endpoints = getEndpointsProxy();
-
   config: Config = getConfigProxy(configDefault);
 
   /**

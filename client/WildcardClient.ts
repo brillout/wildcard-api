@@ -49,22 +49,16 @@ type WildcardServer = {
   Promise<EndpointResult> | EndpointResult;
 };
 
+const configDefault: ConfigPrivate = {
+  serverUrl: null,
+  baseUrl: "/_wildcard_api/",
+  argumentsAlwaysInHttpBody: false,
+  __INTERNAL_wildcardServer_test: null,
+};
+
 class WildcardClient {
-  endpoints: Endpoints;
-
-  config: Config;
-
-  constructor() {
-    const config: ConfigPrivate = getConfigProxy({
-      serverUrl: null,
-      baseUrl: "/_wildcard_api/",
-      argumentsAlwaysInHttpBody: false,
-      __INTERNAL_wildcardServer_test: null,
-    });
-    this.config = config as Config;
-
-    this.endpoints = getEndpointsProxy(config);
-  }
+  endpoints: Endpoints = getEndpointsProxy(configDefault);
+  config: Config = getConfigProxy(configDefault);
 }
 
 function callEndpoint(
