@@ -33,7 +33,7 @@ type Config = {
   /** Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
   /** Disable caching; Wildcard will not generate HTTP ETag headers. */
-  disableEtag: boolean;
+  disableCache: boolean;
 };
 type ConfigName = keyof Config;
 
@@ -89,7 +89,7 @@ type RequestInfo = {
 };
 
 const configDefault: Config = {
-  disableEtag: false,
+  disableCache: false,
   baseUrl: "/_wildcard_api/",
 };
 
@@ -728,7 +728,7 @@ function handleEndpointOutcome(
   }
   assert(responseProps.body.constructor === String);
 
-  if (!config.disableEtag) {
+  if (!config.disableCache) {
     const computeEtag = require("./computeEtag");
     const etag = computeEtag(responseProps.body);
     assert(etag);

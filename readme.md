@@ -904,7 +904,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 ## Caching
 
 Wildcard automatically caches your endpoint results by using the HTTP ETag header.
-You can disable caching by using the [`disableEtag` option](#disableetag).
+You can disable caching by using the [`disableCache` option](#disableetag).
 
 
 <br/>
@@ -974,7 +974,7 @@ config.serverUrl = null;
 config.baseUrl = '/_wildcard_api/';
 
 // Whether the endpoint arguments are always passed in the HTTP body
-config.argumentsAlwaysInHttpBody = false;
+config.shortUrl = false;
 ~~~
 ~~~js
 // Node.js
@@ -982,7 +982,7 @@ config.argumentsAlwaysInHttpBody = false;
 import { config } from '@wildcard-api/server';
 
 // Whether Wildcard generates an ETag header.
-config.disableEtag = false;
+config.disableCache = false;
 
 // The base URL of Wildcard HTTP requests
 config.baseUrl = '/_wildcard_api/';
@@ -990,8 +990,8 @@ config.baseUrl = '/_wildcard_api/';
 
 - [`serverUrl`](#serverurl)
 - [`baseUrl`](#baseUrl)
-- [`argumentsAlwaysInHttpBody`](#argumentsalwaysinhttpbody)
-- [`disableEtag`](#disableetag)
+- [`shortUrl`](#argumentsalwaysinhttpbody)
+- [`disableCache`](#disableetag)
 
 <br/>
 
@@ -1068,16 +1068,16 @@ config.baseUrl = '/_my_custom_api_base_url/';
 
 <br/>
 
-### `argumentsAlwaysInHttpBody`
+### `shortUrl`
 
-The `argumentsAlwaysInHttpBody` option is about configuring whether
+The `shortUrl` option is about configuring whether
 arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
 ~~~js
 import { server, config } from '@wildcard-api/client';
 
-config.argumentsAlwaysInHttpBody = true; // Default value is `false`
+config.shortUrl = true; // Default value is `false`
 
 callEndpoint();
 
@@ -1087,7 +1087,7 @@ async function callEndpoint() {
   // Normally, Wildcard would pass the arguments in the HTTP request URL:
   //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
-  // But because we have set `argumentsAlwaysInHttpBody` to `true`,
+  // But because we have set `shortUrl` to `true`,
   // Wildcard passes the arguments in the HTTP request body instead:
   //   POST /_wildcard_api/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
@@ -1096,16 +1096,16 @@ async function callEndpoint() {
 
 <br/>
 
-### `disableEtag`
+### `disableCache`
 
 By default Wildcard generates an HTTP ETag cache header.
 If you need to save CPU computation time,
-you can set `disableEtag` to `true` and Wildcard will skip generating HTTP ETag headers.
+you can set `disableCache` to `true` and Wildcard will skip generating HTTP ETag headers.
 
 ~~~js
 import wildcardServer from '@wildcard-api/server';
 
-wildcardServer.disableEtag = true;
+wildcardServer.disableCache = true;
 ~~~
 
 

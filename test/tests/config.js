@@ -5,7 +5,7 @@ async function configClient({ wildcardClient: { config }, wildcardServer }) {
   assert(Object.keys(config).length === 4);
 
   // Default values
-  assert(config.argumentsAlwaysInHttpBody === false);
+  assert(config.shortUrl === false);
   assert(config.baseUrl === "/_wildcard_api/");
   assert(config.serverUrl === null);
 
@@ -25,7 +25,7 @@ async function configServer({ wildcardServer: { config } }) {
   assert(Object.keys(config).length === 2);
 
   // Default values
-  assert(config.disableEtag === false);
+  assert(config.disableCache === false);
   assert(config.baseUrl === "/_wildcard_api/");
 
   // Throw upon unknown config

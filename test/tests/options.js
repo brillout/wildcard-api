@@ -1,25 +1,25 @@
 module.exports = [
-  option_argumentsAlwaysInHttpBody_1,
-  option_argumentsAlwaysInHttpBody_2,
+  option_shortUrl_1,
+  option_shortUrl_2,
   option_serverUrl,
   option_baseUrl,
 ];
 
-async function option_argumentsAlwaysInHttpBody_1({
+async function option_shortUrl_1({
   server,
   browserEval,
   httpPort,
 }) {
   let execCount = 0;
 
-  server.testEndpoint__argumentsAlwaysInHttpBody = async function (arg) {
+  server.testEndpoint__shortUrl = async function (arg) {
     assert(arg === "just some args");
     execCount++;
   };
 
   await browserEval(
     async () => {
-      await server.testEndpoint__argumentsAlwaysInHttpBody("just some args");
+      await server.testEndpoint__shortUrl("just some args");
     },
     { onHttpRequest }
   );
@@ -32,7 +32,7 @@ async function option_argumentsAlwaysInHttpBody_1({
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_wildcard_api/testEndpoint__argumentsAlwaysInHttpBody/%5B%22just%20some%20args%22%5D",
+          "/_wildcard_api/testEndpoint__shortUrl/%5B%22just%20some%20args%22%5D",
       { _url }
     );
     assert(_postData === undefined, { _postData });
@@ -41,7 +41,7 @@ async function option_argumentsAlwaysInHttpBody_1({
   }
 }
 
-async function option_argumentsAlwaysInHttpBody_2({
+async function option_shortUrl_2({
   server,
   browserEval,
   httpPort,
@@ -49,7 +49,7 @@ async function option_argumentsAlwaysInHttpBody_2({
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
-  server.testEndpoint__argumentsAlwaysInHttpBody = async function (arg) {
+  server.testEndpoint__shortUrl = async function (arg) {
     assert(arg === "just some args");
     endpointCalled = true;
   };
@@ -57,12 +57,12 @@ async function option_argumentsAlwaysInHttpBody_2({
   await browserEval(
     async () => {
       const { config } = window;
-      assert(config.argumentsAlwaysInHttpBody === false);
-      config.argumentsAlwaysInHttpBody = true;
-      await window.server.testEndpoint__argumentsAlwaysInHttpBody(
+      assert(config.shortUrl === false);
+      config.shortUrl = true;
+      await window.server.testEndpoint__shortUrl(
         "just some args"
       );
-      config.argumentsAlwaysInHttpBody = false;
+      config.shortUrl = false;
     },
     { onHttpRequest }
   );
@@ -75,7 +75,7 @@ async function option_argumentsAlwaysInHttpBody_2({
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_wildcard_api/testEndpoint__argumentsAlwaysInHttpBody/args-in-body",
+          "/_wildcard_api/testEndpoint__shortUrl/args-in-body",
       { _url }
     );
     assert(_postData === '["just some args"]', { _postData });

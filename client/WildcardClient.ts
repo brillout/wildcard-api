@@ -26,7 +26,7 @@ type Config = {
   /** Make API HTTP requests to `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
   /** Make API HTTP request URLs short: always use the the HTTP request body to transport endpoint arguments (instead of serializing endpoint arguments into the HTTP request URL). */
-  argumentsAlwaysInHttpBody: boolean;
+  shortUrl: boolean;
 };
 type ServerURL = string | null;
 type ConfigPrivate = Config & {
@@ -52,7 +52,7 @@ type WildcardServer = {
 const configDefault: ConfigPrivate = {
   serverUrl: null,
   baseUrl: "/_wildcard_api/",
-  argumentsAlwaysInHttpBody: false,
+  shortUrl: false,
   __INTERNAL_wildcardServer_test: null,
 };
 
@@ -145,7 +145,7 @@ function callEndpointOverHttp(
   let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
   if (endpointArgsStr) {
     // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-    if (endpointArgsStr.length >= 2000 || config.argumentsAlwaysInHttpBody) {
+    if (endpointArgsStr.length >= 2000 || config.shortUrl) {
       body = endpointArgsStr;
       urlArgs__string = ARGS_IN_BODY;
     } else {
