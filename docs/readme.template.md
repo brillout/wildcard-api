@@ -671,7 +671,7 @@ A frontend developer can then explore your Wildcard API directly in his IDE!
 ## Caching
 
 Wildcard automatically caches your endpoint results by using the HTTP ETag header.
-You can disable caching by using the [`disableCache` option](#disableetag).
+You can disable caching by using the [`disableCache` option](#disablecache).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -719,8 +719,8 @@ config.baseUrl = '/_wildcard_api/';
 
 - [`serverUrl`](#serverurl)
 - [`baseUrl`](#baseUrl)
-- [`shortUrl`](#argumentsalwaysinhttpbody)
-- [`disableCache`](#disableetag)
+- [`shortUrl`](#shorturl)
+- [`disableCache`](#disablecache)
 
 <br/>
 

@@ -904,7 +904,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 ## Caching
 
 Wildcard automatically caches your endpoint results by using the HTTP ETag header.
-You can disable caching by using the [`disableCache` option](#disableetag).
+You can disable caching by using the [`disableCache` option](#disablecache).
 
 
 <br/>
@@ -990,8 +990,8 @@ config.baseUrl = '/_wildcard_api/';
 
 - [`serverUrl`](#serverurl)
 - [`baseUrl`](#baseUrl)
-- [`shortUrl`](#argumentsalwaysinhttpbody)
-- [`disableCache`](#disableetag)
+- [`shortUrl`](#shorturl)
+- [`disableCache`](#disablecache)
 
 <br/>
 
