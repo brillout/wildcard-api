@@ -57,8 +57,8 @@ const configDefault: ConfigPrivate = {
 };
 
 class WildcardClient {
-  endpoints: Endpoints = getEndpointsProxy(configDefault);
   config: Config = getConfigProxy(configDefault);
+  endpoints: Endpoints = getEndpointsProxy(this.config as ConfigPrivate);
 }
 
 function callEndpoint(
@@ -71,8 +71,9 @@ function callEndpoint(
 
   const wildcardServer: WildcardServer = getWildcardServer(config);
 
+  // Usage in Node.js [inter-process]
+  // Inter-process: the Wildcard client and the Wildcard server are loaded in the same Node.js process.
   if (wildcardServer) {
-    // Server-side usage
     assert(isNodejs());
     return callEndpointDirectly(
       endpointName,
@@ -82,11 +83,14 @@ function callEndpoint(
     );
   }
 
-  // Browser-side usage
-  // Or cross-server servide-side usage -- server URL is then needed
+  // Usage in the browser
+  // Usage in Node.js [cross-process]
+  // Cross-process: the Wildcard client and the Wildcard server are loaded in different Node.js processes.
+
+  // Server URL is required for cross-process usage
   assertUsage(
     config.serverUrl || isBrowser(),
-    "`config.serverUrl` missing. You are using the Wildcard client in Node.js and on a different server; the `config.serverUrl` configuration is required."
+    "`config.serverUrl` missing. You are using the Wildcard client in Node.js, and the Wildcard client is loaded in a different Node.js process than the Node.js process that loaded the Wildcard server; the `config.serverUrl` configuration is required."
   );
 
   assertUsage(

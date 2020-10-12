@@ -140,7 +140,7 @@ async function runTest({
   };
 
   if (debugMode) {
-    console.log("[DEBUG-MODE] Enabled.");
+    console.log(chalk.bold.blue("[DEBUG-MODE] Enabled."));
   }
   const log_collector = new LogCollector({ debugMode });
   log_collector.enable();

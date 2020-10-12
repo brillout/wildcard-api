@@ -87,7 +87,9 @@ async function missingServerUrl({ assertStderr, WildcardClient }) {
     console.error(err);
   }
 
-  assertStderr("`config.serverUrl` missing");
+  assertStderr(
+    "`config.serverUrl` missing. You are using the Wildcard client in Node.js, and the Wildcard client is loaded in a different Node.js process than the Node.js process that loaded the Wildcard server; the `config.serverUrl` configuration is required."
+  );
 
   global.__INTERNAL_wildcardServer_nodejs = save;
 }
