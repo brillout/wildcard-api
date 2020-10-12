@@ -233,7 +233,7 @@ async function wrongSetContext({
     }
   });
   assertStderr(
-    "Your context function `setContext` should return a `instanceof Object`."
+    "Your context function `setContext` should not return `undefined`. If there is no context, then return the empty object `{}`."
   );
 
   await stopApp();
@@ -317,7 +317,7 @@ async function setContextReturnsUndefined_getApiHttpResponse({
   assert(responseProps.statusCode === 500);
   assert(responseProps.body === `Internal Server Error`);
   assertStderr(
-    "Your context function `myCtxFunc` should return a `instanceof Object`."
+    "Your context function `myCtxFunc` should not return `undefined`. If there is no context, then return the empty object `{}`."
   );
 }
 async function undefinedContext_getApiHttpResponse({
@@ -369,8 +369,6 @@ async function wrongContext_getApiHttpResponse({
   await req(null);
   await req(123);
   await req("123");
-  // await req(new Date());
-  // await req([]);
 
   async function req(context) {
     const responseProps = await wildcardServer.getApiHttpResponse(
@@ -379,7 +377,11 @@ async function wrongContext_getApiHttpResponse({
     );
     assert(responseProps.statusCode === 500);
     assert(responseProps.body === `Internal Server Error`);
-    assertStderr("The context should be a `instanceof Object`.");
+    assertStderr(
+      "The context cannot be `" +
+        context +
+        "`. The context should be a `instanceof Object`. If there is no context then use the empty object `{}`."
+    );
   }
 }
 async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {

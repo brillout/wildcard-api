@@ -44,7 +44,7 @@ type MalformedRequest = {
 };
 type MalformedIntegration = UsageError;
 type WrongApiUsage = UsageError;
-type SetContextError = UsageError | Error;
+type ContextError = UsageError | Error;
 
 // HTTP Request
 type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
@@ -156,8 +156,8 @@ async function _getApiHttpResponse(
 ): Promise<HttpResponseProps | null> {
   try {
     context = await getContext(context);
-  } catch (setContextError) {
-    return handleSetContextError(setContextError);
+  } catch (contextError) {
+    return handleContextError(contextError);
   }
   assert(context === undefined || context instanceof Object);
 
@@ -207,7 +207,7 @@ async function _getApiHttpResponse(
     universalAdapterName
   );
 
-  return httpResponse_endpoint(
+  return handleEndpointOutcome(
     endpointResult,
     endpointError,
     isHumanMode,
@@ -714,13 +714,13 @@ function parsePathname(pathname: string, config: Config) {
   };
 }
 
-function httpResponse_endpoint(
+function handleEndpointOutcome(
   endpointResult: EndpointResult | undefined,
   endpointError: EndpointError | undefined,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName,
   config: Config
-) {
+): HttpResponseProps {
   let responseProps: HttpResponseProps;
   if (endpointError) {
     responseProps = handleEndpointError(endpointError);
@@ -766,10 +766,8 @@ function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
   console.error(endpointError);
   return HttpResponse_serverSideError();
 }
-function handleSetContextError(
-  setContextError: SetContextError
-): HttpResponseProps {
-  console.error(setContextError);
+function handleContextError(contextError: ContextError): HttpResponseProps {
+  console.error(contextError);
   return HttpResponse_serverSideError();
 }
 function handleWrongApiUsage(wrongApiUsage: WrongApiUsage): HttpResponseProps {
@@ -968,27 +966,50 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
   if (context === undefined) {
     return undefined;
   }
-  if (isCallable(context)) {
-    const fnName = getFunctionName(context as ContextGetter);
+  const isContextFunction = isCallable(context);
+  const contextFunctionName = isContextFunction
+    ? getFunctionName(context as ContextGetter)
+    : null;
+  if (isContextFunction) {
     context = await (context as ContextGetter)();
+  }
+  assertContext(context, isContextFunction, contextFunctionName);
+  assert(context && context instanceof Object);
+  return context as Context;
+}
+
+function assertContext(
+  context: Context,
+  isContextFunction: boolean,
+  contextFunctionName: string | null
+) {
+  if (isContextFunction) {
+    const errorMessageBegin = [
+      "Your context function",
+      ...(!contextFunctionName ? [] : ["`" + contextFunctionName + "`"]),
+      "should",
+    ].join(" ");
     assertUsage(
-      context instanceof Object,
+      context !== undefined && context !== null,
       [
-        "Your context function",
-        ...(!fnName ? [] : ["`" + fnName + "`"]),
-        "should return a `instanceof Object`.",
+        errorMessageBegin,
+        "not return `" + context + "`.",
         "If there is no context, then return the empty object `{}`.",
       ].join(" ")
     );
+    assertUsage(
+      context instanceof Object,
+      [errorMessageBegin, "return a `instanceof Object`."].join(" ")
+    );
   }
   assertUsage(
-    context instanceof Object,
+    context && context instanceof Object,
     [
+      "The context cannot be `" + context + "`.",
       "The context should be a `instanceof Object`.",
-      "If there is no context, then return the empty object `{}`.",
+      "If there is no context then use the empty object `{}`.",
     ].join(" ")
   );
-  return context as Context;
 }
 
 function getFunctionName(fn: () => unknown): string {
