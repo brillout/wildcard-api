@@ -745,17 +745,26 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 function handleInternalError(internalError: Error): HttpResponseProps {
   const msg =
     "[Wildcard API][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/reframejs/wildcard-api/issues/new and include this error stack. ";
-  addMessage(internalError, msg);
+  internalError = addMessage(internalError, msg);
   console.error(internalError);
   return HttpResponse_serverSideError();
 }
-function addMessage(err: Error, msg: string) {
+function addMessage(err: Error, msg: string): Error {
+  if (!err) {
+    err = new Error();
+  }
+  if (!err.message || err.message.constructor !== String) {
+    err.message = "";
+  }
+
   const prefix = "Error: ";
   if (err.message.startsWith(prefix)) {
     err.message = prefix + msg + err.message.slice(prefix.length);
   } else {
     err.message = msg + err.message;
   }
+
+  return err;
 }
 function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
   console.error(endpointError);
