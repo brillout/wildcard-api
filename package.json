@@ -1,16 +1,22 @@
 {
   "scripts": {
-    "demo": "cd examples/todo-list/ && yarn dev",
-    "test": "cd test/ && yarn run-tests",
+    "// Dev": "",
     "dev": "yarn build:dev",
-    "build:dev": "tsc --build --watch",
-    "build:prod": "yarn clean-ts && tsc --build",
-    "release": "yarn build:prod && yarn test && yarn release:client && yarn release:server",
+    "test": "cd test/ && yarn run-tests",
+    "demo": "cd examples/todo-list/ && yarn dev",
+    "// Prod": "",
+    "release": "yarn clean:build && yarn build:prod && yarn test && yarn release:client && yarn release:server",
     "release:client": "cd client/ && npm publish",
     "release:server": "cd server/ && npm publish",
+    "// Build": "",
+    "build:dev": "tsc --build --watch",
+    "build:prod": "yarn clean:build && tsc --build",
+    "// Docs": "",
     "docs": "mdocs",
-    "clean": "git clean -Xdf",
-    "clean-ts": "git clean -xf client/ server/"
+    "// Clean": "",
+    "clean": "yarn clean:all",
+    "clean:all": "git clean -Xdf",
+    "clean:build": "git clean -xf client/ server/"
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
