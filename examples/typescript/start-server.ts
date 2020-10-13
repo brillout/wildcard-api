@@ -1,14 +1,14 @@
 import express from "express";
 import { wildcard } from "@wildcard-api/server/express";
 import "./endpoints.ts";
+import { Context } from "./context";
 
 const app = express();
 
 // Server our API endpoints
 app.use(
-  wildcard(async (req) => {
-    const { headers } = req;
-    const context = { headers };
+  wildcard(() => {
+    const context: Context = { isLoggedIn: true };
     return context;
   })
 );

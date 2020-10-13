@@ -69,6 +69,14 @@ export type HttpResponseProps = {
   etag?: HttpResponseEtag;
 };
 
+type MinusContext<T, C> = T extends (this: C, ...rest: infer U) => infer R
+  ? (...rest: U) => R
+  : never;
+
+export type FrontendType<T, C> = {
+  [F in keyof T]: MinusContext<T[F], C>;
+};
+
 // Whether to call the endpoint:
 // 1. over HTTP (browser-side <-> Node.js communication) or
 // 2. directly (communication whithin a single Node.js process, e.g. when doing SSR).
