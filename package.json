@@ -9,6 +9,7 @@
     "release:client": "cd client/ && npm publish",
     "release:server": "cd server/ && npm publish",
     "// Build": "",
+    "build": "yarn build:prod",
     "build:dev": "tsc --build --watch",
     "build:prod": "yarn clean:build && tsc --build",
     "// Docs": "",

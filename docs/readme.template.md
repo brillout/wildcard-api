@@ -120,6 +120,8 @@ Wildcard is used in production at many companies,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 
+It is financed with the [Lsos Basic](https://lsos.org/basic) allowing me to dedicate more time to provide you with a robust tool.
+
 &nbsp;
 
 <p align="center">

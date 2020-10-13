@@ -44,7 +44,7 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
 
   return middleware;
 
-  async function requestHandler(
+  function requestHandler(
     requestObject: HttpRequest,
     { requestProps }: RequestHandlerArg1
   ): RequestHandlerReturn {
@@ -63,13 +63,9 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
       ? setContext.bind(null, requestObject)
       : setContext;
 
-    const responseProps = await wildcardServer.getApiHttpResponse(
-      requestProps,
-      context,
-      { __INTERNAL_universalAdapter }
-    );
-
-    return responseProps;
+    return wildcardServer.getApiHttpResponse(requestProps, context, {
+      __INTERNAL_universalAdapter,
+    });
   }
 }
 
