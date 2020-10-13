@@ -1,4 +1,5 @@
-import { server as _server } from "@wildcard-api/server";
+import { server as _server, FrontendType } from "@wildcard-api/server";
+import { Context } from "./context";
 
 interface Person {
   firstName: string;
@@ -12,13 +13,14 @@ const persons: Array<Person> = [
   { firstName: "Harry", lastName: "Thompson", id: 2 },
 ];
 
-async function getPerson(id: number): Promise<Person> {
+async function getPerson(this: Context, id: number): Promise<Person | null> {
+  if (!this.isLoggedIn) return null;
   return persons.find((person) => person.id === id);
 }
 
 const server = {
   getPerson,
 };
-export type Server = typeof server;
+export type Server = FrontendType<typeof server, Context>;
 
 Object.assign(_server, server);
