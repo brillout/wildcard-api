@@ -15,7 +15,7 @@ const persons: Array<Person> = [
 
 async function getPerson(this: Context, id: number): Promise<Person | null> {
   if (!this.isLoggedIn) return null;
-  return persons.find((person) => person.id === id);
+  return persons.find((person) => person.id === id) || null;
 }
 
 const server = {
