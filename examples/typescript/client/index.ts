@@ -2,7 +2,7 @@ import "babel-polyfill";
 import { Server } from "../endpoints";
 import { server as serverUntyped } from "@wildcard-api/client";
 
-export const server = serverUntyped as Server;
+const server = serverUntyped as Server;
 
 (async () => {
   const id = Math.floor(Math.random() * 3);
