@@ -208,6 +208,16 @@ async function wrongEndpointFunction({ server }) {
   }
 
   try {
+    server.arrowFunc2 = () => {};
+  } catch (err) {
+    assert(
+      err.stack.includes(
+        "The endpoint function `arrowFunc2` is an arrow function."
+      )
+    );
+  }
+
+  try {
     server.undi = undefined;
   } catch (err) {
     assert(

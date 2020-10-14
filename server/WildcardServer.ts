@@ -342,14 +342,8 @@ function isArrowFunction(fn: () => unknown) {
   return yes(fn);
 
   function yes(fn: () => unknown) {
-    if (fn.hasOwnProperty("prototype")) {
-      return false;
-    }
-    const fnStr = fn.toString();
-    if (fnStr.startsWith("async")) {
-      return !fnStr.startsWith("async function");
-    }
-    return true;
+    // This (unfortunately...) seems to be the most reliable way.
+    return typeof fn === "function" && /^[^{]+?=>/.test(fn.toString());
   }
 }
 
