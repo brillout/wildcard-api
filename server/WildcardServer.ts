@@ -69,12 +69,18 @@ export type HttpResponseProps = {
   etag?: HttpResponseEtag;
 };
 
-type MinusContext<T, C> = T extends (this: C, ...rest: infer U) => infer R
-  ? (...rest: U) => R
+type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
+  this: Context,
+  ...rest: infer EndpointArguments
+) => infer EndpointReturnType
+  ? (...rest: EndpointArguments) => EndpointReturnType
   : never;
 
-export type FrontendType<T, C> = {
-  [F in keyof T]: MinusContext<T[F], C>;
+export type ServerGeneric<Endpoints, Context> = {
+  [EndpointName in keyof Endpoints]: MinusContext<
+    Endpoints[EndpointName],
+    Context
+  >;
 };
 
 // Whether to call the endpoint:
