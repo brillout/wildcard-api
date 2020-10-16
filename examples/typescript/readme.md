@@ -13,12 +13,12 @@ We share the backend types with the frontend by using Wildcard's [TypeScript sup
 
 To run the example:
 
-1. Install dependencies.
+1. Clean caches.
   ~~~bash
-  yarn
+  yarn clean
   ~~~
 
-2. Build the frontend and start the server.
+2. Build everything and start the server.
   ~~~bash
   yarn start
   ~~~
