@@ -3,7 +3,13 @@
   "version": "0.0.1-never-published",
   "private": true,
   "scripts": {
-    "run-tests": "node ./index.js"
+    "// Run the tests": "",
+    "test": "yarn test:install && yarn test:build && yarn test:run",
+    "test:build": "(cd ../ && yarn build)",
+    "test:install": "(cd ../ && yarn install) && yarn install",
+    "test:run": "node ./index.js",
+    "// Clean all cache": "",
+    "clean": "cd ../ && yarn clean"
   },
   "dependencies": {
     "@brillout/assert": "^0.2.2",

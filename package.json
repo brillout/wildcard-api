@@ -2,7 +2,7 @@
   "scripts": {
     "// Dev": "",
     "dev": "yarn build:dev",
-    "test": "cd test/ && yarn run-tests",
+    "test": "cd test/ && yarn test",
     "demo": "cd examples/todo-list/ && yarn dev",
     "// Prod": "",
     "bump": "yarn bump:patch",
@@ -27,8 +27,7 @@
   },
   "workspaces": [
     "server/",
-    "client/",
-    "test/"
+    "client/"
   ],
   "private": true
 }
