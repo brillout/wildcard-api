@@ -1,8 +1,16 @@
 {
   "scripts": {
-    "start": "yarn run build:client && yarn run start:server",
+    "// Run the example": "",
+    "start": "yarn start:install && yarn start:build && yarn run start:server",
+    "start:install": "(cd ../../ && yarn install) && yarn install",
+    "start:build": "yarn build",
+    "start:server": "ts-node start-server.ts",
+    "// Build": "",
+    "build": "yarn build:wildcard && yarn build:client",
+    "build:wildcard": "cd ../../ && yarn build",
     "build:client": "cd client && parcel build *.html",
-    "start:server": "ts-node start-server.ts"
+    "// Clean all cache": "",
+    "clean": "cd ../../ && yarn clean"
   },
   "dependencies": {
     "@types/node": "^12.12.21",
