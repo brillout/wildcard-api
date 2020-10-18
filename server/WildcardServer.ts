@@ -76,7 +76,7 @@ type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
   ? (...rest: EndpointArguments) => EndpointReturnType
   : never;
 
-export type ServerGeneric<Endpoints, Context> = {
+export type FrontendType<Endpoints, Context> = {
   [EndpointName in keyof Endpoints]: MinusContext<
     Endpoints[EndpointName],
     Context
