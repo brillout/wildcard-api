@@ -13,7 +13,7 @@ const persons: Array<Person> = [
   { firstName: "Harry", lastName: "Thompson", id: 2 },
 ];
 
-async function getPerson(this: Context, id: number): Promise<Person | null> {
+async function getPerson(this: Context, id: number) {
   if (!this.isLoggedIn) return null;
   return persons.find((person) => person.id === id) || null;
 }
