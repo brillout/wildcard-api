@@ -787,7 +787,8 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ~~~ts
 // /examples/typescript/endpoints.ts
 
-import { server as _server } from "@wildcard-api/server";
+import { server as _server, FrontendType } from "@wildcard-api/server";
+import { Context } from "./context";
 
 interface Person {
   firstName: string;
@@ -801,14 +802,15 @@ const persons: Array<Person> = [
   { firstName: "Harry", lastName: "Thompson", id: 2 },
 ];
 
-async function getPerson(id: number): Promise<Person> {
-  return persons.find((person) => person.id === id);
+async function getPerson(this: Context, id: number): Promise<Person | null> {
+  if (!this.isLoggedIn) return null;
+  return persons.find((person) => person.id === id) || null;
 }
 
 const server = {
   getPerson,
 };
-export type Server = typeof server;
+export type Server = FrontendType<typeof server, Context>;
 
 Object.assign(_server, server);
 ~~~
@@ -819,14 +821,18 @@ import "babel-polyfill";
 import { Server } from "../endpoints";
 import { server as serverUntyped } from "@wildcard-api/client";
 
-export const server: Server = serverUntyped;
+const server = serverUntyped as Server;
 
 (async () => {
   const id = Math.floor(Math.random() * 3);
   const person = await server.getPerson(id);
-  const personHtml =
-    person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
-  document.body.innerHTML = personHtml;
+  if (person === null) {
+    document.body.innerHTML = "Could not retrieve person";
+  } else {
+    const personHtml =
+      person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
+    document.body.innerHTML = personHtml;
+  }
 })();
 ~~~
 
