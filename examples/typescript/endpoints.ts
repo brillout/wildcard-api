@@ -1,4 +1,4 @@
-import { server as _server, ServerGeneric } from "@wildcard-api/server";
+import { server as _server, FrontendType } from "@wildcard-api/server";
 import { Context } from "./context";
 
 interface Person {
@@ -21,6 +21,6 @@ async function getPerson(this: Context, id: number): Promise<Person | null> {
 const server = {
   getPerson,
 };
-export type Server = ServerGeneric<typeof server, Context>;
+export type Server = FrontendType<typeof server, Context>;
 
 Object.assign(_server, server);
