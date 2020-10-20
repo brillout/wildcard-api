@@ -179,7 +179,7 @@ async function checkStderr({ stderrContents, stderrLogs }) {
   const stderrLogsLength = stderrLogs.length;
 
   checkNoInternalError(stderrLogs);
-  checkStderrFormat(stderrLogs);
+  stderrLogs.forEach(checkErrorFormat);
 
   assert(stderrContents === null || stderrContents.length >= 1);
 
@@ -206,40 +206,38 @@ async function checkStderr({ stderrContents, stderrLogs }) {
 
   return;
 
-  function checkStderrFormat(stderrLogs) {
-    stderrLogs.forEach((stderrLog) => {
-      assert(stderrLog.constructor === String);
-      const [firstLine, ...errorStackLines] = stderrLog.split("\n");
+  function checkErrorFormat(stderrLog) {
+    assert(stderrLog.constructor === String);
+    const [firstLine, ...errorStackLines] = stderrLog.split("\n");
 
-      // Always start with a single-line error message
-      if (
-        !firstLine.includes("[Wildcard API][Wrong Usage] ") &&
-        !firstLine.includes("[TEST-ERROR]")
-      ) {
-        console.log(stderrLog);
-        assert(false);
+    // Always start with a single-line error message
+    if (
+      !firstLine.includes("[Wildcard API][Wrong Usage] ") &&
+      !firstLine.includes("[TEST-ERROR]")
+    ) {
+      console.log(stderrLog);
+      assert(false);
+    }
+
+    // Always show a stack trace
+    if (errorStackLines.length <= 5) {
+      console.log(stderrLog);
+      assert(false);
+    }
+
+    // Rest is stack trace
+    errorStackLines.forEach((errStackLine) => {
+      if (errStackLine === "") {
+        return;
       }
-
-      // Always show a stack trace
-      if (errorStackLines.length <= 5) {
-        console.log(stderrLog);
-        assert(false);
+      if (stripAnsi(errStackLine).startsWith("    at")) {
+        return;
       }
-
-      // Rest is stack trace
-      errorStackLines.forEach((errStackLine) => {
-        if (errStackLine === "") {
-          return;
-        }
-        if (stripAnsi(errStackLine).startsWith("    at")) {
-          return;
-        }
-        console.log("==Error:");
-        console.log(stderrLog);
-        console.log("==Line:");
-        console.log(errStackLine);
-        assert(false);
-      });
+      console.log("==Error:");
+      console.log(stderrLog);
+      console.log("==Line:");
+      console.log(errStackLine);
+      assert(false);
     });
   }
   function checkNoInternalError(stderrLogs) {
