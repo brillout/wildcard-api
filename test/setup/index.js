@@ -239,6 +239,9 @@ async function checkStderr({ stderrContents, stderrLogs }) {
       console.log(errStackLine);
       assert(false);
     });
+
+    // Stack trace should never show @brillout/assert code
+    assert(!stripAnsi(stderrLog).includes("@brillout/assert"));
   }
   function checkNoInternalError(stderrLogs) {
     stderrLogs.forEach((stderrLog) => {
