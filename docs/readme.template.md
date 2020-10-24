@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="https://github.com/reframejs/wildcard-api/issues/56">
-    <img align="center" src="https://lsos.org/basic/labels/line.svg">
+    <img align="center" src="https://lsos.org/banner.svg">
   </a>
 </p>
 
