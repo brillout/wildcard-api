@@ -278,9 +278,9 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    The `getApiHttpResponse()` function
-   lets you build the HTTP response of an API request,
-   which allows you to integrate Wildcard with any
-   server framework.
+   returns the HTTP response of API requests.
+   By using `getApiHttpResponse()` you can
+   integrate Wildcard with any server framework.
    In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse()`.
 
    ~~~js
