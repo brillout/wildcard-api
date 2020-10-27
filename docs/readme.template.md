@@ -277,10 +277,11 @@ Is your API meant to be used by yourself? Use RPC.
    With other server frameworks
    </summary>
 
-   The function `getApiHttpResponse` allows you to use Wildcard with any
+   The `getApiHttpResponse()` function allows you to integrate Wildcard with any
    server framework.
-   In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse`.
-   You use `getApiHttpResponse` to build the HTTP response for any HTTP request made to `/_wildcard_api/*`.
+   In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse()`.
+
+   The `getApiHttpResponse()` function lets you build the HTTP response of an API request:
    ~~~js
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
