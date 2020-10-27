@@ -278,8 +278,8 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    The `getApiHttpResponse()` function
-   returns the HTTP response of API requests.
-   By using `getApiHttpResponse()` you can
+   returns the HTTP response of API requests;
+   by using `getApiHttpResponse()` you can
    integrate Wildcard with any server framework.
    In fact, the Express/Koa/Hapi middlewares are tiny wrappers around `getApiHttpResponse()`.
 
