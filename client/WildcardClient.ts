@@ -1,6 +1,4 @@
 // @ts-ignore
-import { printDonationReminder } from "@lsos/donation-reminder";
-// @ts-ignore
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
@@ -400,15 +398,6 @@ function loadTimeStuff() {
   setProjectInfo({
     projectName: "Wildcard API",
     projectGithub: "https://github.com/reframejs/wildcard-api",
-  });
-
-  // Lsos donation reminder
-  printDonationReminder({
-    npmName: "@wildcard-api",
-    projectName: "Wildcard API",
-    donationText:
-      "Servus :beers:, I'm Romuald, any gesture is greatly appreciated! :heart:",
-    minNumberOfAuthors: 0,
   });
 
   // We need ES6 `Proxy`

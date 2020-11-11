@@ -6,8 +6,7 @@
   "dependencies": {
     "@brillout/assert": "^0.2.2",
     "@brillout/fetch": "^0.1.2",
-    "@brillout/json-s": "^0.1.4",
-    "@lsos/donation-reminder": "^0.1.7"
+    "@brillout/json-s": "^0.1.4"
   },
   "scripts": {
     "build:umd": "rm -rf .cache/ && parcel build index.js --out-dir ./ --out-file wildcard-client.production.min.js --global wildcard",
