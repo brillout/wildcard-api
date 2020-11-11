@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "yarn install && sh -c 'yarn dev:frontend & yarn dev:backend & wait'",
     "dev:backend": "nodemon ./start-with-express.js",
-    "dev:frontend": "cd client && parcel watch *.html"
+    "dev:frontend": "cd client && parcel watch *.html",
+    "clean": "rm -rf client/dist client/.cache/"
   },
   "dependencies": {
     "@brillout/assert": "^0.2.2",
