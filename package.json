@@ -1,19 +1,25 @@
 {
   "scripts": {
+    "// Demo": "",
+    "demo": "yarn install:all && yarn build:once && yarn demo:run",
+    "demo:run": "cd examples/todo-list/ && yarn dev",
     "// Dev": "",
-    "dev": "yarn build:dev",
+    "dev": "yarn install:all && yarn build:watch",
+    "// Test": "",
     "test": "cd test/ && yarn test",
-    "demo": "cd examples/todo-list/ && yarn dev",
+    "// Install": "",
+    "install:all": "if [ ! -d ./node_modules/yarn/ ]; then npm run install:yarn; fi && yarn install",
+    "install:yarn": "npm install yarn --no-save",
+    "// Build": "",
+    "build": "yarn build:once",
+    "build:once": "tsc --build",
+    "build:watch": "tsc --build --watch",
     "// Prod": "",
     "bump": "yarn bump:patch",
     "bump:patch": "(cd client/ && npm version patch) && (cd server/ && npm version patch) && git commit -am 'release new patch'",
     "release": "yarn release:build && yarn release:publish",
-    "release:build": "yarn clean:build && yarn build:prod && yarn test",
+    "release:build": "yarn clean:build && yarn build:once && yarn test",
     "release:publish": "(cd client/ && npm publish) && (cd server/ && npm publish)",
-    "// Build": "",
-    "build": "yarn build:prod",
-    "build:dev": "tsc --build --watch",
-    "build:prod": "yarn clean:build && tsc --build",
     "// Docs": "",
     "docs": "mdocs",
     "// Clean": "",
@@ -23,7 +29,8 @@
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "yarn": "^1.22.10"
   },
   "workspaces": [
     "server/",
