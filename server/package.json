@@ -12,8 +12,7 @@
     "@types/node": "^14.11.2",
     "@universal-adapter/express": "^0.6.0",
     "@universal-adapter/hapi": "^0.6.0",
-    "@universal-adapter/koa": "^0.6.0",
-    "lsos": "^0.1.0"
+    "@universal-adapter/koa": "^0.6.0"
   },
   "repository": "https://github.com/reframejs/wildcard-api",
   "publishConfig": {

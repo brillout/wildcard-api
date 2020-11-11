@@ -2,6 +2,7 @@
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
+import { verify } from "lsos";
 
 export { WildcardClient };
 
@@ -402,4 +403,10 @@ function loadTimeStuff() {
 
   // We need ES6 `Proxy`
   assertProxySupport();
+
+  verify({
+    npmName: "@wildcard-api",
+    projectName: "Wildcard API",
+    onlyWarning: true,
+  });
 }

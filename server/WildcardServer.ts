@@ -10,13 +10,10 @@ import {
 } from "@brillout/assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
-import { verify } from "lsos";
 
 export { WildcardServer };
 
 loadTimeStuff();
-
-lsosVerification();
 
 // Endpoints
 type EndpointName = string;
@@ -1048,12 +1045,4 @@ function loadTimeStuff() {
 
   // The Wildcard server only works with Node.js
   assertNodejs();
-}
-
-function lsosVerification() {
-  verify({
-    npmName: "@wildcard-api",
-    projectName: "Wildcard API",
-    onlyWarning: true,
-  });
 }
