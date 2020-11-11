@@ -81,7 +81,11 @@
   </a>
 </p>
 
-<br/>
+<p align="center">
+  <a href="https://github.com/reframejs/wildcard-api/issues/56">
+    <img align="center" src="https://lsos.org/banner.svg">
+  </a>
+</p>
 
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
@@ -195,6 +199,7 @@ server.createTodoItem = async function(text) {
 Wildcard is used in production at many companies,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
+It is financed with the [Lsos](https://github.com/reframejs/wildcard-api/issues/56).
 
 &nbsp;
 
