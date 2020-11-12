@@ -1,6 +1,6 @@
 {
   "name": "@wildcard-api/client",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "JavaScript Functions as API.",
   "main": "index.js",
   "dependencies": {
