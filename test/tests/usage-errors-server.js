@@ -181,13 +181,12 @@ async function wrongUsage_getApiHttpResponse_4({
   assertStderr,
 }) {
   const url = "https://example.org/_wildcard_api/ummm";
-  const method = "PUT";
   const responseProps = await wildcardServer.getApiHttpResponse({
     url,
-    method,
+    method: "",
   });
   assertErrorResponse(responseProps);
-  assertStderr('method must be one of ["POST", "GET", "post", "get"]');
+  assertStderr("Missing argument `method`");
 }
 function assertErrorResponse(responseProps) {
   assert(responseProps.body === "Internal Server Error");
@@ -247,4 +246,3 @@ async function wrongEndpointFunction({ server }) {
     );
   }
 }
-

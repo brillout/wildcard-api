@@ -889,16 +889,6 @@ function validateApiUsage(
     if (!requestProps?.url) missingArguments.push("url");
     if (!requestProps?.method) missingArguments.push("method");
     assertUsage(missingArguments.length === 0, missArg(missingArguments));
-
-    {
-      const { method } = requestProps;
-      assertUsage(
-        HttpRequestMethod.includes(method),
-        `Http request method must be one of [${HttpRequestMethod.map(
-          (m) => `"${m}"`
-        ).join(", ")}] but is \`${method}\`.`
-      );
-    }
   }
 }
 
