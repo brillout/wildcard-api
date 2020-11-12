@@ -7,7 +7,7 @@
     "@brillout/assert": "^0.2.2",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
-    "lsos": "^0.1.0"
+    "lsos": "^0.1.1"
   },
   "scripts": {
     "build:umd": "rm -rf .cache/ && parcel build index.js --out-dir ./ --out-file wildcard-client.production.min.js --global wildcard",

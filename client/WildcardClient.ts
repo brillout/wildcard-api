@@ -405,8 +405,8 @@ function loadTimeStuff() {
   assertProxySupport();
 
   verify({
-    npmName: "@wildcard-api",
     projectName: "Wildcard API",
+    npm: "@wildcard-api",
     onlyWarning: true,
   });
 }

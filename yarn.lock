@@ -3506,10 +3506,10 @@ log-symbols@^2.2.0:
   dependencies:
     chalk "^2.0.1"
 
-lsos@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/lsos/-/lsos-0.1.0.tgz#7bae4081d143288edf99d1ae096d8b8e96fc5b6d"
-  integrity sha512-cLrXgFFVejkL/g6U6R2pmzzNt7F5jbRQWtC1zT4fQCyKc18V20VtHMLv1yMeKKyCvFg32OMp3MBNHqi3FllM3A==
+lsos@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/lsos/-/lsos-0.1.1.tgz#badf2895820de40851e3db7d339a008214c64f1a"
+  integrity sha512-QOPBIAiFWd+XJJL21uWOEc7SetiL3xNjUehp9O1+Jc+h+eCE881YOVnY3NfRlltPxho951RKXwzI/jRqxbGfXw==
   dependencies:
     find-up "^5.0.0"
 
