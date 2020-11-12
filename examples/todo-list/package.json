@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "yarn install && sh -c 'yarn dev:frontend & yarn dev:backend & wait'",
-    "dev:backend": "nodemon ./start-with-express.js",
-    "dev:frontend": "cd client && parcel watch *.html",
+    "dev": "yarn install && yarn clean && sh -c 'yarn frontend & yarn backend & wait'",
+    "backend": "nodemon ./start-with-express.js",
+    "frontend": "cd client && parcel watch *.html",
     "clean": "rm -rf client/dist client/.cache/"
   },
   "dependencies": {
