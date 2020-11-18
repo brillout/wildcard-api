@@ -83,7 +83,7 @@
 
 <p align="center">
   <a href="https://github.com/reframejs/wildcard-api/issues/56">
-    <img align="center" src="https://lsos.org/banner.svg">
+    <img align="center" src="https://lsos.org/labels/banner.svg">
   </a>
 </p>
 
