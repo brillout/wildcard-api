@@ -1,6 +1,6 @@
 {
   "name": "telefunc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Remote Functions.",
   "repository": "https://github.com/telefunc/telefunc",
   "main": "index.js",
@@ -17,6 +17,16 @@
     "@universal-adapter/koa": "^0.6.0",
     "lsos": "^0.1.1"
   },
+  "files": [
+    "client/**.js",
+    "client/**.ts",
+    "client/**.map",
+    "client/**.json",
+    "server/**.js",
+    "server/**.ts",
+    "server/**.map",
+    "server/**.json"
+  ],
   "scripts": {
     "// Demo": "",
     "demo": "yarn install:all && yarn build:once && yarn demo:run",
