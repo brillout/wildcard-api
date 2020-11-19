@@ -28,6 +28,7 @@
     "// Install": "",
     "install:all": "if [ ! -d ./node_modules/yarn/ ]; then npm run install:yarn; fi && yarn install",
     "install:yarn": "npm install yarn --no-save",
+    "prepare": "(cd node_modules/ && ln -sfn ../ telefunc)",
     "// Build": "",
     "build": "yarn build:once",
     "build:once": "tsc --build",
