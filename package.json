@@ -33,7 +33,7 @@
     "build": "yarn build:once",
     "build:once": "tsc --build",
     "build:watch": "tsc --build --watch",
-    "build:umd": "parcel build client/index.js --out-dir ./client --out-file wildcard-client.production.min.js --global wildcard",
+    "build:umd": "parcel build client/index.js --out-dir ./client --out-file telefunc-client.production.min.js --global telefunc",
     "prepublishOnly": "yarn clean:all && yarn install && yarn build:once && yarn build:umd",
     "// Prod": "",
     "bump": "yarn bump:patch",

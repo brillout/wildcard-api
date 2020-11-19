@@ -62,14 +62,14 @@ async function unpkg({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    assert(!window.wildcard);
+    assert(!window.telefunc);
     await loadScript(
-      "https://unpkg.com/telefunc/client/wildcard-client.production.min.js"
+      "https://unpkg.com/telefunc/client/telefunc-client.production.min.js"
     );
-    assert(window.wildcard);
-    const ret = await window.wildcard.server.bonj();
+    assert(window.telefunc);
+    const ret = await window.telefunc.server.bonj();
     assert(ret === "Bonjour");
-    delete window.wildcard;
+    delete window.telefunc;
 
     async function loadScript(url) {
       const script = window.document.createElement("script");
