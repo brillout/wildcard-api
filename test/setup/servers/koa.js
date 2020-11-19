@@ -2,7 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const Static = require("koa-static");
 const bodyParser = require("koa-bodyparser");
-const { wildcard } = require("@wildcard-api/server/koa");
+const { wildcard } = require("telefunc/server/koa");
 const { start, stop } = require("./express");
 
 module.exports = startServer;

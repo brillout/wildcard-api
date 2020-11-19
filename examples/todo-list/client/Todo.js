@@ -1,5 +1,5 @@
 import React from "react";
-import { server } from "@wildcard-api/client";
+import { server } from "telefunc/client";
 import { TodoCheckbox, TodoText } from "./TodoComponents";
 
 export default Todo;

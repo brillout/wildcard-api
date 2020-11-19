@@ -132,7 +132,7 @@ creating an API endpoint is as easy as creating a JavaScript function.
 ~~~js
 // Node.js server
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 
 // We define a `hello` function on the server
 server.hello = function(name) {
@@ -143,7 +143,7 @@ server.hello = function(name) {
 ~~~js
 // Browser
 
-import { server } from '@wildcard-api/client';
+import { server } from 'telefunc/client';
 
 (async () => {
   // Wildcard makes our `hello` function available in the browser
@@ -163,7 +163,7 @@ To retrieve and mutate data, you can direclty use SQL or an ORM.
 ~~~js
 // Node.js server
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 const Todo = require('./path/to/your/data/models/Todo');
 
 server.createTodoItem = async function(text) {
@@ -276,8 +276,8 @@ Is your API meant to be used by yourself? Use RPC.
    With Express:
    ~~~js
    const express = require('express');
-   // npm install @wildcard-api/server
-   const { wildcard } = require('@wildcard-api/server/express');
+   // npm install telefunc/server
+   const { wildcard } = require('telefunc/server/express');
 
    const app = express();
 
@@ -301,8 +301,8 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Hapi = require('hapi');
-   // npm install @wildcard-api/server
-   const { wildcard } = require('@wildcard-api/server/hapi');
+   // npm install telefunc/server
+   const { wildcard } = require('telefunc/server/hapi');
 
    const server = Hapi.Server();
 
@@ -328,8 +328,8 @@ Is your API meant to be used by yourself? Use RPC.
 
    ~~~js
    const Koa = require('koa');
-   // npm install @wildcard-api/server
-   const { wildcard } = require('@wildcard-api/server/koa');
+   // npm install telefunc/server
+   const { wildcard } = require('telefunc/server/koa');
 
    const app = new Koa();
 
@@ -360,8 +360,8 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    // This is generic pseudo code for how to integrate Wildcard with any server framework.
 
-   // npm install @wildcard-api/server
-   const { getApiHttpResponse } = require('@wildcard-api/server');
+   // npm install telefunc/server
+   const { getApiHttpResponse } = require('telefunc/server');
 
    // A server framework usually provides a way to add a route and define an HTTP response.
    const { addRoute, HttpResponse } = require('your-favorite-server-framework');
@@ -398,7 +398,7 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    // Node.js server
 
-   const { server } = require('@wildcard-api/server');
+   const { server } = require('telefunc/server');
 
    server.myFirstEndpoint = async function () {
      // The `this` object is the `context` object we defined in `setContext`.
@@ -411,13 +411,13 @@ Is your API meant to be used by yourself? Use RPC.
    > :information_source:
    > Wildcard automatically loads files named `endpoints.js` or `*.endpoints.js`.
 
-3. Use the `@wildcard-api/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
+3. Use the `telefunc/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
    ~~~js
    // Browser
 
-   // npm install @wildcard-api/client
-   import { server } from '@wildcard-api/client';
+   // npm install telefunc/client
+   import { server } from 'telefunc/client';
 
    (async () => {
      const {msg} = await server.myFirstEndpoint();
@@ -431,7 +431,7 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    ~~~html
-   <script crossorigin src="https://unpkg.com/@wildcard-api/client/wildcard-client.production.min.js"></script>
+   <script crossorigin src="https://unpkg.com/telefunc/client/wildcard-client.production.min.js"></script>
    <script src="my-script-using-wildcard.js"></script>
    ~~~
    ~~~js
@@ -478,7 +478,7 @@ Use the context object to authenticate requests. For example:
 // Node.js server
 
 const express = require('express');
-const { wildcard } = require('@wildcard-api/server/express');
+const { wildcard } = require('telefunc/server/express');
 
 const app = express();
 
@@ -510,7 +510,7 @@ The context object is available to endpoint functions as `this`.
 ~~~js
 // Node.js server
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 
 server.whoAmI = async function() {
   const {user} = this;
@@ -684,7 +684,7 @@ instead return an object containing the validation failure reason.
 ~~~js
 // Node.js server
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 const isStrongPassword = require('./path/to/isStrongPassword');
 
 server.createAccount = async function({email, password}) {
@@ -713,7 +713,7 @@ enabling you to handle errors with precision, for example:
 ~~~js
 // Browser
 
-import { server } from '@wildcard-api/client';
+import { server } from 'telefunc/client';
 
 (async () => {
   let data, err;
@@ -783,7 +783,7 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ~~~ts
 // /examples/typescript/endpoints.ts
 
-import { server as _server, FrontendType } from "@wildcard-api/server";
+import { server as _server, FrontendType } from "telefunc/server";
 import { Context } from "./context";
 
 interface Person {
@@ -815,7 +815,7 @@ Object.assign(_server, server);
 
 import "babel-polyfill";
 import { Server } from "../endpoints";
-import { server as serverUntyped } from "@wildcard-api/client";
+import { server as serverUntyped } from "telefunc/client";
 
 const server = serverUntyped as Server;
 
@@ -968,7 +968,7 @@ All options with their default value:
 ~~~js
 // Browser (or Node.js)
 
-import { config } from '@wildcard-api/client';
+import { config } from 'telefunc/client';
 
 // The URL of the Node.js server that serves the API
 config.serverUrl = null;
@@ -982,7 +982,7 @@ config.shortUrl = false;
 ~~~js
 // Node.js
 
-import { config } from '@wildcard-api/server';
+import { config } from 'telefunc/server';
 
 // Whether Wildcard generates an ETag header.
 config.disableCache = false;
@@ -1012,7 +1012,7 @@ then you need to provide a `serverUrl`.
 When `serverUrl` is `null`, the Wildcard client uses `window.location.origin` as server URL.
 
 ~~~js
-import { server, config } from '@wildcard-api/client';
+import { server, config } from 'telefunc/client';
 import assert from 'assert';
 
 config.serverUrl = 'https://api.example.com:1337';
@@ -1040,7 +1040,7 @@ By default, the pathname of any HTTP request that Wildcard makes starts with `/_
 You can change this base URL by using the `baseUrl` option.
 
 ~~~js
-import { server, config } from '@wildcard-api/client';
+import { server, config } from 'telefunc/client';
 import assert from 'assert';
 
 config.baseUrl = '/_my_custom_api_base_url/';
@@ -1064,7 +1064,7 @@ If you change the `baseUrl` option of your Wildcard client,
 then make sure that the `baseUrl` of your Wildcard server is the same:
 
 ~~~js
-import { config } from '@wildcard-api/server';
+import { config } from 'telefunc/server';
 
 config.baseUrl = '/_my_custom_api_base_url/';
 ~~~
@@ -1078,7 +1078,7 @@ arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
 ~~~js
-import { server, config } from '@wildcard-api/client';
+import { server, config } from 'telefunc/client';
 
 config.shortUrl = true; // Default value is `false`
 
@@ -1106,7 +1106,7 @@ If you need to save CPU computation time,
 you can set `disableCache` to `true` and Wildcard will skip generating HTTP ETag headers.
 
 ~~~js
-import wildcardServer from '@wildcard-api/server';
+import wildcardServer from 'telefunc/server';
 
 wildcardServer.disableCache = true;
 ~~~

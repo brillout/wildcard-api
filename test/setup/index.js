@@ -13,8 +13,8 @@ const stripAnsi = require("strip-ansi");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
-const { WildcardServer } = require("@wildcard-api/server/WildcardServer");
-const { WildcardClient } = require("@wildcard-api/client/WildcardClient");
+const { WildcardServer } = require("telefunc/server/WildcardServer");
+const { WildcardClient } = require("telefunc/client/WildcardClient");
 
 const bundle = require("./browser/bundle");
 const launchBrowser = require("./browser/launchBrowser");

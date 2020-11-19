@@ -1,4 +1,4 @@
-import { server as _server } from "@wildcard-api/server";
+import { server as _server } from "telefunc/server";
 import { Photon } from "@prisma/photon";
 
 const photon = new Photon();

@@ -1,5 +1,5 @@
 import "babel-polyfill";
-import { config, server } from "@wildcard-api/client";
+import { config, server } from "telefunc/client";
 
 // Make config available to play with in the dev console.
 // For example: `window.config.shortUrl = true`;

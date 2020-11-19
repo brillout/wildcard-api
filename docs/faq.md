@@ -204,7 +204,7 @@ everything the backend can do is only one JavaScript function away:
 ~~~js
 // Your Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 
 endpoints.iHavePower = function() {
   // I can do everything the Node.js server can do
@@ -213,7 +213,7 @@ endpoints.iHavePower = function() {
 ~~~js
 // Your browser frontend
 
-import {endpoints} from '@wildcard-api/client';
+import {endpoints} from 'telefunc/client';
 
 // The entire backend power is one JavaScript function away
 endpoints.iHavePower();

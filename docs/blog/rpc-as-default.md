@@ -26,7 +26,7 @@ For example between a Node.js backend and a browser frontend:
 // Node.js server
 
 // Wildcard API is an RPC implementation for Node.js backends
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
 endpoints.hello = function(name) {
@@ -37,7 +37,7 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import {endpoints} from 'telefunc/client';
 
 (async () => {
   // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC)
@@ -49,7 +49,7 @@ import {endpoints} from '@wildcard-api/client';
 RPC enables you to directly use SQL or your ORM while developing your frontend.
 
 ~~~js
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 const Todo = require('./path/to/your/data/models/Todo');
 
 // We get the data for the landing page

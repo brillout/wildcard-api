@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { wildcard } from "@wildcard-api/server/express";
+import { wildcard } from "telefunc/server/express";
 import "../endpoints";
 
 const app = express();

@@ -1,5 +1,5 @@
 {
-  "name": "@wildcard-api/server",
+  "name": "telefunc/server",
   "version": "0.5.3",
   "description": "JavaScript Functions as API.",
   "main": "index.js",

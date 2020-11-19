@@ -1,5 +1,5 @@
 const express = require("express");
-const { wildcard } = require("@wildcard-api/server/express");
+const { wildcard } = require("telefunc/server/express");
 
 const app = express();
 

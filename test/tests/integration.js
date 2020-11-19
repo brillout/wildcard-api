@@ -64,7 +64,7 @@ async function unpkg({ server, browserEval }) {
   await browserEval(async () => {
     assert(!window.wildcard);
     await loadScript(
-      "https://unpkg.com/@wildcard-api/client/wildcard-client.production.min.js"
+      "https://unpkg.com/telefunc/client/wildcard-client.production.min.js"
     );
     assert(window.wildcard);
     const ret = await window.wildcard.server.bonj();
@@ -95,7 +95,7 @@ async function unpkg({ server, browserEval }) {
 }
 
 async function API() {
-  const wildcard_server = require("@wildcard-api/server");
+  const wildcard_server = require("telefunc/server");
   assert(wildcard_server.server.constructor === Object);
   assert(wildcard_server.config.constructor === Object);
   assert(
@@ -104,14 +104,14 @@ async function API() {
   assert(wildcard_server.getApiHttpResponse);
   assert(Object.keys(wildcard_server).length === 3);
 
-  const wildcard_client = require("@wildcard-api/client");
+  const wildcard_client = require("telefunc/client");
   assert(Object.keys(wildcard_client).length === 2);
   assert(wildcard_client.server);
   assert(wildcard_client.config);
   assert(Object.keys(wildcard_client).length === 2);
 
   ["express", "koa", "hapi"].forEach((serverFramework) => {
-    const export_ = require("@wildcard-api/server/" + serverFramework);
+    const export_ = require("telefunc/server/" + serverFramework);
     assert(export_.wildcard.name === "wildcard");
     assert(export_.wildcard.constructor.name === "Function");
     assert(Object.keys(export_).length === 1);

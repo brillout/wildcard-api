@@ -1,4 +1,4 @@
-import { server as _server, FrontendType } from "@wildcard-api/server";
+import { server as _server, FrontendType } from "telefunc/server";
 import { Context } from "./context";
 
 interface Person {

@@ -26,7 +26,7 @@ JavaScript Example
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
 endpoints.hello = function(name) {
@@ -37,7 +37,7 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import {endpoints} from 'telefunc/client';
 
 (async () => {
   // We call the procedure `hello` remotely from the browser — we do *r*emote *p*rocedure *c*all (RPC)

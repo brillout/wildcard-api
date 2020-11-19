@@ -1,4 +1,4 @@
-const { server } = require("@wildcard-api/server");
+const { server } = require("telefunc/server");
 
 // A simple endpoint to test Wildcard
 server.mirror = async function (str) {

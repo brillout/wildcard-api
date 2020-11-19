@@ -1,6 +1,6 @@
 const express = require("express");
-const { wildcard } = require("@wildcard-api/server/express");
-const { server } = require("@wildcard-api/server");
+const { wildcard } = require("telefunc/server/express");
+const { server } = require("telefunc/server");
 
 server.hello = async function () {
   const msg = "Hello from server";

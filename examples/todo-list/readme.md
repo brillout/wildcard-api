@@ -167,7 +167,7 @@ This section highlights the interesting parts of the example.
 ~~~js
 // ./api/view.endpoints.js
 
-const { server } = require("@wildcard-api/server");
+const { server } = require("telefunc/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
@@ -231,7 +231,7 @@ With Express:
 // ./start-with-express
 
 const express = require("express");
-const { wildcard } = require("@wildcard-api/server/express");
+const { wildcard } = require("telefunc/server/express");
 
 const app = express();
 
@@ -262,7 +262,7 @@ With Hapi
 
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
-const { wildcard } = require("@wildcard-api/server/hapi");
+const { wildcard } = require("telefunc/server/hapi");
 
 startServer();
 
@@ -309,7 +309,7 @@ With Koa
 
 const Koa = require("koa");
 const Static = require("koa-static");
-const { wildcard } = require("@wildcard-api/server/koa");
+const { wildcard } = require("telefunc/server/koa");
 
 const app = new Koa();
 
@@ -360,7 +360,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 ~~~js
 // ./api/mutation.endpoints.js
 
-const { server } = require("@wildcard-api/server");
+const { server } = require("telefunc/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
@@ -430,7 +430,7 @@ and to update a todo.
 
 import "./common";
 import React from "react";
-import { server } from "@wildcard-api/client";
+import { server } from "telefunc/client";
 import renderPage from "./renderPage";
 import LoadingWrapper from "./LoadingWrapper";
 import Todo from "./Todo";
@@ -473,7 +473,7 @@ function LandingPage() {
 // ./client/Todo
 
 import React from "react";
-import { server } from "@wildcard-api/client";
+import { server } from "telefunc/client";
 import { TodoCheckbox, TodoText } from "./TodoComponents";
 
 export default Todo;

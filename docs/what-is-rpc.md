@@ -100,7 +100,7 @@ RPC example between frontend and backend using Wildcard:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
 endpoints.hello = function(name) {
@@ -111,7 +111,7 @@ endpoints.hello = function(name) {
 ~~~js
 // Browser
 
-import {endpoints} from '@wildcard-api/client';
+import {endpoints} from 'telefunc/client';
 
 (async () => {
   // We call the procedure `hello` remotely from the browser — we do *R*emote *P*rocedure *C*all
@@ -131,7 +131,7 @@ For example:
 ~~~js
 // Node.js server
 
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 const Todo = require('./path/to/your/data/model/Todo');
 
 endpoints.createTodoItem = async function(text) {
@@ -162,7 +162,7 @@ endpoints.createTodoItem = async function(text) {
 ~~~js
 // Browser
 
-const {endpoints} = require('@wildcard-api/client');
+const {endpoints} = require('telefunc/client');
 
 const newTodo = await endpoints.createTodoItem('Buy chocolate');
 console.log(newTodo.id);

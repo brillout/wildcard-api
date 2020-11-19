@@ -1,5 +1,5 @@
 import express from "express";
-import { wildcard } from "@wildcard-api/server/express";
+import { wildcard } from "telefunc/server/express";
 import "./endpoints.ts";
 import { Context } from "./context";
 

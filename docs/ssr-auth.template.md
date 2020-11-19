@@ -23,7 +23,7 @@ For example:
 ~~~js
 // Node.js
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 
 // Our endpoint function `whoAmI` needs the name of the logged-in user.
 server.whoAmI = async function() {
@@ -35,7 +35,7 @@ server.whoAmI = async function() {
 ~~~js
 // Browser & Node.js (this code runs in the browser as well as in Node.js)
 
-const { server } = require('@wildcard-api/client');
+const { server } = require('telefunc/client');
 
 // Whether the code runs in the browser or in Node.js
 function isNodejs() {
@@ -76,7 +76,7 @@ Let's consider the endpoint `whoAmI` from above:
 ~~~js
 // Node.js
 
-const { server } = require('@wildcard-api/server');
+const { server } = require('telefunc/server');
 
 // Our endpoint function `whoAmI` needs the name of the logged-in user.
 server.whoAmI = async function() {
@@ -91,7 +91,7 @@ And let's now dissect what happens when we call `whoAmI` in the browser:
 // Browser
 
 // We use the Wildcard client in the browser
-const { server } = require('@wildcard-api/client');
+const { server } = require('telefunc/client');
 
 (async () => {
   // Because we are on the browser, the Wildcard client makes an HTTP request to our Node.js server
@@ -107,7 +107,7 @@ The HTTP request that the Wildcard client made is handled by the Wildcard middle
 // Node.js
 
 const express = require('express');
-const {wildcard} = require('@wildcard-api/server/express');
+const {wildcard} = require('telefunc/server/express');
 
 const app = express();
 
@@ -142,7 +142,7 @@ There is no way for Wildcard to get `req.user` &mdash; we have to manually `bind
 // Node.js
 
 // We use the Wildcard client in Node.js
-const { server } = require('@wildcard-api/client');
+const { server } = require('telefunc/client');
 
 module.exports = getGreeting;
 
@@ -236,7 +236,7 @@ The isomorphic (aka universal) usage of the Wildcard client looks this:
 
 // /common/getGreeting.js
 
-const { server } = require('@wildcard-api/client');
+const { server } = require('telefunc/client');
 const assert = require('assert');
 
 module.exports = getGreeting;

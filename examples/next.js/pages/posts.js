@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { server } from "@wildcard-api/client";
+import { server } from "telefunc/client";
 
 export default class extends Component {
   static async getInitialProps({ query: { id } }) {

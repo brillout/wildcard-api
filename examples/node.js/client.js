@@ -1,4 +1,4 @@
-const { server, config } = require("@wildcard-api/client");
+const { server, config } = require("telefunc/client");
 
 config.serverUrl = "http://localhost:3000";
 

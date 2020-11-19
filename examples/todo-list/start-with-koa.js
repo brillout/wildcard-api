@@ -1,6 +1,6 @@
 const Koa = require("koa");
 const Static = require("koa-static");
-const { wildcard } = require("@wildcard-api/server/koa");
+const { wildcard } = require("telefunc/server/koa");
 
 const app = new Koa();
 

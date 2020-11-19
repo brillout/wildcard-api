@@ -246,8 +246,8 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
     assertUsage(
       false,
       [
-        "You cannot add/modify endpoint functions with the Wildcard client `@wildcard-api/client`.",
-        "Instead, define your endpoint functions with the Wildcard server `@wildcard-api/server`.",
+        "You cannot add/modify endpoint functions with the Wildcard client `telefunc/client`.",
+        "Instead, define your endpoint functions with the Wildcard server `telefunc/server`.",
       ].join(" ")
     );
 
@@ -333,8 +333,8 @@ function getConfigProxy(configDefaults: ConfigPrivate): ConfigPrivate {
       configName in configDefaults,
       [
         `Unknown config \`${configName}\`.`,
-        "Make sure that the config is a `@wildcard-api/client` config",
-        "and not a `@wildcard-api/server` one.",
+        "Make sure that the config is a `telefunc/client` config",
+        "and not a `telefunc/server` one.",
       ].join(" ")
     );
 
@@ -371,7 +371,7 @@ function isBinded(that: unknown, defaultBind: unknown): boolean {
     (function (this: unknown) {
       return notBinded(this);
     })() === true,
-    "You seem to be using `@wildcard-api/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/reframejs/wildcard-api/issues/new for adding support for your environemnt/bundler."
+    "You seem to be using `telefunc/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/reframejs/wildcard-api/issues/new for adding support for your environemnt/bundler."
   );
 
   return !notBinded(that, defaultBind);

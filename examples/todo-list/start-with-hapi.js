@@ -1,6 +1,6 @@
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
-const { wildcard } = require("@wildcard-api/server/hapi");
+const { wildcard } = require("telefunc/server/hapi");
 
 startServer();
 

@@ -86,7 +86,7 @@ Do we need REST/GraphQL? Let's try with RPC and see how far we get.
 // Node.js server
 
 // We use RPC by creating a Wildcard API.
-const {endpoints} = require('@wildcard-api/server');
+const {endpoints} = require('telefunc/server');
 
 const db = require('your-favorite-sql-query-builder');
 
@@ -108,7 +108,7 @@ endpoints.createTodo = async function({text}) {
 
 import React, {useState} from 'react';
 import usePromise from './react-hooks/usePromise.js';
-import {endpoints} from '@wildcard-api/client';
+import {endpoints} from 'telefunc/client';
 
 export default TodoList;
 
@@ -169,7 +169,7 @@ Let's try with RPC by modifying our RPC endpoints like the following.
 ~~~diff
   // Node.js server
 
-  const {endpoints} = require('@wildcard-api/server');
+  const {endpoints} = require('telefunc/server');
 
   const db = require('your-favorite-sql-query-builder');
 

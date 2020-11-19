@@ -471,8 +471,8 @@ function getConfigProxy(configDefaults: Config): Config {
       configName in configDefaults,
       [
         `Unknown config \`${configName}\`.`,
-        "Make sure that the config is a `@wildcard-api/server` config",
-        "and not a `@wildcard-api/client` one.",
+        "Make sure that the config is a `telefunc/server` config",
+        "and not a `telefunc/client` one.",
       ].join(" ")
     );
 
@@ -958,8 +958,8 @@ function assertNodejs() {
   assertUsage(
     isNodejs,
     [
-      "You are loading the module `@wildcard-api/server` in the browser.",
-      "The module `@wildcard-api/server` is meant for your Node.js server. Load `@wildcard-api/client` instead.",
+      "You are loading the module `telefunc/server` in the browser.",
+      "The module `telefunc/server` is meant for your Node.js server. Load `telefunc/client` instead.",
     ].join(" ")
   );
 }

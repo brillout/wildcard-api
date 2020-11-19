@@ -1,6 +1,6 @@
 // Example of unrecommended way of designing endpoints
 
-const { server } = require("@wildcard-api/server");
+const { server } = require("telefunc/server");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
