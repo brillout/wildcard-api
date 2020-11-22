@@ -5,8 +5,8 @@ import {
   HttpRequestProps,
   HttpResponseProps,
   UniversalAdapterName,
-  WildcardServer,
-} from "./WildcardServer";
+  TelefuncServer,
+} from "./TelefuncServer";
 
 export { MiddlewareFactory };
 
@@ -26,16 +26,16 @@ type ServerAdapter<ServerMiddleware, HttpRequest> = (
   arg1: ServerAdapterOptions
 ) => ServerMiddleware;
 
-type WildcardServerHolder = {
-  wildcardServer: WildcardServer;
+type TelefuncServerHolder = {
+  wildcardServer: TelefuncServer;
 };
-type WildcardServerOption = {
-  __INTERNAL_wildcardServer_middleware?: WildcardServerHolder;
+type TelefuncServerOption = {
+  __INTERNAL_wildcardServer_middleware?: TelefuncServerHolder;
 };
 
 function createMiddleware<ServerMiddleware, HttpRequest>(
   serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
-  __INTERNAL_wildcardServer_middleware: WildcardServerHolder | undefined,
+  __INTERNAL_wildcardServer_middleware: TelefuncServerHolder | undefined,
   adapterOptions: ServerAdapterOptions,
   setContext: SetContext<HttpRequest> | undefined,
   __INTERNAL_universalAdapter: UniversalAdapterName
@@ -89,7 +89,7 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
   function wildcard(
     setContext?: SetContext<HttpRequest>,
     /** @ignore */
-    { __INTERNAL_wildcardServer_middleware }: WildcardServerOption = {}
+    { __INTERNAL_wildcardServer_middleware }: TelefuncServerOption = {}
   ): ServerMiddleware {
     const middleware = createMiddleware<ServerMiddleware, HttpRequest>(
       serverAdapter,

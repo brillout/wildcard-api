@@ -1,14 +1,14 @@
 require("babel-polyfill");
 const { server, config } = require("telefunc/client");
-const { WildcardClient } = require("telefunc/client/WildcardClient");
+const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 const assert = require("assert");
-Object.assign(window, { assert, server, config, WildcardClient });
+Object.assign(window, { assert, server, config, TelefuncClient });
 Object.assign(window, {
   assert,
   assert_noErrorStack,
   server,
   config,
-  WildcardClient,
+  TelefuncClient,
 });
 
 // TODO: run this assertion on every browser-side stdout & stderr

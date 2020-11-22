@@ -75,8 +75,8 @@ async function wrongServerUrl({ wildcardClient, assertStderr }) {
 }
 
 missingServerUrl.isIntegrationTest = true;
-async function missingServerUrl({ assertStderr, WildcardClient }) {
-  const wildcardClient = new WildcardClient();
+async function missingServerUrl({ assertStderr, TelefuncClient }) {
+  const wildcardClient = new TelefuncClient();
 
   const save = global.__INTERNAL_wildcardServer_nodejs;
   delete global.__INTERNAL_wildcardServer_nodejs;

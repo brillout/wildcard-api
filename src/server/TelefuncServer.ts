@@ -11,7 +11,7 @@ import {
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 
-export { WildcardServer };
+export { TelefuncServer };
 
 loadTimeStuff();
 
@@ -107,7 +107,7 @@ const configDefault: Config = {
   baseUrl: "/_wildcard_api/",
 };
 
-class WildcardServer {
+class TelefuncServer {
   endpoints: Endpoints = getEndpointsProxy();
   config: Config = getConfigProxy(configDefault);
 

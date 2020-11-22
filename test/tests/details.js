@@ -40,8 +40,8 @@ async function endpointReturnsUndefined_browserSide({ server, browserEval }) {
 }
 
 async function createServer({
-  WildcardServer,
-  WildcardClient,
+  TelefuncServer,
+  TelefuncClient,
   setContext,
   staticDir,
   httpPort,
@@ -50,8 +50,8 @@ async function createServer({
   const { wildcard } = require("telefunc/server/express");
   const { stop, start } = require("../setup/servers/express");
 
-  const wildcardServer = new WildcardServer();
-  const wildcardClient = new WildcardClient();
+  const wildcardServer = new TelefuncServer();
+  const wildcardClient = new TelefuncClient();
   wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
 
   const app = express();

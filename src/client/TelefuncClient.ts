@@ -4,7 +4,7 @@ import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
 import { verify } from "lsos";
 
-export { WildcardClient };
+export { TelefuncClient };
 
 loadTimeStuff();
 
@@ -39,7 +39,7 @@ export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 
 // Wildcard server instance
 // For when using the Wildcard client server-side
-type WildcardServer = {
+type TelefuncServer = {
   __directCall: (
     endpointName: EndpointName,
     endpointArgs: EndpointArgs,
@@ -55,7 +55,7 @@ const configDefault: ConfigPrivate = {
   __INTERNAL_wildcardServer_test: null,
 };
 
-class WildcardClient {
+class TelefuncClient {
   config: Config = getConfigProxy(configDefault);
   endpoints: Endpoints = getEndpointsProxy(this.config as ConfigPrivate);
 }
@@ -68,7 +68,7 @@ function callEndpoint(
 ): EndpointResult {
   endpointArgs = endpointArgs || [];
 
-  const wildcardServer: WildcardServer = getWildcardServer(config);
+  const wildcardServer: TelefuncServer = getTelefuncServer(config);
 
   // Usage in Node.js [inter-process]
   // Inter-process: the Wildcard client and the Wildcard server are loaded in the same Node.js process.
@@ -104,7 +104,7 @@ function callEndpoint(
   return callEndpointOverHttp(endpointName, endpointArgs, config);
 }
 
-function getWildcardServer(config: ConfigPrivate) {
+function getTelefuncServer(config: ConfigPrivate) {
   const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
   const wildcardServer__serverSideUsage =
     typeof global !== "undefined" &&
@@ -127,7 +127,7 @@ function getWildcardServer(config: ConfigPrivate) {
 async function callEndpointDirectly(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
-  wildcardServer: WildcardServer,
+  wildcardServer: TelefuncServer,
   context: Context
 ): Promise<EndpointResult> {
   return wildcardServer.__directCall(endpointName, endpointArgs, context);

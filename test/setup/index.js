@@ -13,8 +13,8 @@ const stripAnsi = require("strip-ansi");
 global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
-const { WildcardServer } = require("telefunc/server/WildcardServer");
-const { WildcardClient } = require("telefunc/client/WildcardClient");
+const { TelefuncServer } = require("telefunc/server/TelefuncServer");
+const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 
 const bundle = require("./browser/bundle");
 const launchBrowser = require("./browser/launchBrowser");
@@ -85,20 +85,20 @@ async function runStandardTests({
     await startServer();
 
     for (let test of standardTests) {
-      const wildcardServer = new WildcardServer();
+      const wildcardServer = new TelefuncServer();
       const { endpoints: server, config } = wildcardServer;
       __INTERNAL_wildcardServer_middleware.wildcardServer = wildcardServer;
-      const wildcardClient = new WildcardClient();
+      const wildcardClient = new TelefuncClient();
       wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
 
       const testArgs = {
         server,
         config,
         browserEval,
-        WildcardServer,
+        TelefuncServer,
         wildcardServer,
         wildcardClient,
-        WildcardClient,
+        TelefuncClient,
         httpPort,
         serverFramework,
       };
@@ -301,8 +301,8 @@ async function runIntegrationTests({
     const testArgs = {
       browserEval,
       staticDir,
-      WildcardClient,
-      WildcardServer,
+      TelefuncClient,
+      TelefuncServer,
       httpPort,
     };
     await runTest({

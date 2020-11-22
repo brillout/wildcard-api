@@ -8,7 +8,7 @@ import {
   EndpointResult,
   HttpRequestBody,
   HttpRequestUrl,
-} from "./WildcardClient";
+} from "./TelefuncClient";
 
 type EndpointError = Error & {
   isConnectionError: boolean;
