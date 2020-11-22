@@ -97,7 +97,7 @@ function callEndpoint(
     [
       "Using `bind` to provide the context object is forbidden on the browser-side.",
       "You should use `bind` only on the server-side.",
-      "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+      "More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md",
     ].join(" ")
   );
 
@@ -371,7 +371,7 @@ function isBinded(that: unknown, defaultBind: unknown): boolean {
     (function (this: unknown) {
       return notBinded(this);
     })() === true,
-    "You seem to be using `telefunc/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/reframejs/wildcard-api/issues/new for adding support for your environemnt/bundler."
+    "You seem to be using `telefunc/client` with an unknown environment/bundler; the following environemnts/bundlers are supported: webpack, Parcel, and Node.js. Open a new issue at https://github.com/telefunc/telefunc/issues/new for adding support for your environemnt/bundler."
   );
 
   return !notBinded(that, defaultBind);

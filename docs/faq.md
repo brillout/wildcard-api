@@ -129,7 +129,7 @@ then RPC offers a simpler (and more powerful!) alternative.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -170,7 +170,7 @@ Whether you should use [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-g
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -239,7 +239,7 @@ That's why you should use GraphQL (or REST level-5) if your API is meant to be u
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -293,7 +293,7 @@ which we talk about in the next querstion
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -341,7 +341,7 @@ That way your frontend and backend are always deployed synchronously.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -382,7 +382,7 @@ it gives him the power to use any SQL/ORM query and any server-side tool he want
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -413,7 +413,7 @@ versioning as your backend only serves the latest version of your API.
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
@@ -552,7 +552,7 @@ how you strucutre your code has less to do with RPC and more to do with your bus
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 

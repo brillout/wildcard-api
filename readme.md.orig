@@ -1,6 +1,95 @@
-!OUTPUT ../readme.md
-!INLINE ./snippets/header.md --hide-source-path
+<!---
 
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+-->
+<p align="center">
+  <a href="/../../#readme">
+    <img src="/docs/images/logo-title.svg" height="105" alt="Wildcard API"/>
+  </a>
+</p>
+
+<<<<<<< HEAD
+=======
+<p align="center">
+  <a href="https://github.com/telefunc/telefunc/issues/56">
+    <img align="center" src="https://lsos.org/labels/banner.svg">
+  </a>
+</p>
+
+>>>>>>> e6f6e65 (rename to telefunc)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -367,7 +456,26 @@ Is your API meant to be used by yourself? Use RPC.
 
 That's it.
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -430,7 +538,26 @@ server.logout = async function() {
 
 For SSR, read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -536,7 +663,26 @@ In any case,
 as long as you protect your endpoints from unsafe requests,
 you can do whatever works for you.
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 ## Validation
@@ -616,7 +762,26 @@ import 'handli'; // npm install handli
 // Errors are now handled by Handli.
 ~~~
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -625,10 +790,55 @@ import 'handli'; // npm install handli
 You can use your backend types on the frontend by using TypeScript's `typeof`.
 
 ~~~ts
-!INLINE /examples/typescript/endpoints.ts
+// /examples/typescript/endpoints.ts
+
+import { server as _server, FrontendType } from "telefunc/server";
+import { Context } from "./context";
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  id: number;
+}
+
+const persons: Array<Person> = [
+  { firstName: "John", lastName: "Smith", id: 0 },
+  { firstName: "Alice", lastName: "Graham", id: 1 },
+  { firstName: "Harry", lastName: "Thompson", id: 2 },
+];
+
+async function getPerson(this: Context, id: number) {
+  if (!this.isLoggedIn) return null;
+  return persons.find((person) => person.id === id) || null;
+}
+
+const server = {
+  getPerson,
+};
+export type Server = FrontendType<typeof server, Context>;
+
+Object.assign(_server, server);
 ~~~
 ~~~ts
-!INLINE /examples/typescript/client/index.ts
+// /examples/typescript/client/index.ts
+
+import "babel-polyfill";
+import { Server } from "../endpoints";
+import { server as serverUntyped } from "telefunc/client";
+
+const server = serverUntyped as Server;
+
+(async () => {
+  const id = Math.floor(Math.random() * 3);
+  const person = await server.getPerson(id);
+  if (person === null) {
+    document.body.innerHTML = "Could not retrieve person";
+  } else {
+    const personHtml =
+      person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
+    document.body.innerHTML = personHtml;
+  }
+})();
 ~~~
 
 <p align="center">
@@ -644,7 +854,26 @@ TypeScript usage examples:
 - [/examples/typescript/](/examples/typescript/)
 - [/examples/prisma/](/examples/prisma/)
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -661,7 +890,26 @@ For improved developer experience,
 you can use [Wildcard with TypeScript](#typescript) to make type hints available on the frontend.
 A frontend developer can then explore your Wildcard API directly in his IDE!
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -670,7 +918,26 @@ A frontend developer can then explore your Wildcard API directly in his IDE!
 Wildcard automatically caches your endpoint results by using the HTTP ETag header.
 You can disable caching by using the [`disableCache` option](#disablecache).
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -681,7 +948,26 @@ The Wildcard client is isomorphic (aka universal) and works in the browser as we
 If you don't need authentication, then SSR works out of the box.
 If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -835,7 +1121,26 @@ wildcardServer.disableCache = true;
 ~~~
 
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
@@ -876,7 +1181,104 @@ Material to learn more about RPC and Wildcard.
   <br/>
   How to use Wildcard with SSR and Authentication.
 
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
+
+<br/>
+
+<p align="center">
+
+<sup>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
+if you have questions or something's not clear &mdash; we enjoy talking with our users.
+</sup>
+
+<br/>
+
+<sup>
+<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
+</sup>
+
+</p>
+
+<br/>
+<br/>
 
 
 
+
+<!---
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+
+
+
+
+
+
+    WARNING, READ THIS.
+    This is a computed file. Do not edit.
+    Instead, edit `/docs/readme.template.md` and run `npm run docs` (or `yarn docs`).
+
+
+
+
+
+
+-->

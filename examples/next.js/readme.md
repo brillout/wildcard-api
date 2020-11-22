@@ -1,13 +1,13 @@
 # Next.js & Wildcard
 
-The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [Wildcard API](https://github.com/reframejs/wildcard-api).
+The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [Wildcard API](https://github.com/telefunc/telefunc).
 
 ## How to use
 
 Download the example.
 
 ```bash
-curl https://codeload.github.com/reframejs/wildcard-api/tar.gz/master | tar -xz --strip=2 wildcard-api-master/examples/next.js
+curl https://codeload.github.com/telefunc/telefunc/tar.gz/master | tar -xz --strip=2 wildcard-api-master/examples/next.js
 ```
 
 Install it and run.

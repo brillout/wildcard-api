@@ -1,6 +1,15 @@
 !OUTPUT ../readme.md
 !INLINE ./snippets/header.md --hide-source-path
 
+<<<<<<< HEAD
+=======
+<p align="center">
+  <a href="https://github.com/telefunc/telefunc/issues/56">
+    <img align="center" src="https://lsos.org/labels/banner.svg">
+  </a>
+</p>
+
+>>>>>>> e6f6e65 (rename to telefunc)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;

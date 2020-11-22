@@ -539,7 +539,7 @@ function getContextUsageNote(
     "Wrong usage of the Wildcard client in Node.js.",
     common,
     `by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`,
-    "More infos at https://github.com/reframejs/wildcard-api/blob/master/docs/ssr-auth.md",
+    "More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md",
   ].join(" ");
 }
 
@@ -752,7 +752,7 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 
 function handleInternalError(internalError: Error): HttpResponseProps {
   const msg =
-    "[Wildcard API][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/reframejs/wildcard-api/issues/new and include this error stack. ";
+    "[Wildcard API][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack. ";
   internalError = addMessage(internalError, msg);
   console.error(internalError);
   return HttpResponse_serverSideError();
@@ -1030,7 +1030,7 @@ function loadTimeStuff() {
   // Some infos for `assertUsage` and `assert`
   setProjectInfo({
     projectName: "Wildcard API",
-    projectGithub: "https://github.com/reframejs/wildcard-api",
+    projectGithub: "https://github.com/telefunc/telefunc",
   });
 
   // The Wildcard server only works with Node.js

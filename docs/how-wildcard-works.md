@@ -118,7 +118,7 @@ the following happens:
 <p align="center">
 
 <sup>
-<a href="https://github.com/reframejs/wildcard-api/issues/new">Open a GitHub ticket</a>
+<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
 if you have questions or something's not clear &mdash; we enjoy talking with our users.
 </sup>
 
