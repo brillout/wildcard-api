@@ -397,16 +397,16 @@ declare global {
 function loadTimeStuff() {
   // Some infos for `assertUsage` and `assert`
   setProjectInfo({
-    projectName: "Wildcard API",
-    projectGithub: "https://github.com/reframejs/wildcard-api",
+    projectName: "Telefunc",
+    projectGithub: "https://github.com/telefunc/telefunc",
   });
 
   // We need ES6 `Proxy`
   assertProxySupport();
 
   verify({
-    projectName: "Wildcard API",
-    npm: "@wildcard-api",
+    projectName: "Telefunc",
+    npm: "telefunc",
     onlyWarning: true,
   });
 }
