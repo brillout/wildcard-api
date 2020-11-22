@@ -25,7 +25,7 @@ Run the following npm scripts to build and serve the example:
 0. Get the code.
 
    ~~~shell
-   $ git clone git@github.com:reframejs/wildcard-api
+   $ git clone git@github.com:telefunc/telefunc
    ~~~
 
 1. Install dependencies.
