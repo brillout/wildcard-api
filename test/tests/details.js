@@ -8,7 +8,7 @@ module.exports = [
   endpointReturnsUndefined_serverSide,
   endpointReturnsUndefined_browserSide,
 
-  // Calling a server endpoint directly without using the `@wilcard-api/client` is not a problem
+  // Calling a server endpoint directly without using the `telefunc/client` is not a problem
   serverSideEndpointCalling,
 ];
 module.exports.createServer = createServer;
