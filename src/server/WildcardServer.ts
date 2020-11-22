@@ -30,7 +30,7 @@ type ContextGetter = () => Promise<Context> | Context;
 
 /** Wildcard Server Configuration */
 type Config = {
-  /** Serve Wildcard API HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
+  /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
   baseUrl: string;
   /** Whether Wildcard generates HTTP ETag headers. */
   disableCache: boolean;
@@ -752,7 +752,7 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 
 function handleInternalError(internalError: Error): HttpResponseProps {
   const msg =
-    "[Wildcard API][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack. ";
+    "[Telefunc][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack. ";
   internalError = addMessage(internalError, msg);
   console.error(internalError);
   return HttpResponse_serverSideError();
@@ -1029,7 +1029,7 @@ function getFunctionName(fn: () => unknown): string {
 function loadTimeStuff() {
   // Some infos for `assertUsage` and `assert`
   setProjectInfo({
-    projectName: "Wildcard API",
+    projectName: "Telefunc",
     projectGithub: "https://github.com/telefunc/telefunc",
   });
 

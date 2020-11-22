@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="/docs/images/logo-title.svg" height="105" alt="Wildcard API"/>
+    <img src="/docs/images/logo-title.svg" height="105" alt="Telefunc"/>
   </a>
 </p>
 
@@ -872,14 +872,14 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 API browsing tools such as OpenAPI (formerly known as Swagger) makes sense for an API that is meant to be used by third-party developers who don't have access to your source code.
 
-A Wildcard API is meant to be used by your own developers;
+A Telefunc is meant to be used by your own developers;
 instead of using OpenAPI,
 you can give your frontend developers access to your backend code and save all endpoints in files named `endpoints.js`.
 That way, a frontend developer can explore your API.
 
 For improved developer experience,
 you can use [Wildcard with TypeScript](#typescript) to make type hints available on the frontend.
-A frontend developer can then explore your Wildcard API directly in his IDE!
+A frontend developer can then explore your Telefunc directly in his IDE!
 
 
 <br/>

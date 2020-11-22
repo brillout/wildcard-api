@@ -162,7 +162,7 @@ Do we need REST/GraphQL? Let's try with RPC and see how far we get.
 ~~~js
 // Node.js server
 
-// We use RPC by creating a Wildcard API.
+// We use RPC by creating a Telefunc.
 const {endpoints} = require('telefunc/server');
 
 const db = require('your-favorite-sql-query-builder');

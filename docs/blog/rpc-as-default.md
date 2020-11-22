@@ -25,7 +25,7 @@ For example between a Node.js backend and a browser frontend:
 ~~~js
 // Node.js server
 
-// Wildcard API is an RPC implementation for Node.js backends
+// Telefunc is an RPC implementation for Node.js backends
 const {endpoints} = require('telefunc/server');
 
 // We define a function (aka procedure) `hello` on a Node.js server.
@@ -131,7 +131,7 @@ switch to REST or GraphQL when and if the need arises.
 
 #### RPC-like
 
-For a Node.js backend you can have RPC by using [Wildcard API](https://github.com/telefunc/telefunc#readme)
+For a Node.js backend you can have RPC by using [Telefunc](https://github.com/telefunc/telefunc#readme)
 and for other backends you can have an RPC-like API by creating JSON endpoints. For example with Python:
 
 ~~~python

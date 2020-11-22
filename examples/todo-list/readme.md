@@ -77,7 +77,7 @@
 -->
 <p align="center">
   <a href="/../../#readme">
-    <img src="/docs/images/logo-title.svg" height="105" alt="Wildcard API"/>
+    <img src="/docs/images/logo-title.svg" height="105" alt="Telefunc"/>
   </a>
 </p>
 &nbsp;
@@ -86,7 +86,7 @@
 
 A (simplistic) todo app built with:
  - React
- - Wildcard API
+ - Telefunc
  - Node.js
  - SQLite
 
@@ -421,7 +421,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 ### React Frontend
 
 The following code shows how our frontend
-uses our Wildcard API to retrieve the user information,
+uses our Telefunc to retrieve the user information,
 the user todos,
 and to update a todo.
 

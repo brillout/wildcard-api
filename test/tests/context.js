@@ -163,7 +163,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   };
 
   const errMsg =
-    "[Wildcard API][Wrong Usage] Wrong usage of the Wildcard client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
+    "[Telefunc][Wrong Usage] Wrong usage of the Wildcard client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
   let err;
   try {
     await wildcardClient.endpoints.ctxFunc();
@@ -188,7 +188,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     }
   });
   assertStderr(
-    "[Wildcard API][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `wildcard(setContext)` express middleware."
+    "[Telefunc][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `wildcard(setContext)` express middleware."
   );
 
   await stopApp();
@@ -355,7 +355,7 @@ async function undefinedContext_getApiHttpResponse({
     assert(responseProps.statusCode === 500);
     assert(responseProps.body === `Internal Server Error`);
     assertStderr(
-      "Error: [Wildcard API][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
+      "Error: [Telefunc][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
     );
   }
 }

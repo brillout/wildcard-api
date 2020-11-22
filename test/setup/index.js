@@ -212,7 +212,7 @@ async function checkStderr({ stderrContents, stderrLogs }) {
 
     // Always start with a single-line error message
     if (
-      !firstLine.includes("[Wildcard API][Wrong Usage] ") &&
+      !firstLine.includes("[Telefunc][Wrong Usage] ") &&
       !firstLine.includes("[TEST-ERROR]")
     ) {
       console.log(stderrLog);
@@ -247,7 +247,7 @@ async function checkStderr({ stderrContents, stderrLogs }) {
     stderrLogs.forEach((stderrLog) => {
       if (
         !stderrLog.includes("[Internal Error]") &&
-        (stderrLog.includes("[Wildcard API][Wrong Usage]") ||
+        (stderrLog.includes("[Telefunc][Wrong Usage]") ||
           stderrLog.includes("[TEST-ERROR]"))
       ) {
         return;

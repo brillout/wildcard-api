@@ -5,7 +5,7 @@
 
 A (simplistic) todo app built with:
  - React
- - Wildcard API
+ - Telefunc
  - Node.js
  - SQLite
 
@@ -114,7 +114,7 @@ With Koa
 ### React Frontend
 
 The following code shows how our frontend
-uses our Wildcard API to retrieve the user information,
+uses our Telefunc to retrieve the user information,
 the user todos,
 and to update a todo.
 

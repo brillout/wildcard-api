@@ -1,6 +1,6 @@
 # Next.js & Wildcard
 
-The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [Wildcard API](https://github.com/telefunc/telefunc).
+The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [Telefunc](https://github.com/telefunc/telefunc).
 
 ## How to use
 
