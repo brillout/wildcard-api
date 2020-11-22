@@ -6,7 +6,7 @@ async function configClient({ telefuncClient: { config }, telefuncServer }) {
 
   // Default values
   assert(config.shortUrl === false);
-  assert(config.baseUrl === "/_wildcard_api/");
+  assert(config.baseUrl === "/_telefunc/");
   assert(config.serverUrl === null);
 
   // Test setups overrides default value
@@ -26,7 +26,7 @@ async function configServer({ telefuncServer: { config } }) {
 
   // Default values
   assert(config.disableCache === false);
-  assert(config.baseUrl === "/_wildcard_api/");
+  assert(config.baseUrl === "/_telefunc/");
 
   // Throw upon unknown config
   try {

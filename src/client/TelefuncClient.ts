@@ -22,7 +22,7 @@ type Context = (object & { _brand?: "Context" }) | undefined;
 type Config = {
   /** The address of the server, e.g. `https://api.example.org/`. */
   serverUrl: ServerURL;
-  /** Make API HTTP requests to `/${baseUrl}/*`. Default: `_wildcard_api`. */
+  /** Make API HTTP requests to `/${baseUrl}/*`. Default: `_telefunc`. */
   baseUrl: string;
   /** Make API HTTP request URLs short: always use the the HTTP request body to transport endpoint arguments (instead of serializing endpoint arguments into the HTTP request URL). */
   shortUrl: boolean;
@@ -50,7 +50,7 @@ type TelefuncServer = {
 
 const configDefault: ConfigPrivate = {
   serverUrl: null,
-  baseUrl: "/_wildcard_api/",
+  baseUrl: "/_telefunc/",
   shortUrl: false,
   __INTERNAL_telefuncServer_test: null,
 };

@@ -171,7 +171,7 @@ async function wrongUsage_getApiHttpResponse_3({
   telefuncServer,
   assertStderr,
 }) {
-  const url = "https://example.org/_wildcard_api/ummm";
+  const url = "https://example.org/_telefunc/ummm";
   const responseProps = await telefuncServer.getApiHttpResponse({ url });
   assertErrorResponse(responseProps);
   assertStderr("Missing argument `method`");
@@ -180,7 +180,7 @@ async function wrongUsage_getApiHttpResponse_4({
   telefuncServer,
   assertStderr,
 }) {
-  const url = "https://example.org/_wildcard_api/ummm";
+  const url = "https://example.org/_telefunc/ummm";
   const responseProps = await telefuncServer.getApiHttpResponse({
     url,
     method: "",

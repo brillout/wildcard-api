@@ -17,7 +17,7 @@ the following happens:
 
 1. [Browser]
    The arguments are serialized to the string `'["some",{"arg":"val"}]'`
-   and an HTTP request is made to `/_wildcard_api/myEndpoint/["some",{"arg":"val"}]`.
+   and an HTTP request is made to `/_telefunc/myEndpoint/["some",{"arg":"val"}]`.
    (Serialization is done with [JSON-S](https://github.com/brillout/json-s).)
 
 2. [Node.js]

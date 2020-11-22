@@ -26,7 +26,7 @@ async function http_validRequest({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/["Mom"]', {
+    const resp = await window.fetch('/_telefunc/hello/["Mom"]', {
       method: "POST",
     });
     const text = await resp.text();
@@ -37,7 +37,7 @@ async function http_validRequest({ server, browserEval }) {
 
 async function http_endpointMissing_noEndpoints({ browserEval }) {
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello");
+    const resp = await window.fetch("/_telefunc/hello");
     const text = await resp.text();
     assert(resp.status === 404, resp.status);
     assert(text.includes("Endpoint `hello` doesn't exist."));
@@ -52,7 +52,7 @@ async function http_endpointMissing_notDefined({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/blub");
+    const resp = await window.fetch("/_telefunc/blub");
     const text = await resp.text();
     assert(resp.status === 404, resp.status);
     assert(text.includes("Endpoint `blub` doesn't exist."), { text });
@@ -71,7 +71,7 @@ async function http_endpointReturnsUnserializable({
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/fnEndpoint2");
+    const resp = await window.fetch("/_telefunc/fnEndpoint2");
     const text = await resp.text();
     assert(resp.status === 500, resp.status);
     assert(text === "Internal Server Error");
@@ -84,7 +84,7 @@ async function http_wrongRequest1({ server, browserEval }) {
   server.hello = async function () {};
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api//hello");
+    const resp = await window.fetch("/_telefunc//hello");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
     assert(text.includes("Malformatted API"));
@@ -98,7 +98,7 @@ async function http_wrongRequest2({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/wrongArgSyntax");
+    const resp = await window.fetch("/_telefunc/hello/wrongArgSyntax");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
     assert(text.includes("Malformatted API"));
@@ -112,7 +112,7 @@ async function http_wrongRequest3({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_wildcard_api/hello/{}");
+    const resp = await window.fetch("/_telefunc/hello/{}");
     const text = await resp.text();
     assert(resp.status === 400, resp.status);
     assert(text.includes("Malformatted API request."));

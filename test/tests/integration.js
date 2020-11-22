@@ -25,7 +25,7 @@ async function doesntIntefere1({ server, telefuncServer }) {
   {
     const responseProps = await telefuncServer.getApiHttpResponse({
       method: "POST",
-      url: "/_wildcard_api/getme",
+      url: "/_telefunc/getme",
     });
     assert(responseProps.body === `"you got me"`);
   }

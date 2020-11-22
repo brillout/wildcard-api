@@ -30,7 +30,7 @@ type ContextGetter = () => Promise<Context> | Context;
 
 /** Wildcard Server Configuration */
 type Config = {
-  /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_wildcard_api`. */
+  /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_telefunc`. */
   baseUrl: string;
   /** Whether Wildcard generates HTTP ETag headers. */
   disableCache: boolean;
@@ -104,7 +104,7 @@ type RequestInfo = {
 
 const configDefault: Config = {
   disableCache: false,
-  baseUrl: "/_wildcard_api/",
+  baseUrl: "/_telefunc/",
 };
 
 class TelefuncServer {

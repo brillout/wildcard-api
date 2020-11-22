@@ -6,7 +6,7 @@ async function browseEndpoint({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/%5B"Johny"%5D');
+    const resp = await window.fetch('/_telefunc/hello/%5B"Johny"%5D');
     const text = await resp.text();
     assert(text.startsWith("<html>"), { text });
     assert(text.includes("Greetings Johny"), { text });
@@ -19,7 +19,7 @@ async function browseEndpoint__unescaped({ server, browserEval }) {
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch('/_wildcard_api/hello/["Liza"]');
+    const resp = await window.fetch('/_telefunc/hello/["Liza"]');
     const text = await resp.text();
     assert(text.startsWith("<html>"), { text });
     assert(text.includes("Greetings Liza"), { text });

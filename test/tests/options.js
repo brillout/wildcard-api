@@ -32,7 +32,7 @@ async function option_shortUrl_1({
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_wildcard_api/testEndpoint__shortUrl/%5B%22just%20some%20args%22%5D",
+          "/_telefunc/testEndpoint__shortUrl/%5B%22just%20some%20args%22%5D",
       { _url }
     );
     assert(_postData === undefined, { _postData });
@@ -75,7 +75,7 @@ async function option_shortUrl_2({
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_wildcard_api/testEndpoint__shortUrl/args-in-body",
+          "/_telefunc/testEndpoint__shortUrl/args-in-body",
       { _url }
     );
     assert(_postData === '["just some args"]', { _postData });

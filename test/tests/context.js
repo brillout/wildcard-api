@@ -279,7 +279,7 @@ async function defineWith_getApiHttpResponse({ server, telefuncServer }) {
   server.square = function () {
     return this.num * this.num;
   };
-  const url = "https://example.org/_wildcard_api/square";
+  const url = "https://example.org/_telefunc/square";
   const method = "POST";
 
   await req({ num: 3 }, "9");
@@ -307,7 +307,7 @@ async function setContextReturnsUndefined_getApiHttpResponse({
   assertStderr,
 }) {
   server.boringEndpoint = function () {};
-  const url = "https://example.org/_wildcard_api/boringEndpoint";
+  const url = "https://example.org/_telefunc/boringEndpoint";
   const method = "POST";
   const myCtxFunc = async () => undefined;
   const responseProps = await telefuncServer.getApiHttpResponse(
@@ -333,7 +333,7 @@ async function undefinedContext_getApiHttpResponse({
   };
 
   {
-    const url = "https://example.org/_wildcard_api/without_context/";
+    const url = "https://example.org/_telefunc/without_context/";
     const method = "POST";
     const context = undefined;
     const responseProps = await telefuncServer.getApiHttpResponse(
@@ -345,7 +345,7 @@ async function undefinedContext_getApiHttpResponse({
   }
 
   {
-    const url = "https://example.org/_wildcard_api/with_context";
+    const url = "https://example.org/_telefunc/with_context";
     const method = "POST";
     const context = undefined;
     const responseProps = await telefuncServer.getApiHttpResponse(
@@ -363,7 +363,7 @@ async function wrongContext_getApiHttpResponse({
   telefuncServer,
   assertStderr,
 }) {
-  const url = "https://example.org/_wildcard_api/ummm";
+  const url = "https://example.org/_telefunc/ummm";
   const method = "GET";
 
   await req(null);
@@ -388,7 +388,7 @@ async function emptyContext_getApiHttpResponse({ server, telefuncServer }) {
   server.contexti3 = function () {
     return this.doesNotExist + " abc";
   };
-  const url = "https://example.org/_wildcard_api/contexti3";
+  const url = "https://example.org/_telefunc/contexti3";
   const method = "POST";
 
   await req({});
@@ -419,7 +419,7 @@ async function setContextThrows_getApiHttpResponse({
 }) {
   server.contexti4 = function () {};
 
-  const url = "https://example.org/_wildcard_api/contexti4";
+  const url = "https://example.org/_telefunc/contexti4";
   const method = "POST";
   const errMsg = "[TEST-ERROR] User-error in context function";
 

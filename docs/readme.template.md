@@ -286,9 +286,9 @@ Is your API meant to be used by yourself? Use RPC.
    // A server framework usually provides a way to add a route and define an HTTP response.
    const { addRoute, HttpResponse } = require('your-favorite-server-framework');
 
-   // Add a new route `/_wildcard_api/*` to your server
+   // Add a new route `/_telefunc/*` to your server
    addRoute(
-     '/_wildcard_api/*',
+     '/_telefunc/*',
      // A server framework usually provides an object holding
      // information about the request. We denote this object `req`.
      async ({req}) => {
@@ -697,7 +697,7 @@ import { config } from 'telefunc/client';
 config.serverUrl = null;
 
 // The base URL of Wildcard HTTP requests
-config.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_telefunc/';
 
 // Whether the endpoint arguments are always passed in the HTTP body
 config.shortUrl = false;
@@ -711,7 +711,7 @@ import { config } from 'telefunc/server';
 config.disableCache = false;
 
 // The base URL of Wildcard HTTP requests
-config.baseUrl = '/_wildcard_api/';
+config.baseUrl = '/_telefunc/';
 ~~~
 
 - [`serverUrl`](#serverurl)
@@ -747,11 +747,11 @@ async function callEndpoint() {
 
   assert(window.location.origin==='https://example.com');
   // Normally, Wildcard would make an HTTP request to the same origin:
-  //   POST https://example.com/_wildcard_api/myEndpoint HTTP/1.1
+  //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Wildcard makes
   // the HTTP request to `https://api.example.com:1337` instead:
-  //   POST https://api.example.com:1337/_wildcard_api/myEndpoint HTTP/1.1
+  //   POST https://api.example.com:1337/_telefunc/myEndpoint HTTP/1.1
 };
 ~~~
 
@@ -774,8 +774,8 @@ async function callEndpoint() {
   await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
-  // Normally, Wildcard would make an HTTP request to `/_wildcard_api/`:
-  //   POST https://example.com/_wildcard_api/myEndpoint HTTP/1.1
+  // Normally, Wildcard would make an HTTP request to `/_telefunc/`:
+  //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
   // But because we have changed `baseUrl`, Wildcard makes
   // the HTTP request to `/_my_custom_api_base_url/` instead:
@@ -811,11 +811,11 @@ async function callEndpoint() {
   await server.myEndpoint({some: 'arguments' }, 'second arg');
 
   // Normally, Wildcard would pass the arguments in the HTTP request URL:
-  //   POST /_wildcard_api/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
+  //   POST /_telefunc/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `shortUrl` to `true`,
   // Wildcard passes the arguments in the HTTP request body instead:
-  //   POST /_wildcard_api/myEndpoint HTTP/1.1
+  //   POST /_telefunc/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
 ~~~
