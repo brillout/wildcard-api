@@ -4,6 +4,13 @@ node_modules/
 dist/
 .cache/
 
+# Src - Typescript
+src/**/*.js
+src/**/!/index.js
+src/**/*.map
+src/**/*.d.ts
+src/**/tsconfig.tsbuildinfo
+
 # Npm
 npm-debug.log*
 package-lock.json
