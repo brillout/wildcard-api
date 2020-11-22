@@ -70,7 +70,7 @@ async function makeHttpRequest(
     return value;
   }
 
-  // The Wildcard client issued a malformatted request.
+  // The Telefunc client issued a malformatted request.
   assert(statusCode !== 400);
 
   // Status codes ever returned by the Wilcard server:

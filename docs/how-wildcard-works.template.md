@@ -1,16 +1,16 @@
 !INLINE ./snippets/header.md --hide-source-path
 &nbsp;
 
-# How Wildcard Works
+# How Telefunc Works
 
-Wildcard abstracts away the communication protocol.
+Telefunc abstracts away the communication protocol.
 We believe it to be an internal implementation detail that you shouldn't care about.
-Wildcard currently uses HTTP and JSON but we will eventually change to a more efficient technologies.
+Telefunc currently uses HTTP and JSON but we will eventually change to a more efficient technologies.
 This change will happen in a (mostly) backwards compatible way.
 
 In short, think in terms of JavaScript functions and don't worry about details like HTTP verbs.
 
-That said, if you are curious, we now explain how Wildcard currently works.
+That said, if you are curious, we now explain how Telefunc currently works.
 
 When calling `endpoints.myEndpoint('some', {arg: 'val'})` in the browser,
 the following happens:

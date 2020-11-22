@@ -22,7 +22,7 @@ async function startServer({
     },
   });
 
-  server.ext("onPreResponse", wildcardHandler);
+  server.ext("onPreResponse", telefuncHandler);
 
   await server.register(Inert);
   server.route({
@@ -49,7 +49,7 @@ async function startServer({
     await server.stop();
   };
 
-  async function wildcardHandler(request, h) {
+  async function telefuncHandler(request, h) {
     const requestProps = {
       url: request.url,
       method: request.method,

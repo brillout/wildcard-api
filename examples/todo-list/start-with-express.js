@@ -1,11 +1,11 @@
 const express = require("express");
-const { wildcard } = require("telefunc/server/express");
+const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
 // Server our API endpoints
 app.use(
-  wildcard(async (req) => {
+  telefunc(async (req) => {
     const { headers } = req;
     const context = { headers };
     return context;

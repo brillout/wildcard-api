@@ -1,6 +1,6 @@
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
-const { wildcard } = require("telefunc/server/hapi");
+const { telefunc } = require("telefunc/server/hapi");
 
 startServer();
 
@@ -11,7 +11,7 @@ async function startServer() {
   });
 
   await server.register(
-    wildcard(async (request) => {
+    telefunc(async (request) => {
       const { headers } = request;
       const context = { headers };
       return context;

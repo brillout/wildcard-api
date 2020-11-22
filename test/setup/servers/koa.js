@@ -2,7 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const Static = require("koa-static");
 const bodyParser = require("koa-bodyparser");
-const { wildcard } = require("telefunc/server/koa");
+const { telefunc } = require("telefunc/server/koa");
 const { start, stop } = require("./express");
 
 module.exports = startServer;
@@ -24,7 +24,7 @@ async function startServer({
   app.use(router.routes());
 
   app.use(
-    wildcard(
+    telefunc(
       async (ctx) => {
         const { headers } = ctx.request;
         const context = { headers };

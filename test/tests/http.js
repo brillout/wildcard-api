@@ -1,14 +1,14 @@
 // Assert HTTP responses
 
-// Wildcard should already return an HTTP response
+// Telefunc should already return an HTTP response
 // - So that the browser-side can handle gracefully using the `isCodeError` flag.
-// - The only current exception to this rule is if Wildcard has a bug.
-//   - TODO: wrap all Wildcard in a `catch` in order to catch Wildcard bugs.
+// - The only current exception to this rule is if Telefunc has a bug.
+//   - TODO: wrap all Telefunc in a `catch` in order to catch Telefunc bugs.
 
-// HTTP responses that Wildcard can reply:
-// - 500 - if endpoint (or context getter, or Wildcard integration code) threw an error
+// HTTP responses that Telefunc can reply:
+// - 500 - if endpoint (or context getter, or Telefunc integration code) threw an error
 // - 404 - if endpoint doesn't exist
-// - 400 - if there is a malformed HTTP request; should never happen if the user uses the Wildcard client
+// - 400 - if there is a malformed HTTP request; should never happen if the user uses the Telefunc client
 
 module.exports = [
   http_validRequest,

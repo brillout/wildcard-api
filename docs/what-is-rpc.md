@@ -95,7 +95,7 @@ creating [JSON endpoints](/docs/blog/rest-rpc.md#json-endpoints).
 
 **Example**
 
-RPC example between frontend and backend using Wildcard:
+RPC example between frontend and backend using Telefunc:
 
 ~~~js
 // Node.js server
@@ -139,7 +139,7 @@ endpoints.createTodoItem = async function(text) {
     // The user is not logged-in.
     // We abort.
     // (This is basically how you define permissions with RPC
-    // which we talk more about in Wildcard's documentation.)
+    // which we talk more about in Telefunc's documentation.)
     return;
   }
 

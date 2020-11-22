@@ -1,7 +1,7 @@
 module.exports = [
-  // `getApiHttpResponse` returns null for non-wildcard HTTP requests
+  // `getApiHttpResponse` returns null for non-telefunc HTTP requests
   doesntIntefere1,
-  // Wildcard server middlewares don't intefere with non-wildcard HTTP requests
+  // Telefunc server middlewares don't intefere with non-telefunc HTTP requests
   doesntIntefere2,
   // Ensure that the Wilcard client on unpkg.com works
   unpkg,
@@ -97,25 +97,25 @@ async function unpkg({ server, browserEval }) {
 }
 
 async function API() {
-  const wildcard_server = require("telefunc/server");
-  assert(wildcard_server.server.constructor === Object);
-  assert(wildcard_server.config.constructor === Object);
+  const telefunc_server = require("telefunc/server");
+  assert(telefunc_server.server.constructor === Object);
+  assert(telefunc_server.config.constructor === Object);
   assert(
-    wildcard_server.getApiHttpResponse.constructor.name === "AsyncFunction"
+    telefunc_server.getApiHttpResponse.constructor.name === "AsyncFunction"
   );
-  assert(wildcard_server.getApiHttpResponse);
-  assert(Object.keys(wildcard_server).length === 3);
+  assert(telefunc_server.getApiHttpResponse);
+  assert(Object.keys(telefunc_server).length === 3);
 
-  const wildcard_client = require("telefunc/client");
-  assert(Object.keys(wildcard_client).length === 2);
-  assert(wildcard_client.server);
-  assert(wildcard_client.config);
-  assert(Object.keys(wildcard_client).length === 2);
+  const telefunc_client = require("telefunc/client");
+  assert(Object.keys(telefunc_client).length === 2);
+  assert(telefunc_client.server);
+  assert(telefunc_client.config);
+  assert(Object.keys(telefunc_client).length === 2);
 
   ["express", "koa", "hapi"].forEach((serverFramework) => {
     const export_ = require("telefunc/server/" + serverFramework);
-    assert(export_.wildcard.name === "wildcard");
-    assert(export_.wildcard.constructor.name === "Function");
+    assert(export_.telefunc.name === "telefunc");
+    assert(export_.telefunc.constructor.name === "Function");
     assert(Object.keys(export_).length === 1);
   });
 }

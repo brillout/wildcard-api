@@ -6,8 +6,8 @@
     "start:build": "yarn build",
     "start:server": "ts-node start-server.ts",
     "// Build": "",
-    "build": "yarn build:wildcard && yarn build:client",
-    "build:wildcard": "cd ../../ && yarn build",
+    "build": "yarn build:telefunc && yarn build:client",
+    "build:telefunc": "cd ../../ && yarn build",
     "build:client": "cd client && parcel build *.html",
     "// Clean all cache": "",
     "clean": "cd ../../ && yarn clean"

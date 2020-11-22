@@ -47,7 +47,7 @@ async function createServer({
   httpPort,
 }) {
   const express = require("express");
-  const { wildcard } = require("telefunc/server/express");
+  const { telefunc } = require("telefunc/server/express");
   const { stop, start } = require("../setup/servers/express");
 
   const telefuncServer = new TelefuncServer();
@@ -61,7 +61,7 @@ async function createServer({
   app.use(express.static(staticDir, { extensions: ["html"] }));
 
   app.use(
-    wildcard(setContext, {
+    telefunc(setContext, {
       __INTERNAL_telefuncServer_middleware: { telefuncServer },
     })
   );

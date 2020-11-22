@@ -1,5 +1,5 @@
 import express from "express";
-import { wildcard } from "telefunc/server/express";
+import { telefunc } from "telefunc/server/express";
 import "./endpoints.ts";
 import { Context } from "./context";
 
@@ -7,7 +7,7 @@ const app = express();
 
 // Server our API endpoints
 app.use(
-  wildcard(() => {
+  telefunc(() => {
     const context: Context = { isLoggedIn: true };
     return context;
   })

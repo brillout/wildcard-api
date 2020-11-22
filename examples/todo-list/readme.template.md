@@ -30,7 +30,7 @@ Run the following npm scripts to build and serve the example:
 
 1. Install dependencies.
 
-   First the dependencies of Wildcard:
+   First the dependencies of Telefunc:
    ~~~shell
    $ yarn
    ~~~

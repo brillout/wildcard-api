@@ -7,7 +7,7 @@ type ExpressMiddleware = RequestHandler;
 /** The request object `req` provided by Express. */
 type HttpRequest = Request;
 
-export const wildcard = MiddlewareFactory<ExpressMiddleware, HttpRequest>(
+export const telefunc = MiddlewareFactory<ExpressMiddleware, HttpRequest>(
   ExpressAdapter,
   "express"
 );

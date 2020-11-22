@@ -111,7 +111,7 @@ Run the following npm scripts to build and serve the example:
 
 1. Install dependencies.
 
-   First the dependencies of Wildcard:
+   First the dependencies of Telefunc:
    ~~~shell
    $ yarn
    ~~~
@@ -231,13 +231,13 @@ With Express:
 // ./start-with-express
 
 const express = require("express");
-const { wildcard } = require("telefunc/server/express");
+const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
 // Server our API endpoints
 app.use(
-  wildcard(async (req) => {
+  telefunc(async (req) => {
     const { headers } = req;
     const context = { headers };
     return context;
@@ -262,7 +262,7 @@ With Hapi
 
 const Hapi = require("hapi");
 const Inert = require("@hapi/inert");
-const { wildcard } = require("telefunc/server/hapi");
+const { telefunc } = require("telefunc/server/hapi");
 
 startServer();
 
@@ -273,7 +273,7 @@ async function startServer() {
   });
 
   await server.register(
-    wildcard(async (request) => {
+    telefunc(async (request) => {
       const { headers } = request;
       const context = { headers };
       return context;
@@ -309,13 +309,13 @@ With Koa
 
 const Koa = require("koa");
 const Static = require("koa-static");
-const { wildcard } = require("telefunc/server/koa");
+const { telefunc } = require("telefunc/server/koa");
 
 const app = new Koa();
 
 // Serve our Wilcard API
 app.use(
-  wildcard(async (ctx) => {
+  telefunc(async (ctx) => {
     const { headers } = ctx.request;
     const context = { headers };
     return context;
@@ -438,7 +438,7 @@ import Todo from "./Todo";
 renderPage(<LandingPage />);
 
 function LandingPage() {
-  // We use our Wildcard endpoint to get user information and the user's todos
+  // We use our Telefunc endpoint to get user information and the user's todos
   const fetchData = async () => await server.getLandingPageData();
 
   return (

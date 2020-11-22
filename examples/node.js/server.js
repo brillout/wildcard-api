@@ -1,5 +1,5 @@
 const express = require("express");
-const { wildcard } = require("telefunc/server/express");
+const { telefunc } = require("telefunc/server/express");
 const { server } = require("telefunc/server");
 
 server.hello = async function () {
@@ -9,5 +9,5 @@ server.hello = async function () {
 
 const app = express();
 
-app.use(wildcard());
+app.use(telefunc());
 app.listen(3000);

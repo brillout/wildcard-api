@@ -30,7 +30,7 @@ async function endpointMissing_noEndpoints_serverSide({
 
   // Contrary to when using the Wilcard Client on the browser-side,
   // we do throw an error on the server-side when
-  // using theWildcard Client on the server-side
+  // using theTelefunc Client on the server-side
   assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."));
   assert(err.stack.includes("You didn't define any endpoints."));
 

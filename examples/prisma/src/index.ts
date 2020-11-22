@@ -1,13 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { wildcard } from "telefunc/server/express";
+import { telefunc } from "telefunc/server/express";
 import "../endpoints";
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(wildcard(() => ({})));
+app.use(telefunc(() => ({})));
 app.use(express.static("client/dist", { extensions: ["html"] }));
 
 const server = app.listen(3000, () =>

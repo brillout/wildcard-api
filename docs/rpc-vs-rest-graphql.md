@@ -234,8 +234,8 @@ Do we now need REST/GraphQL?
 Let's try with RPC by modifying our RPC endpoints like the following.
 
 ~~~diff
-  // Install the Wildcard middlware
-  app.use(wildcard(async req => {
+  // Install the Telefunc middlware
+  app.use(telefunc(async req => {
     const context = {
 +     // Authentication middlewares usually make user information available at `req.user`
 +     user: req.user

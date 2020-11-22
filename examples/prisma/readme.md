@@ -1,4 +1,4 @@
-This example showcases the usage of Wildcard and [Photon](https://github.com/prisma/photonjs) with database types used directly in the frontend code!
+This example showcases the usage of Telefunc and [Photon](https://github.com/prisma/photonjs) with database types used directly in the frontend code!
 
 Photon automatically generates types for the data model `Post` which we use on the frontend:
 
@@ -8,7 +8,7 @@ Photon automatically generates types for the data model `Post` which we use on t
   </a>
 </p>
 
-We share the types with the frontend by using Wildcard's [TypeScript support](/../../#typescript).
+We share the types with the frontend by using Telefunc's [TypeScript support](/../../#typescript).
 
 To run the example:
 

@@ -1,4 +1,4 @@
-This example showcases the usage of Wildcard and TypeScript with backend types used directly in the frontend code!
+This example showcases the usage of Telefunc and TypeScript with backend types used directly in the frontend code!
 
 <p align="center">
   <a href="#typescript">
@@ -9,7 +9,7 @@ This example showcases the usage of Wildcard and TypeScript with backend types u
   </a>
 </p>
 
-We share the backend types with the frontend by using Wildcard's [TypeScript support](/../../#typescript).
+We share the backend types with the frontend by using Telefunc's [TypeScript support](/../../#typescript).
 
 To run the example:
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const next = require("next");
-const { wildcard } = require("telefunc/server/express");
+const { telefunc } = require("telefunc/server/express");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -15,7 +15,7 @@ app.prepare().then(() => {
   });
 
   server.use(
-    wildcard((req) => {
+    telefunc((req) => {
       const context = {};
       return context;
     })

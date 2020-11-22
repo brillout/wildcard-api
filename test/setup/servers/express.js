@@ -1,5 +1,5 @@
 const express = require("express");
-const { wildcard } = require("telefunc/server/express");
+const { telefunc } = require("telefunc/server/express");
 
 module.exports = startServer;
 module.exports.start = start;
@@ -21,7 +21,7 @@ async function startServer({
   });
 
   app.use(
-    wildcard(
+    telefunc(
       async (req) => {
         const { headers } = req;
         const context = { headers };

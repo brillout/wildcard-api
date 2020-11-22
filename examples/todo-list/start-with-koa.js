@@ -1,12 +1,12 @@
 const Koa = require("koa");
 const Static = require("koa-static");
-const { wildcard } = require("telefunc/server/koa");
+const { telefunc } = require("telefunc/server/koa");
 
 const app = new Koa();
 
 // Serve our Wilcard API
 app.use(
-  wildcard(async (ctx) => {
+  telefunc(async (ctx) => {
     const { headers } = ctx.request;
     const context = { headers };
     return context;

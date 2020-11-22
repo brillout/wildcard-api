@@ -28,11 +28,11 @@ type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = () => Promise<Context> | Context;
 
-/** Wildcard Server Configuration */
+/** Telefunc Server Configuration */
 type Config = {
   /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_telefunc`. */
   baseUrl: string;
-  /** Whether Wildcard generates HTTP ETag headers. */
+  /** Whether Telefunc generates HTTP ETag headers. */
   disableCache: boolean;
 };
 type ConfigName = keyof Config;
@@ -99,7 +99,7 @@ type RequestInfo = {
   isHumanMode: IsHumanMode;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
-  isNotWildcardRequest?: boolean & { _brand?: "IsNotWildcardRequest" };
+  isNotTelefuncRequest?: boolean & { _brand?: "IsNotTelefuncRequest" };
 };
 
 const configDefault: Config = {
@@ -136,7 +136,7 @@ class TelefuncServer {
         __INTERNAL_universalAdapter
       );
     } catch (internalError) {
-      // There is a bug in the Wildcard source code
+      // There is a bug in the Telefunc source code
       return handleInternalError(internalError);
     }
   }
@@ -180,7 +180,7 @@ async function _getApiHttpResponse(
     endpointArgs,
     malformedRequest,
     malformedIntegration,
-    isNotWildcardRequest,
+    isNotTelefuncRequest,
     isHumanMode,
   }: RequestInfo = parseRequestInfo(
     requestProps,
@@ -189,7 +189,7 @@ async function _getApiHttpResponse(
     universalAdapterName
   );
 
-  if (isNotWildcardRequest) {
+  if (isNotTelefuncRequest) {
     return null;
   }
 
@@ -526,7 +526,7 @@ function getContextUsageNote(
 
   if (!isDirectCall) {
     const contextSource = universalAdapterName
-      ? `with the \`setContext\` function when using the \`wildcard(setContext)\` ${universalAdapterName} middleware.`
+      ? `with the \`setContext\` function when using the \`telefunc(setContext)\` ${universalAdapterName} middleware.`
       : "when using `getApiHttpResponse(requestProps, context)`.";
 
     return [common, contextSource].join(" ");
@@ -536,7 +536,7 @@ function getContextUsageNote(
   assert(universalAdapterName === undefined);
 
   return [
-    "Wrong usage of the Wildcard client in Node.js.",
+    "Wrong usage of the Telefunc client in Node.js.",
     common,
     `by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`,
     "More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md",
@@ -564,7 +564,7 @@ function parseRequestInfo(
     !["GET", "POST"].includes(method) ||
     !pathname.startsWith(config.baseUrl)
   ) {
-    return { isNotWildcardRequest: true, isHumanMode };
+    return { isNotTelefuncRequest: true, isHumanMode };
   }
 
   const {
@@ -940,7 +940,7 @@ function getEndpointMissingText(
   endpointMissingText.push(
     "Make sure that the file that defines `" +
       endpointName +
-      "` is named `endpoints.js` or `*.endpoints.js`: Wildcard automatically loads any file with such a name.",
+      "` is named `endpoints.js` or `*.endpoints.js`: Telefunc automatically loads any file with such a name.",
     "Alternatively, you can manually load your endpoint files: `require('./path/to/file-that-defines-" +
       endpointName +
       ".js')`."
@@ -1033,6 +1033,6 @@ function loadTimeStuff() {
     projectGithub: "https://github.com/telefunc/telefunc",
   });
 
-  // The Wildcard server only works with Node.js
+  // The Telefunc server only works with Node.js
   assertNodejs();
 }

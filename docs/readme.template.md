@@ -2,9 +2,9 @@
 !INLINE ./snippets/header.md --hide-source-path
 
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[What is Wildcard](#what-is-wildcard)
+[What is Telefunc](#what-is-telefunc)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Wildcard compared to REST and GraphQL](#wildcard-compared-to-REST-and-GraphQL)
+[Telefunc compared to REST and GraphQL](#telefunc-compared-to-REST-and-GraphQL)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Learning Material](#learning-material)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
@@ -42,11 +42,11 @@ More
 
 <br/>
 
-## What is Wildcard
+## What is Telefunc
 
-Wildcard is a JavaScript library to create an API between your Node.js backend and your browser frontend.
+Telefunc is a JavaScript library to create an API between your Node.js backend and your browser frontend.
 
-With Wildcard,
+With Telefunc,
 creating an API endpoint is as easy as creating a JavaScript function.
 
 ~~~js
@@ -66,13 +66,13 @@ server.hello = function(name) {
 import { server } from 'telefunc/client';
 
 (async () => {
-  // Wildcard makes our `hello` function available in the browser
+  // Telefunc makes our `hello` function available in the browser
   const {message} = await server.hello('Elisabeth');
   console.log(message); // Prints `Welcome Elisabeth`
 })();
 ~~~
 
-That's all Wildcard does:
+That's all Telefunc does:
 it makes functions,
 that are defined on your Node.js server,
 callable in the browser.
@@ -89,7 +89,7 @@ const Todo = require('./path/to/your/data/models/Todo');
 server.createTodoItem = async function(text) {
   if( !this.user ) {
     // The user is not logged-in. We abort.
-    // With Wildcard, you define permissions programmatically
+    // With Telefunc, you define permissions programmatically
     // which we talk more about in the "Permissions" section.
     return;
   }
@@ -110,8 +110,10 @@ server.createTodoItem = async function(text) {
 };
 ~~~
 
-Wildcard is used in production at many companies,
-every release is assailed against a heavy suite of automated tests,
+TypeScript has first-class support and you can use your backend types on the frontend!
+
+Telefunc is used in production at many companies,
+every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
 It is financed with the [Lsos](https://github.com/telefunc/telefunc/issues/56).
 
@@ -145,21 +147,21 @@ It is financed with the [Lsos](https://github.com/telefunc/telefunc/issues/56).
 
 &nbsp;
 
-> The seamless "drop in and use" nature of Wildcard has enabled Vibescout to accelerate the development of new features, it enables us to quickly prototype new ideas and build out internal dashboards with ease (without the unneeded verbosity of things like GraphQL). The barrier between our server and client is almost nonexistent now- it's really just a function!
+> The seamless "drop in and use" nature of Telefunc has enabled Vibescout to accelerate the development of new features, it enables us to quickly prototype new ideas and build out internal dashboards with ease (without the unneeded verbosity of things like GraphQL). The barrier between our server and client is almost nonexistent now- it's really just a function!
 <p align="right">
 Paul Myburgh, CTO of Vibescout <a href="https://github.com/telefunc/telefunc/issues/22#issuecomment-566983911">(ref)</a>
 </p>
 
 &nbsp;
 
-> We are a web shop and decided to try Wildcard with one of our projects. We were delighted: not only made Wildcard our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with the rigid structure of REST and GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Wildcard a no-brainer.
+> We are a web shop and decided to try Telefunc with one of our projects. We were delighted: not only made Telefunc our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with the rigid structure of REST and GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Telefunc a no-brainer.
 <p align="right">
 Niels Litt <a href="https://github.com/telefunc/telefunc/issues/22#issuecomment-568246660">(ref)</a>
 </p>
 
 &nbsp;
 
-## Wildcard compared to REST and GraphQL
+## Telefunc compared to REST and GraphQL
 
 REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
 Facebook's API, for example, is used by ~200k third parties.
@@ -171,7 +173,7 @@ For an API used by many third parties with many diverse uses cases, GraphQL is t
 
 However,
 if you want to create a backend API that is meant to be consumed only by your frontend,
-then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Wildcard, is enough.
+then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Telefunc, is enough.
 
 For a large app, you may still want the structure that comes with a RESTful/GraphQL API.
 But this typically applies only for large companies that develop apps with a large number of developers.
@@ -191,18 +193,18 @@ Is your API meant to be used by yourself? Use RPC.
 
 ## Getting Started
 
-1. Install Wildcard.
+1. Install Telefunc.
 
    With Express:
    ~~~js
    const express = require('express');
    // npm install telefunc/server
-   const { wildcard } = require('telefunc/server/express');
+   const { telefunc } = require('telefunc/server/express');
 
    const app = express();
 
-   // We install the Wildcard middleware
-   app.use(wildcard(setContext));
+   // We install the Telefunc middleware
+   app.use(telefunc(setContext));
 
    // `setContext` is called on every API request. It defines the `context` object.
    // `req` is Express' request object
@@ -222,12 +224,12 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    const Hapi = require('hapi');
    // npm install telefunc/server
-   const { wildcard } = require('telefunc/server/hapi');
+   const { telefunc } = require('telefunc/server/hapi');
 
    const server = Hapi.Server();
 
-   // We install the Wildcard middleware
-   await server.register(wildcard(setContext));
+   // We install the Telefunc middleware
+   await server.register(telefunc(setContext));
 
    // `setContext` is called on every API request. It defines the `context` object.
    // `request` is Hapi's request object
@@ -249,12 +251,12 @@ Is your API meant to be used by yourself? Use RPC.
    ~~~js
    const Koa = require('koa');
    // npm install telefunc/server
-   const { wildcard } = require('telefunc/server/koa');
+   const { telefunc } = require('telefunc/server/koa');
 
    const app = new Koa();
 
-   // We install the Wildcard middleware
-   app.use(wildcard(setContext));
+   // We install the Telefunc middleware
+   app.use(telefunc(setContext));
 
    // `setContext` is called on every API request. It defines the `context` object.
    async function setContext(ctx) {
@@ -271,14 +273,14 @@ Is your API meant to be used by yourself? Use RPC.
    With other server frameworks
    </summary>
 
-   Wildcard provides a `getApiHttpResponse()` function which
+   Telefunc provides a `getApiHttpResponse()` function which
    returns the HTTP response of API requests;
    by using `getApiHttpResponse()` you can
-   integrate Wildcard with any server framework.
+   integrate Telefunc with any server framework.
    In fact, the Express/Koa/Hapi middlewares are just tiny wrappers around `getApiHttpResponse()`.
 
    ~~~js
-   // This is generic pseudo code for how to integrate Wildcard with any server framework.
+   // This is generic pseudo code for how to integrate Telefunc with any server framework.
 
    // npm install telefunc/server
    const { getApiHttpResponse } = require('telefunc/server');
@@ -324,12 +326,12 @@ Is your API meant to be used by yourself? Use RPC.
      // The `this` object is the `context` object we defined in `setContext`.
      console.log('The logged-in user is: ', this.user.username);
 
-     return {msg: 'Hello, from my first Wildcard endpoint'};
+     return {msg: 'Hello, from my first Telefunc endpoint'};
    };
    ~~~
 
    > :information_source:
-   > Wildcard automatically loads files named `endpoints.js` or `*.endpoints.js`.
+   > Telefunc automatically loads files named `endpoints.js` or `*.endpoints.js`.
 
 3. Use the `telefunc/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
@@ -351,14 +353,14 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    ~~~html
-   <script crossorigin src="https://unpkg.com/telefunc/client/wildcard-client.production.min.js"></script>
-   <script src="my-script-using-wildcard.js"></script>
+   <script crossorigin src="https://unpkg.com/telefunc/client/telefunc-client.production.min.js"></script>
+   <script src="my-script-using-telefunc.js"></script>
    ~~~
    ~~~js
-   // my-script-using-wildcard.js
+   // my-script-using-telefunc.js
 
    (async () => {
-     const {msg} = await wildcard.server.myFirstEndpoint();
+     const {msg} = await telefunc.server.myFirstEndpoint();
      console.log(msg);
    })();
    ~~~
@@ -379,12 +381,12 @@ Use the context object to authenticate requests. For example:
 // Node.js server
 
 const express = require('express');
-const { wildcard } = require('telefunc/server/express');
+const { telefunc } = require('telefunc/server/express');
 
 const app = express();
 
-// We install the Wildcard middleware
-app.use(wildcard(setContext));
+// We install the Telefunc middleware
+app.use(telefunc(setContext));
 
 async function setContext(
   // The `req` Express request object.
@@ -436,7 +438,7 @@ For SSR, read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
 
 ## Permissions
 
-With Wildcard,
+With Telefunc,
 permissions are defined programmatically.
 
 ~~~js
@@ -612,7 +614,7 @@ You can also use [Handli](https://github.com/brillout/handli) which will automat
 // Browser
 
 import 'handli'; // npm install handli
-// That's it, Wildcard will automatically use Handli.
+// That's it, Telefunc will automatically use Handli.
 // Errors are now handled by Handli.
 ~~~
 
@@ -658,7 +660,7 @@ you can give your frontend developers access to your backend code and save all e
 That way, a frontend developer can explore your API.
 
 For improved developer experience,
-you can use [Wildcard with TypeScript](#typescript) to make type hints available on the frontend.
+you can use [Telefunc with TypeScript](#typescript) to make type hints available on the frontend.
 A frontend developer can then explore your Telefunc directly in his IDE!
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
@@ -667,7 +669,7 @@ A frontend developer can then explore your Telefunc directly in his IDE!
 
 ## Caching
 
-Wildcard automatically caches your endpoint results by using the HTTP ETag header.
+Telefunc automatically caches your endpoint results by using the HTTP ETag header.
 You can disable caching by using the [`disableCache` option](#disablecache).
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
@@ -676,7 +678,7 @@ You can disable caching by using the [`disableCache` option](#disablecache).
 
 ## SSR
 
-The Wildcard client is isomorphic (aka universal) and works in the browser as well as in Node.js.
+The Telefunc client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
 If you don't need authentication, then SSR works out of the box.
 If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
@@ -696,7 +698,7 @@ import { config } from 'telefunc/client';
 // The URL of the Node.js server that serves the API
 config.serverUrl = null;
 
-// The base URL of Wildcard HTTP requests
+// The base URL of Telefunc HTTP requests
 config.baseUrl = '/_telefunc/';
 
 // Whether the endpoint arguments are always passed in the HTTP body
@@ -707,10 +709,10 @@ config.shortUrl = false;
 
 import { config } from 'telefunc/server';
 
-// Whether Wildcard generates an ETag header.
+// Whether Telefunc generates an ETag header.
 config.disableCache = false;
 
-// The base URL of Wildcard HTTP requests
+// The base URL of Telefunc HTTP requests
 config.baseUrl = '/_telefunc/';
 ~~~
 
@@ -732,7 +734,7 @@ then you need to provide a `serverUrl`.
 - The URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
 - The IP address of the server, for example `92.194.249.32`.
 
-When `serverUrl` is `null`, the Wildcard client uses `window.location.origin` as server URL.
+When `serverUrl` is `null`, the Telefunc client uses `window.location.origin` as server URL.
 
 ~~~js
 import { server, config } from 'telefunc/client';
@@ -746,10 +748,10 @@ async function callEndpoint() {
   await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
-  // Normally, Wildcard would make an HTTP request to the same origin:
+  // Normally, Telefunc would make an HTTP request to the same origin:
   //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
-  // But because we have set `serverUrl`, Wildcard makes
+  // But because we have set `serverUrl`, Telefunc makes
   // the HTTP request to `https://api.example.com:1337` instead:
   //   POST https://api.example.com:1337/_telefunc/myEndpoint HTTP/1.1
 };
@@ -759,7 +761,7 @@ async function callEndpoint() {
 
 ### `baseUrl`
 
-By default, the pathname of any HTTP request that Wildcard makes starts with `/_willdcard_api/`.
+By default, the pathname of any HTTP request that Telefunc makes starts with `/_willdcard_api/`.
 You can change this base URL by using the `baseUrl` option.
 
 ~~~js
@@ -774,17 +776,17 @@ async function callEndpoint() {
   await server.myEndpoint();
 
   assert(window.location.origin==='https://example.com');
-  // Normally, Wildcard would make an HTTP request to `/_telefunc/`:
+  // Normally, Telefunc would make an HTTP request to `/_telefunc/`:
   //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
-  // But because we have changed `baseUrl`, Wildcard makes
+  // But because we have changed `baseUrl`, Telefunc makes
   // the HTTP request to `/_my_custom_api_base_url/` instead:
   //   POST https://example.com/_my_custom_api_base_url/myEndpoint HTTP/1.1
 };
 ~~~
 
-If you change the `baseUrl` option of your Wildcard client,
-then make sure that the `baseUrl` of your Wildcard server is the same:
+If you change the `baseUrl` option of your Telefunc client,
+then make sure that the `baseUrl` of your Telefunc server is the same:
 
 ~~~js
 import { config } from 'telefunc/server';
@@ -810,11 +812,11 @@ callEndpoint();
 async function callEndpoint() {
   await server.myEndpoint({some: 'arguments' }, 'second arg');
 
-  // Normally, Wildcard would pass the arguments in the HTTP request URL:
+  // Normally, Telefunc would pass the arguments in the HTTP request URL:
   //   POST /_telefunc/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
 
   // But because we have set `shortUrl` to `true`,
-  // Wildcard passes the arguments in the HTTP request body instead:
+  // Telefunc passes the arguments in the HTTP request body instead:
   //   POST /_telefunc/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
 };
@@ -824,9 +826,9 @@ async function callEndpoint() {
 
 ### `disableCache`
 
-By default Wildcard generates an HTTP ETag cache header.
+By default Telefunc generates an HTTP ETag cache header.
 If you need to save CPU computation time,
-you can set `disableCache` to `true` and Wildcard will skip generating HTTP ETag headers.
+you can set `disableCache` to `true` and Telefunc will skip generating HTTP ETag headers.
 
 ~~~js
 import telefuncServer from 'telefunc/server';
@@ -841,7 +843,7 @@ telefuncServer.disableCache = true;
 
 ## Learning Material
 
-Material to learn more about RPC and Wildcard.
+Material to learn more about RPC and Telefunc.
 
 ###### RPC
 
@@ -864,17 +866,17 @@ Material to learn more about RPC and Wildcard.
 - [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
 - [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
 
-###### Wildcard
+###### Telefunc
 
-- [How Wildcard Works](/docs/how-wildcard-works.md#how-wildcard-works)
+- [How Telefunc Works](/docs/how-telefunc-works.md#how-telefunc-works)
   <br/>
-  Talks about the technologies Wildcard uses under the hood.
+  Talks about the technologies Telefunc uses under the hood.
 - [Example - A Todo List](/examples/todo-list/#example---a-todo-list)
   <br/>
-  Showcases a to-do list app built with RPC/Wildcard.
+  Showcases a to-do list app built with RPC/Telefunc.
 - [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
   <br/>
-  How to use Wildcard with SSR and Authentication.
+  How to use Telefunc with SSR and Authentication.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 

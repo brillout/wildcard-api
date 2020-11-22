@@ -197,7 +197,7 @@ GraphQL queries are more powerful.
 But, from the perspective of your frontend development,
 RPC queries are more powerful.
 
-With Wildcard,
+With Telefunc,
 while developing your frontend,
 everything the backend can do is only one JavaScript function away:
 

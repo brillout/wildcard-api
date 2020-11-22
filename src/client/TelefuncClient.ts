@@ -18,7 +18,7 @@ type Endpoints = Record<EndpointName, EndpointFunction>;
 // Context
 type Context = (object & { _brand?: "Context" }) | undefined;
 
-/** Wildcard Client Configuration */
+/** Telefunc Client Configuration */
 type Config = {
   /** The address of the server, e.g. `https://api.example.org/`. */
   serverUrl: ServerURL;
@@ -37,8 +37,8 @@ type ConfigName = keyof ConfigPrivate;
 export type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 
-// Wildcard server instance
-// For when using the Wildcard client server-side
+// Telefunc server instance
+// For when using the Telefunc client server-side
 type TelefuncServer = {
   __directCall: (
     endpointName: EndpointName,
@@ -71,7 +71,7 @@ function callEndpoint(
   const telefuncServer: TelefuncServer = getTelefuncServer(config);
 
   // Usage in Node.js [inter-process]
-  // Inter-process: the Wildcard client and the Wildcard server are loaded in the same Node.js process.
+  // Inter-process: the Telefunc client and the Telefunc server are loaded in the same Node.js process.
   if (telefuncServer) {
     assert(isNodejs());
     return callEndpointDirectly(
@@ -84,12 +84,12 @@ function callEndpoint(
 
   // Usage in the browser
   // Usage in Node.js [cross-process]
-  // Cross-process: the Wildcard client and the Wildcard server are loaded in different Node.js processes.
+  // Cross-process: the Telefunc client and the Telefunc server are loaded in different Node.js processes.
 
   // Server URL is required for cross-process usage
   assertUsage(
     config.serverUrl || isBrowser(),
-    "`config.serverUrl` missing. You are using the Wildcard client in Node.js, and the Wildcard client is loaded in a different Node.js process than the Node.js process that loaded the Wildcard server; the `config.serverUrl` configuration is required."
+    "`config.serverUrl` missing. You are using the Telefunc client in Node.js, and the Telefunc client is loaded in a different Node.js process than the Node.js process that loaded the Telefunc server; the `config.serverUrl` configuration is required."
   );
 
   assertUsage(
@@ -246,8 +246,8 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
     assertUsage(
       false,
       [
-        "You cannot add/modify endpoint functions with the Wildcard client `telefunc/client`.",
-        "Instead, define your endpoint functions with the Wildcard server `telefunc/server`.",
+        "You cannot add/modify endpoint functions with the Telefunc client `telefunc/client`.",
+        "Instead, define your endpoint functions with the Telefunc server `telefunc/server`.",
       ].join(" ")
     );
 

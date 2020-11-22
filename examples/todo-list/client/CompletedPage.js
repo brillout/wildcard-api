@@ -8,7 +8,7 @@ import Todo from "./Todo";
 renderPage(<CompletedPage />);
 
 function CompletedPage() {
-  // We use our Wildcard endpoint to get the user's completed todos
+  // We use our Telefunc endpoint to get the user's completed todos
   const fetchData = async () => await server.getCompletedPageData();
 
   return (

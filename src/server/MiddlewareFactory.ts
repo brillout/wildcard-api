@@ -74,7 +74,7 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
   __INTERNAL_universalAdapter: UniversalAdapterName,
   adapterOptions?: ServerAdapterOptions
 ): (setContext?: SetContext<HttpRequest>) => ServerMiddleware {
-  return wildcard;
+  return telefunc;
   /**
    * Set the context object - the endpoint functions' `this`.
    * @callback setContext
@@ -82,11 +82,11 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
    * @returns The context object - the endpoint functions' `this`.
    */
   /**
-   * Create a Wildcard server middleware.
+   * Create a Telefunc server middleware.
    * @param [setContext] Set the context object - the endpoint functions' `this`.
    * @returns Server middleware.
    */
-  function wildcard(
+  function telefunc(
     setContext?: SetContext<HttpRequest>,
     /** @ignore */
     { __INTERNAL_telefuncServer_middleware }: TelefuncServerOption = {}

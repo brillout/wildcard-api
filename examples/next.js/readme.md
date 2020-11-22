@@ -1,4 +1,4 @@
-# Next.js & Wildcard
+# Next.js & Telefunc
 
 The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [Telefunc](https://github.com/telefunc/telefunc).
 
@@ -7,7 +7,7 @@ The example shows the usage of [Next.js](https://github.com/zeit/next.js) with [
 Download the example.
 
 ```bash
-curl https://codeload.github.com/telefunc/telefunc/tar.gz/master | tar -xz --strip=2 wildcard-api-master/examples/next.js
+curl https://codeload.github.com/telefunc/telefunc/tar.gz/master | tar -xz --strip=2 telefunc-api-master/examples/next.js
 ```
 
 Install it and run.

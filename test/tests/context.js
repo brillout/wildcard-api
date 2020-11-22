@@ -2,7 +2,7 @@
 // - The context can be undefined, but then an error is shown upon any attempt to read the context
 // - Context functions are not allowed to return undefined
 // The goal being:
-// - Browser-side and client-side usage of the Wildcard client should behave identically
+// - Browser-side and client-side usage of the Telefunc client should behave identically
 // - Show an error when the user forgets to `bind()` while doing SSR
 // - Keep things JS-esque and simple
 
@@ -10,20 +10,20 @@
 // - [Server-side] Bind undefined - no context usage [valid]
 // - [Server-side] Bind undefined - context usage [invalid]
 // - [Server-side] Bind {} - missing context [valid]
-// - [Client-side] getApiHttpResponse/wildcard(setContext) undefined - no context usage [valid]
-// - [Client-side] getApiHttpResponse/wildcard(setContext) undefined - context usage [invalid]
-// - [Client-side] getApiHttpResponse/wildcard(setContext) ()=>(undefined) [invalid]
-// - [Client-side] getApiHttpResponse/wildcard(setContext) {}/()=>({}) - missing context [valid]
+// - [Client-side] getApiHttpResponse/telefunc(setContext) undefined - no context usage [valid]
+// - [Client-side] getApiHttpResponse/telefunc(setContext) undefined - context usage [invalid]
+// - [Client-side] getApiHttpResponse/telefunc(setContext) ()=>(undefined) [invalid]
+// - [Client-side] getApiHttpResponse/telefunc(setContext) {}/()=>({}) - missing context [valid]
 
 const { createServer } = require("./details");
 
 module.exports = [
   // ### Context setting
-  // `wildcard(async () => context)`
+  // `telefunc(async () => context)`
   defineWith_setContext1,
-  // `wildcard(() => context)`
+  // `telefunc(() => context)`
   defineWith_setContext2,
-  // `wildcard(context)`
+  // `telefunc(context)`
   defineWith_setContext3,
   // `bind(context)`
   defineWith_bind,
@@ -32,8 +32,8 @@ module.exports = [
   defineWith_getApiHttpResponse,
 
   // ### Context is `undefined`
-  // [Client-side] `wildcard(undefined)`, not using context: valid
-  // [Client-side] `wildcard(undefined)`, using context: invalid
+  // [Client-side] `telefunc(undefined)`, not using context: valid
+  // [Client-side] `telefunc(undefined)`, using context: invalid
   // [Server-side] No `bind()`, not using context: valid
   // [Server-side] `bind(undefined)`, not using context: valid
   // [Server-side] No `bind()`, using context: invalid
@@ -44,27 +44,27 @@ module.exports = [
   undefinedContext_getApiHttpResponse,
 
   // ### Wrong context function
-  // [Client-side] `wildcard(() => undefined)`: invalid
+  // [Client-side] `telefunc(() => undefined)`: invalid
   setContextReturnsUndefined1,
-  // [Client-side] `wildcard(async () => undefined)`: invalid
+  // [Client-side] `telefunc(async () => undefined)`: invalid
   setContextReturnsUndefined2,
   // [Client-side] `getApiHttpResponse(_, () => undefined)`: invalid
   setContextReturnsUndefined_getApiHttpResponse,
-  // [Client-side] `wildcard(() => 'string')`, `context === `: invalid
+  // [Client-side] `telefunc(() => 'string')`, `context === `: invalid
   setContextReturnsWrongValue1,
   // [Client-side] `getApiHttpResponse(_, null)`: invalid
   wrongContext_getApiHttpResponse,
-  // [Client-side] `wildcard(() => throw)`
+  // [Client-side] `telefunc(() => throw)`
   setContextThrows,
   // [Client-side] `getApiHttpResponse(_, () => throw)`
   setContextThrows_getApiHttpResponse,
 
   // ### Context is `{}`
-  // [Client-side] `wildcard({})`, using missing context: valid
+  // [Client-side] `telefunc({})`, using missing context: valid
   emptyContext1,
-  // [Client-side] `wildcard(() => {})`, using missing context: valid
+  // [Client-side] `telefunc(() => {})`, using missing context: valid
   emptyContext2,
-  // [Client-side] `wildcard(async () => {})`, using missing context: valid
+  // [Client-side] `telefunc(async () => {})`, using missing context: valid
   emptyContext3,
   // [Client-side] `getApiHttpResponse(_, {})`, using missing context: valid
   // [Client-side] `getApiHttpResponse(_, () => ({}))`, using missing context: valid
@@ -163,7 +163,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   };
 
   const errMsg =
-    "[Telefunc][Wrong Usage] Wrong usage of the Wildcard client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
+    "[Telefunc][Wrong Usage] Wrong usage of the Telefunc client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
   let err;
   try {
     await telefuncClient.endpoints.ctxFunc();
@@ -188,7 +188,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     }
   });
   assertStderr(
-    "[Telefunc][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `wildcard(setContext)` express middleware."
+    "[Telefunc][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `telefunc(setContext)` express middleware."
   );
 
   await stopApp();

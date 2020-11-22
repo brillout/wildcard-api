@@ -1,1 +1,1 @@
-Example of using Wildcard to do RPC between two Node.js processes.
+Example of using Telefunc to do RPC between two Node.js processes.
