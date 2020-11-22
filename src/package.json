@@ -1,6 +1,6 @@
 {
   "name": "telefunc",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Remote Function Calls.",
   "repository": "https://github.com/telefunc/telefunc",
   "main": "index.js",
