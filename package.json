@@ -21,7 +21,7 @@
     "build:umd": "parcel build src/client/index.js --out-dir ./src/client --out-file telefunc-client.production.min.js --global telefunc",
     "// Release": "",
     "bump": "yarn bump:minor",
-    "bump:minor": "(cd src/client/ && npm version patch) && (cd src/server/ && npm version patch) && git commit -am 'release new minor'",
+    "bump:minor": "(cd src/ && npm version patch) && git commit -am 'release new minor'",
     "release": "yarn release:build && yarn release:publish",
     "release:build": "yarn clean:all && yarn instal && yarn build:once && yarn buid:umd && yarn test",
     "release:publish": "(cd src/client/ && npm publish) && (cd src/server/ && npm publish)",
