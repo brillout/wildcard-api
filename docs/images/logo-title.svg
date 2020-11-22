@@ -45,9 +45,9 @@
      fit-margin-left="2"
      fit-margin-right="2"
      fit-margin-bottom="2"
-     inkscape:zoom="2.2250293"
-     inkscape:cx="98.709538"
-     inkscape:cy="-13.441135"
+     inkscape:zoom="0.78666667"
+     inkscape:cx="-135.37523"
+     inkscape:cy="-154.3101"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -66,16 +66,49 @@
        id="path8"
        inkscape:connector-curvature="0" />
   </g>
-  <text
-     xml:space="preserve"
+  <g
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:100%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#31343d;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     x="80.839584"
-     y="65.19635"
      id="text4142"
-     sodipodi:linespacing="100%"><tspan
-       sodipodi:role="line"
-       id="tspan4144"
-       x="80.839584"
-       y="65.19635"
-       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1">telefunc</tspan></text>
+     transform="translate(-98,-98.000004)">
+    <path
+       d="m 202.28958,134.70638 -9.66,0 0,15.4 q 0,4.27 0.63,5.67 0.63,1.4 3.22,1.4 l 5.74,-0.21 0.35,6.09 q -4.69,0.91 -7.14,0.91 -5.95,0 -8.19,-2.73 -2.17,-2.73 -2.17,-10.29 l 0,-16.24 -4.48,0 0,-6.51 4.48,0 0,-10.15 7.56,0 0,10.15 9.66,0 0,6.51 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4138"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 233.39912,156.89638 1.96,-0.21 0.14,5.67 q -7.98,1.61 -14.14,1.61 -7.77,0 -11.2,-4.27 -3.36,-4.27 -3.36,-13.65 0,-18.62 15.19,-18.62 14.7,0 14.7,16.03 l -0.49,5.46 -21.7,0 q 0.07,4.34 1.89,6.37 1.82,2.03 6.79,2.03 4.97,0 10.22,-0.42 z m -4.2,-13.86 q 0,-5.18 -1.68,-7.21 -1.61,-2.1 -5.53,-2.1 -3.92,0 -5.74,2.17 -1.75,2.17 -1.82,7.14 l 14.77,0 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4140"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 244.44599,163.19638 0,-49.56 7.63,0 0,49.56 -7.63,0 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4142"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 286.71943,156.89638 1.96,-0.21 0.14,5.67 q -7.98,1.61 -14.14,1.61 -7.77,0 -11.2,-4.27 -3.36,-4.27 -3.36,-13.65 0,-18.62 15.19,-18.62 14.7,0 14.7,16.03 l -0.49,5.46 -21.7,0 q 0.07,4.34 1.89,6.37 1.82,2.03 6.79,2.03 4.97,0 10.22,-0.42 z m -4.2,-13.86 q 0,-5.18 -1.68,-7.21 -1.61,-2.1 -5.53,-2.1 -3.92,0 -5.74,2.17 -1.75,2.17 -1.82,7.14 l 14.77,0 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4144"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 306.5163,134.70638 0,28.49 -7.56,0 0,-28.49 -4.06,0 0,-6.51 4.06,0 0,-2.24 q 0,-7.49 2.17,-10.29 2.17,-2.8 7.7,-2.8 l 7.56,0.7 -0.07,6.23 q -3.43,-0.14 -5.74,-0.14 -2.24,0 -3.15,1.4 -0.91,1.33 -0.91,4.97 l 0,2.17 9.24,0 0,6.51 -9.24,0 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4146"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 342.75552,128.19638 7.56,0 0,35 -7.56,0 0,-2.17 q -5.11,2.94 -9.45,2.94 -7.21,0 -9.66,-3.85 -2.45,-3.92 -2.45,-13.65 l 0,-18.27 7.63,0 0,18.34 q 0,6.3 1.05,8.47 1.05,2.17 4.9,2.17 3.78,0 6.93,-1.4 l 1.05,-0.42 0,-27.16 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4148"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 367.18333,163.19638 -7.63,0 0,-35 7.56,0 0,2.17 q 5.11,-2.94 9.66,-2.94 7,0 9.52,3.99 2.59,3.92 2.59,13.02 l 0,18.76 -7.56,0 0,-18.55 q 0,-5.67 -1.26,-8.05 -1.19,-2.38 -4.97,-2.38 -3.57,0 -6.86,1.4 l -1.05,0.42 0,27.16 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4150"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 410.92458,127.42638 q 3.71,0 8.75,0.98 l 1.75,0.35 -0.28,6.02 q -5.53,-0.56 -8.19,-0.56 -5.32,0 -7.14,2.38 -1.82,2.38 -1.82,8.96 0,6.58 1.75,9.1 1.75,2.52 7.28,2.52 l 8.19,-0.56 0.21,6.09 q -7.07,1.26 -10.64,1.26 -7.98,0 -11.27,-4.27 -3.22,-4.34 -3.22,-14.14 0,-9.8 3.43,-13.93 3.43,-4.2 11.2,-4.2 z"
+       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:70px;font-family:'Titillium Web';-inkscape-font-specification:'Titillium Web Semi-Bold';fill:#31343d;fill-opacity:1"
+       id="path4152"
+       inkscape:connector-curvature="0" />
+  </g>
 </svg>
