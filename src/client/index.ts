@@ -1,3 +1,3 @@
-import { wildcardClient } from "./global-instance";
-export const server = wildcardClient.endpoints;
-export const { config } = wildcardClient;
+import { telefuncClient } from "./global-instance";
+export const server = telefuncClient.endpoints;
+export const { config } = telefuncClient;

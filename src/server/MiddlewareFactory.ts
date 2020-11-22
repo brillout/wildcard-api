@@ -1,5 +1,5 @@
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
-import { wildcardServer as wildcardServer_ } from "./global-instance";
+import { telefuncServer as telefuncServer_ } from "./global-instance";
 import {
   Context,
   HttpRequestProps,
@@ -27,15 +27,15 @@ type ServerAdapter<ServerMiddleware, HttpRequest> = (
 ) => ServerMiddleware;
 
 type TelefuncServerHolder = {
-  wildcardServer: TelefuncServer;
+  telefuncServer: TelefuncServer;
 };
 type TelefuncServerOption = {
-  __INTERNAL_wildcardServer_middleware?: TelefuncServerHolder;
+  __INTERNAL_telefuncServer_middleware?: TelefuncServerHolder;
 };
 
 function createMiddleware<ServerMiddleware, HttpRequest>(
   serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
-  __INTERNAL_wildcardServer_middleware: TelefuncServerHolder | undefined,
+  __INTERNAL_telefuncServer_middleware: TelefuncServerHolder | undefined,
   adapterOptions: ServerAdapterOptions,
   setContext: SetContext<HttpRequest> | undefined,
   __INTERNAL_universalAdapter: UniversalAdapterName
@@ -48,13 +48,13 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
     requestObject: HttpRequest,
     { requestProps }: RequestHandlerArg1
   ): RequestHandlerReturn {
-    const wildcardServer = __INTERNAL_wildcardServer_middleware
-      ? __INTERNAL_wildcardServer_middleware.wildcardServer
-      : wildcardServer_;
+    const telefuncServer = __INTERNAL_telefuncServer_middleware
+      ? __INTERNAL_telefuncServer_middleware.telefuncServer
+      : telefuncServer_;
 
     if (
-      !__INTERNAL_wildcardServer_middleware &&
-      Object.keys(wildcardServer.endpoints).length === 0
+      !__INTERNAL_telefuncServer_middleware &&
+      Object.keys(telefuncServer.endpoints).length === 0
     ) {
       autoLoadEndpointFiles();
     }
@@ -63,7 +63,7 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
       ? setContext.bind(null, requestObject)
       : setContext;
 
-    return wildcardServer.getApiHttpResponse(requestProps, context, {
+    return telefuncServer.getApiHttpResponse(requestProps, context, {
       __INTERNAL_universalAdapter,
     });
   }
@@ -89,11 +89,11 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
   function wildcard(
     setContext?: SetContext<HttpRequest>,
     /** @ignore */
-    { __INTERNAL_wildcardServer_middleware }: TelefuncServerOption = {}
+    { __INTERNAL_telefuncServer_middleware }: TelefuncServerOption = {}
   ): ServerMiddleware {
     const middleware = createMiddleware<ServerMiddleware, HttpRequest>(
       serverAdapter,
-      __INTERNAL_wildcardServer_middleware,
+      __INTERNAL_telefuncServer_middleware,
       adapterOptions,
       setContext,
       __INTERNAL_universalAdapter

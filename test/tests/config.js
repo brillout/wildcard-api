@@ -1,6 +1,6 @@
 module.exports = [configClient, configServer];
 
-async function configClient({ wildcardClient: { config }, wildcardServer }) {
+async function configClient({ telefuncClient: { config }, telefuncServer }) {
   // Existing configs
   assert(Object.keys(config).length === 4);
 
@@ -10,7 +10,7 @@ async function configClient({ wildcardClient: { config }, wildcardServer }) {
   assert(config.serverUrl === null);
 
   // Test setups overrides default value
-  assert(config.__INTERNAL_wildcardServer_test === wildcardServer);
+  assert(config.__INTERNAL_telefuncServer_test === telefuncServer);
 
   // Throw upon unknown config
   try {
@@ -20,7 +20,7 @@ async function configClient({ wildcardClient: { config }, wildcardServer }) {
   }
 }
 
-async function configServer({ wildcardServer: { config } }) {
+async function configServer({ telefuncServer: { config } }) {
   // Existing configs
   assert(Object.keys(config).length === 2);
 

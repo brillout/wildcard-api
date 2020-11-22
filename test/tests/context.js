@@ -111,14 +111,14 @@ async function testSetContext({ setContext, browserEval, ...args }) {
   await stopApp();
 }
 
-async function defineWith_bind({ server, wildcardClient }) {
+async function defineWith_bind({ server, telefuncClient }) {
   const numbers = [1, 2, 3];
   server.hello = async function (prefix) {
     assert(this.numbers === numbers);
     const sum = (arr) => arr.reduce((a, b) => a + b, 0);
     return prefix + sum(this.numbers);
   };
-  let { hello } = wildcardClient.endpoints;
+  let { hello } = telefuncClient.endpoints;
   hello = hello.bind({ numbers });
   const res = await hello("Total: ");
   assert(res === "Total: 6");
@@ -128,7 +128,7 @@ undefinedContext.isIntegrationTest = true;
 async function undefinedContext({ browserEval, assertStderr, ...args }) {
   const setContext = undefined;
 
-  const { stopApp, server, wildcardClient } = await createServer({
+  const { stopApp, server, telefuncClient } = await createServer({
     setContext,
     ...args,
   });
@@ -141,10 +141,10 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     return "works fine " + msg;
   };
 
-  const ret_serverSide1 = await wildcardClient.endpoints.contextLessFunc("rom");
+  const ret_serverSide1 = await telefuncClient.endpoints.contextLessFunc("rom");
   assert(ret_serverSide1 === "works fine rom");
 
-  const ret_serverSide2 = await wildcardClient.endpoints.contextLessFunc.bind(
+  const ret_serverSide2 = await telefuncClient.endpoints.contextLessFunc.bind(
     undefined
   )("brillout");
   assert(ret_serverSide2 === "works fine brillout");
@@ -166,13 +166,13 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     "[Telefunc][Wrong Usage] Wrong usage of the Wildcard client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
   let err;
   try {
-    await wildcardClient.endpoints.ctxFunc();
+    await telefuncClient.endpoints.ctxFunc();
   } catch (_err) {
     err = _err;
   }
   assert(err.stack.includes(errMsg));
   try {
-    await wildcardClient.endpoints.ctxFunc.bind(undefined)();
+    await telefuncClient.endpoints.ctxFunc.bind(undefined)();
   } catch (_err) {
     err = _err;
   }
@@ -255,7 +255,7 @@ async function emptyContext3(args) {
   await emptyContext({ setContext, ...args });
 }
 async function emptyContext({ setContext, browserEval, ...args }) {
-  const { stopApp, server, wildcardClient } = await createServer({
+  const { stopApp, server, telefuncClient } = await createServer({
     setContext,
     ...args,
   });
@@ -269,13 +269,13 @@ async function emptyContext({ setContext, browserEval, ...args }) {
     assert(ret_browserSide === "undefined blib");
   });
 
-  const ret_serverSide = await wildcardClient.endpoints.ctxEndpoint.bind({})();
+  const ret_serverSide = await telefuncClient.endpoints.ctxEndpoint.bind({})();
   assert(ret_serverSide === "undefined blib");
 
   await stopApp();
 }
 
-async function defineWith_getApiHttpResponse({ server, wildcardServer }) {
+async function defineWith_getApiHttpResponse({ server, telefuncServer }) {
   server.square = function () {
     return this.num * this.num;
   };
@@ -293,7 +293,7 @@ async function defineWith_getApiHttpResponse({ server, wildcardServer }) {
   await req(() => ({ num: 10 }), "100");
 
   async function req(context, result) {
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -303,14 +303,14 @@ async function defineWith_getApiHttpResponse({ server, wildcardServer }) {
 }
 async function setContextReturnsUndefined_getApiHttpResponse({
   server,
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   server.boringEndpoint = function () {};
   const url = "https://example.org/_wildcard_api/boringEndpoint";
   const method = "POST";
   const myCtxFunc = async () => undefined;
-  const responseProps = await wildcardServer.getApiHttpResponse(
+  const responseProps = await telefuncServer.getApiHttpResponse(
     { url, method },
     myCtxFunc
   );
@@ -322,7 +322,7 @@ async function setContextReturnsUndefined_getApiHttpResponse({
 }
 async function undefinedContext_getApiHttpResponse({
   server,
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   server.without_context = function () {
@@ -336,7 +336,7 @@ async function undefinedContext_getApiHttpResponse({
     const url = "https://example.org/_wildcard_api/without_context/";
     const method = "POST";
     const context = undefined;
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -348,7 +348,7 @@ async function undefinedContext_getApiHttpResponse({
     const url = "https://example.org/_wildcard_api/with_context";
     const method = "POST";
     const context = undefined;
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -360,7 +360,7 @@ async function undefinedContext_getApiHttpResponse({
   }
 }
 async function wrongContext_getApiHttpResponse({
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   const url = "https://example.org/_wildcard_api/ummm";
@@ -371,7 +371,7 @@ async function wrongContext_getApiHttpResponse({
   await req("123");
 
   async function req(context) {
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -384,7 +384,7 @@ async function wrongContext_getApiHttpResponse({
     );
   }
 }
-async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
+async function emptyContext_getApiHttpResponse({ server, telefuncServer }) {
   server.contexti3 = function () {
     return this.doesNotExist + " abc";
   };
@@ -404,7 +404,7 @@ async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
   return;
 
   async function req(context) {
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -414,7 +414,7 @@ async function emptyContext_getApiHttpResponse({ server, wildcardServer }) {
 }
 async function setContextThrows_getApiHttpResponse({
   server,
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   server.contexti4 = function () {};
@@ -437,7 +437,7 @@ async function setContextThrows_getApiHttpResponse({
   });
 
   async function req(context) {
-    const responseProps = await wildcardServer.getApiHttpResponse(
+    const responseProps = await telefuncServer.getApiHttpResponse(
       { url, method },
       context
     );
@@ -502,7 +502,7 @@ async function setContextThrows({ assertStderr, ...args }) {
 
 async function contextImmutable({
   server,
-  wildcardClient,
+  telefuncClient,
   browserEval,
   assertStderr,
 }) {
@@ -512,7 +512,7 @@ async function contextImmutable({
   const errMsg = "The context object cannot be modified.";
 
   try {
-    await wildcardClient.endpoints.he();
+    await telefuncClient.endpoints.he();
   } catch (err) {
     assert(err.stack.includes(errMsg));
   }

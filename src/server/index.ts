@@ -1,5 +1,5 @@
-import { wildcardServer } from "./global-instance";
-export const server = wildcardServer.endpoints;
-export const { config } = wildcardServer;
-export const { getApiHttpResponse } = wildcardServer;
+import { telefuncServer } from "./global-instance";
+export const server = telefuncServer.endpoints;
+export const { config } = telefuncServer;
+export const { getApiHttpResponse } = telefuncServer;
 export { FrontendType } from "./TelefuncServer";

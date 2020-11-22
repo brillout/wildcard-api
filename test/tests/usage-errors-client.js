@@ -23,11 +23,11 @@ async function wrongBindUsage1({ server, browserEval, assertStderr }) {
   );
 }
 
-async function wrongBindUsage2({ server, wildcardClient, assertStderr }) {
+async function wrongBindUsage2({ server, telefuncClient, assertStderr }) {
   server.hm = async function () {};
 
   try {
-    wildcardClient.endpoints.hm.bind(null)();
+    telefuncClient.endpoints.hm.bind(null)();
   } catch (err) {
     console.error(err);
   }
@@ -38,11 +38,11 @@ async function wrongBindUsage2({ server, wildcardClient, assertStderr }) {
 }
 
 async function endpointManipulationWithClient({
-  wildcardClient,
+  telefuncClient,
   assertStderr,
 }) {
   try {
-    wildcardClient.endpoints.thatWontHappen = async function () {};
+    telefuncClient.endpoints.thatWontHappen = async function () {};
   } catch (err) {
     console.error(err);
   }
@@ -62,9 +62,9 @@ async function cannotSerialize({ server, browserEval, assertStderr }) {
   assertStderr("Couldn't serialize arguments for endpoint `oops`");
 }
 
-async function wrongServerUrl({ wildcardClient, assertStderr }) {
+async function wrongServerUrl({ telefuncClient, assertStderr }) {
   try {
-    wildcardClient.config.serverUrl = undefined;
+    telefuncClient.config.serverUrl = undefined;
   } catch (err) {
     console.error(err);
   }
@@ -76,13 +76,13 @@ async function wrongServerUrl({ wildcardClient, assertStderr }) {
 
 missingServerUrl.isIntegrationTest = true;
 async function missingServerUrl({ assertStderr, TelefuncClient }) {
-  const wildcardClient = new TelefuncClient();
+  const telefuncClient = new TelefuncClient();
 
-  const save = global.__INTERNAL_wildcardServer_nodejs;
-  delete global.__INTERNAL_wildcardServer_nodejs;
+  const save = global.__INTERNAL_telefuncServer_nodejs;
+  delete global.__INTERNAL_telefuncServer_nodejs;
 
   try {
-    await wildcardClient.endpoints.unexisting();
+    await telefuncClient.endpoints.unexisting();
   } catch (err) {
     console.error(err);
   }
@@ -91,5 +91,5 @@ async function missingServerUrl({ assertStderr, TelefuncClient }) {
     "`config.serverUrl` missing. You are using the Wildcard client in Node.js, and the Wildcard client is loaded in a different Node.js process than the Node.js process that loaded the Wildcard server; the `config.serverUrl` configuration is required."
   );
 
-  global.__INTERNAL_wildcardServer_nodejs = save;
+  global.__INTERNAL_telefuncServer_nodejs = save;
 }

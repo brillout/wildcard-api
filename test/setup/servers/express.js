@@ -6,7 +6,7 @@ module.exports.start = start;
 module.exports.stop = stop;
 
 async function startServer({
-  __INTERNAL_wildcardServer_middleware,
+  __INTERNAL_telefuncServer_middleware,
   httpPort,
   staticDir,
 }) {
@@ -27,7 +27,7 @@ async function startServer({
         const context = { headers };
         return context;
       },
-      { __INTERNAL_wildcardServer_middleware }
+      { __INTERNAL_telefuncServer_middleware }
     )
   );
 

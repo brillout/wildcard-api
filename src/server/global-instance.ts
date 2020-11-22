@@ -1,11 +1,11 @@
 import { TelefuncServer } from "./TelefuncServer";
 
-export const wildcardServer = (global.__INTERNAL_wildcardServer_nodejs = new TelefuncServer());
+export const telefuncServer = (global.__INTERNAL_telefuncServer_nodejs = new TelefuncServer());
 
 declare global {
   namespace NodeJS {
     interface Global {
-      __INTERNAL_wildcardServer_nodejs: any;
+      __INTERNAL_telefuncServer_nodejs: any;
     }
   }
 }

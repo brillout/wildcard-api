@@ -18,12 +18,12 @@ module.exports = [
 ];
 
 async function endpointMissing_noEndpoints_serverSide({
-  wildcardClient,
+  telefuncClient,
   assertStderr,
 }) {
   let err;
   try {
-    await wildcardClient.endpoints.helloSsr();
+    await telefuncClient.endpoints.helloSsr();
   } catch (_err) {
     err = _err;
   }
@@ -83,7 +83,7 @@ async function endpointMissing_notDefined_clientSide({
 }
 async function endpointMissing_notDefined_serverSide({
   server,
-  wildcardClient,
+  telefuncClient,
   assertStderr,
 }) {
   server.servus = async function (oe) {
@@ -92,7 +92,7 @@ async function endpointMissing_notDefined_serverSide({
 
   let err;
   try {
-    await wildcardClient.endpoints.helloSsr();
+    await telefuncClient.endpoints.helloSsr();
   } catch (_err) {
     err = _err;
   }
@@ -150,38 +150,38 @@ async function endpointThrowsError({ server, browserEval, assertStderr }) {
 }
 
 async function wrongUsage_getApiHttpResponse_1({
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
-  const responseProps = await wildcardServer.getApiHttpResponse();
+  const responseProps = await telefuncServer.getApiHttpResponse();
   assertErrorResponse(responseProps);
   assertStderr("Missing arguments `url` and `method`");
 }
 async function wrongUsage_getApiHttpResponse_2({
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
-  const responseProps = await wildcardServer.getApiHttpResponse({
+  const responseProps = await telefuncServer.getApiHttpResponse({
     method: "post",
   });
   assertErrorResponse(responseProps);
   assertStderr("Missing argument `url`");
 }
 async function wrongUsage_getApiHttpResponse_3({
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   const url = "https://example.org/_wildcard_api/ummm";
-  const responseProps = await wildcardServer.getApiHttpResponse({ url });
+  const responseProps = await telefuncServer.getApiHttpResponse({ url });
   assertErrorResponse(responseProps);
   assertStderr("Missing argument `method`");
 }
 async function wrongUsage_getApiHttpResponse_4({
-  wildcardServer,
+  telefuncServer,
   assertStderr,
 }) {
   const url = "https://example.org/_wildcard_api/ummm";
-  const responseProps = await wildcardServer.getApiHttpResponse({
+  const responseProps = await telefuncServer.getApiHttpResponse({
     url,
     method: "",
   });

@@ -69,14 +69,14 @@ async function runStandardTests({
   serverFrameworks,
   debugMode,
 }) {
-  const __INTERNAL_wildcardServer_middleware = {};
+  const __INTERNAL_telefuncServer_middleware = {};
 
   for (let serverFramework of serverFrameworks) {
     let stop;
     const _startServer = require("./servers/" + serverFramework);
     const startServer = async (args) => {
       stop = await _startServer({
-        __INTERNAL_wildcardServer_middleware,
+        __INTERNAL_telefuncServer_middleware,
         httpPort,
         staticDir,
         ...args,
@@ -85,19 +85,19 @@ async function runStandardTests({
     await startServer();
 
     for (let test of standardTests) {
-      const wildcardServer = new TelefuncServer();
-      const { endpoints: server, config } = wildcardServer;
-      __INTERNAL_wildcardServer_middleware.wildcardServer = wildcardServer;
-      const wildcardClient = new TelefuncClient();
-      wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
+      const telefuncServer = new TelefuncServer();
+      const { endpoints: server, config } = telefuncServer;
+      __INTERNAL_telefuncServer_middleware.telefuncServer = telefuncServer;
+      const telefuncClient = new TelefuncClient();
+      telefuncClient.config.__INTERNAL_telefuncServer_test = telefuncServer;
 
       const testArgs = {
         server,
         config,
         browserEval,
         TelefuncServer,
-        wildcardServer,
-        wildcardClient,
+        telefuncServer,
+        telefuncClient,
         TelefuncClient,
         httpPort,
         serverFramework,

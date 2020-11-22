@@ -67,10 +67,10 @@ async function endpointMissing({ browserEval, assertStderr }) {
   assertStderr(null);
 }
 
-async function endpointMissing_SSR({ wildcardClient, assertStderr }) {
+async function endpointMissing_SSR({ telefuncClient, assertStderr }) {
   let errStack;
   try {
-    await wildcardClient.endpoints.missingEndpoint();
+    await telefuncClient.endpoints.missingEndpoint();
   } catch (err) {
     errStack = err.stack;
   }

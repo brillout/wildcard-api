@@ -29,7 +29,7 @@ type Config = {
 };
 type ServerURL = string | null;
 type ConfigPrivate = Config & {
-  __INTERNAL_wildcardServer_test: any;
+  __INTERNAL_telefuncServer_test: any;
 };
 type ConfigName = keyof ConfigPrivate;
 
@@ -52,7 +52,7 @@ const configDefault: ConfigPrivate = {
   serverUrl: null,
   baseUrl: "/_wildcard_api/",
   shortUrl: false,
-  __INTERNAL_wildcardServer_test: null,
+  __INTERNAL_telefuncServer_test: null,
 };
 
 class TelefuncClient {
@@ -68,16 +68,16 @@ function callEndpoint(
 ): EndpointResult {
   endpointArgs = endpointArgs || [];
 
-  const wildcardServer: TelefuncServer = getTelefuncServer(config);
+  const telefuncServer: TelefuncServer = getTelefuncServer(config);
 
   // Usage in Node.js [inter-process]
   // Inter-process: the Wildcard client and the Wildcard server are loaded in the same Node.js process.
-  if (wildcardServer) {
+  if (telefuncServer) {
     assert(isNodejs());
     return callEndpointDirectly(
       endpointName,
       endpointArgs,
-      wildcardServer,
+      telefuncServer,
       context
     );
   }
@@ -105,32 +105,32 @@ function callEndpoint(
 }
 
 function getTelefuncServer(config: ConfigPrivate) {
-  const wildcardServer__testing = config.__INTERNAL_wildcardServer_test;
-  const wildcardServer__serverSideUsage =
+  const telefuncServer__testing = config.__INTERNAL_telefuncServer_test;
+  const telefuncServer__serverSideUsage =
     typeof global !== "undefined" &&
     global &&
-    global.__INTERNAL_wildcardServer_nodejs;
-  const wildcardServer =
-    wildcardServer__testing || wildcardServer__serverSideUsage || null;
+    global.__INTERNAL_telefuncServer_nodejs;
+  const telefuncServer =
+    telefuncServer__testing || telefuncServer__serverSideUsage || null;
 
-  // The purpose of providing `wildcardServer` to `wildcardClient` is for server-side client usage.
-  // It doesn't make sense to provide `wildcardServer` on the browser-side.
-  assert(wildcardServer === null || isNodejs());
+  // The purpose of providing `telefuncServer` to `telefuncClient` is for server-side client usage.
+  // It doesn't make sense to provide `telefuncServer` on the browser-side.
+  assert(telefuncServer === null || isNodejs());
 
-  // The whole purpose of providing `wildcardServer` is to be able to call `wildcardServer.__directCall`
+  // The whole purpose of providing `telefuncServer` is to be able to call `telefuncServer.__directCall`
   // Bypassing making an unecessary HTTP request.
-  assert(wildcardServer === null || wildcardServer.__directCall);
+  assert(telefuncServer === null || telefuncServer.__directCall);
 
-  return wildcardServer;
+  return telefuncServer;
 }
 
 async function callEndpointDirectly(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
-  wildcardServer: TelefuncServer,
+  telefuncServer: TelefuncServer,
   context: Context
 ): Promise<EndpointResult> {
-  return wildcardServer.__directCall(endpointName, endpointArgs, context);
+  return telefuncServer.__directCall(endpointName, endpointArgs, context);
 }
 
 function callEndpointOverHttp(
@@ -389,7 +389,7 @@ function isBinded(that: unknown, defaultBind: unknown): boolean {
 declare global {
   namespace NodeJS {
     interface Global {
-      __INTERNAL_wildcardServer_nodejs: any;
+      __INTERNAL_telefuncServer_nodejs: any;
     }
   }
 }

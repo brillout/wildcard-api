@@ -14,21 +14,21 @@ module.exports = [
 module.exports.createServer = createServer;
 
 // Endpoints can be synchronous
-async function endpointSyncFunction({ server, wildcardClient }) {
+async function endpointSyncFunction({ server, telefuncClient }) {
   const n = Math.random();
   server.syncFunc = function () {
     return n;
   };
-  const promise = wildcardClient.endpoints.syncFunc();
+  const promise = telefuncClient.endpoints.syncFunc();
   assert(!promise !== n);
   assert(promise.then);
   const ret = await promise;
   assert(ret === n);
 }
 // Endpoints can return undefined
-async function endpointReturnsUndefined_serverSide({ server, wildcardClient }) {
+async function endpointReturnsUndefined_serverSide({ server, telefuncClient }) {
   server.helloUndefined = async function () {};
-  const endpointResult = await wildcardClient.endpoints.helloUndefined();
+  const endpointResult = await telefuncClient.endpoints.helloUndefined();
   assert(endpointResult === undefined);
 }
 async function endpointReturnsUndefined_browserSide({ server, browserEval }) {
@@ -50,9 +50,9 @@ async function createServer({
   const { wildcard } = require("telefunc/server/express");
   const { stop, start } = require("../setup/servers/express");
 
-  const wildcardServer = new TelefuncServer();
-  const wildcardClient = new TelefuncClient();
-  wildcardClient.config.__INTERNAL_wildcardServer_test = wildcardServer;
+  const telefuncServer = new TelefuncServer();
+  const telefuncClient = new TelefuncClient();
+  telefuncClient.config.__INTERNAL_telefuncServer_test = telefuncServer;
 
   const app = express();
 
@@ -62,7 +62,7 @@ async function createServer({
 
   app.use(
     wildcard(setContext, {
-      __INTERNAL_wildcardServer_middleware: { wildcardServer },
+      __INTERNAL_telefuncServer_middleware: { telefuncServer },
     })
   );
 
@@ -73,8 +73,8 @@ async function createServer({
 
   return {
     stopApp,
-    server: wildcardServer.endpoints,
-    wildcardClient,
+    server: telefuncServer.endpoints,
+    telefuncClient,
   };
 }
 

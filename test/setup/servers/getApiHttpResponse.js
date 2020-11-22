@@ -5,7 +5,7 @@ const { assert } = require("@brillout/assert");
 module.exports = startServer;
 
 async function startServer({
-  __INTERNAL_wildcardServer_middleware,
+  __INTERNAL_telefuncServer_middleware,
   httpPort,
   staticDir,
 }) {
@@ -58,7 +58,7 @@ async function startServer({
     const context = {
       headers: request.headers,
     };
-    const responseProps = await __INTERNAL_wildcardServer_middleware.wildcardServer.getApiHttpResponse(
+    const responseProps = await __INTERNAL_telefuncServer_middleware.telefuncServer.getApiHttpResponse(
       requestProps,
       context
     );

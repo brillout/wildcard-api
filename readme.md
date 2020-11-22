@@ -1106,9 +1106,9 @@ If you need to save CPU computation time,
 you can set `disableCache` to `true` and Wildcard will skip generating HTTP ETag headers.
 
 ~~~js
-import wildcardServer from 'telefunc/server';
+import telefuncServer from 'telefunc/server';
 
-wildcardServer.disableCache = true;
+telefuncServer.disableCache = true;
 ~~~
 
 

@@ -5,21 +5,21 @@ module.exports = [
   basic_clientSide_withContext,
 ];
 
-async function basic_serverSide({ server, wildcardClient }) {
+async function basic_serverSide({ server, telefuncClient }) {
   server.hello = async function (name) {
     return "yo " + name;
   };
-  const endpointResult = await wildcardClient.endpoints.hello("Paul");
+  const endpointResult = await telefuncClient.endpoints.hello("Paul");
   assert(endpointResult === "yo Paul");
 }
 
-async function basic_serverSide_withContext({ server, wildcardClient }) {
+async function basic_serverSide_withContext({ server, telefuncClient }) {
   const headers = [];
   server.hello = async function (name) {
     assert(this.headers === headers);
     return "heyy " + name;
   };
-  const endpointResult = await wildcardClient.endpoints.hello.bind({ headers })(
+  const endpointResult = await telefuncClient.endpoints.hello.bind({ headers })(
     "Paul"
   );
   assert(endpointResult === "heyy Paul");

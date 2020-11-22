@@ -11,19 +11,19 @@ module.exports = [
   mainImportForbidden,
 ];
 
-async function doesntIntefere1({ server, wildcardServer }) {
+async function doesntIntefere1({ server, telefuncServer }) {
   server.getme = function () {
     return "you got me";
   };
   {
-    const responseProps = await wildcardServer.getApiHttpResponse({
+    const responseProps = await telefuncServer.getApiHttpResponse({
       method: "POST",
       url: "/_wildcard-apii",
     });
     assert(responseProps === null);
   }
   {
-    const responseProps = await wildcardServer.getApiHttpResponse({
+    const responseProps = await telefuncServer.getApiHttpResponse({
       method: "POST",
       url: "/_wildcard_api/getme",
     });

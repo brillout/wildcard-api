@@ -97,9 +97,9 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
   await browserEval(
     async ({ wrongHttpPort }) => {
       const { TelefuncClient } = window;
-      const wildcardClient = new TelefuncClient();
-      wildcardClient.config.serverUrl = "http://localhost:" + wrongHttpPort;
-      const server = wildcardClient.endpoints;
+      const telefuncClient = new TelefuncClient();
+      telefuncClient.config.serverUrl = "http://localhost:" + wrongHttpPort;
+      const server = telefuncClient.endpoints;
       let failed = false;
       try {
         await server.test_serverUrl();
@@ -137,9 +137,9 @@ async function option_baseUrl({ server, config, browserEval, httpPort }) {
   await browserEval(
     async ({ baseUrl }) => {
       const { TelefuncClient } = window;
-      const wildcardClient = new TelefuncClient();
-      wildcardClient.config.baseUrl = baseUrl;
-      const server = wildcardClient.endpoints;
+      const telefuncClient = new TelefuncClient();
+      telefuncClient.config.baseUrl = baseUrl;
+      const server = telefuncClient.endpoints;
       await server.test_baseUrl();
     },
     { onHttpRequest, browserArgs: { baseUrl } }
