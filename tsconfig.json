@@ -10,7 +10,7 @@
     "strict": true
   },
 
-  "references": [{ "path": "./client" }, { "path": "./server" }],
+  "references": [{ "path": "./src/client" }, { "path": "./src/server" }],
 
   // This is important; otherwise tsc will try
   // to compile the source 2x times

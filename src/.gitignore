@@ -1,5 +1,6 @@
 # Typescript
 *.js
+!/index.js
 *.map
 *.d.ts
 tsconfig.tsbuildinfo
