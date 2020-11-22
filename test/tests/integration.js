@@ -7,6 +7,8 @@ module.exports = [
   unpkg,
   // Ensure that the API is as described in the docs.
   API,
+  // Assert thrown error message when trying to `require("telefunc")`
+  mainImportForbidden,
 ];
 
 async function doesntIntefere1({ server, wildcardServer }) {
@@ -116,4 +118,15 @@ async function API() {
     assert(export_.wildcard.constructor.name === "Function");
     assert(Object.keys(export_).length === 1);
   });
+}
+
+async function mainImportForbidden() {
+  try {
+    require("telefunc");
+  } catch (err) {
+    assert(
+      err.message ===
+        '[Telefunc][Wrong Usage] You cannot `require("telefunc")`/`import * from "telefunc"`. Either `require("telefunc/client")`/`import * from "telefunc/client"` or `require("telefunc/server")`/`import * from "telefunc/server"` instead.'
+    );
+  }
 }
