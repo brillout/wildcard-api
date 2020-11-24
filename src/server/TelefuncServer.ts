@@ -10,6 +10,11 @@ import {
 } from "@brillout/assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
+import {
+  computeSetCookies,
+  getSecretKey,
+  retrieveContextFromCookies,
+} from "./telefuncSession";
 
 export { TelefuncServer };
 
@@ -24,10 +29,10 @@ type EndpointResult = unknown;
 type EndpointError = Error | UsageError;
 
 // Context
-type ContextObject = Record<string, unknown>;
+export type ContextObject = Record<string, unknown>;
 export type Context = ContextObject | undefined;
-type ContextGetter = () => Promise<Context> | Context;
-type ContextModifications = null | Record<string, unknown>;
+type ContextGetter = (context: ContextObject) => Promise<Context> | Context;
+export type ContextModifications = null | Record<string, unknown>;
 
 /** Telefunc Server Configuration */
 type Config = {
@@ -52,10 +57,13 @@ type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
+export type HttpRequestHeaders = { cookie: string } & Record<string, string>[];
+//type HttpRequestHeaders = Record<string, string>[] | string[][];
 export type UniversalAdapterName = "express" | "koa" | "hapi" | undefined;
 export type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
+  headers?: HttpRequestHeaders;
   body?: HttpRequestBody;
 };
 // HTTP Response
@@ -63,17 +71,17 @@ type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
 type HttpResponseEtag = string & { _brand?: "HttpResponseEtag" };
-type HttpResponseCookies = {
+export type HttpResponseCookies = {
   cookieName: string;
   cookieValue: string;
-  cookieOptions: { maxAge: number; httpOnly?: boolean; secure: boolean };
+  cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
 }[];
 export type HttpResponseProps = {
   body: HttpResponseBody;
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
   etag?: HttpResponseEtag;
-  cookies?: HttpResponseCookies;
+  setCookies?: HttpResponseCookies;
 };
 
 type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
@@ -171,7 +179,7 @@ async function _getApiHttpResponse(
   universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
   try {
-    context = await getContext(context);
+    context = await getContext(requestProps.headers, context);
   } catch (contextError) {
     return handleContextError(contextError);
   }
@@ -214,7 +222,11 @@ async function _getApiHttpResponse(
     throw new Error();
   }
 
-  const { endpointResult, endpointError } = await runEndpoint(
+  const {
+    endpointResult,
+    endpointError,
+    contextModifications,
+  } = await runEndpoint(
     endpointName,
     endpointArgs,
     context,
@@ -226,6 +238,7 @@ async function _getApiHttpResponse(
   return handleEndpointOutcome(
     endpointResult,
     endpointError,
+    contextModifications,
     isHumanMode,
     endpointName,
     config
@@ -250,7 +263,11 @@ async function directCall(
     getEndpointMissingText(endpointName, endpoints).join(" ")
   );
 
-  const resultObject = await runEndpoint(
+  const {
+    endpointResult,
+    endpointError,
+    contextModifications,
+  } = await runEndpoint(
     endpointName,
     endpointArgs,
     context,
@@ -258,8 +275,7 @@ async function directCall(
     endpoints,
     undefined
   );
-
-  const { endpointResult, endpointError } = resultObject;
+  assert(contextModifications === null);
 
   if (endpointError) {
     throw endpointError;
@@ -504,6 +520,14 @@ function createContextProxy(
   return { contextProxy, contextModifications };
 
   function set(_: ContextObject, contextName: string, contextValue: unknown) {
+    assertUsage(
+      !isDirectCall,
+      "The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
+    );
+    assertUsage(
+      getSecretKey(),
+      "The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
+    );
     contextModifications = contextModifications || {};
     contextModifications[contextName] = contextValue;
     contextProxy[contextName] = contextValue;
@@ -733,6 +757,7 @@ function parsePathname(pathname: string, config: Config) {
 function handleEndpointOutcome(
   endpointResult: EndpointResult | undefined,
   endpointError: EndpointError | undefined,
+  contextModifications: ContextModifications,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName,
   config: Config
@@ -754,6 +779,10 @@ function handleEndpointOutcome(
     const etag = computeEtag(responseProps.body);
     assert(etag);
     responseProps.etag = etag;
+  }
+
+  if (contextModifications) {
+    responseProps.setCookies = computeSetCookies(contextModifications);
   }
 
   return responseProps;
@@ -977,7 +1006,30 @@ function assertNodejs() {
   );
 }
 
-async function getContext(context: Context | ContextGetter): Promise<Context> {
+async function getContext(
+  headers: HttpRequestHeaders | undefined,
+  context: Context | ContextGetter
+): Promise<Context> {
+  const retrievedContext = retrieveContextFromCookies(headers);
+  const userProvidedContext = getUserProvidedContext(context, retrievedContext);
+
+  if (retrievedContext === null && userProvidedContext === undefined) {
+    return undefined;
+  }
+  assert(
+    retrievedContext instanceof Object || userProvidedContext instanceof Object
+  );
+
+  return {
+    ...retrievedContext,
+    ...userProvidedContext,
+  };
+}
+
+async function getUserProvidedContext(
+  context: Context | ContextGetter,
+  retrievedContext: ContextObject | null
+): Promise<Context> {
   if (context === undefined) {
     return undefined;
   }
@@ -986,7 +1038,7 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
     ? getFunctionName(context as ContextGetter)
     : null;
   if (isContextFunction) {
-    context = await (context as ContextGetter)();
+    context = await (context as ContextGetter)(retrievedContext || {});
   }
   assertContext(
     context as ContextObject,
@@ -1031,7 +1083,7 @@ function assertContext(
   );
 }
 
-function getFunctionName(fn: () => unknown): string {
+function getFunctionName(fn: (...args: any[]) => any): string {
   let { name } = fn;
   if (!name) {
     return name;
