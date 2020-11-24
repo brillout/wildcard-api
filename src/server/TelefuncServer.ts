@@ -12,8 +12,10 @@ import {
 import getUrlProps = require("@brillout/url-props");
 import {
   getSetCookieHeaders,
-  getSecretKey,
+  setSecretKey,
   getContextFromCookies,
+  _secretKey,
+  SecretKey,
 } from "./telefuncSession";
 
 export { TelefuncServer };
@@ -119,6 +121,8 @@ const configDefault: Config = {
 class TelefuncServer {
   endpoints: Endpoints = getEndpointsProxy();
   config: Config = getConfigProxy(configDefault);
+  setSecretKey = setSecretKey.bind(this);
+  [_secretKey]: SecretKey = null;
 
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
@@ -142,6 +146,7 @@ class TelefuncServer {
         context,
         this.endpoints,
         this.config,
+        this[_secretKey],
         __INTERNAL_universalAdapter
       );
     } catch (internalError) {
@@ -170,6 +175,7 @@ async function _getApiHttpResponse(
   context: Context | ContextGetter | undefined,
   endpoints: Endpoints,
   config: Config,
+  secretKey: SecretKey,
   universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
   const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
@@ -178,7 +184,7 @@ async function _getApiHttpResponse(
   }
 
   try {
-    context = await getContext(requestProps.headers, context);
+    context = await getContext(requestProps.headers, context, secretKey);
   } catch (contextError) {
     return handleContextError(contextError);
   }
@@ -226,7 +232,8 @@ async function _getApiHttpResponse(
     context,
     false,
     endpoints,
-    universalAdapterName
+    universalAdapterName,
+    secretKey
   );
 
   return handleEndpointOutcome(
@@ -235,7 +242,8 @@ async function _getApiHttpResponse(
     contextModifications,
     isHumanMode,
     endpointName,
-    config
+    config,
+    secretKey
   );
 }
 
@@ -267,9 +275,10 @@ async function directCall(
     context,
     true,
     endpoints,
-    undefined
+    undefined,
+    null
   );
-  assert(contextModifications === null);
+  assert(contextModifications.mods === null);
 
   if (endpointError) {
     throw endpointError;
@@ -284,7 +293,8 @@ async function runEndpoint(
   context: Context,
   isDirectCall: IsDirectCall,
   endpoints: Endpoints,
-  universalAdapterName: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName,
+  secretKey: SecretKey
 ): Promise<{
   endpointResult?: EndpointResult;
   endpointError?: EndpointError;
@@ -302,7 +312,8 @@ async function runEndpoint(
     context,
     endpointName,
     isDirectCall,
-    universalAdapterName
+    universalAdapterName,
+    secretKey
   );
   assert(contextProxy !== undefined);
   assert(contextProxy instanceof Object);
@@ -503,7 +514,8 @@ function createContextProxy(
   context: Context,
   endpointName: EndpointName,
   isDirectCall: IsDirectCall,
-  universalAdapterName: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName,
+  secretKey: SecretKey
 ): { contextProxy: ContextObject; contextModifications: ContextModifications } {
   let contextObj: ContextObject = { ...(context || {}) };
   const contextProxy: ContextObject = new Proxy(contextObj, { get, set });
@@ -516,7 +528,7 @@ function createContextProxy(
       "The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
     );
     assertUsage(
-      getSecretKey(),
+      secretKey,
       "The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
     );
     contextModifications.mods = contextModifications.mods || {};
@@ -751,7 +763,8 @@ function handleEndpointOutcome(
   contextModifications: ContextModifications,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName,
-  config: Config
+  config: Config,
+  secretKey: SecretKey
 ): HttpResponseProps {
   let responseProps: HttpResponseProps;
   if (endpointError) {
@@ -774,7 +787,7 @@ function handleEndpointOutcome(
   }
 
   if (contextModifications) {
-    const setCookies = getSetCookieHeaders(contextModifications);
+    const setCookies = getSetCookieHeaders(secretKey, contextModifications);
     if (setCookies !== null) {
       responseProps.headers = responseProps.headers || [];
       responseProps.headers.push(...setCookies);
@@ -1004,9 +1017,10 @@ function assertNodejs() {
 
 async function getContext(
   headers: HttpRequestHeaders | undefined,
-  context: Context | ContextGetter
+  context: Context | ContextGetter,
+  secretKey: SecretKey
 ): Promise<Context> {
-  const retrievedContext = getContextFromCookies(headers);
+  const retrievedContext = getContextFromCookies(secretKey, headers);
   const userProvidedContext = await getUserProvidedContext(
     context,
     retrievedContext

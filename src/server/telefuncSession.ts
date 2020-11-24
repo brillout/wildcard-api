@@ -11,6 +11,7 @@ import {
   HttpRequestHeaders,
   HttpResponseHeader,
   ContextObject,
+  TelefuncServer,
 } from "./TelefuncServer";
 import { assertUsage, getUsageError } from "@brillout/assert";
 import cookie = require("cookie");
@@ -21,10 +22,10 @@ type Cookie = {
   cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
 };
 
-let secretKey: string | null = null;
+export const _secretKey = Symbol("_secretKey");
+export type SecretKey = string | null;
 
 export { setSecretKey };
-export { getSecretKey };
 export { getSetCookieHeaders };
 export { getContextFromCookies };
 
@@ -32,6 +33,7 @@ const cookieNamePrefix = "telefunc-context_";
 const signatureCookieNamePrefix = "telefunc-context-signaure_";
 
 function getContextFromCookies(
+  secretKey: SecretKey,
   headers: HttpRequestHeaders | undefined
 ): ContextObject | null {
   if (headers === undefined) {
@@ -67,12 +69,13 @@ function getContextFromCookies(
   return contextObject;
 }
 
-function setSecretKey(secretKeyValue: string) {
+function setSecretKey(this: TelefuncServer, secretKey: string) {
   assertUsage(
-    secretKey === null,
+    this[_secretKey] === null,
     "You should call `setSecretKey()` only once."
   );
-  const len = secretKeyValue.length;
+  assertUsage(secretKey, "Argument `key` missing in `setSecretKey(key)` call.");
+  const len = secretKey.length;
   assertUsage(
     len > 10,
     "You are calling `setSecretKey(key)` with a `key` of length `" +
@@ -80,14 +83,11 @@ function setSecretKey(secretKeyValue: string) {
       "`, but `key` should have at least 10 characters."
   );
 
-  secretKey = secretKeyValue;
-}
-
-function getSecretKey(): string | null {
-  return secretKey;
+  this[_secretKey] = secretKey;
 }
 
 function getSetCookieHeaders(
+  secretKey: SecretKey,
   contextModifications: ContextModifications
 ): HttpResponseHeader[] | null {
   if (contextModifications.mods === null) {

@@ -14,7 +14,6 @@ global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
 const { TelefuncServer } = require("telefunc/server/TelefuncServer");
-const { setSecretKey } = require("telefunc/server");
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 
 const bundle = require("./browser/bundle");
@@ -87,7 +86,7 @@ async function runStandardTests({
 
     for (let test of standardTests) {
       const telefuncServer = new TelefuncServer();
-      const { endpoints: server, config } = telefuncServer;
+      const { endpoints: server, config, setSecretKey } = telefuncServer;
       __INTERNAL_telefuncServer_middleware.telefuncServer = telefuncServer;
       const telefuncClient = new TelefuncClient();
       telefuncClient.config.__INTERNAL_telefuncServer_test = telefuncServer;
