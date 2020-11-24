@@ -1077,37 +1077,37 @@
     "@types/mime" "*"
     "@types/node" "*"
 
-"@universal-adapter/express@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@universal-adapter/express/-/express-0.6.0.tgz#abf818719ab2628f73022aaf483522c0fbe8d36b"
-  integrity sha512-C23s51gVU780ZY6MDGGLDN1uks9s/2ZPc7g5K1CrNuyoqzC/nNFll/bWWqXnwb31VLklRxqOiX/N/wPO9IvG4w==
+"@universal-adapter/express@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/express/-/express-0.7.0.tgz#4652eaac8df8fc139a20335043fe8b8a6802cd6b"
+  integrity sha512-4bgZ1y/INKTHfPT9oYV3f1ncrb7n4p3GHTY5ZGQA/ewRstk2pGsAylBj7rVqBGjNPckLICCL+pCfRpJU1tVM4A==
   dependencies:
     "@brillout/reassert" "^0.1.1"
-    "@universal-adapter/server" "0.6.0"
+    "@universal-adapter/server" "0.7.0"
 
-"@universal-adapter/hapi@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@universal-adapter/hapi/-/hapi-0.6.0.tgz#54c9ea123402ff562c96e70504e91c92d9d7e41f"
-  integrity sha512-5LhqSCQQc4XqZ1Xf8sFgXIITsuPTGkSSeW+BA+C8aeyAn5DPAstQPkXVms+Cu5wDcEYLDR8H9W3moulLf4FMaw==
+"@universal-adapter/hapi@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/hapi/-/hapi-0.7.0.tgz#d17265ae066c4f0414a93027ef26141f68935c8c"
+  integrity sha512-OwNCc2LHTOZwN/lWVmSUebBIwz3wrbvSH1v6LvIz62VcsnDFz41Z82QsSjeQFDC8HUeY0qOvZ3t3QqJGa3osVQ==
   dependencies:
     "@brillout/reassert" "^0.1.1"
-    "@universal-adapter/server" "0.6.0"
+    "@universal-adapter/server" "0.7.0"
     boom "^7.2.0"
     hapi-url "^1.0.2"
 
-"@universal-adapter/koa@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@universal-adapter/koa/-/koa-0.6.0.tgz#cdfba8fedfcc9f44be59970e9ef12f471832581e"
-  integrity sha512-oCrJesiJqhKUP+R2YaI/Cjhio6oW9WNX2hL1SkJa3HtBMVpCPqaUxJ3CuyEuwNhTVuuuaLfogzx9AhrEUiVPqA==
+"@universal-adapter/koa@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/koa/-/koa-0.7.0.tgz#7adc20f14d86ef5d266a0cffe769025d6ec418f7"
+  integrity sha512-YORzBljNv7DzC8MaodoVfHZJgDgqPTFd42BnOdDZooHv8a+TBihx9woLmHxl+4e38DhujZZ29QeM1h2pAmj62g==
   dependencies:
     "@brillout/reassert" "^0.1.1"
-    "@universal-adapter/server" "0.6.0"
+    "@universal-adapter/server" "0.7.0"
     koa-router "^7.4.0"
 
-"@universal-adapter/server@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@universal-adapter/server/-/server-0.6.0.tgz#d52d45fbc81ce5c0d9f67261b05ba8caceb6d6eb"
-  integrity sha512-PhyCE0kuhBOJXRkn/9tM00GwdHyicVI1sh21+NsVggMgyRlVAVxR6JXvFRLHtPg3UEYAqhNEAFrHCUE5aTqwjA==
+"@universal-adapter/server@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@universal-adapter/server/-/server-0.7.0.tgz#f2e7b8c6e874d58b2bec763b59b3bc03aa00e950"
+  integrity sha512-GTRGUDCeqj1W7/mYX6PTWeyyk2aZg8wekFyb5EwdQbn5h9dG2N96FJBvQuoAVeanNo5fGK2ADL77gLXZrLLXxQ==
   dependencies:
     "@brillout/reassert" "^0.1.1"
     "@brillout/url-props" "^0.1.1"

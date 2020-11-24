@@ -11,9 +11,9 @@ import {
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 import {
-  computeSetCookies,
+  getSetCookieHeaders,
   getSecretKey,
-  retrieveContextFromCookies,
+  getContextFromCookies,
 } from "./telefuncSession";
 
 export { TelefuncServer };
@@ -70,18 +70,12 @@ export type HttpRequestProps = {
 type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
-type HttpResponseEtag = string & { _brand?: "HttpResponseEtag" };
-export type HttpResponseCookies = {
-  cookieName: string;
-  cookieValue: string;
-  cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
-}[];
+export type HttpResponseHeader = { name: string; value: string };
 export type HttpResponseProps = {
   body: HttpResponseBody;
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
-  etag?: HttpResponseEtag;
-  setCookies?: HttpResponseCookies;
+  headers?: HttpResponseHeader[];
 };
 
 type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
@@ -778,13 +772,15 @@ function handleEndpointOutcome(
     const computeEtag = require("./computeEtag");
     const etag = computeEtag(responseProps.body);
     assert(etag);
-    responseProps.etag = etag;
+    responseProps.headers = responseProps.headers || [];
+    responseProps.headers.push({ name: "ETag", value: etag });
   }
 
   if (contextModifications) {
-    const setCookies = computeSetCookies(contextModifications);
+    const setCookies = getSetCookieHeaders(contextModifications);
     if (setCookies !== null) {
-      responseProps.setCookies = setCookies;
+      responseProps.headers = responseProps.headers || [];
+      responseProps.headers.push(...setCookies);
     }
   }
 
@@ -1013,7 +1009,7 @@ async function getContext(
   headers: HttpRequestHeaders | undefined,
   context: Context | ContextGetter
 ): Promise<Context> {
-  const retrievedContext = retrieveContextFromCookies(headers);
+  const retrievedContext = getContextFromCookies(headers);
   const userProvidedContext = await getUserProvidedContext(
     context,
     retrievedContext

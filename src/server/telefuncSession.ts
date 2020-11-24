@@ -1,29 +1,39 @@
 // TODO
 //  - clean signature cookie upon client-side context removal
+//  - update docs
+//    - update getApiHttpResponse
 
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
 import {
   ContextModifications,
-  HttpResponseCookies,
   HttpRequestHeaders,
+  HttpResponseHeader,
   ContextObject,
 } from "./TelefuncServer";
 import { assertUsage, getUsageError } from "@brillout/assert";
 import cookie = require("cookie");
 
+//*
+type Cookie = {
+  cookieName: string;
+  cookieValue: string;
+  cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
+};
+//*/
+
 let secretKey: string | null = null;
 
 export { setSecretKey };
 export { getSecretKey };
-export { computeSetCookies };
-export { retrieveContextFromCookies };
+export { getSetCookieHeaders };
+export { getContextFromCookies };
 
 const cookieNamePrefix = "telefunc-context_";
 const signatureCookieNamePrefix = "telefunc-context-signaure_";
 
-function retrieveContextFromCookies(
+function getContextFromCookies(
   headers: HttpRequestHeaders | undefined
 ): ContextObject | null {
   if (headers === undefined) {
@@ -79,9 +89,9 @@ function getSecretKey(): string | null {
   return secretKey;
 }
 
-function computeSetCookies(
+function getSetCookieHeaders(
   contextModifications: ContextModifications
-): HttpResponseCookies | null {
+): HttpResponseHeader[] | null {
   if (contextModifications === null) {
     return null;
   }
@@ -93,7 +103,7 @@ function computeSetCookies(
   // Express.js expects milliseconds
   const maxAge = 10 * 365 * 24 * 60 * 60 * 1000;
 
-  const setCookies: HttpResponseCookies = [];
+  const cookies: Cookie[] = [];
 
   Object.entries(contextModifications).forEach(
     ([contextName, contextValue]: [
@@ -101,7 +111,7 @@ function computeSetCookies(
       contextValue: unknown
     ]) => {
       const contextSerialized = serializeContext(contextValue);
-      setCookies.push(
+      cookies.push(
         ...[
           {
             cookieName: cookieNamePrefix + contextName,
@@ -127,7 +137,14 @@ function computeSetCookies(
     }
   );
 
-  return setCookies;
+  const setCookieHeaders: HttpResponseHeader[] = [];
+  cookies.forEach(({ cookieName, cookieValue, cookieOptions }) => {
+    const name = "Set-Cookie";
+    const value = cookie.serialize(cookieName, cookieValue, cookieOptions);
+    setCookieHeaders.push({ name, value });
+  });
+
+  return setCookieHeaders;
 }
 
 function serializeContext(contextValue: unknown): string {
