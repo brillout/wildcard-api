@@ -1,6 +1,8 @@
 // TODO
 //  - clean signature cookie upon client-side context removal
 
+// @ts-ignore
+import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
 import {
   ContextModifications,
@@ -8,9 +10,8 @@ import {
   HttpRequestHeaders,
   ContextObject,
 } from "./TelefuncServer";
-import { assert, assertUsage, getUsageError } from "@brillout/assert";
-import { stringify, parse } from "@brillout/json-s";
-import cookie from "cookie";
+import { assertUsage, getUsageError } from "@brillout/assert";
+import cookie = require("cookie");
 
 let secretKey: string | null = null;
 
@@ -28,7 +29,10 @@ function retrieveContextFromCookies(
   if (headers === undefined) {
     return null;
   }
-  let contextObject = null;
+  if (secretKey === null) {
+    return null;
+  }
+  let contextObject: ContextObject | null = null;
   const cookies = cookie.parse(headers.cookie);
   Object.entries(cookies).forEach(([cookieName, cookieValue]) => {
     if (!cookieName.startsWith(cookieNamePrefix)) {
@@ -37,7 +41,11 @@ function retrieveContextFromCookies(
     const contextName = cookieName.slice(cookieNamePrefix.length);
     const signature = cookies[signatureCookieNamePrefix + contextName];
     const contextValueSerialized = cookieValue;
-    if (!signature || signature !== computeSignature(contextValueSerialized)) {
+    if (
+      !signature ||
+      signature !==
+        computeSignature(contextValueSerialized, secretKey as string)
+    ) {
       const wrongSignature = getUsageError(
         "Cookie signature is missing or wrong. It seems that someone is doing a (failed) attempt at hacking your user."
       );
@@ -73,7 +81,14 @@ function getSecretKey(): string | null {
 
 function computeSetCookies(
   contextModifications: ContextModifications
-): HttpResponseCookies {
+): HttpResponseCookies | null {
+  if (contextModifications === null) {
+    return null;
+  }
+  if (secretKey === null) {
+    return null;
+  }
+
   // HTTP spec expects seconds
   // Express.js expects milliseconds
   const maxAge = 10 * 365 * 24 * 60 * 60 * 1000;
@@ -97,7 +112,10 @@ function computeSetCookies(
           },
           {
             cookieName: signatureCookieNamePrefix + contextName,
-            cookieValue: computeSignature(contextSerialized),
+            cookieValue: computeSignature(
+              contextSerialized,
+              secretKey as string
+            ),
             cookieOptions: {
               httpOnly: true,
               secure: true,
@@ -121,8 +139,10 @@ function deserializeContext(contextValueSerialized: string): unknown {
   return contextValue;
 }
 
-function computeSignature(contextValueSerialized: string): string {
-  assert(secretKey);
+function computeSignature(
+  contextValueSerialized: string,
+  secretKey: string
+): string {
   const hmac = createHmac("SHA256", secretKey);
   const hash = hmac.update(contextValueSerialized).digest("latin1");
   return hash;

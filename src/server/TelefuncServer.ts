@@ -29,7 +29,7 @@ type EndpointResult = unknown;
 type EndpointError = Error | UsageError;
 
 // Context
-export type ContextObject = Record<string, unknown>;
+export type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = (context: ContextObject) => Promise<Context> | Context;
 export type ContextModifications = null | Record<string, unknown>;
@@ -782,7 +782,10 @@ function handleEndpointOutcome(
   }
 
   if (contextModifications) {
-    responseProps.setCookies = computeSetCookies(contextModifications);
+    const setCookies = computeSetCookies(contextModifications);
+    if (setCookies !== null) {
+      responseProps.setCookies = setCookies;
+    }
   }
 
   return responseProps;
