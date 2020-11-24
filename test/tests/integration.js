@@ -104,7 +104,8 @@ async function API() {
     telefunc_server.getApiHttpResponse.constructor.name === "AsyncFunction"
   );
   assert(telefunc_server.getApiHttpResponse);
-  assert(Object.keys(telefunc_server).length === 3);
+  assert(telefunc_server.setSecretKey);
+  assert(Object.keys(telefunc_server).length === 4);
 
   const telefunc_client = require("telefunc/client");
   assert(Object.keys(telefunc_client).length === 2);

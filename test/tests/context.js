@@ -509,12 +509,15 @@ async function contextImmutable({
   server.he = async function () {
     this.nop = 11;
   };
-  const errMsg = "The context object cannot be modified.";
 
   try {
     await telefuncClient.endpoints.he();
   } catch (err) {
-    assert(err.stack.includes(errMsg));
+    assert(
+      err.stack.includes(
+        "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
+      )
+    );
   }
 
   await browserEval(async () => {
@@ -527,5 +530,7 @@ async function contextImmutable({
     }
   });
 
-  assertStderr(errMsg);
+  assertStderr(
+    "[Telefunc][Wrong Usage] The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
+  );
 }

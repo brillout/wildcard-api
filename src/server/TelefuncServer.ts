@@ -178,17 +178,17 @@ async function _getApiHttpResponse(
   config: Config,
   universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
+  const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
+  if (wrongApiUsage) {
+    return handleWrongApiUsage(wrongApiUsage);
+  }
+
   try {
     context = await getContext(requestProps.headers, context);
   } catch (contextError) {
     return handleContextError(contextError);
   }
   assert(context === undefined || context instanceof Object);
-
-  const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
-  if (wrongApiUsage) {
-    return handleWrongApiUsage(wrongApiUsage);
-  }
 
   const {
     endpointName,
@@ -1014,7 +1014,10 @@ async function getContext(
   context: Context | ContextGetter
 ): Promise<Context> {
   const retrievedContext = retrieveContextFromCookies(headers);
-  const userProvidedContext = getUserProvidedContext(context, retrievedContext);
+  const userProvidedContext = await getUserProvidedContext(
+    context,
+    retrievedContext
+  );
 
   if (retrievedContext === null && userProvidedContext === undefined) {
     return undefined;
