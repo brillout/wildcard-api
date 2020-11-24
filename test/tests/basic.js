@@ -1,5 +1,6 @@
 module.exports = [
   basic_serverSide,
+  basic_getApiHttpResponse,
   basic_serverSide_withContext,
   basic_clientSide,
   basic_clientSide_withContext,
@@ -11,6 +12,20 @@ async function basic_serverSide({ server, telefuncClient }) {
   };
   const endpointResult = await telefuncClient.endpoints.hello("Paul");
   assert(endpointResult === "yo Paul");
+}
+
+async function basic_getApiHttpResponse({ server, telefuncServer }) {
+  server.overApi = async function () {
+    return "bonjourno!";
+  };
+  const url = "https://example.org/_telefunc/overApi";
+  const method = "POST";
+  const responseProps = await telefuncServer.getApiHttpResponse({
+    url,
+    method,
+  });
+  assert(responseProps.statusCode === 200);
+  assert(responseProps.body === `"bonjourno!"`);
 }
 
 async function basic_serverSide_withContext({ server, telefuncClient }) {

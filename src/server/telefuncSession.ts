@@ -15,13 +15,11 @@ import {
 import { assertUsage, getUsageError } from "@brillout/assert";
 import cookie = require("cookie");
 
-//*
 type Cookie = {
   cookieName: string;
   cookieValue: string;
   cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
 };
-//*/
 
 let secretKey: string | null = null;
 
@@ -92,20 +90,18 @@ function getSecretKey(): string | null {
 function getSetCookieHeaders(
   contextModifications: ContextModifications
 ): HttpResponseHeader[] | null {
-  if (contextModifications === null) {
+  if (contextModifications.mods === null) {
     return null;
   }
   if (secretKey === null) {
     return null;
   }
 
-  // HTTP spec expects seconds
-  // Express.js expects milliseconds
-  const maxAge = 10 * 365 * 24 * 60 * 60 * 1000;
+  const maxAge = 10 * 365 * 24 * 60 * 60;
 
   const cookies: Cookie[] = [];
 
-  Object.entries(contextModifications).forEach(
+  Object.entries(contextModifications.mods).forEach(
     ([contextName, contextValue]: [
       contextName: string,
       contextValue: unknown
@@ -161,6 +157,6 @@ function computeSignature(
   secretKey: string
 ): string {
   const hmac = createHmac("SHA256", secretKey);
-  const hash = hmac.update(contextValueSerialized).digest("latin1");
+  const hash = hmac.update(contextValueSerialized).digest("hex");
   return hash;
 }

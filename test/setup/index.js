@@ -14,6 +14,7 @@ global.assert = assert;
 
 const { resolve: pathResolve } = require("path");
 const { TelefuncServer } = require("telefunc/server/TelefuncServer");
+const { setSecretKey } = require("telefunc/server");
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 
 const bundle = require("./browser/bundle");
@@ -97,6 +98,7 @@ async function runStandardTests({
         browserEval,
         TelefuncServer,
         telefuncServer,
+        setSecretKey,
         telefuncClient,
         TelefuncClient,
         httpPort,

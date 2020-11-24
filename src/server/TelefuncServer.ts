@@ -32,7 +32,7 @@ type EndpointError = Error | UsageError;
 export type ContextObject = Record<string, any>;
 export type Context = ContextObject | undefined;
 type ContextGetter = (context: ContextObject) => Promise<Context> | Context;
-export type ContextModifications = null | Record<string, unknown>;
+export type ContextModifications = { mods: null | Record<string, unknown> };
 
 /** Telefunc Server Configuration */
 type Config = {
@@ -505,12 +505,9 @@ function createContextProxy(
   isDirectCall: IsDirectCall,
   universalAdapterName: UniversalAdapterName
 ): { contextProxy: ContextObject; contextModifications: ContextModifications } {
-  let contextObject: ContextObject = context || {};
-  const contextProxy: ContextObject = new Proxy(
-    { ...(context || {}) },
-    { get, set }
-  );
-  let contextModifications: ContextModifications = null;
+  let contextObj: ContextObject = { ...(context || {}) };
+  const contextProxy: ContextObject = new Proxy(contextObj, { get, set });
+  let contextModifications: ContextModifications = { mods: null };
   return { contextProxy, contextModifications };
 
   function set(_: ContextObject, contextName: string, contextValue: unknown) {
@@ -522,9 +519,9 @@ function createContextProxy(
       getSecretKey(),
       "The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
     );
-    contextModifications = contextModifications || {};
-    contextModifications[contextName] = contextValue;
-    contextProxy[contextName] = contextValue;
+    contextModifications.mods = contextModifications.mods || {};
+    contextModifications.mods[contextName] = contextValue;
+    contextObj[contextName] = contextValue;
     return true;
   }
   function get(_: ContextObject, contextProp: string) {
@@ -538,7 +535,7 @@ function createContextProxy(
       )
     );
 
-    return contextObject[contextProp];
+    return contextObj[contextProp];
   }
 }
 
