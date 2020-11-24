@@ -17,16 +17,17 @@ loadTimeStuff();
 
 // Endpoints
 type EndpointName = string;
-type EndpointArgs = any[];
+type EndpointArgs = unknown[];
 type EndpointFunction = (...args: EndpointArgs) => EndpointResult;
 type Endpoints = Record<EndpointName, EndpointFunction>;
-type EndpointResult = any;
+type EndpointResult = unknown;
 type EndpointError = Error | UsageError;
 
 // Context
-type ContextObject = Record<string, any>;
+type ContextObject = Record<string, unknown>;
 export type Context = ContextObject | undefined;
 type ContextGetter = () => Promise<Context> | Context;
+type ContextModifications = null | Record<string, unknown>;
 
 /** Telefunc Server Configuration */
 type Config = {
@@ -62,11 +63,17 @@ type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
 type HttpResponseEtag = string & { _brand?: "HttpResponseEtag" };
+type HttpResponseCookies = {
+  cookieName: string;
+  cookieValue: string;
+  cookieOptions: { maxAge: number; httpOnly?: boolean; secure: boolean };
+}[];
 export type HttpResponseProps = {
   body: HttpResponseBody;
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
   etag?: HttpResponseEtag;
+  cookies?: HttpResponseCookies;
 };
 
 type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
@@ -271,6 +278,7 @@ async function runEndpoint(
 ): Promise<{
   endpointResult?: EndpointResult;
   endpointError?: EndpointError;
+  contextModifications: ContextModifications;
 }> {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
@@ -280,7 +288,7 @@ async function runEndpoint(
   assert(endpoint);
   assert(endpointIsValid(endpoint));
 
-  const contextProxy: ContextObject = createContextProxy(
+  const { contextProxy, contextModifications } = createContextProxy(
     context,
     endpointName,
     isDirectCall,
@@ -298,7 +306,7 @@ async function runEndpoint(
     endpointError = err;
   }
 
-  return { endpointResult, endpointError };
+  return { endpointResult, endpointError, contextModifications };
 }
 
 function endpointIsValid(endpoint: EndpointFunction) {
@@ -486,15 +494,20 @@ function createContextProxy(
   endpointName: EndpointName,
   isDirectCall: IsDirectCall,
   universalAdapterName: UniversalAdapterName
-): ContextObject {
+): { contextProxy: ContextObject; contextModifications: ContextModifications } {
   let contextObject: ContextObject = context || {};
-  const contextProxy: ContextObject = new Proxy(context || {}, { get, set });
-  return contextProxy;
+  const contextProxy: ContextObject = new Proxy(
+    { ...(context || {}) },
+    { get, set }
+  );
+  let contextModifications: ContextModifications = null;
+  return { contextProxy, contextModifications };
 
-  function set() {
-    assertUsage(false, "The context object cannot be modified.");
-    // Make TS happy
-    return false;
+  function set(_: ContextObject, contextName: string, contextValue: unknown) {
+    contextModifications = contextModifications || {};
+    contextModifications[contextName] = contextValue;
+    contextProxy[contextName] = contextValue;
+    return true;
   }
   function get(_: ContextObject, contextProp: string) {
     assertUsage(
@@ -975,7 +988,11 @@ async function getContext(context: Context | ContextGetter): Promise<Context> {
   if (isContextFunction) {
     context = await (context as ContextGetter)();
   }
-  assertContext(context, isContextFunction, contextFunctionName);
+  assertContext(
+    context as ContextObject,
+    isContextFunction,
+    contextFunctionName
+  );
   assert(context && context instanceof Object);
   return context as Context;
 }
