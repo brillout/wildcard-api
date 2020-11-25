@@ -5,11 +5,7 @@ module.exports = [
   option_baseUrl,
 ];
 
-async function option_shortUrl_1({
-  server,
-  browserEval,
-  httpPort,
-}) {
+async function option_shortUrl_1({ server, browserEval, httpPort }) {
   let execCount = 0;
 
   server.testEndpoint__shortUrl = async function (arg) {
@@ -41,11 +37,7 @@ async function option_shortUrl_1({
   }
 }
 
-async function option_shortUrl_2({
-  server,
-  browserEval,
-  httpPort,
-}) {
+async function option_shortUrl_2({ server, browserEval, httpPort }) {
   let endpointCalled = false;
   let onHttpRequestCalled = false;
 
@@ -56,12 +48,10 @@ async function option_shortUrl_2({
 
   await browserEval(
     async () => {
-      const { config } = window;
+      const { config } = window.telefuncClient;
       assert(config.shortUrl === false);
       config.shortUrl = true;
-      await window.server.testEndpoint__shortUrl(
-        "just some args"
-      );
+      await window.server.testEndpoint__shortUrl("just some args");
       config.shortUrl = false;
     },
     { onHttpRequest }

@@ -46,25 +46,25 @@ async function contextChange({ server, browserEval, setSecretKey }) {
   };
   await browserEval(async () => {
     // Removing an non-existing context won't choke
-    delete window.telefunc_context.user;
-    assert(window.telefunc_context.user === undefined);
+    delete window.telefuncClient.context.user;
+    assert(window.telefuncClient.context.user === undefined);
 
     const ret1 = await window.server.whoAmI();
-    assert(window.telefunc_context.user === undefined);
+    assert(window.telefuncClient.context.user === undefined);
     assert(ret1 === "You are: undefined");
 
     await window.server.login("rom");
 
-    assert(window.telefunc_context.user === "rom");
+    assert(window.telefuncClient.context.user === "rom");
     const ret2 = await window.server.whoAmI();
     assert(ret2 === "You are: rom");
 
     // Cleanup to make this test idempotent
-    delete window.telefunc_context.user;
-    assert(window.telefunc_context.user === undefined);
+    delete window.telefuncClient.context.user;
+    assert(window.telefuncClient.context.user === undefined);
 
     // Removing an already removed context won't choke
-    delete window.telefunc_context.user;
-    assert(window.telefunc_context.user === undefined);
+    delete window.telefuncClient.context.user;
+    assert(window.telefuncClient.context.user === undefined);
   });
 }
