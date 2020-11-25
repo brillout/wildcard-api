@@ -1,5 +1,12 @@
 // TODO
 //  - clean signature cookie upon client-side context removal
+//  - add tests
+//    - when security token is corrupt
+//    - all assertUsage
+//  - Try secure cookies
+//  - Make context available outside of telefunc
+//  - Investiage sameSite
+//  - Client-side context removal
 //  - update docs
 //    - update getApiHttpResponse
 
@@ -9,7 +16,6 @@ import { createHmac } from "crypto";
 import {
   ContextModifications,
   HttpRequestHeaders,
-  HttpResponseHeader,
   ContextObject,
   TelefuncServer,
 } from "./TelefuncServer";
@@ -31,7 +37,7 @@ export const _secretKey = Symbol("_secretKey");
 export type SecretKey = string | null;
 
 export { setSecretKey };
-export { getSetCookieHeaders };
+export { getSetCookieHeader };
 export { getContextFromCookies };
 
 const cookieNamePrefix = "telefunc-context_";
@@ -94,10 +100,10 @@ function setSecretKey(this: TelefuncServer, secretKey: string) {
   this[_secretKey] = secretKey;
 }
 
-function getSetCookieHeaders(
+function getSetCookieHeader(
   secretKey: SecretKey,
   contextModifications: ContextModifications
-): HttpResponseHeader[] | null {
+): string[] | null {
   if (contextModifications.mods === null) {
     return null;
   }
@@ -136,7 +142,8 @@ function getSetCookieHeaders(
               path,
               maxAge,
               httpOnly: true,
-              //secure: true,
+              // sameSite: 'Strict',
+              // secure: true,
             },
           },
         ]
@@ -144,14 +151,12 @@ function getSetCookieHeaders(
     }
   );
 
-  const setCookieHeaders: HttpResponseHeader[] = [];
+  const values: string[] = [];
   cookies.forEach(({ cookieName, cookieValue, cookieOptions }) => {
-    const name = "Set-Cookie";
     const value = cookie.serialize(cookieName, cookieValue, cookieOptions);
-    setCookieHeaders.push({ name, value });
+    values.push(value);
   });
-
-  return setCookieHeaders;
+  return values;
 }
 
 function serializeContext(contextValue: unknown): string {

@@ -54,6 +54,7 @@ async function startServer({
       url: request.url,
       method: request.method,
       body: request.payload,
+      headers: request.headers,
     };
     const context = {
       headers: request.headers,
@@ -74,7 +75,9 @@ async function startServer({
       response.code(statusCode);
       response.type(contentType);
       if (headers) {
-        headers.forEach(({ name, value }) => response.header(name, value));
+        Object.entries(headers).forEach(([name, values]) => {
+          response.header(name, values);
+        });
       }
       return response;
     }

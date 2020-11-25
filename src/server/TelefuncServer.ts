@@ -11,7 +11,7 @@ import {
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 import {
-  getSetCookieHeaders,
+  getSetCookieHeader,
   setSecretKey,
   getContextFromCookies,
   _secretKey,
@@ -72,12 +72,15 @@ export type HttpRequestProps = {
 type HttpResponseBody = string & { _brand?: "HttpResponseBody" };
 type HttpResponseContentType = string & { _brand?: "HttpResponseContentType" };
 type HttpResponseStatusCode = number & { _brand?: "HttpResponseStatusCode" };
-export type HttpResponseHeader = { name: string; value: string };
+export type HttpResponseHeaders = {
+  "Set-Cookie"?: string[];
+  ETag?: string[];
+};
 export type HttpResponseProps = {
   body: HttpResponseBody;
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
-  headers?: HttpResponseHeader[];
+  headers?: HttpResponseHeaders;
 };
 
 type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
@@ -782,15 +785,15 @@ function handleEndpointOutcome(
     const computeEtag = require("./computeEtag");
     const etag = computeEtag(responseProps.body);
     assert(etag);
-    responseProps.headers = responseProps.headers || [];
-    responseProps.headers.push({ name: "ETag", value: etag });
+    responseProps.headers = responseProps.headers || {};
+    responseProps.headers.ETag = [etag];
   }
 
   if (contextModifications) {
-    const setCookies = getSetCookieHeaders(secretKey, contextModifications);
-    if (setCookies !== null) {
-      responseProps.headers = responseProps.headers || [];
-      responseProps.headers.push(...setCookies);
+    const setCookieHeader = getSetCookieHeader(secretKey, contextModifications);
+    if (setCookieHeader !== null) {
+      responseProps.headers = responseProps.headers || {};
+      responseProps.headers["Set-Cookie"] = setCookieHeader;
     }
   }
 
