@@ -25,6 +25,7 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "parcel-bundler": "^1.12.3",
+    "playwright": "^1.6.2",
     "puppeteer": "^5.3.1",
     "strip-ansi": "^6.0.0",
     "yarn": "^1.22.0"

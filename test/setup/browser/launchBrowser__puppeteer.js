@@ -28,7 +28,9 @@ async function launchBrowser() {
   });
 
   return {
-    browser,
+    closeBrowser: async () => {
+      await browser.close();
+    },
     browserEval,
   };
 
@@ -39,7 +41,10 @@ async function launchBrowser() {
     { offlineMode = false, browserArgs, onHttpRequest } = {}
   ) {
     if (httpPort !== httpPort__current) {
-      await page.goto("http://localhost:" + httpPort);
+      await page.goto("http://localhost:" + httpPort, {
+        timeout: 3 * 1000,
+        waitUntil: "domcontentloaded",
+      });
       httpPort__current = httpPort;
     }
 
@@ -62,3 +67,4 @@ async function launchBrowser() {
     return ret;
   }
 }
+

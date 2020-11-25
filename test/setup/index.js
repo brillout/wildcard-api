@@ -17,7 +17,11 @@ const { TelefuncServer } = require("telefunc/server/TelefuncServer");
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 
 const bundle = require("./browser/bundle");
-const launchBrowser = require("./browser/launchBrowser");
+//*/
+const launchBrowser = require("./browser/launchBrowser__playwright");
+/*/
+const launchBrowser = require("./browser/launchBrowser__puppeteer");
+//*/
 
 const staticDir = pathResolve(__dirname + "/browser/dist/");
 
@@ -33,7 +37,7 @@ const httpPort = 3442;
 (async () => {
   await bundle();
 
-  const { browserEval: browserEval_org, browser } = await launchBrowser();
+  const { browserEval: browserEval_org, closeBrowser } = await launchBrowser();
   let browserEval = browserEval_org.bind(null, httpPort);
 
   const { standardTests, integrationTests } = getTests();
@@ -58,7 +62,7 @@ const httpPort = 3442;
     });
   }
 
-  await browser.close();
+  await closeBrowser();
 
   console.log(chalk.bold.green("All tests successfully passed."));
 })();
