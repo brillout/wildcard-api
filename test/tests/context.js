@@ -421,7 +421,7 @@ async function setContextThrows_getApiHttpResponse({
 
   const url = "https://example.org/_telefunc/contexti4";
   const method = "POST";
-  const errMsg = "[TEST-ERROR] User-error in context function";
+  const errMsg = "[EXPECTED_ERROR] User-error in context function";
 
   await req(() => {
     throw new Error(errMsg);
@@ -490,7 +490,7 @@ async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
 
 setContextThrows.isIntegrationTest = true;
 async function setContextThrows({ assertStderr, ...args }) {
-  const errText = "[TEST-ERROR] err" + Math.random();
+  const errText = "[EXPECTED_ERROR] err" + Math.random();
   const setContext = async () => {
     throw new Error(errText);
   };

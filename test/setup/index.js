@@ -181,9 +181,10 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
   await new Promise((r) => setTimeout(r, 0));
 
   stderrLogs = removeHiddenLog(stderrLogs);
+  stderrLogs = removeNetworkErrorLogs(stderrLogs);
   const stderrLogsLength = stderrLogs.length;
 
-  checkNoInternalError(stderrLogs);
+  checkIfErrorIsExpected(stderrLogs);
   stderrLogs.forEach(checkErrorFormat);
 
   assert(expectedStderr === null || expectedStderr.length >= 1);
@@ -218,7 +219,7 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
     // Always start with a single-line error message
     if (
       !firstLine.includes("[Telefunc][Wrong Usage] ") &&
-      !firstLine.includes("[TEST-ERROR]")
+      !firstLine.includes("[EXPECTED_ERROR]")
     ) {
       console.log(stderrLog);
       assert(false);
@@ -248,42 +249,44 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
     // Stack trace should never show @brillout/assert code
     assert(!stripAnsi(stderrLog).includes("@brillout/assert"));
   }
-  function checkNoInternalError(stderrLogs) {
+  function checkIfErrorIsExpected(stderrLogs) {
     stderrLogs.forEach((stderrLog) => {
+      // No test should throw an internal errors
+      // => re-throw, interupt the test run, and show the error
+      if (stderrLog.includes("[Internal Error]")) {
+        throw stderrLog;
+      }
+
+      // It is expected that test can throw a [Wrong Usage] or
+      // an error constructed by the test itself ([EXPECTED_ERROR])
       if (
-        !stderrLog.includes("[Internal Error]") &&
-        (stderrLog.includes("[Telefunc][Wrong Usage]") ||
-          stderrLog.includes("[TEST-ERROR]"))
+        stderrLog.includes("[Telefunc][Wrong Usage]") ||
+        stderrLog.includes("[EXPECTED_ERROR]")
       ) {
         return;
       }
+
+      // It seems like these pesting `JSHandle@error` can be circumvented
+      // by logging `err.stack` instead of `err`.
+      if (stderrLog.includes("JSHandle@error")) {
+        console.log(stderrLog);
+        assert(
+          false,
+          "Make sure to `console.error(err.stack)` instead of `console.error(err)` in `browserEval`"
+        );
+      }
+
+      // Any other error are unexpected
+      console.log("Unexpected error type:");
       console.log(stderrLog);
-      assert(false);
+      assert(false, "Unexpected kind of error.");
     });
   }
 }
 
 async function checkStdout(stdoutLogs) {
   stdoutLogs = removeHiddenLog(stdoutLogs);
-  stdoutLogs = removePuppeteerLogs(stdoutLogs);
-
   assert(stdoutLogs.length === 0);
-
-  return;
-
-  function removePuppeteerLogs(stdoutLogs) {
-    return stdoutLogs.filter(
-      (log) =>
-        // Browser-side puppeteer logs when endpoint failed
-        ![
-          "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
-          "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",
-          "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n",
-          "Failed to load resource: the server responded with a status of 400 (Bad Request)\n",
-          "Failed to load resource: the server responded with a status of 404 (Not Found)\n",
-        ].includes(log)
-    );
-  }
 }
 
 function removeHiddenLog(stdLogs) {
@@ -294,6 +297,19 @@ function removeHiddenLog(stdLogs) {
         // Puppeteer "hidden" log (never saw such hidden log before; I don't know how and why this exists)
         "This conditional evaluates to true if and only if there was an error"
       )
+  );
+}
+function removeNetworkErrorLogs(stdLogs) {
+  return stdLogs.filter(
+    (log) =>
+      // Browser-side puppeteer logs when endpoint failed
+      ![
+        "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
+        "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)\n",
+        "Failed to load resource: the server responded with a status of 400 (Bad Request)\n",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)\n",
+      ].includes(log)
   );
 }
 

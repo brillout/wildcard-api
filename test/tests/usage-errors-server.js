@@ -128,7 +128,7 @@ async function endpointReturnsUnserializable({
 }
 
 async function endpointThrowsError({ server, browserEval, assertStderr }) {
-  const errorText = "[TEST-ERROR] oh-oh-error" + Math.random();
+  const errorText = "[EXPECTED_ERROR] oh-oh-error" + Math.random();
 
   server.aintWorking = async function () {
     throw new Error(errorText);

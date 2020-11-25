@@ -1,4 +1,8 @@
-module.exports = [contextChange_getApiHttpResponse, contextChange];
+module.exports = [
+  contextChange_getApiHttpResponse,
+  // contextChange,
+  // Avoid prettier wrap
+];
 
 async function contextChange_getApiHttpResponse({
   telefuncServer,
@@ -25,7 +29,6 @@ async function contextChange_getApiHttpResponse({
     responseProps.headers["Set-Cookie"][0] ===
       "telefunc-context_userName=%22brillout%22; Max-Age=315360000; Path=/"
   );
-  // assert(responseProps.headers["Set-Cookie"][1]==="telefunc-context-signaure_userName=805a7267a154c24ef1833704ca4f04aba13f8a6bd96c61e6b7419cf8ee72f316; Max-Age=315360000; Path=/; HttpOnly; Secure");
   assert(
     responseProps.headers["Set-Cookie"][1] ===
       "telefunc-context-signaure_userName=805a7267a154c24ef1833704ca4f04aba13f8a6bd96c61e6b7419cf8ee72f316; Max-Age=315360000; Path=/; HttpOnly"

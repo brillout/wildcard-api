@@ -6,18 +6,23 @@ async function launchBrowser() {
   const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
-  page.on("console", (consoleObj) => console.log(consoleObj.text()));
 
-  /*
+  // Pipe browser's console
+  page.on("console", (message) => {
+    const text = message.text();
+    const type = message.type();
+    if (type === "error") {
+      console.error(text);
+    } else {
+      console.log(text);
+    }
+  });
   page.on("pageerror", function (err) {
-    const theTempValue = err.toString();
-    console.log("Browser-side Error [pageerror]: " + theTempValue);
+    console.error("[PAGE_ERROR_1]: " + err);
   });
   page.on("error", function (err) {
-    const theTempValue = err.toString();
-    console.log("Browser-side Error [error]: " + theTempValue);
+    console.error("[PAGE_ERROR_2]: " + err);
   });
-  //*/
 
   let _onHttpRequest;
   page.on("request", async (request) => {
@@ -61,6 +66,7 @@ async function launchBrowser() {
       // Callstack is now shown in latest puppeteer version, but without the proper line numbers and filenames.
       // Previous bug "Evaluation failed: [object Object]": https://github.com/GoogleChrome/puppeteer/issues/4651
       console.error(err);
+      // throw err;
     } finally {
       _onHttpRequest = null;
     }

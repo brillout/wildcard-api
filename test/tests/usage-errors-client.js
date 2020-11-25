@@ -11,11 +11,7 @@ async function wrongBindUsage1({ server, browserEval, assertStderr }) {
   server.ohNo = async function () {};
 
   await browserEval(async () => {
-    try {
-      await server.ohNo.bind({ some: "context" })();
-    } catch (err) {
-      throw err;
-    }
+    await server.ohNo.bind({ some: "context" })();
   });
 
   assertStderr(

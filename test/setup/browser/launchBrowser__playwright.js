@@ -8,7 +8,22 @@ async function launchBrowser() {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  page.on("console", (consoleObj) => console.log(consoleObj.text()));
+  // Pipe browser's console
+  page.on("console", (message) => {
+    const text = message.text();
+    const type = message.type();
+    if (type === "error") {
+      console.error(text);
+    } else {
+      console.log(text);
+    }
+  });
+  page.on("pageerror", function (err) {
+    console.error("[PAGE_ERROR_1]: " + err);
+  });
+  page.on("error", function (err) {
+    console.error("[PAGE_ERROR_2]: " + err);
+  });
 
   let _onHttpRequest;
   page.route("**", async (route) => {
@@ -48,6 +63,7 @@ async function launchBrowser() {
       ret = await page.evaluate(fn, browserArgs);
     } catch (err) {
       console.error(err);
+      // throw err;
     } finally {
       _onHttpRequest = null;
     }
