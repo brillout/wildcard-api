@@ -108,10 +108,10 @@ async function API() {
   assert(Object.keys(telefunc_server).length === 4);
 
   const telefunc_client = require("telefunc/client");
-  assert(Object.keys(telefunc_client).length === 2);
   assert(telefunc_client.server);
   assert(telefunc_client.config);
-  assert(Object.keys(telefunc_client).length === 2);
+  assert(telefunc_client.context);
+  assert(Object.keys(telefunc_client).length === 3);
 
   ["express", "koa", "hapi"].forEach((serverFramework) => {
     const export_ = require("telefunc/server/" + serverFramework);

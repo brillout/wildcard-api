@@ -1,13 +1,14 @@
 require("babel-polyfill");
-const { server, config } = require("telefunc/client");
+const telefunc = require("telefunc/client");
+const { server, config, context } = telefunc;
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 const assert = require("assert");
-Object.assign(window, { assert, server, config, TelefuncClient });
 Object.assign(window, {
   assert,
   assert_noErrorStack,
   server,
   config,
+  telefunc_context: context,
   TelefuncClient,
 });
 

@@ -4,9 +4,8 @@
 //    - when security token is corrupt
 //    - all assertUsage
 //  - Try secure cookies
-//  - Make context available outside of telefunc
 //  - Investiage sameSite
-//  - Client-side context removal
+//  - Make context available outside of telefunc
 //  - update docs
 //    - update getApiHttpResponse
 
