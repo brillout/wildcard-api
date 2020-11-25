@@ -129,19 +129,19 @@ async function runTest({
   const testName =
     "[" + serverFramework + "] " + testFn.name + " (" + testFile + ")";
 
-  let stderrContents = null;
+  let expectedStderr = null;
   const assertStderr = (content, ...rest) => {
     assert(rest.length === 0);
 
     if (content === null) {
-      assert(stderrContents === null);
-      stderrContents = null;
+      assert(expectedStderr === null);
+      expectedStderr = null;
       return;
     }
 
     assert(content.constructor === String);
-    stderrContents = stderrContents || [];
-    stderrContents.push(content);
+    expectedStderr = expectedStderr || [];
+    expectedStderr.push(content);
   };
 
   if (debugMode) {
@@ -162,7 +162,7 @@ async function runTest({
 
   try {
     if (testFailure) throw testFailure;
-    await checkStderr({ stderrContents, stderrLogs });
+    await checkStderr({ expectedStderr, stderrLogs });
     await checkStdout(stdoutLogs);
   } catch (err) {
     log_collector.flush();
@@ -176,7 +176,7 @@ async function runTest({
   return;
 }
 
-async function checkStderr({ stderrContents, stderrLogs }) {
+async function checkStderr({ expectedStderr, stderrLogs }) {
   // Express seems to rethrow errors asyncronously; we need to wait for express to rethrow errors.
   await new Promise((r) => setTimeout(r, 0));
 
@@ -186,9 +186,9 @@ async function checkStderr({ stderrContents, stderrLogs }) {
   checkNoInternalError(stderrLogs);
   stderrLogs.forEach(checkErrorFormat);
 
-  assert(stderrContents === null || stderrContents.length >= 1);
+  assert(expectedStderr === null || expectedStderr.length >= 1);
 
-  if (stderrContents === null) {
+  if (expectedStderr === null) {
     assert(
       stderrLogsLength === 0,
       util.inspect({ stderrLogsLength, stderrLogs })
@@ -198,11 +198,11 @@ async function checkStderr({ stderrContents, stderrLogs }) {
 
   assert(stderrLogs.length === stderrLogsLength);
   assert(
-    stderrLogs.length === stderrContents.length,
-    util.inspect({ stderrLogs, stderrContents })
+    stderrLogs.length === expectedStderr.length,
+    util.inspect({ stderrLogs, expectedStderr })
   );
   stderrLogs.forEach((stderrLog, i) => {
-    const stderrContent = stderrContents[i];
+    const stderrContent = expectedStderr[i];
     assert(
       stderrLog.includes(stderrContent),
       util.inspect({ stderrLog, stderrContent })
