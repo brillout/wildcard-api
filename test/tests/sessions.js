@@ -34,19 +34,19 @@ async function contextChange_getApiHttpResponse({
 }
 
 async function contextChange({ server, browserEval, setSecretKey }) {
-  setSecretKey("quieahbcqbohiawlubcsbi*&@381y87wqiwdhawbl.");
+  setSecretKey("quieahbcqbohiawlubcsbi*&@381y87wqiwdhawbl");
 
-  /*
   server.login = async function (name) {
     this.user = name;
   };
   server.whoAmI = async function () {
-    return 'You are: '+this.user;
+    return "You are: " + this.user;
   };
   await browserEval(async () => {
+    const ret1 = await window.server.whoAmI();
+    assert(ret1 === "You are: undefined");
     await window.server.login("rom");
-    const ret = await window.server.whoAmI();
-    assert(ret === "You are: rom");
+    const ret2 = await window.server.whoAmI();
+    assert(ret2 === "You are: rom");
   });
-  /*/
 }

@@ -66,13 +66,16 @@ async function startServer({
       return h.continue;
     }
     {
-      const { body, statusCode, contentType } = responseProps;
+      const { body, statusCode, contentType, headers } = responseProps;
       assert(body);
       assert(statusCode);
       assert(contentType);
       const response = h.response(body);
       response.code(statusCode);
       response.type(contentType);
+      if (headers) {
+        headers.forEach(({ name, value }) => response.header(name, value));
+      }
       return response;
     }
   }

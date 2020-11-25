@@ -19,7 +19,12 @@ import cookie = require("cookie");
 type Cookie = {
   cookieName: string;
   cookieValue: string;
-  cookieOptions: { maxAge: number; httpOnly?: boolean; secure?: boolean };
+  cookieOptions: {
+    path: string;
+    maxAge: number;
+    httpOnly?: boolean;
+    secure?: boolean;
+  };
 };
 
 export const _secretKey = Symbol("_secretKey");
@@ -36,10 +41,13 @@ function getContextFromCookies(
   secretKey: SecretKey,
   headers: HttpRequestHeaders | undefined
 ): ContextObject | null {
-  if (headers === undefined) {
+  if (!headers) {
     return null;
   }
-  if (secretKey === null) {
+  if (!headers.cookie) {
+    return null;
+  }
+  if (!secretKey) {
     return null;
   }
   let contextObject: ContextObject | null = null;
@@ -98,6 +106,7 @@ function getSetCookieHeaders(
   }
 
   const maxAge = 10 * 365 * 24 * 60 * 60;
+  const path = "/";
 
   const cookies: Cookie[] = [];
 
@@ -113,6 +122,7 @@ function getSetCookieHeaders(
             cookieName: cookieNamePrefix + contextName,
             cookieValue: contextSerialized,
             cookieOptions: {
+              path,
               maxAge,
             },
           },
@@ -123,9 +133,10 @@ function getSetCookieHeaders(
               secretKey as string
             ),
             cookieOptions: {
-              httpOnly: true,
-              secure: true,
+              path,
               maxAge,
+              httpOnly: true,
+              //secure: true,
             },
           },
         ]
