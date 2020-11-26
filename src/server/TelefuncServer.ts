@@ -16,7 +16,7 @@ import {
   getContextFromCookies,
   _secretKey,
   SecretKey,
-} from "./telefuncSession";
+} from "./sessions";
 
 export { TelefuncServer };
 
