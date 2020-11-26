@@ -5,7 +5,7 @@
   "repository": "https://github.com/telefunc/telefunc",
   "main": "index.js",
   "dependencies": {
-    "@brillout/assert": "^0.2.2",
+    "@brillout/assert": "^0.2.5",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
     "@brillout/project-files": "^0.4.2",

@@ -6,7 +6,7 @@
     "clean": "rm -rf client/dist client/.cache/"
   },
   "dependencies": {
-    "@brillout/assert": "^0.2.2",
+    "@brillout/assert": "^0.2.5",
     "@hapi/inert": "^5.2.1",
     "babel-polyfill": "^6.26.0",
     "express": "^4.16.4",
