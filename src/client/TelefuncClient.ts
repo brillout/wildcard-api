@@ -1,7 +1,7 @@
 // @ts-ignore
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
-import { assert, assertUsage, setProjectInfo } from "@brillout/assert";
+import { assert, assertUsage, setProjectInfo } from "@brillout/libassert";
 import { verify } from "lsos";
 
 export { TelefuncClient };

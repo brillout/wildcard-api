@@ -1,4 +1,4 @@
-import { assertUsage } from "@brillout/assert";
+import { assertUsage } from "@brillout/libassert";
 // @ts-ignore
 import { parse } from "@brillout/json-s";
 

@@ -864,13 +864,6 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.5.tgz#3aaab598db575ecd32fb4f80fe815f69da3b3876"
-  integrity sha512-k8BUaSLO+7nY52zJDlJSbnIUNx0+F8PZ8Us4uNZ7F1MDER991pnAi7E4hJME/tf+xrpdW6PMrpqLh0lwsZHp7Q==
-  dependencies:
-    "@types/node" "^14.11.2"
-
 "@brillout/fetch@^0.1.2":
   version "0.1.2"
   resolved "https://registry.npmjs.org/@brillout/fetch/-/fetch-0.1.2.tgz#71bccf9476a04fa58ae9721683a9849fcddd385b"
@@ -901,6 +894,11 @@
   version "0.1.5"
   resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.5.tgz#805dbbdc39a3187ae65012ef6b8af2d873c78193"
   integrity sha512-J25bhw1BxtuyRx5CXMlAHH3SKX2dv0cghf2p7BCS6UNqgrUhXq96FhfsafF7a+/20Egi0m3U5PSjjtRXLzD8Kw==
+
+"@brillout/libassert@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/@brillout/libassert/-/libassert-0.1.1.tgz#a9f2746b79e006b259f16969ff994ef73315ae57"
+  integrity sha512-EaQ8AT85+XE8vr9vZf2aEhnqEnPwFFHWqKOd4dfRxJ8USNm5l/YdN8zD+ihmrHToi4W+ppSXxyhCQ9FjcECXvw==
 
 "@brillout/mdocs@^0.1.24":
   version "0.1.30"

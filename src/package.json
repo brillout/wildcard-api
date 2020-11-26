@@ -1,11 +1,11 @@
 {
   "name": "telefunc",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Remote Function Calls.",
   "repository": "https://github.com/telefunc/telefunc",
   "main": "index.js",
   "dependencies": {
-    "@brillout/assert": "^0.2.5",
+    "@brillout/libassert": "^0.1.1",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
     "@brillout/project-files": "^0.4.2",

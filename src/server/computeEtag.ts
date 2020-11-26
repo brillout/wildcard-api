@@ -1,4 +1,4 @@
-import { assert } from "@brillout/assert";
+import { assert } from "@brillout/libassert";
 import { createHash } from "crypto";
 
 module.exports = computeEtag;

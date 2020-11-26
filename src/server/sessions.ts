@@ -19,7 +19,7 @@ import {
   ContextObject,
   TelefuncServer,
 } from "./TelefuncServer";
-import { assertUsage, getUsageError } from "@brillout/assert";
+import { assertUsage, assertWarning } from "@brillout/libassert";
 import cookie = require("cookie");
 
 export { getContextFromCookies };
@@ -58,10 +58,10 @@ function getContextFromCookies(
       signature !==
         computeSignature(contextValueSerialized, secretKey as string)
     ) {
-      const wrongSignature = getUsageError(
+      assertWarning(
+        false,
         "Cookie signature is missing or wrong. It seems that someone is doing a (failed) attempt at hacking your user."
       );
-      console.error(wrongSignature);
       return;
     }
     const contextValue = deserializeContext(contextValueSerialized);

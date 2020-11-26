@@ -7,7 +7,7 @@ import {
   getUsageError,
   UsageError,
   setProjectInfo,
-} from "@brillout/assert";
+} from "@brillout/libassert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 import {

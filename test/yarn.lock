@@ -873,7 +873,7 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.2":
+"@brillout/assert@^0.2.5":
   version "0.2.5"
   resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.5.tgz#3aaab598db575ecd32fb4f80fe815f69da3b3876"
   integrity sha512-k8BUaSLO+7nY52zJDlJSbnIUNx0+F8PZ8Us4uNZ7F1MDER991pnAi7E4hJME/tf+xrpdW6PMrpqLh0lwsZHp7Q==
