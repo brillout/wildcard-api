@@ -1,5 +1,6 @@
 // TODO
 //  - clean signature cookie upon client-side context removal
+//  - add TS support for client-side `context` object
 //  - add tests
 //    - when security token is corrupt
 //    - all assertUsage
@@ -21,23 +22,11 @@ import {
 import { assertUsage, getUsageError } from "@brillout/assert";
 import cookie = require("cookie");
 
-type Cookie = {
-  cookieName: string;
-  cookieValue: string;
-  cookieOptions: {
-    path: string;
-    maxAge: number;
-    httpOnly?: boolean;
-    secure?: boolean;
-  };
-};
-
+export { getContextFromCookies };
+export { getSetCookieHeader };
+export { setSecretKey };
 export const _secretKey = Symbol("_secretKey");
 export type SecretKey = string | null;
-
-export { setSecretKey };
-export { getSetCookieHeader };
-export { getContextFromCookies };
 
 const cookieNamePrefix = "telefunc-context_";
 const signatureCookieNamePrefix = "telefunc-context-signaure_";
@@ -113,7 +102,16 @@ function getSetCookieHeader(
   const maxAge = 10 * 365 * 24 * 60 * 60;
   const path = "/";
 
-  const cookies: Cookie[] = [];
+  const cookies: {
+    cookieName: string;
+    cookieValue: string;
+    cookieOptions: {
+      path: string;
+      maxAge: number;
+      httpOnly?: boolean;
+      secure?: boolean;
+    };
+  }[] = [];
 
   Object.entries(contextModifications.mods).forEach(
     ([contextName, contextValue]: [

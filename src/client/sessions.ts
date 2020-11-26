@@ -1,10 +1,10 @@
-import { assert, assertUsage } from "@brillout/assert";
+import { assertUsage } from "@brillout/assert";
 // @ts-ignore
 import { parse } from "@brillout/json-s";
 
-const cookieNamePrefix = "telefunc-context_";
-
 export const context = createContextProxy();
+
+const cookieNamePrefix = "telefunc-context_";
 
 function createContextProxy() {
   const contextObj = {};
@@ -15,7 +15,7 @@ function createContextProxy() {
 function set() {
   assertUsage(
     false,
-    "On the client-side, Context can only be deleted: it s forbidden to add or modifies context properties. You can delete context with `delete context['contextPropToDelete']`."
+    "On the client-side, it is forbidden to add or modify context. You can however delete context with `delete context['contextPropertyToDelete']`."
   );
   // make TS happy
   return false;
