@@ -1,7 +1,7 @@
 {
   "name": "telefunc",
-  "version": "0.0.8",
-  "description": "Remote Function Calls.",
+  "version": "0.0.9",
+  "description": "Remote functions instead of GraphQL/REST. #NoAPI.",
   "repository": "https://github.com/telefunc/telefunc",
   "main": "index.js",
   "dependencies": {
@@ -18,5 +18,15 @@
     "@universal-adapter/koa": "^0.7.3",
     "cookie": "^0.4.1",
     "lsos": "^0.1.1"
-  }
+  },
+  "keywords": [
+    "rpc",
+    "api",
+    "node-api",
+    "graphql",
+    "rest",
+    "restful",
+    "fullstack",
+    "typescript"
+  ]
 }
