@@ -1,1 +1,1 @@
-# [github.com/telefunc/telefunc](https://github.com/telefunc/telefunc)
+# [telefunc.org](https://telefunc.org)
