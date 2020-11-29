@@ -6,7 +6,7 @@
   "homepage": "https://lsos.org",
   "main": "index.js",
   "dependencies": {
-    "@brillout/libassert": "^0.1.1",
+    "@brillout/libassert": "^0.1.3",
     "@brillout/fetch": "^0.1.2",
     "@brillout/json-s": "^0.1.4",
     "@brillout/project-files": "^0.4.2",
