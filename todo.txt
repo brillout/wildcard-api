@@ -1,0 +1,2 @@
+- Avoid user's TS to autocomplete internal interfaces
+- Make client available at `window.telefunc`
