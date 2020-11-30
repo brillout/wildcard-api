@@ -73,10 +73,34 @@ async function contextChange({ server, browserEval, setSecretKey }) {
 
 canGetContextOutsideOfTelefunc.isIntegrationTest = true;
 async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
-  const { stopApp, server, app, telefuncServer } = await createServer(args);
-  const { setSecretKey, getContext } = telefuncServer;
+  const {
+    stopApp,
+    server,
+    app,
+    telefuncServer: { setSecretKey, getContext },
+  } = await createServer(args);
+
+  {
+    let secretMissingError;
+    try {
+      getContext();
+    } catch (err) {
+      secretMissingError = err;
+    }
+    assert(
+      secretMissingError.message.includes(
+        "`setSecretKey()` needs to be called before calling `getContext()`."
+      )
+    );
+    delete secretMissingError;
+  }
 
   setSecretKey("0123456789");
+
+  {
+    const ctx = getContext();
+    assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
+  }
 
   server.login = async function (name) {
     this.user = name;

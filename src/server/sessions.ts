@@ -38,7 +38,7 @@ function __getContext(
 ): ContextObject {
   const secretKey = this[__secretKey];
   assertUsage(
-    this[__secretKey] !== null,
+    this[__secretKey],
     "`setSecretKey()` needs to be called before calling `getContext()`."
   );
   return getContextFromCookies(secretKey, headers) || {};
