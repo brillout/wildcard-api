@@ -73,6 +73,8 @@ async function createServer({
 
   return {
     stopApp,
+    app,
+    telefuncServer,
     server: telefuncServer.endpoints,
     telefuncClient,
   };

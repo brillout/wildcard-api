@@ -90,7 +90,12 @@ async function runStandardTests({
 
     for (let test of standardTests) {
       const telefuncServer = new TelefuncServer();
-      const { endpoints: server, config, setSecretKey } = telefuncServer;
+      const {
+        endpoints: server,
+        config,
+        setSecretKey,
+        getContext,
+      } = telefuncServer;
       __INTERNAL_telefuncServer_middleware.telefuncServer = telefuncServer;
       const telefuncClient = new TelefuncClient();
       telefuncClient.config.__INTERNAL_telefuncServer_test = telefuncServer;
@@ -102,6 +107,7 @@ async function runStandardTests({
         TelefuncServer,
         telefuncServer,
         setSecretKey,
+        getContext,
         telefuncClient,
         TelefuncClient,
         httpPort,

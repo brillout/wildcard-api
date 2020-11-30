@@ -91,7 +91,7 @@ function __setSecretKey(this: TelefuncServer, secretKey: string) {
   assertUsage(secretKey, "Argument `key` missing in `setSecretKey(key)` call.");
   const len = secretKey.length;
   assertUsage(
-    len > 10,
+    len >= 10,
     "You are calling `setSecretKey(key)` with a `key` of length `" +
       len +
       "`, but `key` should have at least 10 characters."

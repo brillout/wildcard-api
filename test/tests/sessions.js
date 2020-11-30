@@ -1,7 +1,9 @@
+const { createServer } = require("./details");
+
 module.exports = [
   contextChange_getApiHttpResponse,
   contextChange,
-  // Avoid prettier wrap
+  canGetContextOutsideOfTelefunc,
 ];
 
 async function contextChange_getApiHttpResponse({
@@ -67,4 +69,38 @@ async function contextChange({ server, browserEval, setSecretKey }) {
     delete window.telefuncClient.context.user;
     assert(window.telefuncClient.context.user === undefined);
   });
+}
+
+canGetContextOutsideOfTelefunc.isIntegrationTest = true;
+async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
+  const { stopApp, server, app, telefuncServer } = await createServer(args);
+  const { setSecretKey, getContext } = telefuncServer;
+
+  setSecretKey("0123456789");
+
+  server.login = async function (name) {
+    this.user = name;
+  };
+
+  app.get("/not-telefunc-endpoint", (req, res) => {
+    const context = getContext(req.headers);
+    assert(context.user === "romi");
+    assert(Object.keys(context).length === 1);
+    res.send("Greeting, darling " + context.user);
+  });
+
+  await browserEval(async () => {
+    assert(window.telefuncClient.context.user === undefined);
+    await window.server.login("romi");
+    assert(window.telefuncClient.context.user === "romi");
+
+    const resp = await window.fetch("/not-telefunc-endpoint");
+    const text = await resp.text();
+    assert(text === "Greeting, darling romi");
+
+    // Cleanup to make this test idempotent
+    delete window.telefuncClient.context.user;
+  });
+
+  await stopApp();
 }
