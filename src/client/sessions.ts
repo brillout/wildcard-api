@@ -22,6 +22,7 @@ function set() {
 }
 
 function get(_: object, prop: string) {
+  assertBrowser();
   const cookieName = cookieNamePrefix + prop;
   const cookieVal = getCookie(cookieName);
   if (cookieVal === null) return undefined;
@@ -39,6 +40,7 @@ function get(_: object, prop: string) {
 }
 
 function deleteProperty(_: object, prop: string) {
+  assertBrowser();
   const cookieName = cookieNamePrefix + prop;
   const deleted = getCookie(cookieName) !== null;
   deleteCookie(cookieNamePrefix + prop);
@@ -57,4 +59,15 @@ function getCookie(name: string): string | null {
   // @ts-ignore
   if (parts.length === 2) return parts.pop().split(";").shift();
   return null;
+}
+
+function assertBrowser() {
+  assertUsage(
+    !isNodejs(),
+    'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead.'
+  );
+}
+
+function isNodejs(): boolean {
+  return typeof window === "undefined" || !("cookie" in window?.document);
 }

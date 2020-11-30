@@ -4,6 +4,7 @@ module.exports = [
   contextChange_getApiHttpResponse,
   contextChange,
   canGetContextOutsideOfTelefunc,
+  contextBrowserOnly,
 ];
 
 async function contextChange_getApiHttpResponse({
@@ -127,4 +128,36 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   });
 
   await stopApp();
+}
+
+async function contextBrowserOnly({ browserEval, server, setSecretKey }) {
+  setSecretKey(".................");
+
+  server.login = async function (name) {
+    this.user = name;
+  };
+  await browserEval(async () => {
+    await window.server.login("romli");
+  });
+
+  // `const { context } import "telefunc/client"` doesn't work in Node.js
+  const { context } = require("telefunc/client");
+  let contextErr;
+  try {
+    context.user;
+  } catch (err) {
+    contextErr = err;
+  }
+  assert(
+    contextErr.message.includes(
+      'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead.'
+    )
+  );
+
+  // `const { context } import "telefunc/client"` does however work in the browser
+  await browserEval(async () => {
+    assert(window.telefuncClient.context.user === "romli");
+    // Cleanup to make this test idempotent
+    delete window.telefuncClient.context.user;
+  });
 }
