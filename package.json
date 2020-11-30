@@ -22,7 +22,7 @@
     "// Release": "",
     "bump": "yarn bump:minor",
     "bump:minor": "(cd src/ && npm version patch) && git commit -am 'release new minor' && git show HEAD",
-    "release": "yarn release:build && yarn test && yarn release:publish",
+    "release": "git push && yarn release:build && yarn test && yarn release:publish",
     "release:build": "yarn clean:all && yarn install && yarn build:once && yarn build:umd",
     "release:publish": "cd src/ && npm publish",
     "// Docs": "",
