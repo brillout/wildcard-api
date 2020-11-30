@@ -12,9 +12,10 @@ import {
 import getUrlProps = require("@brillout/url-props");
 import {
   getSetCookieHeader,
-  setSecretKey,
+  __setSecretKey,
+  __getContext,
   getContextFromCookies,
-  _secretKey,
+  __secretKey,
   SecretKey,
 } from "./sessions";
 
@@ -59,8 +60,7 @@ type HttpRequestUrl = string & { _brand?: "HttpRequestUrl" };
 const HttpRequestMethod = ["POST", "GET", "post", "get"];
 type HttpRequestMethod = "POST" | "GET" | "post" | "get";
 type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
-export type HttpRequestHeaders = { cookie: string } & Record<string, string>[];
-//type HttpRequestHeaders = Record<string, string>[] | string[][];
+export type HttpRequestHeaders = { cookie?: string } & Record<string, string>;
 export type UniversalAdapterName = "express" | "koa" | "hapi" | undefined;
 export type HttpRequestProps = {
   url: HttpRequestUrl;
@@ -124,8 +124,9 @@ const configDefault: Config = {
 class TelefuncServer {
   endpoints: Endpoints = getEndpointsProxy();
   config: Config = getConfigProxy(configDefault);
-  setSecretKey = setSecretKey.bind(this);
-  [_secretKey]: SecretKey = null;
+  setSecretKey = __setSecretKey.bind(this);
+  getContext = __getContext.bind(this);
+  [__secretKey]: SecretKey = null;
 
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
@@ -149,7 +150,7 @@ class TelefuncServer {
         context,
         this.endpoints,
         this.config,
-        this[_secretKey],
+        this[__secretKey],
         __INTERNAL_universalAdapter
       );
     } catch (internalError) {

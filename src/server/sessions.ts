@@ -22,14 +22,27 @@ import {
 import { assertUsage, assertWarning } from "@brillout/libassert";
 import cookie = require("cookie");
 
+export { __getContext };
 export { getContextFromCookies };
 export { getSetCookieHeader };
-export { setSecretKey };
-export const _secretKey = Symbol("_secretKey");
+export { __setSecretKey };
+export const __secretKey = Symbol("__secretKey");
 export type SecretKey = string | null;
 
 const cookieNamePrefix = "telefunc-context_";
 const signatureCookieNamePrefix = "telefunc-context-signaure_";
+
+function __getContext(
+  this: TelefuncServer,
+  headers: Record<string, string>
+): ContextObject {
+  const secretKey = this[__secretKey];
+  assertUsage(
+    this[__secretKey] !== null,
+    "`setSecretKey()` needs to be called before calling `getContext()`."
+  );
+  return getContextFromCookies(secretKey, headers) || {};
+}
 
 function getContextFromCookies(
   secretKey: SecretKey,
@@ -62,7 +75,6 @@ function getContextFromCookies(
         false,
         "Cookie signature is missing or wrong. It seems that someone is doing a (failed) attempt at hacking your user."
       );
-      return;
     }
     const contextValue = deserializeContext(contextValueSerialized);
     contextObject = contextObject || {};
@@ -71,9 +83,9 @@ function getContextFromCookies(
   return contextObject;
 }
 
-function setSecretKey(this: TelefuncServer, secretKey: string) {
+function __setSecretKey(this: TelefuncServer, secretKey: string) {
   assertUsage(
-    this[_secretKey] === null,
+    this[__secretKey] === null,
     "You should call `setSecretKey()` only once."
   );
   assertUsage(secretKey, "Argument `key` missing in `setSecretKey(key)` call.");
@@ -85,7 +97,7 @@ function setSecretKey(this: TelefuncServer, secretKey: string) {
       "`, but `key` should have at least 10 characters."
   );
 
-  this[_secretKey] = secretKey;
+  this[__secretKey] = secretKey;
 }
 
 function getSetCookieHeader(
