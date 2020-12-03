@@ -99,6 +99,11 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   setSecretKey("0123456789");
 
   {
+    const ctx = getContextFromCookie();
+    assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
+  }
+
+  {
     const ctx = getContextFromCookie("fake=321");
     assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
   }
@@ -106,7 +111,7 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   {
     let cookieMissing;
     try {
-      getContextFromCookie();
+      getContextFromCookie({ cookie: "fake-cookie=123;" });
     } catch (err) {
       cookieMissing = err;
     }

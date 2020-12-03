@@ -1018,14 +1018,17 @@ function assertNodejs() {
   );
 }
 
-function getContextFromCookie(this: TelefuncServer, cookie: string) {
+function getContextFromCookie(
+  this: TelefuncServer,
+  cookie: string | null | undefined
+) {
   assertUsage(
     this[__secretKey],
     "`setSecretKey()` needs to be called before calling `getContextFromCookie()`."
   );
   assertUsage(
-    cookie && typeof cookie === "string",
-    "`getContextFromCookie(cookie)`: `cookie` should be a string"
+    cookie === undefined || cookie === null || typeof cookie === "string",
+    "`getContextFromCookie(cookie)`: `cookie` should be a string, `null`, or `undefined`"
   );
   const secretKey = this[__secretKey];
   return __getContextFromCookie(secretKey, cookie) || {};

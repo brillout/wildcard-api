@@ -32,7 +32,7 @@ const signatureCookieNamePrefix = "telefunc-context-signaure_";
 
 function __getContextFromCookie(
   secretKey: SecretKey,
-  cookie: string | undefined
+  cookie: string | null | undefined
 ): ContextObject | null {
   if (!cookie) {
     return null;
