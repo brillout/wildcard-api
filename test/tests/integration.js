@@ -105,7 +105,7 @@ async function API() {
   );
   assert(telefunc_server.getApiHttpResponse);
   assert(telefunc_server.setSecretKey);
-  assert(telefunc_server.getContext);
+  assert(telefunc_server.getContextFromCookie);
   assert(Object.keys(telefunc_server).length === 5);
 
   const telefunc_client = require("telefunc/client");

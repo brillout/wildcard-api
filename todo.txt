@@ -4,3 +4,5 @@
 - Remove wrong signature warning
 - Improve err msg to make it clear that importing in itself is ok, just not using it "[Telefunc][Wrong Usage] The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead."
 - Show all telefunctions upon 404
+- Rename cookie names
+  - fix typo `signaure`

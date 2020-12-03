@@ -13,8 +13,7 @@ import getUrlProps = require("@brillout/url-props");
 import {
   getSetCookieHeader,
   __setSecretKey,
-  __getContext,
-  getContextFromCookies,
+  __getContextFromCookie,
   __secretKey,
   SecretKey,
 } from "./sessions";
@@ -125,7 +124,7 @@ class TelefuncServer {
   endpoints: Endpoints = getEndpointsProxy();
   config: Config = getConfigProxy(configDefault);
   setSecretKey = __setSecretKey.bind(this);
-  getContext = __getContext.bind(this);
+  getContextFromCookie = getContextFromCookie.bind(this);
   [__secretKey]: SecretKey = null;
 
   /**
@@ -1019,12 +1018,28 @@ function assertNodejs() {
   );
 }
 
+function getContextFromCookie(this: TelefuncServer, cookie: string) {
+  assertUsage(
+    this[__secretKey],
+    "`setSecretKey()` needs to be called before calling `getContextFromCookie()`."
+  );
+  assertUsage(
+    cookie && typeof cookie === "string",
+    "`getContextFromCookie(cookie)`: `cookie` should be a string"
+  );
+  const secretKey = this[__secretKey];
+  return __getContextFromCookie(secretKey, cookie) || {};
+}
+
 async function getContext(
   headers: HttpRequestHeaders | undefined,
   context: Context | ContextGetter,
   secretKey: SecretKey
 ): Promise<Context> {
-  const retrievedContext = getContextFromCookies(secretKey, headers);
+  const retrievedContext = __getContextFromCookie(
+    secretKey,
+    (headers || {}).cookie
+  );
   const userProvidedContext = await getUserProvidedContext(
     context,
     retrievedContext

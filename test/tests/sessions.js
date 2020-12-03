@@ -78,19 +78,19 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
     stopApp,
     server,
     app,
-    telefuncServer: { setSecretKey, getContext },
+    telefuncServer: { setSecretKey, getContextFromCookie },
   } = await createServer(args);
 
   {
     let secretMissingError;
     try {
-      getContext();
+      getContextFromCookie("fake-cookie=123;");
     } catch (err) {
       secretMissingError = err;
     }
     assert(
       secretMissingError.message.includes(
-        "`setSecretKey()` needs to be called before calling `getContext()`."
+        "`setSecretKey()` needs to be called before calling `getContextFromCookie()`."
       )
     );
     delete secretMissingError;
@@ -99,8 +99,22 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   setSecretKey("0123456789");
 
   {
-    const ctx = getContext();
+    const ctx = getContextFromCookie("fake=321");
     assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
+  }
+
+  {
+    let cookieMissing;
+    try {
+      getContextFromCookie();
+    } catch (err) {
+      cookieMissing = err;
+    }
+    assert(
+      cookieMissing.message.includes(
+        "[Wrong Usage] `getContextFromCookie(cookie)`: `cookie` should be a string"
+      )
+    );
   }
 
   server.login = async function (name) {
@@ -108,7 +122,7 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   };
 
   app.get("/not-telefunc-endpoint", (req, res) => {
-    const context = getContext(req.headers);
+    const context = getContextFromCookie(req.headers.cookie);
     assert(context.user === "romi");
     assert(Object.keys(context).length === 1);
     res.send("Greeting, darling " + context.user);
@@ -150,7 +164,7 @@ async function contextBrowserOnly({ browserEval, server, setSecretKey }) {
   }
   assert(
     contextErr.message.includes(
-      'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead.'
+      'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
     )
   );
 

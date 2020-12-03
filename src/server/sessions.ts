@@ -15,15 +15,13 @@ import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
 import {
   ContextModifications,
-  HttpRequestHeaders,
   ContextObject,
   TelefuncServer,
 } from "./TelefuncServer";
 import { assertUsage, assertWarning } from "@brillout/libassert";
-import cookie = require("cookie");
+import cookieModule = require("cookie");
 
-export { __getContext };
-export { getContextFromCookies };
+export { __getContextFromCookie };
 export { getSetCookieHeader };
 export { __setSecretKey };
 export const __secretKey = Symbol("__secretKey");
@@ -32,33 +30,18 @@ export type SecretKey = string | null;
 const cookieNamePrefix = "telefunc-context_";
 const signatureCookieNamePrefix = "telefunc-context-signaure_";
 
-function __getContext(
-  this: TelefuncServer,
-  headers: Record<string, string>
-): ContextObject {
-  const secretKey = this[__secretKey];
-  assertUsage(
-    this[__secretKey],
-    "`setSecretKey()` needs to be called before calling `getContext()`."
-  );
-  return getContextFromCookies(secretKey, headers) || {};
-}
-
-function getContextFromCookies(
+function __getContextFromCookie(
   secretKey: SecretKey,
-  headers: HttpRequestHeaders | undefined
+  cookie: string | undefined
 ): ContextObject | null {
-  if (!headers) {
-    return null;
-  }
-  if (!headers.cookie) {
+  if (!cookie) {
     return null;
   }
   if (!secretKey) {
     return null;
   }
   let contextObject: ContextObject | null = null;
-  const cookies = cookie.parse(headers.cookie);
+  const cookies = cookieModule.parse(cookie);
   Object.entries(cookies).forEach(([cookieName, cookieValue]) => {
     if (!cookieName.startsWith(cookieNamePrefix)) {
       return;
@@ -162,7 +145,11 @@ function getSetCookieHeader(
 
   const values: string[] = [];
   cookies.forEach(({ cookieName, cookieValue, cookieOptions }) => {
-    const value = cookie.serialize(cookieName, cookieValue, cookieOptions);
+    const value = cookieModule.serialize(
+      cookieName,
+      cookieValue,
+      cookieOptions
+    );
     values.push(value);
   });
   return values;

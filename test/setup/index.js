@@ -94,7 +94,7 @@ async function runStandardTests({
         endpoints: server,
         config,
         setSecretKey,
-        getContext,
+        getContextFromCookie,
       } = telefuncServer;
       __INTERNAL_telefuncServer_middleware.telefuncServer = telefuncServer;
       const telefuncClient = new TelefuncClient();
@@ -107,7 +107,7 @@ async function runStandardTests({
         TelefuncServer,
         telefuncServer,
         setSecretKey,
-        getContext,
+        getContextFromCookie,
         telefuncClient,
         TelefuncClient,
         httpPort,

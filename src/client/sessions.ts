@@ -64,7 +64,7 @@ function getCookie(name: string): string | null {
 function assertBrowser() {
   assertUsage(
     !isNodejs(),
-    'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead.'
+    'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
   );
 }
 
