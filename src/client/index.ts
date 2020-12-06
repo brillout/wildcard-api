@@ -1,7 +1,11 @@
 import { telefuncClient } from "./global-instance";
 export const server = telefuncClient.endpoints;
+
 export const { config } = telefuncClient;
-export { TelefuncError } from "./makeHttpRequest";
+
+import { TelefuncError } from "./makeHttpRequest";
+export { TelefuncError };
+
 import { context } from "./sessions";
 export { context };
 
@@ -10,6 +14,7 @@ if (typeof window !== "undefined") {
     context,
     server,
     config,
+    TelefuncError,
   } as never;
 }
 // TypeScript users should not use `window.telefunc`

@@ -72,9 +72,18 @@ async function unpkg({ server, browserEval }) {
     assert(window.telefunc);
     const ret = await window.telefunc.server.bonj();
     assert(ret === "Bonjour");
+    assert_api();
     delete window.telefunc;
 
     preserveState_2();
+
+    function assert_api() {
+      assert(window.telefunc.server);
+      assert(window.telefunc.config);
+      assert(window.telefunc.context);
+      assert(window.telefunc.TelefuncError);
+      assert(Object.keys(window.telefunc).length === 4);
+    }
 
     function preserveState_1() {
       assert(window.telefunc);
@@ -126,7 +135,8 @@ async function API({ browserEval }) {
   assert(telefunc_client.server);
   assert(telefunc_client.config);
   assert(telefunc_client.context);
-  assert(Object.keys(telefunc_client).length === 3);
+  assert(telefunc_client.TelefuncError);
+  assert(Object.keys(telefunc_client).length === 4);
 
   ["express", "koa", "hapi"].forEach((serverFramework) => {
     const export_ = require("telefunc/server/" + serverFramework);
@@ -139,7 +149,8 @@ async function API({ browserEval }) {
     assert(window.telefunc.server);
     assert(window.telefunc.config);
     assert(window.telefunc.context);
-    assert(Object.keys(window.telefunc).length === 3);
+    assert(window.telefunc.TelefuncError);
+    assert(Object.keys(window.telefunc).length === 4);
   });
 }
 

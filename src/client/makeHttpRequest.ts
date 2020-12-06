@@ -10,12 +10,8 @@ import {
   HttpRequestUrl,
 } from "./TelefuncClient";
 
-export type TelefuncError = Error & {
-  isConnectionError: boolean;
-  isCodeError: boolean;
-};
-
 export { makeHttpRequest };
+export { TelefuncError };
 
 async function makeHttpRequest(
   url: HttpRequestUrl,
@@ -46,12 +42,10 @@ async function makeHttpRequest(
   }
 
   if (isConnectionError) {
-    const connectionError: TelefuncError = new Error(
-      "No Server Connection"
-    ) as TelefuncError;
-    connectionError.isConnectionError = true;
-    connectionError.isCodeError = false;
-    throw connectionError;
+    throw new TelefuncError("No Server Connection", {
+      isConnectionError: true,
+      isCodeError: false,
+    });
   }
 
   const responseBody = await response.text();
@@ -87,10 +81,33 @@ async function makeHttpRequest(
       ? `Endpoint \`${endpointName}\` does not exist.`
       : `Endpoint function \`${endpointName}\` threw an error.`;
 
-  const codeError: TelefuncError = new Error(codeErrorText) as TelefuncError;
-  codeError.isConnectionError = false;
-  codeError.isCodeError = true;
-  throw codeError;
+  throw new TelefuncError(codeErrorText, {
+    isConnectionError: false,
+    isCodeError: true,
+  });
+}
+
+class TelefuncError extends Error {
+  isCodeError: boolean;
+  isConnectionError: boolean;
+  constructor(
+    message: string,
+    {
+      isCodeError,
+      isConnectionError,
+    }: { isCodeError: boolean; isConnectionError: boolean }
+  ) {
+    super(message);
+
+    // Bugfix: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+    Object.setPrototypeOf(this, TelefuncError.prototype);
+
+    this.isConnectionError = isConnectionError;
+    this.isCodeError = isCodeError;
+
+    assert(this.message === message);
+    assert(this.isConnectionError !== this.isCodeError);
+  }
 }
 
 function addHandli(fetcher: () => Promise<EndpointResult>) {
