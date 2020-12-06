@@ -56,6 +56,7 @@ async function doesntIntefere2({ server, browserEval }) {
   });
 }
 
+// Playground: https://jsfiddle.net/bj4sLdh1/1/
 async function unpkg({ server, browserEval }) {
   let endpointCalled = false;
   server.bonj = async function () {
