@@ -594,13 +594,13 @@ import { server } from 'telefunc/client';
   if( err.isCodeError ){
     // The endpoint function threw an uncaught error (there is a bug in your server code)
     alert(
-      'Something went wrong on our side. We have been notified and we are working on a fix.' +
-      'Sorry... Please try again later.'
+      "Something went wrong on our side. We have been notified and we are working on a fix." +
+      "Try again later."
     );
   }
   if( err.isConnectionError ){
-    // The browser couldn't connect to the server; the user is offline or the server is down.
-    alert("We couldn't perform your request. Please try again.");
+    // The browser couldn't connect to the server: the user is offline (or your server is down).
+    alert("You don't seem to have an internet connection, try again once you are back online.");
   }
 
   if( err ) {
