@@ -174,7 +174,7 @@ async function runTest({
     log_collector.flush();
     console.error(err);
     console.log(colorError(symbolError + "Failed test: " + testName));
-    process.exit();
+    throw new Error("Tests failed.");
   }
 
   console.log(symbolSuccess + testName);
