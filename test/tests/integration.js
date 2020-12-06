@@ -64,15 +64,30 @@ async function unpkg({ server, browserEval }) {
   };
 
   await browserEval(async () => {
+    preserveState_1();
+
     assert(!window.telefunc);
     await loadScript(
-      "https://unpkg.com/telefunc/client/telefunc-client.production.min.js"
+      "https://unpkg.com/telefunc/client/telefunc-client.min.js"
     );
     assert(window.telefunc);
     const ret = await window.telefunc.server.bonj();
     assert(ret === "Bonjour");
     delete window.telefunc;
 
+    preserveState_2();
+
+    function preserveState_1() {
+      assert(window.telefunc);
+      window.telefunc_original = window.telefunc;
+      delete window.telefunc;
+    }
+    function preserveState_2() {
+      assert(!window.telefunc);
+      window.telefunc = window.telefunc_original;
+      delete window.telefunc_original;
+      assert(window.telefunc);
+    }
     async function loadScript(url) {
       const script = window.document.createElement("script");
 
@@ -96,7 +111,7 @@ async function unpkg({ server, browserEval }) {
   assert(endpointCalled);
 }
 
-async function API() {
+async function API({ browserEval }) {
   const telefunc_server = require("telefunc/server");
   assert(telefunc_server.server.constructor === Object);
   assert(telefunc_server.config.constructor === Object);
@@ -119,6 +134,13 @@ async function API() {
     assert(export_.telefunc.name === "telefunc");
     assert(export_.telefunc.constructor.name === "Function");
     assert(Object.keys(export_).length === 1);
+  });
+
+  await browserEval(async () => {
+    assert(window.telefunc.server);
+    assert(window.telefunc.config);
+    assert(window.telefunc.context);
+    assert(Object.keys(window.telefunc).length === 3);
   });
 }
 

@@ -4,7 +4,7 @@ import { parse } from "@brillout/json-s";
 
 export const context = createContextProxy();
 
-const cookieNamePrefix = "telefunc-context_";
+const cookieNamePrefix = "telefunc_";
 
 function createContextProxy() {
   const contextObj = {};

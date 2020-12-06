@@ -353,7 +353,7 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    ~~~html
-   <script crossorigin src="https://unpkg.com/telefunc/client/telefunc-client.production.min.js"></script>
+   <script crossorigin src="https://unpkg.com/telefunc/client/telefunc-client.min.js"></script>
    <script src="my-script-using-telefunc.js"></script>
    ~~~
    ~~~js
