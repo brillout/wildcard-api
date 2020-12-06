@@ -27,8 +27,8 @@ export { __setSecretKey };
 export const __secretKey = Symbol("__secretKey");
 export type SecretKey = string | null;
 
-const cookieNamePrefix = "telefunc-context_";
-const signatureCookieNamePrefix = "telefunc-context-signaure_";
+const COOKIE_NAME = "telefunc_";
+const COOKIE_SIGNATURE_NAME = "telefunc-signature_";
 
 function __getContextFromCookie(
   secretKey: SecretKey,
@@ -43,11 +43,11 @@ function __getContextFromCookie(
   let contextObject: ContextObject | null = null;
   const cookies = cookieModule.parse(cookie);
   Object.entries(cookies).forEach(([cookieName, cookieValue]) => {
-    if (!cookieName.startsWith(cookieNamePrefix)) {
+    if (!cookieName.startsWith(COOKIE_NAME)) {
       return;
     }
-    const contextName = cookieName.slice(cookieNamePrefix.length);
-    const signature = cookies[signatureCookieNamePrefix + contextName];
+    const contextName = cookieName.slice(COOKIE_NAME.length);
+    const signature = cookies[COOKIE_SIGNATURE_NAME + contextName];
     const contextValueSerialized = cookieValue;
     if (
       !signature ||
@@ -117,7 +117,7 @@ function getSetCookieHeader(
       cookies.push(
         ...[
           {
-            cookieName: cookieNamePrefix + contextName,
+            cookieName: COOKIE_NAME + contextName,
             cookieValue: contextSerialized,
             cookieOptions: {
               path,
@@ -125,7 +125,7 @@ function getSetCookieHeader(
             },
           },
           {
-            cookieName: signatureCookieNamePrefix + contextName,
+            cookieName: COOKIE_SIGNATURE_NAME + contextName,
             cookieValue: computeSignature(
               contextSerialized,
               secretKey as string
