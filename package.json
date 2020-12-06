@@ -18,7 +18,7 @@
     "build": "yarn build:once",
     "build:once": "tsc --build",
     "build:watch": "tsc --build --watch",
-    "build:umd": "parcel build src/client/index.js --out-dir ./src/client --out-file telefunc-client.min.js",
+    "build:umd": "parcel build src/client/index.js --out-dir ./src/umd/ --out-file telefunc-client.min.js",
     "// Release": "",
     "bump": "yarn bump:minor",
     "bump:minor": "(cd src/ && npm version patch) && git commit -am 'release new minor' && git show HEAD",

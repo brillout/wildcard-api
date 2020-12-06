@@ -67,9 +67,7 @@ async function unpkg({ server, browserEval }) {
     preserveState_1();
 
     assert(!window.telefunc);
-    await loadScript(
-      "https://unpkg.com/telefunc/client/telefunc-client.min.js"
-    );
+    await loadScript("https://unpkg.com/telefunc/umd/telefunc-client.min.js");
     assert(window.telefunc);
     const ret = await window.telefunc.server.bonj();
     assert(ret === "Bonjour");
