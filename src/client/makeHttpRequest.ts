@@ -10,7 +10,7 @@ import {
   HttpRequestUrl,
 } from "./TelefuncClient";
 
-type EndpointError = Error & {
+export type TelefuncError = Error & {
   isConnectionError: boolean;
   isCodeError: boolean;
 };
@@ -38,18 +38,20 @@ async function makeHttpRequest(
   );
 
   let response;
-  let connectionError: EndpointError | undefined;
+  let isConnectionError: boolean = false;
   try {
     response = await makeRequest();
-  } catch (err) {
-    connectionError = err;
+  } catch (_) {
+    isConnectionError = true;
   }
 
-  if (connectionError) {
-    throw Object.assign(new Error("No Server Connection"), {
-      isConnectionError: true,
-      isCodeError: false,
-    });
+  if (isConnectionError) {
+    const connectionError: TelefuncError = new Error(
+      "No Server Connection"
+    ) as TelefuncError;
+    connectionError.isConnectionError = true;
+    connectionError.isCodeError = false;
+    throw connectionError;
   }
 
   const responseBody = await response.text();
@@ -85,11 +87,9 @@ async function makeHttpRequest(
       ? `Endpoint \`${endpointName}\` does not exist.`
       : `Endpoint function \`${endpointName}\` threw an error.`;
 
-  const codeError: EndpointError = Object.assign(new Error(codeErrorText), {
-    isConnectionError: false,
-    isCodeError: true,
-  });
-
+  const codeError: TelefuncError = new Error(codeErrorText) as TelefuncError;
+  codeError.isConnectionError = false;
+  codeError.isCodeError = true;
   throw codeError;
 }
 

@@ -1,6 +1,7 @@
 import { telefuncClient } from "./global-instance";
 export const server = telefuncClient.endpoints;
 export const { config } = telefuncClient;
+export { TelefuncError } from "./makeHttpRequest";
 import { context } from "./sessions";
 export { context };
 
