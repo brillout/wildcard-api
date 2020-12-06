@@ -433,8 +433,11 @@ Is your API meant to be used by yourself? Use RPC.
    </summary>
 
    ~~~html
-   <script crossorigin src="https://unpkg.com/telefunc/client/telefunc-client.production.min.js"></script>
-   <script src="my-script-using-telefunc.js"></script>
+   <script crossorigin src="https://unpkg.com/telefunc/client/telefunc-client.min.js"></script>
+   <script src="my-script.js"></script>
+   <!-- You may or may not need the babel polyfill, depending on whether your `my-script.js`
+        arleady includes the babel polyfill -->
+   <script crossorigin src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
    ~~~
    ~~~js
    // my-script-using-telefunc.js
