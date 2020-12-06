@@ -1,6 +1,6 @@
 {
   "name": "telefunc",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Remote functions instead of GraphQL/REST. #NoAPI.",
   "repository": "https://github.com/telefunc/telefunc",
   "homepage": "https://lsos.org",
