@@ -1,12 +1,12 @@
 {
   "name": "telefunc",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Remote functions instead of GraphQL/REST. #NoAPI.",
   "repository": "https://github.com/telefunc/telefunc",
   "homepage": "https://lsos.org",
   "main": "index.js",
   "dependencies": {
-    "@brillout/fetch": "^0.1.2",
+    "@brillout/fetch": "^0.2.1",
     "@brillout/json-s": "^0.1.4",
     "@brillout/libassert": "^0.1.3",
     "@brillout/project-files": "^0.4.2",
