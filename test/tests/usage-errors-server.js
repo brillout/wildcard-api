@@ -33,7 +33,7 @@ async function endpointMissing_noEndpoints_serverSide({
 
   assert(
     err.message ===
-      "[Telefunc][Wrong Usage] Endpoint `iAmNotHere` does not exist. You didn't define any endpoint. Make sure that your file that defines `iAmNotHere` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
+      "[Telefunc Server][Wrong Usage] Endpoint `iAmNotHere` does not exist. You didn't define any endpoint. Make sure that your file that defines `iAmNotHere` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
   );
   // Don't show: Loaded endpoints: ...
   assert(!err.stack.includes("Loaded endpoints"));
@@ -66,7 +66,7 @@ async function endpointMissing_noEndpoints_clientSide({
   await callTelefunc();
   unsetProd();
   assertStderr(
-    "[Telefunc][Wrong Usage] Endpoint `iDoNotExist` does not exist. You didn't define any endpoint. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
+    "[Telefunc Server][Wrong Usage] Endpoint `iDoNotExist` does not exist. You didn't define any endpoint. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
   );
 }
 async function endpointMissing_notDefined_clientSide({
@@ -103,7 +103,7 @@ async function endpointMissing_notDefined_clientSide({
   await callTelefunc();
 
   assertStderr(
-    "[Telefunc][Wrong Usage] Endpoint `iDoNotExist` does not exist. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `neverCalledEndpoint`, `emptyEndpoint`. (This error is not shown in production.)"
+    "[Telefunc Server][Wrong Usage] Endpoint `iDoNotExist` does not exist. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `neverCalledEndpoint`, `emptyEndpoint`. (This error is not shown in production.)"
   );
 }
 async function endpointMissing_notDefined_serverSide({
@@ -126,7 +126,7 @@ async function endpointMissing_notDefined_serverSide({
 
   assert(
     err.message ===
-      "[Telefunc][Wrong Usage] Endpoint `missingEndpoint` does not exist. Make sure that your file that defines `missingEndpoint` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `notUsed`. (This error is not shown in production.)"
+      "[Telefunc Server][Wrong Usage] Endpoint `missingEndpoint` does not exist. Make sure that your file that defines `missingEndpoint` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `notUsed`. (This error is not shown in production.)"
   );
 
   assert(!err.stack.includes("You didn't define any endpoints."));

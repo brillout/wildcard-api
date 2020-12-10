@@ -18,7 +18,7 @@ import {
   ContextObject,
   TelefuncServer,
 } from "./TelefuncServer";
-import { assertUsage, assertWarning } from "@brillout/libassert";
+import { assertUsage, assertWarning } from "./assert";
 import cookieModule = require("cookie");
 
 export { __getContextFromCookie };

@@ -5,9 +5,9 @@ import {
   assert,
   assertUsage,
   getUsageError,
+  internalErroPrefix,
   UsageError,
-  setProjectInfo,
-} from "@brillout/libassert";
+} from "./assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 import {
@@ -20,7 +20,8 @@ import {
 
 export { TelefuncServer };
 
-loadTimeStuff();
+// The Telefunc server only works with Node.js
+assertNodejs();
 
 // Endpoints
 type EndpointName = string;
@@ -795,13 +796,12 @@ function getEndpointNames(endpoints: Endpoints): EndpointName[] {
 }
 
 function handleInternalError(internalError: Error): HttpResponseProps {
-  const msg =
-    "[Telefunc][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack. ";
-  internalError = addMessage(internalError, msg);
+  internalError = addErrorPrefix(internalError, internalErroPrefix);
   handleError(internalError);
   return HttpResponse_serverSideError();
 }
-function addMessage(err: Error, msg: string): Error {
+function addErrorPrefix(err: Error, errorPrefix: string): Error {
+  assert(!errorPrefix.endsWith(" "));
   if (!err) {
     err = new Error();
   }
@@ -811,9 +811,9 @@ function addMessage(err: Error, msg: string): Error {
 
   const prefix = "Error: ";
   if (err.message.startsWith(prefix)) {
-    err.message = prefix + msg + err.message.slice(prefix.length);
+    err.message = prefix + errorPrefix + " " + err.message.slice(prefix.length);
   } else {
-    err.message = msg + err.message;
+    err.message = errorPrefix + " " + err.message;
   }
 
   return err;
@@ -1152,15 +1152,4 @@ function getFunctionName(fn: (...args: any[]) => any): string {
 
 function handleError(err: Error): void {
   console.error(err);
-}
-
-function loadTimeStuff() {
-  // Some infos for `assertUsage` and `assert`
-  setProjectInfo({
-    projectName: "Telefunc",
-    projectGithub: "https://github.com/telefunc/telefunc",
-  });
-
-  // The Telefunc server only works with Node.js
-  assertNodejs();
 }

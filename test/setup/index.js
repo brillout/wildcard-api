@@ -6,7 +6,6 @@ process.on("unhandledRejection", (err) => {
   throw err;
 });
 
-const { assertUsage } = require("@brillout/libassert");
 const assert = require("assert");
 const util = require("util");
 const stripAnsi = require("strip-ansi");
@@ -233,6 +232,8 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
 
     // Always start with a single-line error message
     if (
+      !firstLine.includes("[Telefunc Client][Wrong Usage] ") &&
+      !firstLine.includes("[Telefunc Server][Wrong Usage] ") &&
       !firstLine.includes("[Telefunc][Wrong Usage] ") &&
       !firstLine.includes("[EXPECTED_ERROR]")
     ) {
@@ -275,6 +276,8 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
       // It is expected that test can throw a [Wrong Usage] or
       // an error constructed by the test itself ([EXPECTED_ERROR])
       if (
+        stderrLog.includes("[Telefunc Server][Wrong Usage]") ||
+        stderrLog.includes("[Telefunc Client][Wrong Usage]") ||
         stderrLog.includes("[Telefunc][Wrong Usage]") ||
         stderrLog.includes("[EXPECTED_ERROR]")
       ) {
@@ -402,7 +405,7 @@ function getTests() {
     }
   }
 
-  assertUsage(!noTest(), `No test \`${selectedTest}\` found.`);
+  assert(!noTest(), `No test \`${selectedTest}\` found.`);
 
   return { standardTests, integrationTests };
 

@@ -163,7 +163,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   };
 
   const errMsg =
-    "[Telefunc][Wrong Usage] Wrong usage of the Telefunc client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
+    "[Telefunc Server][Wrong Usage] Wrong usage of the Telefunc client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
   let err;
   try {
     await telefuncClient.endpoints.ctxFunc();
@@ -188,7 +188,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     }
   });
   assertStderr(
-    "[Telefunc][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `telefunc(setContext)` express middleware."
+    "[Telefunc Server][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `telefunc(setContext)` express middleware."
   );
 
   await stopApp();
@@ -355,7 +355,7 @@ async function undefinedContext_getApiHttpResponse({
     assert(responseProps.statusCode === 500);
     assert(responseProps.body === `Internal Server Error`);
     assertStderr(
-      "Error: [Telefunc][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
+      "Error: [Telefunc Server][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
     );
   }
 }
@@ -515,7 +515,7 @@ async function contextImmutable({
   } catch (err) {
     assert(
       err.stack.includes(
-        "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
+        "[Telefunc Server][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
       )
     );
   }
@@ -531,6 +531,6 @@ async function contextImmutable({
   });
 
   assertStderr(
-    "[Telefunc][Wrong Usage] The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
+    "[Telefunc Server][Wrong Usage] The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
   );
 }

@@ -1,7 +1,7 @@
 // @ts-ignore
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
-import { assert, assertUsage, setProjectInfo } from "@brillout/libassert";
+import { assert, assertUsage } from "./assert";
 import { verify } from "lsos";
 
 export { TelefuncClient };
@@ -395,12 +395,6 @@ declare global {
 }
 
 function loadTimeStuff() {
-  // Some infos for `assertUsage` and `assert`
-  setProjectInfo({
-    projectName: "Telefunc",
-    projectGithub: "https://github.com/telefunc/telefunc",
-  });
-
   // We need ES6 `Proxy`
   assertProxySupport();
 
