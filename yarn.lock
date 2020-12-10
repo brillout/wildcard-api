@@ -902,10 +902,10 @@
   resolved "https://registry.npmjs.org/@brillout/json-s/-/json-s-0.1.5.tgz#805dbbdc39a3187ae65012ef6b8af2d873c78193"
   integrity sha512-J25bhw1BxtuyRx5CXMlAHH3SKX2dv0cghf2p7BCS6UNqgrUhXq96FhfsafF7a+/20Egi0m3U5PSjjtRXLzD8Kw==
 
-"@brillout/libassert@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@brillout/libassert/-/libassert-0.2.0.tgz#6dece0ccd2155db6a0e74415b601ccca3d477796"
-  integrity sha512-X7Upv8lRjWiVF21n+LOG/saNyQbQ3raLdGyUimCaKstTCUu4RV9AaU0OaB9jh+J5duRUZ7LoJtqQN/ca/mur4g==
+"@brillout/libassert@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/@brillout/libassert/-/libassert-0.2.1.tgz#78a47ddcc2897d9c6018c3877c6d2b146ccc6809"
+  integrity sha512-4ss+YEeIV1P3SdWU5ZnXQX0hz6VJt6uH68Ujj99d0+IokoLaPE2PBdRd8pGv+vpXGD6O1tm6ceJPeMhrSFX05A==
 
 "@brillout/mdocs@^0.1.24":
   version "0.1.30"
