@@ -873,12 +873,12 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.5.tgz#3aaab598db575ecd32fb4f80fe815f69da3b3876"
-  integrity sha512-k8BUaSLO+7nY52zJDlJSbnIUNx0+F8PZ8Us4uNZ7F1MDER991pnAi7E4hJME/tf+xrpdW6PMrpqLh0lwsZHp7Q==
+"@brillout/assert@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.3.3.tgz#bf13fda2f102e9f86dd7296292556b1b9afc8cc7"
+  integrity sha512-LHdQlWxAeBNUTCmNjvuoemAwBautW46MrgsNEFzG474sJQB+1pBGDIuS4h4dRFX7zR02YGe/duzVWY+ZnDdhUA==
   dependencies:
-    "@types/node" "^14.11.2"
+    browser-util-inspect "^0.2.0"
 
 "@brillout/cli-theme@^0.3.1":
   version "0.3.4"
@@ -897,6 +897,11 @@
   dependencies:
     reassert "^1.1.14"
     string-width "^2.1.1"
+
+"@brillout/libassert@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@brillout/libassert/-/libassert-0.1.4.tgz#dfcd2e423ba6d1f02b5707ac029b7fa36f0d1184"
+  integrity sha512-5nHYAUjAS3Y3c1YYSDD2o40ZwXBn26q9145/lRtaH4XWp/E3LzhfVh7ibKWgu+yOWNUUl1RHNXrjwZnFD5zrZg==
 
 "@brillout/relative-to-homedir@^0.1.0":
   version "0.1.0"
@@ -962,7 +967,7 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@types/node@*", "@types/node@^14.11.2":
+"@types/node@*":
   version "14.14.0"
   resolved "https://registry.npmjs.org/@types/node/-/node-14.14.0.tgz#f1091b6ad5de18e8e91bdbd43ec63f13de372538"
   integrity sha512-BfbIHP9IapdupGhq/hc+jT5dyiBVZ2DdeC5WwJWQWDb0GijQlzUFAeIQn/2GtvZcd2HVUU7An8felIICFTC2qg==
@@ -1392,6 +1397,11 @@ browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
+
+browser-util-inspect@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/browser-util-inspect/-/browser-util-inspect-0.2.0.tgz#cdda8ce1a4a07a4386035168a228c8777bff459c"
+  integrity sha1-zdqM4aSgekOGA1FooijId3v/RZw=
 
 browserify-aes@^1.0.0, browserify-aes@^1.0.4:
   version "1.2.0"

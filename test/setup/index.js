@@ -6,7 +6,7 @@ process.on("unhandledRejection", (err) => {
   throw err;
 });
 
-const { assertUsage } = require("@brillout/assert");
+const { assertUsage } = require("@brillout/libassert");
 const assert = require("assert");
 const util = require("util");
 const stripAnsi = require("strip-ansi");
@@ -141,7 +141,10 @@ async function runTest({
 
     if (content === null) {
       assert(expectedStderr === null);
-      expectedStderr = null;
+      assert(
+        cleanStderr(stderrLogs).length === 0,
+        util.inspect({ stderrLogs })
+      );
       return;
     }
 
@@ -186,8 +189,7 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
   // Express seems to rethrow errors asyncronously; we need to wait for express to rethrow errors.
   await new Promise((r) => setTimeout(r, 0));
 
-  stderrLogs = removeHiddenLog(stderrLogs);
-  stderrLogs = removeNetworkErrorLogs(stderrLogs);
+  stderrLogs = cleanStderr(stderrLogs);
   const stderrLogsLength = stderrLogs.length;
 
   checkIfErrorIsExpected(stderrLogs);
@@ -198,7 +200,11 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
   if (expectedStderr === null) {
     assert(
       stderrLogsLength === 0,
-      util.inspect({ stderrLogsLength, stderrLogs })
+      util.inspect({
+        expectedLength: 0,
+        stderrLogsLength,
+        stderrLogs,
+      })
     );
     return;
   }
@@ -212,7 +218,10 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
     const stderrContent = expectedStderr[i];
     assert(
       stderrLog.includes(stderrContent),
-      util.inspect({ stderrLog, stderrContent })
+      util.inspect({
+        expectedStderr: stderrContent,
+        actualStderr: stderrLog,
+      })
     );
   });
 
@@ -291,8 +300,15 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
 }
 
 async function checkStdout(stdoutLogs) {
-  stdoutLogs = removeHiddenLog(stdoutLogs);
+  stdoutLogs = cleanStdout(stdoutLogs);
   assert(stdoutLogs.length === 0);
+}
+
+function cleanStdout(stdoutLogs) {
+  return removeHiddenLog(stdoutLogs);
+}
+function cleanStderr(stderrLogs) {
+  return removeHiddenLog(removeNetworkErrorLogs(stderrLogs));
 }
 
 function removeHiddenLog(stdLogs) {

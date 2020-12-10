@@ -10,6 +10,8 @@
 // - 404 - if endpoint doesn't exist
 // - 400 - if there is a malformed HTTP request; should never happen if the user uses the Telefunc client
 
+const { setProd, unsetProd } = require("./usage-errors-server");
+
 module.exports = [
   http_validRequest,
   http_endpointMissing_noEndpoints,
@@ -35,15 +37,21 @@ async function http_validRequest({ server, browserEval }) {
   });
 }
 
-async function http_endpointMissing_noEndpoints({ browserEval }) {
+async function http_endpointMissing_noEndpoints({ server, browserEval }) {
+  server.nothing = async function () {};
+
+  setProd();
   await browserEval(async () => {
     const resp = await window.fetch("/_telefunc/hello");
     const text = await resp.text();
     assert(resp.status === 404, resp.status);
-    assert(text.includes("Endpoint `hello` doesn't exist."));
-    assert(text.includes("You didn't define any endpoints."));
+    assert(
+      text ===
+        "Endpoint `hello` does not exist. Check the server-side error for more information."
+    );
     assert_noErrorStack(text);
   });
+  unsetProd();
 }
 
 async function http_endpointMissing_notDefined({ server, browserEval }) {
@@ -51,14 +59,18 @@ async function http_endpointMissing_notDefined({ server, browserEval }) {
     return "Greetings " + name;
   };
 
+  setProd();
   await browserEval(async () => {
     const resp = await window.fetch("/_telefunc/blub");
     const text = await resp.text();
     assert(resp.status === 404, resp.status);
-    assert(text.includes("Endpoint `blub` doesn't exist."), { text });
-    assert(!text.includes("You didn't define any endpoints."), { text });
+    assert(
+      text ===
+        "Endpoint `blub` does not exist. Check the server-side error for more information."
+    );
     assert_noErrorStack(text);
   });
+  unsetProd();
 }
 
 async function http_endpointReturnsUnserializable({

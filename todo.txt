@@ -5,3 +5,4 @@
 - Show all telefunctions upon 404
 - Rename "endpoints" to "telefuncs". In both source code and documentation.
 - Add TS docs for TelefuncError
+- Throw errors in setTimeout instead of console.error

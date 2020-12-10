@@ -17,90 +17,123 @@ module.exports = [
   wrongEndpointFunction,
 ];
 
+module.exports.setProd = setProd;
+module.exports.unsetProd = unsetProd;
+
 async function endpointMissing_noEndpoints_serverSide({
   telefuncClient,
   assertStderr,
 }) {
   let err;
   try {
-    await telefuncClient.endpoints.helloSsr();
+    await telefuncClient.endpoints.iAmNotHere();
   } catch (_err) {
     err = _err;
   }
 
-  // Contrary to when using the Wilcard Client on the browser-side,
-  // we do throw an error on the server-side when
-  // using theTelefunc Client on the server-side
-  assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."));
-  assert(err.stack.includes("You didn't define any endpoints."));
+  assert(
+    err.message ===
+      "[Telefunc][Wrong Usage] Endpoint `iAmNotHere` does not exist. You didn't define any endpoint. Make sure that your file that defines `iAmNotHere` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
+  );
+  // Don't show: Loaded endpoints: ...
+  assert(!err.stack.includes("Loaded endpoints"));
+  // Don't show: (This error is not shown in production.)
+  assert(!err.stack.includes("shown in production"));
 
-  // No collected stderr because we catched the error
   assertStderr(null);
 }
 async function endpointMissing_noEndpoints_clientSide({
   browserEval,
   assertStderr,
 }) {
-  await browserEval(async () => {
-    let err;
-    try {
-      await window.server.iDoNotExist({ some: 42, arg: "rom" });
-    } catch (_err) {
-      err = _err;
-    }
-    assert(err.message === "Endpoint `iDoNotExist` does not exist.");
-    assert(err.isCodeError === true);
-    assert(err.isConnectionError === false);
-  });
+  const callTelefunc = () =>
+    browserEval(async () => {
+      let err;
+      try {
+        await window.server.iDoNotExist({ some: 42, arg: "rom" });
+      } catch (_err) {
+        err = _err;
+      }
+      assert(
+        err.message ===
+          "Endpoint `iDoNotExist` does not exist. Check the server-side error for more information."
+      );
+      assert(err.isCodeError === true);
+      assert(err.isConnectionError === false);
+    });
 
-  // We don't throw any error on the server-side
-  // Since the bug lives in browser-side code
-  // To avoid malintentioned flooding of server error logs
-  assertStderr(null);
+  setProd();
+  await callTelefunc();
+  unsetProd();
+  assertStderr(
+    "[Telefunc][Wrong Usage] Endpoint `iDoNotExist` does not exist. You didn't define any endpoint. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`."
+  );
 }
 async function endpointMissing_notDefined_clientSide({
   server,
   browserEval,
   assertStderr,
 }) {
-  server.servus = async function ({ name: { oe } }) {
-    return "Bonjour " + oe;
-  };
+  server.neverCalledEndpoint = async function () {};
+  server.emptyEndpoint = async function () {};
 
-  await browserEval(async () => {
-    let err;
-    try {
-      await window.server.iDoNotExist();
-    } catch (_err) {
-      err = _err;
-    }
-    assert(err.message === "Endpoint `iDoNotExist` does not exist.");
-    assert(err.isCodeError === true);
-    assert(err.isConnectionError === false);
-  });
+  const callTelefunc = () =>
+    browserEval(async () => {
+      let err;
+      try {
+        await window.server.iDoNotExist({ some: 42, arg: "rom" });
+      } catch (_err) {
+        err = _err;
+      }
+      assert(err.isCodeError === true);
+      assert(err.isConnectionError === false);
+      assert(
+        err.message ===
+          "Endpoint `iDoNotExist` does not exist. Check the server-side error for more information."
+      );
+    });
 
+  setProd();
+  await callTelefunc();
+  unsetProd();
+  // In production, we don't throw any error on the server-side to
+  // avoid flooding of server error logs.
   assertStderr(null);
+
+  await callTelefunc();
+
+  assertStderr(
+    "[Telefunc][Wrong Usage] Endpoint `iDoNotExist` does not exist. Make sure that your file that defines `iDoNotExist` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `neverCalledEndpoint`, `emptyEndpoint`. (This error is not shown in production.)"
+  );
 }
 async function endpointMissing_notDefined_serverSide({
   server,
   telefuncClient,
   assertStderr,
 }) {
-  server.servus = async function (oe) {
-    return "Bonjour " + oe;
-  };
+  server.notUsed = async function () {};
 
   let err;
   try {
-    await telefuncClient.endpoints.helloSsr();
+    await telefuncClient.endpoints.missingEndpoint();
   } catch (_err) {
     err = _err;
   }
 
-  assert(err.stack.includes("Endpoint `helloSsr` doesn't exist."));
+  // Unlike on the browser-side, when using the telefunc client
+  // on the server-side we do always throw an error.
+  setProd();
+
+  assert(
+    err.message ===
+      "[Telefunc][Wrong Usage] Endpoint `missingEndpoint` does not exist. Make sure that your file that defines `missingEndpoint` is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it. For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well. Alternatively, manually load your file with `require`/`import`. Loaded endpoints: `notUsed`. (This error is not shown in production.)"
+  );
+
   assert(!err.stack.includes("You didn't define any endpoints."));
-  assert(!err.stack.includes("servus"));
+
   assertStderr(null);
+
+  unsetProd();
 }
 
 async function endpointReturnsUnserializable({
@@ -245,4 +278,14 @@ async function wrongEndpointFunction({ server }) {
       )
     );
   }
+}
+
+function setProd() {
+  assert(process.env.NODE_ENV === undefined);
+  process.env.NODE_ENV = "production";
+}
+function unsetProd() {
+  assert(process.env.NODE_ENV === "production");
+  delete process.env.NODE_ENV;
+  assert(process.env.NODE_ENV === undefined);
 }

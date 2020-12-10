@@ -48,7 +48,6 @@ type ConfigName = keyof Config;
 // Usage Error
 type MalformedRequest = {
   httpBodyErrorText: string & { _brand?: "HttpBodyErrorText" };
-  endpointDoesNotExist?: boolean & { _brand?: "endpointDoesNotExist" };
 };
 type MalformedIntegration = UsageError;
 type WrongApiUsage = UsageError;
@@ -200,12 +199,7 @@ async function _getApiHttpResponse(
     malformedIntegration,
     isNotTelefuncRequest,
     isHumanMode,
-  }: RequestInfo = parseRequestInfo(
-    requestProps,
-    endpoints,
-    config,
-    universalAdapterName
-  );
+  }: RequestInfo = parseRequestInfo(requestProps, config, universalAdapterName);
 
   if (isNotTelefuncRequest) {
     return null;
@@ -220,6 +214,10 @@ async function _getApiHttpResponse(
   }
 
   assert(endpointName && endpointArgs);
+
+  if (!endpointExists(endpointName, endpoints)) {
+    return handleEndpointMissing(endpointName, endpoints);
+  }
 
   const {
     endpointResult,
@@ -255,14 +253,16 @@ async function directCall(
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
 
-  if (noEndpoints(endpoints)) {
+  if (noEndpointsDefined(endpoints)) {
     autoLoadEndpointFiles();
   }
 
-  assertUsage(
-    doesEndpointExist(endpointName, endpoints),
-    getEndpointMissingText(endpointName, endpoints).join(" ")
-  );
+  {
+    const isMissing = !endpointExists(endpointName, endpoints);
+    if (isMissing) {
+      assertUsage(false, getEndpointMissingText(endpointName, endpoints));
+    }
+  }
 
   const {
     endpointResult,
@@ -303,10 +303,6 @@ async function runEndpoint(
   assert(endpointArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
-  const endpoint: EndpointFunction = endpoints[endpointName];
-  assert(endpoint);
-  assert(endpointIsValid(endpoint));
-
   const { contextProxy, contextModifications } = createContextProxy(
     context,
     endpointName,
@@ -316,6 +312,10 @@ async function runEndpoint(
   );
   assert(contextProxy !== undefined);
   assert(contextProxy instanceof Object);
+
+  const endpoint: EndpointFunction = endpoints[endpointName];
+  assert(endpoint);
+  assert(endpointIsValid(endpoint));
 
   let endpointResult: EndpointResult | undefined;
   let endpointError: EndpointError | undefined;
@@ -331,6 +331,13 @@ async function runEndpoint(
 
 function endpointIsValid(endpoint: EndpointFunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
+}
+
+function endpointExists(
+  endpointName: EndpointName,
+  endpoints: Endpoints
+): boolean {
+  return endpointName in endpoints;
 }
 
 function validateEndpoint(
@@ -584,7 +591,6 @@ function getContextUsageNote(
 
 function parseRequestInfo(
   requestProps: HttpRequestProps,
-  endpoints: Endpoints,
   config: Config,
   universalAdapterName: UniversalAdapterName
 ): RequestInfo {
@@ -615,18 +621,6 @@ function parseRequestInfo(
   if (malformationError__pathname) {
     return {
       malformedRequest: malformationError__pathname,
-      endpointName,
-      isHumanMode,
-    };
-  }
-
-  if (!doesEndpointExist(endpointName, endpoints)) {
-    const endpointMissingText = getEndpointMissingText(endpointName, endpoints);
-    return {
-      malformedRequest: {
-        endpointDoesNotExist: true,
-        httpBodyErrorText: endpointMissingText.join("\n\n"),
-      },
       endpointName,
       isHumanMode,
     };
@@ -804,7 +798,7 @@ function handleInternalError(internalError: Error): HttpResponseProps {
   const msg =
     "[Telefunc][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack. ";
   internalError = addMessage(internalError, msg);
-  console.error(internalError);
+  handleError(internalError);
   return HttpResponse_serverSideError();
 }
 function addMessage(err: Error, msg: string): Error {
@@ -825,21 +819,21 @@ function addMessage(err: Error, msg: string): Error {
   return err;
 }
 function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
-  console.error(endpointError);
+  handleError(endpointError);
   return HttpResponse_serverSideError();
 }
 function handleContextError(contextError: ContextError): HttpResponseProps {
-  console.error(contextError);
+  handleError(contextError);
   return HttpResponse_serverSideError();
 }
 function handleWrongApiUsage(wrongApiUsage: WrongApiUsage): HttpResponseProps {
-  console.error(wrongApiUsage);
+  handleError(wrongApiUsage);
   return HttpResponse_serverSideError();
 }
 function handleMalformedIntegration(
   malformedIntegration: MalformedIntegration
 ): HttpResponseProps {
-  console.error(malformedIntegration);
+  handleError(malformedIntegration);
   return HttpResponse_serverSideError();
 }
 function HttpResponse_serverSideError(): HttpResponseProps {
@@ -855,7 +849,7 @@ function handleMalformedRequest(
   // We do NOT print any error on the server-side
   // We only print the malformation error on the browser-side
   // Because it's not a server-side bug but a browser-side bug
-  const statusCode = malformedRequest.endpointDoesNotExist ? 404 : 400;
+  const statusCode = 400;
   const { httpBodyErrorText } = malformedRequest;
   return HttpResponse_browserSideError(statusCode, httpBodyErrorText);
 }
@@ -868,6 +862,64 @@ function HttpResponse_browserSideError(
     body: httpBodyErrorText,
     contentType: "text/plain",
   };
+}
+function handleEndpointMissing(
+  endpointName: EndpointName,
+  endpoints: Endpoints
+): HttpResponseProps {
+  // Avoid flooding of server-side error logs
+  if (!isProduction() || noEndpointsDefined(endpoints)) {
+    const errorText = getEndpointMissingText(endpointName, endpoints);
+    const errorMissingEndpoint = getUsageError(errorText);
+    handleError(errorMissingEndpoint);
+  }
+  return {
+    statusCode: 404,
+    body: `Endpoint \`${endpointName}\` does not exist. Check the server-side error for more information.`,
+    contentType: "text/plain",
+  };
+}
+function getEndpointMissingText(
+  endpointName: EndpointName,
+  endpoints: Endpoints
+): string {
+  assert(!endpointExists(endpointName, endpoints));
+
+  const noEndpoints = noEndpointsDefined(endpoints);
+
+  const endpointMissingText = [
+    "Endpoint `" + endpointName + "` does not exist.",
+  ];
+
+  if (noEndpoints) {
+    // TODO: rename to telefunction
+    endpointMissingText.push("You didn't define any endpoint.");
+  }
+
+  endpointMissingText.push(
+    [
+      "Make sure that your file that defines",
+      "`" + endpointName + "`",
+      // TODO: rename to `telefunc.js`
+      "is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it.",
+      "For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well.",
+      "Alternatively, manually load your file with `require`/`import`.",
+    ].join(" ")
+  );
+
+  if (!noEndpoints) {
+    endpointMissingText.push(
+      `Loaded endpoints: ${getEndpointNames(endpoints)
+        .map((name) => `\`${name}\``)
+        .join(", ")}.`
+    );
+  }
+
+  if (!noEndpoints) {
+    endpointMissingText.push("(This error is not shown in production.)");
+  }
+
+  return endpointMissingText.join(" ");
 }
 
 function handleEndpointResult(
@@ -962,37 +1014,13 @@ function getBodyUsageNote(
   ].join(" ");
 }
 
-function doesEndpointExist(endpointName: EndpointName, endpoints: Endpoints) {
-  const endpoint: EndpointFunction | undefined = endpoints[endpointName];
-  return !!endpoint;
-}
-function noEndpoints(endpoints: Endpoints) {
+function noEndpointsDefined(endpoints: Endpoints) {
   const endpointNames = getEndpointNames(endpoints);
   return endpointNames.length === 0;
 }
 
-function getEndpointMissingText(
-  endpointName: EndpointName,
-  endpoints: Endpoints
-): string[] {
-  const endpointMissingText = [
-    "Endpoint `" + endpointName + "` doesn't exist.",
-  ];
-
-  if (noEndpoints(endpoints)) {
-    endpointMissingText.push("You didn't define any endpoints.");
-  }
-
-  endpointMissingText.push(
-    "Make sure that the file that defines `" +
-      endpointName +
-      "` is named `endpoints.js` or `*.endpoints.js`: Telefunc automatically loads any file with such a name.",
-    "Alternatively, you can manually load your endpoint files: `require('./path/to/file-that-defines-" +
-      endpointName +
-      ".js')`."
-  );
-
-  return endpointMissingText;
+function isProduction(): boolean {
+  return process.env.NODE_ENV === "production";
 }
 
 function assertNodejs() {
@@ -1120,6 +1148,10 @@ function getFunctionName(fn: (...args: any[]) => any): string {
     return name.slice(PREFIX.length);
   }
   return name;
+}
+
+function handleError(err: Error): void {
+  console.error(err);
 }
 
 function loadTimeStuff() {
