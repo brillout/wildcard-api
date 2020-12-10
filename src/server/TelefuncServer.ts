@@ -219,11 +219,7 @@ async function _getApiHttpResponse(
     return handleMalformedIntegration(malformedIntegration);
   }
 
-  if (!endpointName || !endpointArgs) {
-    assert(false);
-    // Make TS happy
-    throw new Error();
-  }
+  assert(endpointName && endpointArgs);
 
   const {
     endpointResult,
@@ -898,11 +894,7 @@ function handleEndpointResult(
     return handleEndpointError(endpointError);
   }
 
-  if (body === undefined) {
-    assert(false);
-    // Make TS happy
-    throw new Error();
-  }
+  assert(body !== undefined);
   assert(body.constructor === String);
 
   const responseProps: HttpResponseProps = {
