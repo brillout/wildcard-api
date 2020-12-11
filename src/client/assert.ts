@@ -3,7 +3,7 @@ import { createError } from "@brillout/libassert";
 export { assert };
 export { assertUsage };
 
-const libName = "Telefunc Client";
+const libName = "Telefunc";
 
 function assert(condition: unknown): asserts condition {
   if (condition) {

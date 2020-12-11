@@ -7,7 +7,7 @@ export { getUsageError };
 export { UsageError };
 export { internalErroPrefix };
 
-const libName = "Telefunc Server";
+const libName = "Telefunc";
 
 function assert(condition: unknown): asserts condition {
   if (condition) {
