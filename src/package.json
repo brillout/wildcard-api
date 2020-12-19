@@ -1,6 +1,6 @@
 {
   "name": "telefunc",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Remote functions instead of GraphQL/REST. #NoAPI.",
   "repository": "https://github.com/telefunc/telefunc",
   "homepage": "https://telefunc.org",
