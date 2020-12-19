@@ -3,7 +3,7 @@
   "version": "0.0.25",
   "description": "Remote functions instead of GraphQL/REST. #NoAPI.",
   "repository": "https://github.com/telefunc/telefunc",
-  "homepage": "https://lsos.org",
+  "homepage": "https://telefunc.org",
   "main": "index.js",
   "dependencies": {
     "@brillout/fetch": "^0.2.1",
