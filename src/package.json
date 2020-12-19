@@ -11,9 +11,9 @@
     "@brillout/libassert": "^0.2.2",
     "@brillout/project-files": "^0.4.2",
     "@brillout/url-props": "^0.1.1",
-    "@universal-adapter/express": "^0.7.3",
-    "@universal-adapter/hapi": "^0.7.3",
-    "@universal-adapter/koa": "^0.7.3",
+    "@universal-adapter/express": "^0.8.0",
+    "@universal-adapter/hapi": "^0.8.0",
+    "@universal-adapter/koa": "^0.8.0",
     "cookie": "^0.4.1",
     "lsos": "^0.1.1"
   },
