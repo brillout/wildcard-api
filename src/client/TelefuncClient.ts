@@ -401,6 +401,6 @@ function loadTimeStuff() {
   verify({
     projectName: "Telefunc",
     npm: "telefunc",
-    onlyWarning: true,
+    trustMode: true,
   });
 }
