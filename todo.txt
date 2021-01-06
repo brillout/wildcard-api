@@ -1,3 +1,7 @@
+- New Context API
+ - assert presence of headers in getApiHttpResponse
+
+
 - Avoid user's TS to autocomplete internal interfaces
 - SSR + New context management
 - Remove wrong signature warning

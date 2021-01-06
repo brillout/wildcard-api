@@ -515,7 +515,7 @@ async function contextImmutable({
   } catch (err) {
     assert(
       err.stack.includes(
-        "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
+        "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
       )
     );
   }

@@ -128,8 +128,9 @@ async function API({ browserEval }) {
   );
   assert(telefunc_server.getApiHttpResponse);
   assert(telefunc_server.setSecretKey);
-  assert(telefunc_server.getContextFromCookie);
-  assert(Object.keys(telefunc_server).length === 5);
+  assert(telefunc_server.getContextFromCookie); // TODO
+  assert(telefunc_server.getContext);
+  assert(Object.keys(telefunc_server).length === 6);
 
   const telefunc_client = require("telefunc/client");
   assert(telefunc_client.server);

@@ -17,6 +17,7 @@ import {
   __secretKey,
   SecretKey,
 } from "./sessions";
+import { IncomingMessage } from "http";
 
 export { TelefuncServer };
 
@@ -125,6 +126,7 @@ class TelefuncServer {
   config: Config = getConfigProxy(configDefault);
   setSecretKey = __setSecretKey.bind(this);
   getContextFromCookie = getContextFromCookie.bind(this);
+  getContext = getContext.bind(this);
   [__secretKey]: SecretKey = null;
 
   /**
@@ -132,6 +134,7 @@ class TelefuncServer {
    * @param requestProps.url HTTP request URL
    * @param requestProps.method HTTP request method
    * @param requestProps.body HTTP request body
+   * @param requestProps.headers HTTP request headers
    * @param context The context object - the endpoint functions' `this`.
    * @returns HTTP response
    */
@@ -153,7 +156,7 @@ class TelefuncServer {
         __INTERNAL_universalAdapter
       );
     } catch (internalError) {
-      // There is a bug in the Telefunc source code
+      // In case there is a bug in the Telefunc source code
       return handleInternalError(internalError);
     }
   }
@@ -187,7 +190,7 @@ async function _getApiHttpResponse(
   }
 
   try {
-    context = await getContext(requestProps.headers, context, secretKey);
+    context = await getContext_todo(requestProps.headers, context, secretKey);
   } catch (contextError) {
     return handleContextError(contextError);
   }
@@ -304,7 +307,7 @@ async function runEndpoint(
   assert(endpointArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
-  const { contextProxy, contextModifications } = createContextProxy(
+  const { contextProxy, contextModifications } = createContextWritableProxy(
     context,
     endpointName,
     isDirectCall,
@@ -313,6 +316,13 @@ async function runEndpoint(
   );
   assert(contextProxy !== undefined);
   assert(contextProxy instanceof Object);
+
+  {
+    const httpRequestHook = getHttpRequestHook();
+    if (httpRequestHook) {
+      httpRequestHook.contextProxy = contextProxy;
+    }
+  }
 
   const endpoint: EndpointFunction = endpoints[endpointName];
   assert(endpoint);
@@ -517,7 +527,7 @@ function getConfigProxy(configDefaults: Config): Config {
   }
 }
 
-function createContextProxy(
+function createContextWritableProxy(
   context: Context,
   endpointName: EndpointName,
   isDirectCall: IsDirectCall,
@@ -532,7 +542,7 @@ function createContextProxy(
   function set(_: ContextObject, contextName: string, contextValue: unknown) {
     assertUsage(
       !isDirectCall,
-      "The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client server-side in Node.js."
+      "The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
     );
     assertUsage(
       secretKey,
@@ -555,6 +565,20 @@ function createContextProxy(
     );
 
     return contextObj[contextProp];
+  }
+}
+
+function createContextReadonlyProxy(contextObj: ContextObject): ContextObject {
+  const contextProxy: ContextObject = new Proxy(contextObj, { set });
+  return contextProxy;
+
+  function set(_: any, contextName: string) {
+    assertUsage(
+      false,
+      `You are trying to change the context property \`${contextName}\` outside of a telefunction call, but context can be changed only within a telefunction.`
+    );
+    // Make TS happy
+    return false;
   }
 }
 
@@ -1041,7 +1065,7 @@ function assertNodejs() {
 function getContextFromCookie(
   this: TelefuncServer,
   cookie: string | null | undefined
-) {
+): ContextObject {
   assertUsage(
     this[__secretKey],
     "`setSecretKey()` needs to be called before calling `getContextFromCookie()`."
@@ -1054,7 +1078,154 @@ function getContextFromCookie(
   return __getContextFromCookie(secretKey, cookie) || {};
 }
 
-async function getContext(
+const asyncHooks = require("async_hooks");
+type HttpRequestHook = {
+  descendents: number[];
+  incomingMsg: IncomingMessage;
+  contextProxy: ContextObject | null;
+};
+const httpRequests: Record<number, HttpRequestHook> = {};
+const requestMap: Record<number, number> = {};
+function installAsyncHook() {
+  const asyncHook = asyncHooks.createHook({
+    init: (
+      asyncId: number,
+      type: string,
+      triggerAsyncId: number,
+      resource: unknown
+    ) => {
+      let httpRequestId;
+
+      // if (type === 'HTTPCLIENTREQUEST')
+      // if (type === "HTTPCLIENTREQUEST") {
+      if (type === "HTTPCLIENTREQUEST" || type === "HTTPINCOMINGMESSAGE") {
+        httpRequestId = asyncId;
+        assert(!(httpRequestId in httpRequests));
+        httpRequests[httpRequestId] = {
+          incomingMsg: resource as IncomingMessage,
+          descendents: [],
+          contextProxy: null,
+        };
+        // TODO: check if request headers are accessible from here
+        // console.log('init', resource);
+        if ((resource as any)._headers) {
+          process.exit(1);
+        }
+        //process.exit(1);
+      }
+
+      /*
+      if (type === "PROMISE" || type === "TIMEOUT") {
+        print("init", resource);
+      }
+      */
+
+      if (!httpRequestId) {
+        httpRequestId = requestMap[triggerAsyncId];
+      }
+
+      if (httpRequestId) {
+        httpRequests[httpRequestId].descendents.push(asyncId);
+        assert(!(asyncId in requestMap));
+        requestMap[asyncId] = httpRequestId;
+      }
+    },
+    /*
+    before: (asyncId) => {
+      const meta = this._tracked[asyncId];
+      if (meta) printMeta("before", meta);
+    },
+    after: (asyncId) => {
+      const meta = this._tracked[asyncId];
+      if (meta) printMeta("after", meta);
+    },
+    promiseResolve: (asyncId) => {
+      const meta = this._tracked[asyncId];
+      if (meta) printMeta("promiseResolve", meta);
+    },
+    */
+    destroy: (asyncId: number) => {
+      if (!(asyncId in httpRequests)) return;
+      const httpRequestId = asyncId;
+      for (const id of httpRequests[httpRequestId].descendents) {
+        assert(requestMap[id] === httpRequestId);
+        delete requestMap[id];
+      }
+      delete httpRequests[httpRequestId];
+    },
+  });
+  asyncHook.enable();
+}
+installAsyncHook();
+
+function getContext<Context extends Record<string, unknown>>(
+  this: TelefuncServer
+): Context {
+  return _getContext.bind(this)() as Context;
+}
+
+function _getContext(this: TelefuncServer): ContextObject {
+  const httpRequestHook = getHttpRequestHook();
+  assertUsage(
+    httpRequestHook,
+    "TODO- Calling `getContext()` outside the lifetime of an HTTP request. On the server-side, `getContext()` always needs to be called within the lifetime of an HTTP request: make sure to call `getContext()` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
+  );
+
+  if (httpRequestHook.contextProxy) {
+    return httpRequestHook.contextProxy;
+  }
+
+  const headers = retrieveRequestHeaders(httpRequestHook);
+  if (!headers?.cookie) return {};
+  const { cookie } = headers;
+
+  const secretKey = this[__secretKey];
+  if (!secretKey) return {};
+
+  const retrievedContext = __getContextFromCookie(secretKey, cookie) || {};
+  httpRequestHook.contextProxy = createContextReadonlyProxy(retrievedContext);
+
+  return httpRequestHook.contextProxy;
+}
+
+function getHttpRequestHook(): HttpRequestHook | null {
+  const asyncId = asyncHooks.executionAsyncId();
+  const httpRequestId = requestMap[asyncId];
+  if (!httpRequestId) return null;
+  const httpRequest = httpRequests[httpRequestId];
+  assert(httpRequest);
+  return httpRequest;
+}
+
+function retrieveRequestHeaders(
+  httpRequestHook: HttpRequestHook
+): Record<string, string> | null {
+  const { incomingMsg } = httpRequestHook;
+
+  /*
+  console.log(0, incomingMsg);
+  console.log(1, Object.keys(incomingMsg));
+  console.log(2, incomingMsg.headers);
+  console.log(3, incomingMsg._headers);
+  console.log(4, incomingMsg.rawHeaders);
+  console.log(5, incomingMsg.type);
+  console.log(5, Object.keys(incomingMsg.socket));
+  console.log(5, incomingMsg.socket.parser);
+  console.log(5, incomingMsg.socket._httpMessage.socket.parser._headers);
+  console.log(5, incomingMsg.socket.parser.incoming.headers);
+  */
+
+  const headers =
+    (incomingMsg?.socket as any)?.parser?.incoming?.headers || null;
+  return headers;
+}
+
+function useContext(data: unknown) {
+  const eid = asyncHooks.executionAsyncId();
+  console.log(eid);
+}
+
+async function getContext_todo(
   headers: HttpRequestHeaders | undefined,
   context: Context | ContextGetter,
   secretKey: SecretKey

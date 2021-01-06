@@ -41,7 +41,9 @@ const httpPort = 3442;
 
   const { standardTests, integrationTests } = getTests();
 
-  const debugMode = standardTests.length + integrationTests.length <= 1;
+  const debugMode =
+    standardTests.length + integrationTests.length <= 1 ||
+    process.argv.includes("--debug");
 
   await runStandardTests({
     standardTests,
@@ -171,7 +173,9 @@ async function runTest({
   try {
     if (testFailure) throw testFailure;
     await checkStderr({ expectedStderr, stderrLogs });
-    await checkStdout(stdoutLogs);
+    if (!debugMode) {
+      await checkStdout(stdoutLogs);
+    }
   } catch (err) {
     log_collector.flush();
     console.error(err);
@@ -433,11 +437,10 @@ function getTests() {
   }
 }
 function getSelectedTest() {
-  return getCLIArgument();
-}
-function getCLIArgument() {
-  assert([2, 3].includes(process.argv.length));
-  return process.argv[2];
+  let cliArgs = process.argv.slice(2);
+  cliArgs = cliArgs.filter((arg) => arg !== "--debug");
+  assert(cliArgs.length <= 1);
+  return cliArgs[0];
 }
 
 function LogCollector({ debugMode }) {

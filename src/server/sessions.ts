@@ -18,7 +18,7 @@ import {
   ContextObject,
   TelefuncServer,
 } from "./TelefuncServer";
-import { assertUsage, assertWarning } from "./assert";
+import { assertUsage, assertWarning, assert } from "./assert";
 import cookieModule = require("cookie");
 
 export { __getContextFromCookie };
@@ -114,6 +114,8 @@ function getSetCookieHeader(
       contextValue: unknown
     ]) => {
       const contextSerialized = serializeContext(contextValue);
+      assert(secretKey !== null);
+      assert(secretKey);
       cookies.push(
         ...[
           {
@@ -126,10 +128,7 @@ function getSetCookieHeader(
           },
           {
             cookieName: COOKIE_SIGNATURE_NAME + contextName,
-            cookieValue: computeSignature(
-              contextSerialized,
-              secretKey as string
-            ),
+            cookieValue: computeSignature(contextSerialized, secretKey),
             cookieOptions: {
               path,
               maxAge,
@@ -168,6 +167,7 @@ function computeSignature(
   contextValueSerialized: string,
   secretKey: string
 ): string {
+  assert(secretKey);
   const hmac = createHmac("SHA256", secretKey);
   const hash = hmac.update(contextValueSerialized).digest("hex");
   return hash;

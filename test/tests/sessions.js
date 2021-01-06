@@ -38,11 +38,18 @@ async function contextChange_getApiHttpResponse({
   );
 }
 
-async function contextChange({ server, browserEval, setSecretKey }) {
+async function contextChange({
+  server,
+  browserEval,
+  setSecretKey,
+  telefuncServer,
+}) {
   setSecretKey("quieahbcqbohiawlubcsbi*&@381y87wqiwdhawbl");
 
   server.login = async function (name) {
-    this.user = name;
+    const context = telefuncServer.getContext();
+    context.user = name;
+    // this.user = name;
   };
   server.whoAmI = async function () {
     return "You are: " + this.user;
