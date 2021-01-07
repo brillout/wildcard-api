@@ -1081,7 +1081,7 @@ function getContextFromCookie(
 const asyncHooks = require("async_hooks");
 type HttpRequestHook = {
   descendents: number[];
-  incomingMsg: IncomingMessage;
+  getHeaders: () => HttpRequestHeaders;
   contextProxy: ContextObject | null;
 };
 const httpRequests: Record<number, HttpRequestHook> = {};
@@ -1102,7 +1102,7 @@ function installAsyncHook() {
         httpRequestId = asyncId;
         assert(!(httpRequestId in httpRequests));
         httpRequests[httpRequestId] = {
-          incomingMsg: resource as IncomingMessage,
+          getHeaders: () => retrieveRequestHeaders(resource as IncomingMessage),
           descendents: [],
           contextProxy: null,
         };
@@ -1175,7 +1175,7 @@ function _getContext(this: TelefuncServer): ContextObject {
     return httpRequestHook.contextProxy;
   }
 
-  const headers = retrieveRequestHeaders(httpRequestHook);
+  const headers = httpRequestHook.getHeaders();
   if (!headers?.cookie) return {};
   const { cookie } = headers;
 
@@ -1198,10 +1198,8 @@ function getHttpRequestHook(): HttpRequestHook | null {
 }
 
 function retrieveRequestHeaders(
-  httpRequestHook: HttpRequestHook
-): Record<string, string> | null {
-  const { incomingMsg } = httpRequestHook;
-
+  incomingMsg: IncomingMessage
+): HttpRequestHeaders {
   /*
   console.log(0, incomingMsg);
   console.log(1, Object.keys(incomingMsg));
@@ -1215,8 +1213,8 @@ function retrieveRequestHeaders(
   console.log(5, incomingMsg.socket.parser.incoming.headers);
   */
 
-  const headers =
-    (incomingMsg?.socket as any)?.parser?.incoming?.headers || null;
+  const headers = (incomingMsg?.socket as any)?.parser?.incoming?.headers;
+  assert(headers);
   return headers;
 }
 
