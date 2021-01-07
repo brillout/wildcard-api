@@ -144,7 +144,11 @@ class TelefuncServer {
     /** @ignore */
     {
       __INTERNAL_universalAdapter,
-    }: { __INTERNAL_universalAdapter?: UniversalAdapterName } = {}
+      __INTERNAL_requestMock,
+    }: {
+      __INTERNAL_universalAdapter?: UniversalAdapterName;
+      __INTERNAL_requestMock?: HttpRequestProps;
+    } = {}
   ): Promise<HttpResponseProps | null> {
     try {
       return await _getApiHttpResponse(
@@ -177,13 +181,26 @@ class TelefuncServer {
 }
 
 async function _getApiHttpResponse(
-  requestProps: HttpRequestProps,
+  _: HttpRequestProps, // TODO
   context: Context | ContextGetter | undefined,
   endpoints: Endpoints,
   config: Config,
   secretKey: SecretKey,
   universalAdapterName: UniversalAdapterName
 ): Promise<HttpResponseProps | null> {
+  // ensureContextHook();
+  {
+    let contextHook = getContextHook();
+    if (!contextHook) {
+      createContextFallbackHook(_);
+    }
+  }
+  const contextHook = getContextHook();
+  assert(contextHook);
+  const requestProps = contextHook.getRequestProps();
+  // TODO
+  // cleaupContextHook();
+
   const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
   if (wrongApiUsage) {
     return handleWrongApiUsage(wrongApiUsage);
@@ -318,10 +335,8 @@ async function runEndpoint(
   assert(contextProxy instanceof Object);
 
   {
-    let contextHook = getContextHook();
-    if (!contextHook) {
-      contextHook = createContextFallbackHook();
-    }
+    const contextHook = getContextHook();
+    assert(contextHook);
     contextHook.contextProxy = contextProxy;
   }
 
@@ -1084,13 +1099,15 @@ const asyncHooks = require("async_hooks");
 type AsyncId = number;
 type HttpRequestHook = {
   descendents: AsyncId[];
-  getHeaders: () => HttpRequestHeaders | null;
+  getRequestProps: () => HttpRequestProps;
   contextProxy: ContextObject | null;
   isFallbackHook: boolean;
 };
 const contextHooks: Record<AsyncId, HttpRequestHook> = {};
 const contextHooksMap: Record<AsyncId, AsyncId> = {};
-function createContextFallbackHook(): HttpRequestHook {
+function createContextFallbackHook(
+  requestProps: HttpRequestProps
+): HttpRequestHook {
   {
     const contextHook = getContextHook();
     assert(contextHook === null);
@@ -1098,23 +1115,18 @@ function createContextFallbackHook(): HttpRequestHook {
 
   const asyncId = asyncHooks.executionAsyncId();
 
-  const contextHook = createContextHook(asyncId, true);
+  const getRequestProps = () => requestProps;
+  const contextHook = createContextHook(asyncId, true, getRequestProps);
   return contextHook;
 }
 function createContextHook(
   contextHookId: AsyncId,
   isFallbackHook: boolean,
-  incomingMessage?: IncomingMessage
+  getRequestProps: () => HttpRequestProps
 ): HttpRequestHook {
   assert(!(contextHookId in contextHooks));
   const contextHook = {
-    getHeaders: () => {
-      if (isFallbackHook) {
-        return null;
-      }
-      assert(incomingMessage);
-      return retrieveRequestHeaders(incomingMessage);
-    },
+    getRequestProps,
     descendents: [],
     contextProxy: null,
     isFallbackHook,
@@ -1144,7 +1156,13 @@ function installAsyncHook() {
       resource: unknown
     ) => {
       if (type === "HTTPINCOMINGMESSAGE") {
-        createContextHook(asyncId, false, resource as IncomingMessage);
+        const getRequestProps = () => {
+          const incomingMsg = resource as IncomingMessage;
+          assert(incomingMsg);
+          inspectIncomingMessage(incomingMsg);
+          return retrieveRequestProps(incomingMsg);
+        };
+        createContextHook(asyncId, false, getRequestProps);
       } else {
         const contextHookId = contextHooksMap[triggerAsyncId];
         if (contextHookId) addDescendent(contextHookId, asyncId);
@@ -1177,7 +1195,7 @@ function _getContext(this: TelefuncServer): ContextObject {
     return httpRequestHook.contextProxy;
   }
 
-  const headers = httpRequestHook.getHeaders();
+  const { headers } = httpRequestHook.getRequestProps();
   if (!headers?.cookie) return {};
   const { cookie } = headers;
 
@@ -1199,25 +1217,28 @@ function getContextHook(): HttpRequestHook | null {
   return httpRequest;
 }
 
-function retrieveRequestHeaders(
-  incomingMsg: IncomingMessage
-): HttpRequestHeaders {
-  /*
-  console.log(0, incomingMsg);
-  console.log(1, Object.keys(incomingMsg));
-  console.log(2, incomingMsg.headers);
-  console.log(3, incomingMsg._headers);
-  console.log(4, incomingMsg.rawHeaders);
-  console.log(5, incomingMsg.type);
-  console.log(5, Object.keys(incomingMsg.socket));
-  console.log(5, incomingMsg.socket.parser);
-  console.log(5, incomingMsg.socket._httpMessage.socket.parser._headers);
-  console.log(5, incomingMsg.socket.parser.incoming.headers);
-  */
-
-  const headers = (incomingMsg?.socket as any)?.parser?.incoming?.headers;
-  assert(headers);
-  return headers;
+function inspectIncomingMessage(incomingMsg: IncomingMessage) {
+  console.log("incomingMsg.url");
+  console.log((incomingMsg as any)?.url);
+  console.log("incomingMsg.complete");
+  console.log((incomingMsg as any)?.complete);
+  console.log("Object.keys(incomingMsg)");
+  console.log(Object.keys(incomingMsg));
+  console.log("incomingMsg.socker.parser.incoming.complete");
+  console.log((incomingMsg as any)?.socket?.parser?.incoming?.complete);
+  console.log("incomingMsg.socker.parser.incoming.url");
+  console.log((incomingMsg as any)?.socket?.parser?.incoming?.url);
+  console.log("incomingMsg.socker.parser.incoming.method");
+  console.log((incomingMsg as any)?.socket?.parser?.incoming?.method);
+  console.log("incomingMsg.socker.parser.incoming.headers");
+  console.log((incomingMsg as any)?.socket?.parser?.incoming?.headers);
+}
+function retrieveRequestProps(incomingMsg: IncomingMessage): HttpRequestProps {
+  const { url, method, headers } =
+    (incomingMsg?.socket as any)?.parser?.incoming || {};
+  assert(url);
+  assert(method);
+  return { url, method, headers };
 }
 
 async function getContext_todo(
