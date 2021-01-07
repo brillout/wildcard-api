@@ -318,10 +318,11 @@ async function runEndpoint(
   assert(contextProxy instanceof Object);
 
   {
-    const httpRequestHook = getHttpRequestHook();
-    if (httpRequestHook) {
-      httpRequestHook.contextProxy = contextProxy;
+    let contextHook = getContextHook();
+    if (!contextHook) {
+      contextHook = createContextFallbackHook();
     }
+    contextHook.contextProxy = contextProxy;
   }
 
   const endpoint: EndpointFunction = endpoints[endpointName];
@@ -1079,79 +1080,80 @@ function getContextFromCookie(
 }
 
 const asyncHooks = require("async_hooks");
+//type AsyncId = number & { _brand?: "AsyncId" };
+type AsyncId = number;
 type HttpRequestHook = {
-  descendents: number[];
-  getHeaders: () => HttpRequestHeaders;
+  descendents: AsyncId[];
+  getHeaders: () => HttpRequestHeaders | null;
   contextProxy: ContextObject | null;
+  isFallbackHook: boolean;
 };
-const httpRequests: Record<number, HttpRequestHook> = {};
-const requestMap: Record<number, number> = {};
+const contextHooks: Record<AsyncId, HttpRequestHook> = {};
+const contextHooksMap: Record<AsyncId, AsyncId> = {};
+function createContextFallbackHook(): HttpRequestHook {
+  {
+    const contextHook = getContextHook();
+    assert(contextHook === null);
+  }
+
+  const asyncId = asyncHooks.executionAsyncId();
+
+  const contextHook = createContextHook(asyncId, true);
+  return contextHook;
+}
+function createContextHook(
+  contextHookId: AsyncId,
+  isFallbackHook: boolean,
+  incomingMessage?: IncomingMessage
+): HttpRequestHook {
+  assert(!(contextHookId in contextHooks));
+  const contextHook = {
+    getHeaders: () => {
+      if (isFallbackHook) {
+        return null;
+      }
+      assert(incomingMessage);
+      return retrieveRequestHeaders(incomingMessage);
+    },
+    descendents: [],
+    contextProxy: null,
+    isFallbackHook,
+  };
+  contextHooks[contextHookId] = contextHook;
+  addDescendent(contextHookId, contextHookId);
+  return contextHook;
+}
+function deleteContextHook(contextHookId: AsyncId) {
+  for (const id of contextHooks[contextHookId].descendents) {
+    assert(contextHooksMap[id] === contextHookId);
+    delete contextHooksMap[id];
+  }
+  delete contextHooks[contextHookId];
+}
+function addDescendent(contextHookId: AsyncId, asyncId: AsyncId) {
+  contextHooks[contextHookId].descendents.push(asyncId);
+  assert(!(asyncId in contextHooksMap));
+  contextHooksMap[asyncId] = contextHookId;
+}
 function installAsyncHook() {
   const asyncHook = asyncHooks.createHook({
     init: (
-      asyncId: number,
+      asyncId: AsyncId,
       type: string,
-      triggerAsyncId: number,
+      triggerAsyncId: AsyncId,
       resource: unknown
     ) => {
-      let httpRequestId;
-
-      // if (type === 'HTTPCLIENTREQUEST')
-      // if (type === "HTTPCLIENTREQUEST") {
-      if (type === "HTTPCLIENTREQUEST" || type === "HTTPINCOMINGMESSAGE") {
-        httpRequestId = asyncId;
-        assert(!(httpRequestId in httpRequests));
-        httpRequests[httpRequestId] = {
-          getHeaders: () => retrieveRequestHeaders(resource as IncomingMessage),
-          descendents: [],
-          contextProxy: null,
-        };
-        // TODO: check if request headers are accessible from here
-        // console.log('init', resource);
-        if ((resource as any)._headers) {
-          process.exit(1);
-        }
-        //process.exit(1);
-      }
-
-      /*
-      if (type === "PROMISE" || type === "TIMEOUT") {
-        print("init", resource);
-      }
-      */
-
-      if (!httpRequestId) {
-        httpRequestId = requestMap[triggerAsyncId];
-      }
-
-      if (httpRequestId) {
-        httpRequests[httpRequestId].descendents.push(asyncId);
-        assert(!(asyncId in requestMap));
-        requestMap[asyncId] = httpRequestId;
+      if (type === "HTTPINCOMINGMESSAGE") {
+        createContextHook(asyncId, false, resource as IncomingMessage);
+      } else {
+        const contextHookId = contextHooksMap[triggerAsyncId];
+        if (contextHookId) addDescendent(contextHookId, asyncId);
       }
     },
-    /*
-    before: (asyncId) => {
-      const meta = this._tracked[asyncId];
-      if (meta) printMeta("before", meta);
-    },
-    after: (asyncId) => {
-      const meta = this._tracked[asyncId];
-      if (meta) printMeta("after", meta);
-    },
-    promiseResolve: (asyncId) => {
-      const meta = this._tracked[asyncId];
-      if (meta) printMeta("promiseResolve", meta);
-    },
-    */
-    destroy: (asyncId: number) => {
-      if (!(asyncId in httpRequests)) return;
-      const httpRequestId = asyncId;
-      for (const id of httpRequests[httpRequestId].descendents) {
-        assert(requestMap[id] === httpRequestId);
-        delete requestMap[id];
-      }
-      delete httpRequests[httpRequestId];
+    destroy: (asyncId: AsyncId) => {
+      if (!(asyncId in contextHooks)) return;
+      const contextHookId = asyncId;
+      deleteContextHook(contextHookId);
     },
   });
   asyncHook.enable();
@@ -1165,7 +1167,7 @@ function getContext<Context extends Record<string, unknown>>(
 }
 
 function _getContext(this: TelefuncServer): ContextObject {
-  const httpRequestHook = getHttpRequestHook();
+  const httpRequestHook = getContextHook();
   assertUsage(
     httpRequestHook,
     "TODO- Calling `getContext()` outside the lifetime of an HTTP request. On the server-side, `getContext()` always needs to be called within the lifetime of an HTTP request: make sure to call `getContext()` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
@@ -1188,11 +1190,11 @@ function _getContext(this: TelefuncServer): ContextObject {
   return httpRequestHook.contextProxy;
 }
 
-function getHttpRequestHook(): HttpRequestHook | null {
+function getContextHook(): HttpRequestHook | null {
   const asyncId = asyncHooks.executionAsyncId();
-  const httpRequestId = requestMap[asyncId];
-  if (!httpRequestId) return null;
-  const httpRequest = httpRequests[httpRequestId];
+  const contextHookId = contextHooksMap[asyncId];
+  if (!contextHookId) return null;
+  const httpRequest = contextHooks[contextHookId];
   assert(httpRequest);
   return httpRequest;
 }
@@ -1216,11 +1218,6 @@ function retrieveRequestHeaders(
   const headers = (incomingMsg?.socket as any)?.parser?.incoming?.headers;
   assert(headers);
   return headers;
-}
-
-function useContext(data: unknown) {
-  const eid = asyncHooks.executionAsyncId();
-  console.log(eid);
 }
 
 async function getContext_todo(

@@ -1,5 +1,6 @@
 - New Context API
  - assert presence of headers in getApiHttpResponse
+ - assert that there is no memory leak
 
 
 - Avoid user's TS to autocomplete internal interfaces
