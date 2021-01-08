@@ -20,9 +20,11 @@ async function basic_getApiHttpResponse({ server, telefuncServer }) {
   };
   const url = "https://example.org/_telefunc/overApi";
   const method = "POST";
+  const headers = {};
   const responseProps = await telefuncServer.getApiHttpResponse({
     url,
     method,
+    headers,
   });
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"bonjourno!"`);

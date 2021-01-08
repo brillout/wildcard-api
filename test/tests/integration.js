@@ -19,6 +19,7 @@ async function doesntIntefere1({ server, telefuncServer }) {
     const responseProps = await telefuncServer.getApiHttpResponse({
       method: "POST",
       url: "/_telefuncc",
+      headers: {},
     });
     assert(responseProps === null);
   }
@@ -26,6 +27,7 @@ async function doesntIntefere1({ server, telefuncServer }) {
     const responseProps = await telefuncServer.getApiHttpResponse({
       method: "POST",
       url: "/_telefunc/getme",
+      headers: {},
     });
     assert(responseProps.body === `"you got me"`);
   }

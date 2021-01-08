@@ -68,7 +68,7 @@ export type UniversalAdapterName = "express" | "koa" | "hapi" | undefined;
 export type HttpRequestProps = {
   url: HttpRequestUrl;
   method: HttpRequestMethod;
-  headers?: HttpRequestHeaders;
+  headers: HttpRequestHeaders;
   body?: HttpRequestBody;
 };
 // HTTP Response
@@ -1017,19 +1017,32 @@ function validateApiUsage(
   return;
   function validate() {
     assert(
-      (requestProps && requestProps.url && requestProps.method) ||
+      (requestProps &&
+        requestProps.url &&
+        requestProps.method &&
+        requestProps.headers &&
+        "body" in requestProps) ||
         !universalAdapterName
     );
-
-    const missArg = (args: string[]) =>
-      `Missing argument${args.length === 1 ? "" : "s"} ${args
-        .map((s) => "`" + s + "`")
-        .join(" and ")} while calling \`getApiHttpResponse()\`.`;
 
     const missingArguments = [];
     if (!requestProps?.url) missingArguments.push("url");
     if (!requestProps?.method) missingArguments.push("method");
-    assertUsage(missingArguments.length === 0, missArg(missingArguments));
+    if (!requestProps?.headers) missingArguments.push("headers");
+    assertUsage(
+      missingArguments.length === 0,
+      [
+        "`getApiHttpResponse()`:",
+        `missing argument${missingArguments.length === 1 ? "" : "s"}`,
+        missingArguments.map((s) => "`" + s + "`").join(" and "),
+      ].join(" ")
+    );
+
+    assertUsage(
+      requestProps.headers instanceof Object &&
+        !("length" in requestProps.headers),
+      "`getApiHttpResponse()`: argument `headers` should be a `instanceof Object`."
+    );
   }
 }
 

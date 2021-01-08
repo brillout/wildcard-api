@@ -1,5 +1,3 @@
-const { createServer } = require("./details");
-
 module.exports = [
   endpointMissing_noEndpoints_serverSide,
   endpointMissing_noEndpoints_clientSide,
@@ -12,6 +10,8 @@ module.exports = [
   wrongUsage_getApiHttpResponse_1,
   wrongUsage_getApiHttpResponse_2,
   wrongUsage_getApiHttpResponse_3,
+  wrongUsage_getApiHttpResponse_missingHeaders,
+  wrongUsage_getApiHttpResponse_wrongHeaders,
   wrongUsage_getApiHttpResponse_4,
 
   wrongEndpointFunction,
@@ -188,7 +188,7 @@ async function wrongUsage_getApiHttpResponse_1({
 }) {
   const responseProps = await telefuncServer.getApiHttpResponse();
   assertErrorResponse(responseProps);
-  assertStderr("Missing arguments `url` and `method`");
+  assertStderr("missing arguments `url` and `method` and `headers`");
 }
 async function wrongUsage_getApiHttpResponse_2({
   telefuncServer,
@@ -198,7 +198,7 @@ async function wrongUsage_getApiHttpResponse_2({
     method: "post",
   });
   assertErrorResponse(responseProps);
-  assertStderr("Missing argument `url`");
+  assertStderr("missing arguments `url` and `headers`");
 }
 async function wrongUsage_getApiHttpResponse_3({
   telefuncServer,
@@ -207,7 +207,34 @@ async function wrongUsage_getApiHttpResponse_3({
   const url = "https://example.org/_telefunc/ummm";
   const responseProps = await telefuncServer.getApiHttpResponse({ url });
   assertErrorResponse(responseProps);
-  assertStderr("Missing argument `method`");
+  assertStderr("missing arguments `method` and `headers`");
+}
+async function wrongUsage_getApiHttpResponse_missingHeaders({
+  telefuncServer,
+  assertStderr,
+}) {
+  const url = "https://example.org/_telefunc/ummm";
+  const responseProps = await telefuncServer.getApiHttpResponse({
+    url,
+    method: "POST",
+  });
+  assertErrorResponse(responseProps);
+  assertStderr("missing argument `headers`");
+}
+async function wrongUsage_getApiHttpResponse_wrongHeaders({
+  telefuncServer,
+  assertStderr,
+}) {
+  const url = "https://example.org/_telefunc/ummm";
+  const responseProps = await telefuncServer.getApiHttpResponse({
+    url,
+    method: "post",
+    headers: [],
+  });
+  assertErrorResponse(responseProps);
+  assertStderr(
+    "[Wrong Usage] `getApiHttpResponse()`: argument `headers` should be a `instanceof Object`"
+  );
 }
 async function wrongUsage_getApiHttpResponse_4({
   telefuncServer,
@@ -217,9 +244,10 @@ async function wrongUsage_getApiHttpResponse_4({
   const responseProps = await telefuncServer.getApiHttpResponse({
     url,
     method: "",
+    headers: {},
   });
   assertErrorResponse(responseProps);
-  assertStderr("Missing argument `method`");
+  assertStderr("missing argument `method`");
 }
 function assertErrorResponse(responseProps) {
   assert(responseProps.body === "Internal Server Error");

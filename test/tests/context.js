@@ -281,6 +281,7 @@ async function defineWith_getApiHttpResponse({ server, telefuncServer }) {
   };
   const url = "https://example.org/_telefunc/square";
   const method = "POST";
+  const headers = {};
 
   await req({ num: 3 }, "9");
   await req(function () {
@@ -294,7 +295,7 @@ async function defineWith_getApiHttpResponse({ server, telefuncServer }) {
 
   async function req(context, result) {
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 200);
@@ -309,9 +310,10 @@ async function setContextReturnsUndefined_getApiHttpResponse({
   server.boringEndpoint = function () {};
   const url = "https://example.org/_telefunc/boringEndpoint";
   const method = "POST";
+  const headers = {};
   const myCtxFunc = async () => undefined;
   const responseProps = await telefuncServer.getApiHttpResponse(
-    { url, method },
+    { url, method, headers },
     myCtxFunc
   );
   assert(responseProps.statusCode === 500);
@@ -335,9 +337,10 @@ async function undefinedContext_getApiHttpResponse({
   {
     const url = "https://example.org/_telefunc/without_context/";
     const method = "POST";
+    const headers = {};
     const context = undefined;
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 200);
@@ -347,9 +350,10 @@ async function undefinedContext_getApiHttpResponse({
   {
     const url = "https://example.org/_telefunc/with_context";
     const method = "POST";
+    const headers = {};
     const context = undefined;
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 500);
@@ -365,6 +369,7 @@ async function wrongContext_getApiHttpResponse({
 }) {
   const url = "https://example.org/_telefunc/ummm";
   const method = "GET";
+  const headers = {};
 
   await req(null);
   await req(123);
@@ -372,7 +377,7 @@ async function wrongContext_getApiHttpResponse({
 
   async function req(context) {
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 500);
@@ -390,6 +395,7 @@ async function emptyContext_getApiHttpResponse({ server, telefuncServer }) {
   };
   const url = "https://example.org/_telefunc/contexti3";
   const method = "POST";
+  const headers = {};
 
   await req({});
   await req(() => ({}));
@@ -405,7 +411,7 @@ async function emptyContext_getApiHttpResponse({ server, telefuncServer }) {
 
   async function req(context) {
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 200);
@@ -421,6 +427,7 @@ async function setContextThrows_getApiHttpResponse({
 
   const url = "https://example.org/_telefunc/contexti4";
   const method = "POST";
+  const headers = {};
   const errMsg = "[EXPECTED_ERROR] User-error in context function";
 
   await req(() => {
@@ -438,7 +445,7 @@ async function setContextThrows_getApiHttpResponse({
 
   async function req(context) {
     const responseProps = await telefuncServer.getApiHttpResponse(
-      { url, method },
+      { url, method, headers },
       context
     );
     assert(responseProps.statusCode === 500);

@@ -24,6 +24,7 @@ async function contextChange_getApiHttpResponse({
   const responseProps = await telefuncServer.getApiHttpResponse({
     url,
     method,
+    headers: {},
   });
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"json-s:tYpE|undefined"`);
