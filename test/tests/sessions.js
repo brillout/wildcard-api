@@ -10,12 +10,13 @@ module.exports = [
 async function contextChange_getApiHttpResponse({
   telefuncServer,
   server,
+  context,
   setSecretKey,
 }) {
   setSecretKey("uihewqiehqiuehuaheliuhawiulehqchbas");
 
   server.withContextChange = function () {
-    this.userName = "brillout";
+    context.userName = "brillout";
   };
 
   const url = "https://example.org/_telefunc/withContextChange";
@@ -39,21 +40,14 @@ async function contextChange_getApiHttpResponse({
   );
 }
 
-async function contextChange({
-  server,
-  browserEval,
-  setSecretKey,
-  telefuncServer,
-}) {
+async function contextChange({ server, context, browserEval, setSecretKey }) {
   setSecretKey("quieahbcqbohiawlubcsbi*&@381y87wqiwdhawbl");
 
   server.login = async function (name) {
-    const context = telefuncServer.getContext();
     context.user = name;
-    // this.user = name;
   };
   server.whoAmI = async function () {
-    return "You are: " + this.user;
+    return "You are: " + context.user;
   };
   await browserEval(async () => {
     // Removing an non-existing context won't choke
@@ -86,7 +80,7 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
     stopApp,
     server,
     app,
-    telefuncServer: { setSecretKey, getContextFromCookie },
+    telefuncServer: { setSecretKey, getContextFromCookie, context },
   } = await createServer(args);
 
   {
@@ -131,7 +125,7 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   }
 
   server.login = async function (name) {
-    this.user = name;
+    context.user = name;
   };
 
   app.get("/not-telefunc-endpoint", (req, res) => {
@@ -157,29 +151,36 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   await stopApp();
 }
 
-async function contextBrowserOnly({ browserEval, server, setSecretKey }) {
+async function contextBrowserOnly({
+  browserEval,
+  server,
+  context,
+  setSecretKey,
+}) {
   setSecretKey(".................");
 
   server.login = async function (name) {
-    this.user = name;
+    context.user = name;
   };
   await browserEval(async () => {
     await window.server.login("romli");
   });
 
-  // `const { context } import "telefunc/client"` doesn't work in Node.js
-  const { context } = require("telefunc/client");
-  let contextErr;
-  try {
-    context.user;
-  } catch (err) {
-    contextErr = err;
+  {
+    // `const { context } import "telefunc/client"` doesn't work in Node.js
+    const { context } = require("telefunc/client");
+    let contextErr;
+    try {
+      context.user;
+    } catch (err) {
+      contextErr = err;
+    }
+    assert(
+      contextErr.message.includes(
+        'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
+      )
+    );
   }
-  assert(
-    contextErr.message.includes(
-      'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
-    )
-  );
 
   // `const { context } import "telefunc/client"` does however work in the browser
   await browserEval(async () => {

@@ -4,9 +4,10 @@ node_modules/
 dist/
 .cache/
 
-# Src - Typescript
+# Typescript
 src/**/*.js
-src/**/!/index.js
+!src/index.js
+!src/server/contextUntyped.js
 src/**/*.map
 src/**/*.d.ts
 src/**/tsconfig.tsbuildinfo

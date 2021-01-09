@@ -85,9 +85,9 @@ function __setSecretKey(this: TelefuncServer, secretKey: string) {
 
 function getSetCookieHeader(
   secretKey: SecretKey,
-  contextModifications: ContextModifications
+  contextModifications: ContextObject
 ): string[] | null {
-  if (contextModifications.mods === null) {
+  if (Object.keys(contextModifications).length===0) {
     return null;
   }
   if (secretKey === null) {
@@ -108,7 +108,7 @@ function getSetCookieHeader(
     };
   }[] = [];
 
-  Object.entries(contextModifications.mods).forEach(
+  Object.entries(contextModifications).forEach(
     ([contextName, contextValue]: [
       contextName: string,
       contextValue: unknown

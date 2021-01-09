@@ -70,9 +70,9 @@ module.exports = [
   // [Client-side] `getApiHttpResponse(_, () => ({}))`, using missing context: valid
   emptyContext_getApiHttpResponse,
 
-  // ### Misc
-  // `server.someEndpoint = function() { this.newCtx = 'bla' }`: invalid
-  contextImmutable,
+  // ### Wrong Usages
+  missingSecretKey_getContext_with_telefuncCookie,
+  contextCannotChangeWithoutBrowser,
 ];
 
 // Async `setContext`
@@ -507,7 +507,33 @@ async function setContextThrows({ assertStderr, ...args }) {
   assertStderr(errText);
 }
 
-async function contextImmutable({
+async function missingSecretKey_getContext_with_telefuncCookie({
+  telefuncServer,
+  server,
+  getContext,
+}) {
+  server.withContextChange = function () {
+    getContext();
+  };
+
+  const url = "https://example.org/_telefunc/withContextChange";
+  const method = "POST";
+  const headers = { cookie: "" };
+
+  let err;
+  try {
+    await telefuncServer.getApiHttpResponse({
+      url,
+      method,
+      headers: {},
+    });
+  } catch (_err) {
+    err = _err;
+  }
+  assert(err.message.includes(""));
+}
+
+async function contextCannotChangeWithoutBrowser({
   server,
   telefuncClient,
   browserEval,

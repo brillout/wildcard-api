@@ -2,22 +2,31 @@
   "scripts": {
     "// Run the example": "",
     "start": "yarn start:install && yarn start:build && yarn run start:server",
-    "start:install": "(cd ../../ && yarn install) && yarn install",
+    "start:install": "yarn install:telefunc && yarn install",
     "start:build": "yarn build",
     "start:server": "ts-node start-server.ts",
     "// Build": "",
     "build": "yarn build:telefunc && yarn build:client",
     "build:telefunc": "cd ../../ && yarn build",
-    "build:client": "cd client && parcel build *.html",
+    "build:client": "cd client/ && parcel build *.html",
+    "// Develop the example": "",
+    "dev": "concurrently \"yarn dev:telefunc\" \"yarn dev:client\" \"yarn dev:server\" --kill-others",
+    "dev:telefunc": "cd ../../ && yarn dev --preserveWatchOutput",
+    "dev:client": "cd client/ && parcel watch *.html",
+    "dev:server": "ts-node-dev start-server.ts",
+    "// Install dependencies": "",
+    "install:telefunc": "cd ../../ && yarn install",
     "// Clean all cache": "",
     "clean": "cd ../../ && yarn clean"
   },
   "dependencies": {
     "@types/node": "^12.12.21",
     "babel-polyfill": "^6.26.0",
+    "concurrently": "^5.3.0",
     "express": "^4.16.4",
     "parcel": "^1.12.3",
     "ts-node": "^8.5.4",
+    "ts-node-dev": "^1.1.1",
     "typescript": "^3.7.3"
   }
 }

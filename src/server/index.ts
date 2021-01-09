@@ -7,3 +7,5 @@ export const { setSecretKey } = telefuncServer;
 export const { getContextFromCookie } = telefuncServer;
 export const { getContext } = telefuncServer;
 export { FrontendType } from "./TelefuncServer";
+//@ts-ignore
+export { context } from "./contextUntyped.js";

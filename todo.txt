@@ -1,6 +1,10 @@
 - New Context API
  - assert presence of headers in getApiHttpResponse
  - assert that there is no memory leak
+ - remove getContextFromCookie
+ - rename setSecretKey to setContextSecretKey
+ - allow arrow functions
+ - assert existence of secret key can when reading context from cookie
 
 
 - Avoid user's TS to autocomplete internal interfaces

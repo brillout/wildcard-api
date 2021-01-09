@@ -129,8 +129,15 @@ class TelefuncServer {
   config: Config = getConfigProxy(configDefault);
   setSecretKey = __setSecretKey.bind(this);
   getContextFromCookie = getContextFromCookie.bind(this);
-  getContext = getContext.bind(this);
   [__secretKey]: SecretKey = null;
+
+  context: ContextObject = createContextProxy(this);
+
+  // Improve error message when T is not defined?
+  //  - https://stackoverflow.com/questions/51173191/typescript-require-generic-parameter-to-be-provided
+  getContext<T>(): T {
+    return getContext.call(this) as T;
+  }
 
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
@@ -160,7 +167,8 @@ class TelefuncServer {
         this.endpoints,
         this.config,
         this[__secretKey],
-        __INTERNAL_universalAdapter
+        __INTERNAL_universalAdapter,
+        this.context
       );
     } catch (internalError) {
       // In case there is a bug in the Telefunc source code
@@ -178,7 +186,8 @@ class TelefuncServer {
       endpointName,
       endpointArgs,
       context,
-      this.endpoints
+      this.endpoints,
+      this.context
     );
   }
 }
@@ -189,7 +198,8 @@ async function _getApiHttpResponse(
   endpoints: Endpoints,
   config: Config,
   secretKey: SecretKey,
-  universalAdapterName: UniversalAdapterName
+  universalAdapterName: UniversalAdapterName,
+  contextProxy_: ContextObject
 ): Promise<HttpResponseProps | null> {
   const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
   if (wrongApiUsage) {
@@ -250,7 +260,8 @@ async function _getApiHttpResponse(
     false,
     endpoints,
     universalAdapterName,
-    secretKey
+    secretKey,
+    contextProxy_
   );
 
   deleteContextHookFallback();
@@ -270,7 +281,8 @@ async function directCall(
   endpointName: EndpointName,
   endpointArgs: EndpointArgs,
   context: Context,
-  endpoints: Endpoints
+  endpoints: Endpoints,
+  contextProxy_: ContextObject
 ) {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
@@ -286,20 +298,16 @@ async function directCall(
     }
   }
 
-  const {
-    endpointResult,
-    endpointError,
-    contextModifications,
-  } = await runEndpoint(
+  const { endpointResult, endpointError } = await runEndpoint(
     endpointName,
     endpointArgs,
     context,
     true,
     endpoints,
     undefined,
-    null
+    null,
+    contextProxy_
   );
-  assert(contextModifications.mods === null);
 
   if (endpointError) {
     throw endpointError;
@@ -315,16 +323,18 @@ async function runEndpoint(
   isDirectCall: IsDirectCall,
   endpoints: Endpoints,
   universalAdapterName: UniversalAdapterName,
-  secretKey: SecretKey
+  secretKey: SecretKey,
+  contextProxy_: ContextObject
 ): Promise<{
   endpointResult?: EndpointResult;
   endpointError?: EndpointError;
-  contextModifications: ContextModifications;
+  contextModifications: ContextObject;
 }> {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
+  /* TODO
   const { contextProxy, contextModifications } = createContextWritableProxy(
     context,
     endpointName,
@@ -342,6 +352,7 @@ async function runEndpoint(
       contextHook.contextProxy = contextProxy;
     }
   }
+  */
 
   const endpoint: EndpointFunction = endpoints[endpointName];
   assert(endpoint);
@@ -351,11 +362,20 @@ async function runEndpoint(
   let endpointError: EndpointError | undefined;
 
   try {
-    endpointResult = await endpoint.apply(contextProxy, endpointArgs);
+    endpointResult = await endpoint.apply(contextProxy_, endpointArgs);
   } catch (err) {
     endpointError = err;
   }
 
+  let contextModifications: ContextObject = {};
+  {
+    const contextHook = getContextHook();
+    assert(contextHook || isDirectCall);
+    if (contextHook) {
+      contextModifications = contextHook.contextModifications_;
+      contextHook.contextModifications_ = {};
+    }
+  }
   return { endpointResult, endpointError, contextModifications };
 }
 
@@ -542,6 +562,71 @@ function getConfigProxy(configDefaults: Config): Config {
     );
 
     configObject[configName] = configValue as never;
+    return true;
+  }
+}
+
+function createContextProxy(telefuncServer: TelefuncServer) {
+  return new Proxy({}, { get, set });
+  function get(_: never, prop: string) {
+    const contextHook = getContextHook();
+    assertUsage(
+      contextHook,
+      [
+        `You are trying to access the context \`context.${prop}\``,
+        "outside the lifetime of an HTTP request.",
+        "Context is only available wihtin the lifetime of an HTTP request;",
+        `make sure to read \`context.${prop}\``,
+        "*after* Node.js received the HTTP request and",
+        "*before* the HTTP response has been sent.",
+      ].join(" ")
+    );
+
+    let telefuncDefinedContext: ContextObject | undefined = undefined;
+    {
+      const headers = contextHook.getRequestHeaders();
+      if (headers?.cookie) {
+        telefuncDefinedContext = getContextFromCookie.call(
+          telefuncServer,
+          headers.cookie
+        );
+      }
+    }
+
+    let userDefinedContext: ContextObject | undefined = undefined;
+
+    /* TODO
+    assertUsage(
+      !(prop in (telefuncDefinedContext||{})) ||
+      !(prop in (userDefinedContext||{})),
+      `The context \`${prop}\` is defined twice: once by Telfunc and once by \`addContext\`. Make sure TODO`
+    );
+    */
+
+    return (
+      contextHook.contextModifications_[prop] ||
+      (telefuncDefinedContext && telefuncDefinedContext[prop]) ||
+      (userDefinedContext && userDefinedContext[prop])
+    );
+  }
+  function set(_: never, prop: string, newVal: unknown): boolean {
+    const contextHook = getContextHook();
+    assertUsage(
+      contextHook,
+      [
+        `You are trying to change the context \`context.${prop}\``,
+        // "outside of a telefunction,",
+        // "but context can be changed only within a telefunction call.",
+        "outside the lifetime of an HTTP request.",
+        "Context is only available wihtin the lifetime of an HTTP request;",
+        `make sure to change \`context.${prop}\``,
+        "*after* Node.js received the HTTP request and",
+        "*before* the HTTP response has been sent.",
+      ].join(" ")
+    );
+
+    contextHook.contextModifications_[prop] = newVal;
+
     return true;
   }
 }
@@ -797,7 +882,7 @@ function parsePathname(pathname: string, config: Config) {
 function handleEndpointOutcome(
   endpointResult: EndpointResult | undefined,
   endpointError: EndpointError | undefined,
-  contextModifications: ContextModifications,
+  contextModifications: ContextObject,
   isHumanMode: IsHumanMode,
   endpointName: EndpointName,
   config: Config,
@@ -823,7 +908,7 @@ function handleEndpointOutcome(
     responseProps.headers.ETag = [etag];
   }
 
-  if (contextModifications) {
+  {
     const setCookieHeader = getSetCookieHeader(secretKey, contextModifications);
     if (setCookieHeader !== null) {
       responseProps.headers = responseProps.headers || {};
@@ -1118,6 +1203,7 @@ type ContextHook = {
   getRequestProps: () => Promise<HttpRequestProps>;
   getRequestHeaders: () => HttpRequestHeaders;
   contextProxy: ContextObject | null;
+  contextModifications_: ContextObject;
   isFallbackHook: boolean;
 };
 interface ParsedIncomingMessage extends IncomingMessage {
@@ -1158,6 +1244,7 @@ function createContextHook(
     getRequestHeaders,
     descendents: [],
     contextProxy: null,
+    contextModifications_: {},
     isFallbackHook,
   };
   contextHooks[contextHookId] = contextHook;
@@ -1165,7 +1252,14 @@ function createContextHook(
   return contextHook;
 }
 function deleteContextHook(contextHookId: AsyncId) {
-  for (const id of contextHooks[contextHookId].descendents) {
+  const contextHook = contextHooks[contextHookId];
+
+  assertUsage(
+    Object.keys(contextHook.contextModifications_).length === 0,
+    "TODO"
+  );
+
+  for (const id of contextHook.descendents) {
     assert(contextHooksMap[id] === contextHookId);
     delete contextHooksMap[id];
   }

@@ -7,10 +7,13 @@ const app = express();
 
 // Server our API endpoints
 app.use(
+  /*
   telefunc(() => {
     const context: Context = { isLoggedIn: true };
     return context;
   })
+  */
+  telefunc()
 );
 
 // Serve our frontend
