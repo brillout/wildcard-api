@@ -122,22 +122,35 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   await stopApp();
 }
 
+contextInterfaceIsIsomorphic.isIntegrationTest = true;
 async function contextInterfaceIsIsomorphic({
   browserEval,
-  server,
-  setSecretKey,
-  context,
+  httpPort,
+  staticDir,
 }) {
-  setSecretKey("uhe1h20189HODH@(*H9e81hd9");
+  const express = require("express");
+  const { telefunc } = require("telefunc/server/express");
+  const { stop, start } = require("../setup/servers/express");
+
+  const app = express();
+  app.use(express.json());
+  app.use(express.static(staticDir, { extensions: ["html"] }));
+  app.use(telefunc());
+
+  const appServer = await start(app, httpPort);
 
   // We are importing `context` from the client module instead of the server module
-  const { context: contextClient } = require("telefunc/client");
+  const { context } = require("telefunc/client");
+  // This is (and should be) the only test that uses the global TelefuncServer instance
+  const { server, setSecretKey } = require("telefunc/server");
+
+  setSecretKey("uhe1h20189HODH@(*H9e81hd9");
 
   server.login = async function (name) {
     context.user = name;
   };
   server.myName = async function () {
-    return "name: " + contextClient.user;
+    return "name: " + context.user;
   };
   await browserEval(async () => {
     await window.server.login("romli");
@@ -147,7 +160,7 @@ async function contextInterfaceIsIsomorphic({
   {
     let err;
     try {
-      contextClient.user;
+      context.user;
     } catch (_err) {
       err = _err;
     }
@@ -161,6 +174,8 @@ async function contextInterfaceIsIsomorphic({
   await browserEval(async () => {
     assert(window.telefuncClient.context.user === "romli");
     // Cleanup to make this test idempotent
-    delete window.telefuncClient.context.user;
+    delete window.telefuncClient.context.user; // TODO - clear cookies after each test
   });
+
+  await stop(appServer);
 }
