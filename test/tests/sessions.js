@@ -91,28 +91,28 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   server.tellMyName = async function () {
     return "You are: " + context.myName;
   };
-  app.get("some-express-route", () => {
+  app.get("/some-express-route", (_, res) => {
     res.send("Hello darling " + context.myName);
   });
 
   await browserEval(async () => {
-    assert(window.telefuncClient.context.user === undefined);
+    assert(window.telefuncClient.context.myName === undefined);
     assert((await window.server.tellMyName()) === "You are: undefined");
     assert((await callCustomRoute()) === "Hello darling undefined");
 
     await window.server.login("romBitch");
 
-    assert(window.telefuncClient.context.user === "romBitch");
+    assert(window.telefuncClient.context.myName === "romBitch");
     assert((await window.server.tellMyName()) === "You are: romBitch");
     assert((await callCustomRoute()) === "Hello darling romBitch");
 
     // Cleanup to make this test idempotent
-    delete window.telefuncClient.context.user;
+    delete window.telefuncClient.context.myName;
 
     return;
 
     async function callCustomRoute() {
-      const resp = await window.fetch("some-express-route");
+      const resp = await window.fetch("/some-express-route");
       assert(resp.status === 200, resp.status);
       const text = await resp.text();
       return text;
@@ -164,7 +164,6 @@ async function contextInterfaceIsIsomorphic({
     } catch (_err) {
       err = _err;
     }
-    console.log(err);
     assert(
       err.message ===
         "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
