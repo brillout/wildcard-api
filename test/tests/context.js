@@ -72,7 +72,8 @@ module.exports = [
 
   // ### Wrong Usages
   missingSecretKey_getContext_with_telefuncCookie,
-  contextCannotChangeWithoutBrowser,
+  missingSecretKey,
+  contextChange_withoutBrowser,
 ];
 
 // Async `setContext`
@@ -134,7 +135,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   });
 
   /*
-   * Can call endpoints that don't use the context
+   * Can call telefunctions that don't use context
    */
 
   server.contextLessFunc = async function (msg) {
@@ -155,41 +156,19 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   });
 
   /*
-   * Cannot call endpoints that use the context
+   * Can call telefunctions that do use context
    */
 
   server.ctxFunc = async function () {
     return this.notExistingContext + " blib";
   };
 
-  const errMsg =
-    "[Telefunc][Wrong Usage] Wrong usage of the Telefunc client in Node.js. Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context by using `bind({notExistingContext})` when calling your `ctxFunc` endpoint in Node.js. More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md";
-  let err;
-  try {
-    await telefuncClient.endpoints.ctxFunc();
-  } catch (_err) {
-    err = _err;
-  }
-  assert(err.stack.includes(errMsg));
-  try {
-    await telefuncClient.endpoints.ctxFunc.bind(undefined)();
-  } catch (_err) {
-    err = _err;
-  }
-  assert(err.stack.includes(errMsg));
+  await telefuncClient.endpoints.ctxFunc();
+  await telefuncClient.endpoints.ctxFunc.bind(undefined)();
 
   await browserEval(async () => {
-    try {
-      await window.server.ctxFunc();
-    } catch (err) {
-      assert(err.isCodeError === true);
-      assert(err.isConnectionError === false);
-      assert(err.message === "Endpoint function `ctxFunc` threw an error.");
-    }
+    await window.server.ctxFunc();
   });
-  assertStderr(
-    "[Telefunc][Wrong Usage] Your endpoint function `ctxFunc` is trying to get `this.notExistingContext`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context with the `setContext` function when using the `telefunc(setContext)` express middleware."
-  );
 
   await stopApp();
 }
@@ -532,7 +511,7 @@ async function missingSecretKey_getContext_with_telefuncCookie({
   );
 }
 
-async function contextCannotChangeWithoutBrowser({
+async function missingSecretKey({
   server,
   telefuncClient,
   browserEval,
@@ -542,15 +521,13 @@ async function contextCannotChangeWithoutBrowser({
     this.nop = 11;
   };
 
+  const missingKeyErrorMessage =
+    "[Telefunc][Wrong Usage] You are trying to change the context `context.nop`, but context can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context.";
+
   try {
     await telefuncClient.endpoints.he();
   } catch (err) {
-    console.log(err.message);
-    assert(
-      err.message ===
-        //'[Telefunc][Wrong Usage] You are trying to change the context `context.nop`, but context can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context.'
-        "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
-    );
+    assert(err.message === missingKeyErrorMessage);
   }
 
   await browserEval(async () => {
@@ -563,7 +540,28 @@ async function contextCannotChangeWithoutBrowser({
     }
   });
 
-  assertStderr(
-    "[Telefunc][Wrong Usage] The context object can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context object."
-  );
+  assertStderr(missingKeyErrorMessage);
+}
+
+async function contextChange_withoutBrowser({
+  server,
+  telefuncClient,
+  setSecretKey,
+}) {
+  setSecretKey("uihewqiehqiuehuaheliuhawiulehqchbas");
+
+  server.he = async function () {
+    this.nop = 11;
+  };
+
+  try {
+    await telefuncClient.endpoints.he();
+  } catch (err) {
+    console.log(err.message);
+    assert(
+      err.message ===
+        //  "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
+        "bla"
+    );
+  }
 }

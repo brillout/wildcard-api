@@ -1,4 +1,4 @@
-import { assertUsage } from "./assert";
+import { assertUsage, assert } from "./assert";
 // @ts-ignore
 import { parse } from "@brillout/json-s";
 
@@ -62,10 +62,13 @@ function getCookie(name: string): string | null {
 }
 
 function assertBrowser() {
+  assert(!isNodejs());
+  /*
   assertUsage(
     !isNodejs(),
-    'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
+    'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { context } from "telefunc/server"` instead.'
   );
+  */
 }
 
 function isNodejs(): boolean {

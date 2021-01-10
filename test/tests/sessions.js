@@ -4,7 +4,7 @@ module.exports = [
   contextChange_getApiHttpResponse,
   contextChange,
   canGetContextOutsideOfTelefunc,
-  contextBrowserOnly,
+  contextInterfaceIsIsomorphic,
 ];
 
 async function contextChange_getApiHttpResponse({
@@ -80,109 +80,84 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
     stopApp,
     server,
     app,
-    telefuncServer: { setSecretKey, getContextFromCookie, context },
+    telefuncServer: { setSecretKey, context },
   } = await createServer(args);
 
-  {
-    let secretMissingError;
-    try {
-      getContextFromCookie("fake-cookie=123;");
-    } catch (err) {
-      secretMissingError = err;
-    }
-    assert(
-      secretMissingError.message.includes(
-        "`setSecretKey()` needs to be called before calling `getContextFromCookie()`."
-      )
-    );
-    delete secretMissingError;
-  }
-
-  setSecretKey("0123456789");
-
-  {
-    const ctx = getContextFromCookie();
-    assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
-  }
-
-  {
-    const ctx = getContextFromCookie("fake=321");
-    assert(ctx.constructor === Object && Object.keys(ctx).length === 0);
-  }
-
-  {
-    let cookieMissing;
-    try {
-      getContextFromCookie({ cookie: "fake-cookie=123;" });
-    } catch (err) {
-      cookieMissing = err;
-    }
-    assert(
-      cookieMissing.message.includes(
-        "[Wrong Usage] `getContextFromCookie(cookie)`: `cookie` should be a string"
-      )
-    );
-  }
+  setSecretKey("ueqwhiue128e8199quiIQUU(*@@1dwq");
 
   server.login = async function (name) {
-    context.user = name;
+    context.myName = name;
   };
-
-  app.get("/not-telefunc-endpoint", (req, res) => {
-    const context = getContextFromCookie(req.headers.cookie);
-    assert(context.user === "romi");
-    assert(Object.keys(context).length === 1);
-    res.send("Greeting, darling " + context.user);
+  server.tellMyName = async function () {
+    return "You are: " + context.myName;
+  };
+  app.get("some-express-route", () => {
+    res.send("Hello darling " + context.myName);
   });
 
   await browserEval(async () => {
     assert(window.telefuncClient.context.user === undefined);
-    await window.server.login("romi");
-    assert(window.telefuncClient.context.user === "romi");
+    assert((await window.server.tellMyName()) === "You are: undefined");
+    assert((await callCustomRoute()) === "Hello darling undefined");
 
-    const resp = await window.fetch("/not-telefunc-endpoint");
-    const text = await resp.text();
-    assert(text === "Greeting, darling romi");
+    await window.server.login("romBitch");
+
+    assert(window.telefuncClient.context.user === "romBitch");
+    assert((await window.server.tellMyName()) === "You are: romBitch");
+    assert((await callCustomRoute()) === "Hello darling romBitch");
 
     // Cleanup to make this test idempotent
     delete window.telefuncClient.context.user;
+
+    return;
+
+    async function callCustomRoute() {
+      const resp = await window.fetch("some-express-route");
+      assert(resp.status === 200, resp.status);
+      const text = await resp.text();
+      return text;
+    }
   });
 
   await stopApp();
 }
 
-async function contextBrowserOnly({
+async function contextInterfaceIsIsomorphic({
   browserEval,
   server,
-  context,
   setSecretKey,
+  context,
 }) {
-  setSecretKey(".................");
+  setSecretKey("uhe1h20189HODH@(*H9e81hd9");
+
+  // We are importing `context` from the client module instead of the server module
+  const { context: contextClient } = require("telefunc/client");
 
   server.login = async function (name) {
     context.user = name;
   };
+  server.myName = async function () {
+    return "name: " + contextClient.user;
+  };
   await browserEval(async () => {
     await window.server.login("romli");
+    assert((await window.server.myName()) === "name: romli");
   });
 
   {
-    // `const { context } import "telefunc/client"` doesn't work in Node.js
-    const { context } = require("telefunc/client");
-    let contextErr;
+    let err;
     try {
-      context.user;
-    } catch (err) {
-      contextErr = err;
+      contextClient.user;
+    } catch (_err) {
+      err = _err;
     }
+    console.log(err);
     assert(
-      contextErr.message.includes(
-        'The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContextFromCookie } from "telefunc/server"` instead.'
-      )
+      err.message ===
+        "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
     );
   }
 
-  // `const { context } import "telefunc/client"` does however work in the browser
   await browserEval(async () => {
     assert(window.telefuncClient.context.user === "romli");
     // Cleanup to make this test idempotent
