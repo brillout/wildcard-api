@@ -123,16 +123,21 @@ async function unpkg({ server, browserEval }) {
 
 async function API({ browserEval }) {
   const telefunc_server = require("telefunc/server");
+  // 1
   assert(telefunc_server.server.constructor === Object);
+  // 2
   assert(telefunc_server.config.constructor === Object);
+  // 3
+  assert(telefunc_server.getApiHttpResponse);
   assert(
     telefunc_server.getApiHttpResponse.constructor.name === "AsyncFunction"
   );
-  assert(telefunc_server.getApiHttpResponse);
+  // 4
   assert(telefunc_server.setSecretKey);
-  assert(telefunc_server.getContextFromCookie); // TODO
-  assert(telefunc_server.getContext);
-  assert(Object.keys(telefunc_server).length === 6);
+  // 5
+  assert(telefunc_server.context);
+  // 5===5
+  assert(Object.keys(telefunc_server).length === 5);
 
   const telefunc_client = require("telefunc/client");
   assert(telefunc_client.server);

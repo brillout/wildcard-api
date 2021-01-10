@@ -1,8 +1,6 @@
-import { server, getContext } from "telefunc/server";
-import { Context } from "./context";
-import { context } from "telefunc/server";
+import { server, context, setSecretKey } from "telefunc/server";
 
-console.log("abc", context);
+setSecretKey("ewuqheiuhauiwe");
 
 export type PersonTelefuncs = typeof personTelefuncs;
 const personTelefuncs = {
@@ -23,7 +21,6 @@ const persons: Array<Person> = [
 ];
 
 async function getPerson(id: number): Promise<Person | null> {
-  const context = getContext<Context>();
   if (!context.isLoggedIn) {
     context.isLoggedIn = true;
     return null;

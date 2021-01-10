@@ -356,11 +356,8 @@ async function undefinedContext_getApiHttpResponse({
       { url, method, headers },
       context
     );
-    assert(responseProps.statusCode === 500);
-    assert(responseProps.body === `Internal Server Error`);
-    assertStderr(
-      "Error: [Telefunc][Wrong Usage] Your endpoint function `with_context` is trying to get `this.doesNotExist`, but you didn't define any context and as a result `this` is `undefined`. Make sure to provide a context when using `getApiHttpResponse(requestProps, context)`."
-    );
+    assert(responseProps.statusCode === 200);
+    assert(responseProps.body === `"undefined abc"`);
   }
 }
 async function wrongContext_getApiHttpResponse({
@@ -510,27 +507,29 @@ async function setContextThrows({ assertStderr, ...args }) {
 async function missingSecretKey_getContext_with_telefuncCookie({
   telefuncServer,
   server,
-  getContext,
+  context,
+  assertStderr,
 }) {
   server.withContextChange = function () {
-    getContext();
+    context.isLoggedIn;
   };
 
   const url = "https://example.org/_telefunc/withContextChange";
   const method = "POST";
-  const headers = { cookie: "" };
+  const cookie =
+    "Cookie: telefunc-signature_loggedUser=aa0ebbd05370f26f2951b6d3cbcfdc18501d376b7e0b7f9a5a78a20903d895cb; telefunc_loggedUser=%7B%22userId%22%3A%22user_BPNmc82b7iE%22%2C%22userEmail%22%3A%22lsos%40brillout.com%22%7D; telefunc_isLoggedIn=true; telefunc-signature_isLoggedIn=c1b6109b74688be0fedc1374fd1f064aaaeefcc3374e9a856536c4c995283396";
+  const headers = { cookie };
 
-  let err;
-  try {
-    await telefuncServer.getApiHttpResponse({
-      url,
-      method,
-      headers: {},
-    });
-  } catch (_err) {
-    err = _err;
-  }
-  assert(err.message.includes(""));
+  const responseProps = await telefuncServer.getApiHttpResponse({
+    url,
+    method,
+    headers,
+  });
+  assert(responseProps.statusCode === 500);
+  assert(responseProps.body === `Internal Server Error`);
+  assertStderr(
+    "[Telefunc][Wrong Usage] You are trying to access the `context.isLoggedIn` which does exist in a Telefunc Cookie, but `setSecretKey()` has not been called yet. Make sure to call `setSecretKey()` *before* you try to access `context.isLoggedIn`."
+  );
 }
 
 async function contextCannotChangeWithoutBrowser({
@@ -546,10 +545,11 @@ async function contextCannotChangeWithoutBrowser({
   try {
     await telefuncClient.endpoints.he();
   } catch (err) {
+    console.log(err.message);
     assert(
-      err.stack.includes(
+      err.message ===
+        //'[Telefunc][Wrong Usage] You are trying to change the context `context.nop`, but context can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context.'
         "[Telefunc][Wrong Usage] The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
-      )
     );
   }
 

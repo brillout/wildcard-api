@@ -1,7 +1,7 @@
 import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
 import { telefuncServer as telefuncServer_ } from "./global-instance";
 import {
-  Context,
+  ContextObject,
   HttpRequestProps,
   HttpResponseProps,
   UniversalAdapterName,
@@ -10,7 +10,9 @@ import {
 
 export { MiddlewareFactory };
 
-type SetContext<HttpRequest> = (req: HttpRequest) => Promise<Context> | Context;
+type SetContext<HttpRequest> = (
+  req: HttpRequest
+) => Promise<ContextObject | undefined> | ContextObject | undefined;
 
 type ServerAdapterOptions = any & { _brand: "ServerAdapterOptions" };
 
