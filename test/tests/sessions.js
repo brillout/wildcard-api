@@ -51,6 +51,7 @@ async function contextChange({ server, context, browserEval, setSecretKey }) {
   };
   await browserEval(async () => {
     // Removing an non-existing context won't choke
+    assert(window.telefuncClient.context.user === undefined);
     delete window.telefuncClient.context.user;
     assert(window.telefuncClient.context.user === undefined);
 
@@ -64,11 +65,10 @@ async function contextChange({ server, context, browserEval, setSecretKey }) {
     const ret2 = await window.server.whoAmI();
     assert(ret2 === "You are: rom");
 
-    // Cleanup to make this test idempotent
+    // Removing an already removed context won't choke
+    assert(window.telefuncClient.context.user !== undefined);
     delete window.telefuncClient.context.user;
     assert(window.telefuncClient.context.user === undefined);
-
-    // Removing an already removed context won't choke
     delete window.telefuncClient.context.user;
     assert(window.telefuncClient.context.user === undefined);
   });
@@ -106,9 +106,6 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
     assert((await window.server.tellMyName()) === "You are: romBitch");
     assert((await callCustomRoute()) === "Hello darling romBitch");
 
-    // Cleanup to make this test idempotent
-    delete window.telefuncClient.context.myName;
-
     return;
 
     async function callCustomRoute() {
@@ -141,7 +138,7 @@ async function contextInterfaceIsIsomorphic({
 
   // We are importing `context` from the client module instead of the server module
   const { context } = require("telefunc/client");
-  // This is (and should be) the only test that uses the global TelefuncServer instance
+  // This is (and should be) the only test that uses the global TelefuncServer instance.
   const { server, setSecretKey } = require("telefunc/server");
 
   setSecretKey("uhe1h20189HODH@(*H9e81hd9");
@@ -155,6 +152,7 @@ async function contextInterfaceIsIsomorphic({
   await browserEval(async () => {
     await window.server.login("romli");
     assert((await window.server.myName()) === "name: romli");
+    assert(window.telefunc.context.user === "romli");
   });
 
   {
@@ -169,12 +167,6 @@ async function contextInterfaceIsIsomorphic({
         "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
     );
   }
-
-  await browserEval(async () => {
-    assert(window.telefuncClient.context.user === "romli");
-    // Cleanup to make this test idempotent
-    delete window.telefuncClient.context.user; // TODO - clear cookies after each test
-  });
 
   await stop(appServer);
 }

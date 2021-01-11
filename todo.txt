@@ -5,6 +5,7 @@
  - rename setSecretKey to setContextSecretKey
  - allow arrow functions
  - assert existence of secret key can when reading context from cookie
+ - replace `window.telefuncClient` with `window.telefunc` in tests
 
 
 - Avoid user's TS to autocomplete internal interfaces
