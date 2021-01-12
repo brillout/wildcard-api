@@ -1,4 +1,6 @@
-// **WIP**: use custom body parsing
+// **WIP**:
+// 1. Handle HTTP independently of Express/Koa/Hapi
+// 2. Being able to use Telefunc directly on top of Node.js, without Express/Koa/Hapi
 
 // https://github.com/vercel/next.js/blob/8bdff57b15211fb8af4714ade3bc26d285768d35/packages/next/next-server/server/api-utils.ts#L112-L146
 // https://github.com/expressjs/body-parser

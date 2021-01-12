@@ -1,4 +1,4 @@
-import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
+import { autoLoadEndpointFiles } from "./autoload/autoLoadEndpointFiles";
 import { telefuncServer as telefuncServer_ } from "./global-instance";
 import {
   ContextObject,

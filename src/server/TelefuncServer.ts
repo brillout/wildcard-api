@@ -1,6 +1,6 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
-import { autoLoadEndpointFiles } from "./autoLoadEndpointFiles";
+import { autoLoadEndpointFiles } from "./autoload/autoLoadEndpointFiles";
 import {
   assert,
   assertUsage,
@@ -8,7 +8,7 @@ import {
   getUsageError,
   internalErroPrefix,
   UsageError,
-} from "./assert";
+} from "./utils/assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
 import {
@@ -871,7 +871,7 @@ function handleEndpointOutcome(
   assert(responseProps.body.constructor === String);
 
   if (!config.disableCache) {
-    const computeEtag = require("./computeEtag");
+    const computeEtag = require("./cache/computeEtag");
     const etag = computeEtag(responseProps.body);
     assert(etag);
     responseProps.headers = responseProps.headers || {};

@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
+    "lib": ["DOM"],
     "target": "es2017",
     "module": "commonjs",
     "sourceMap": true,
@@ -9,10 +11,5 @@
     "composite": true,
     "strict": true
   },
-
-  "references": [{ "path": "./src/client" }, { "path": "./src/server" }],
-
-  // This is important; otherwise tsc will try
-  // to compile the source 2x times
-  "files": []
+  "include": ["./src/**/*.ts"]
 }
