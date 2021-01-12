@@ -1,9 +1,9 @@
 // @ts-ignore
 import { findFiles } from "@brillout/project-files";
 
-export { autoLoadEndpointFiles };
+export { findAndLoadTelefuncFiles };
 
-function autoLoadEndpointFiles() {
+function findAndLoadTelefuncFiles() {
   [...findFiles("*.endpoints.js"), ...findFiles("endpoints.js")].forEach(
     (endpointFile) => {
       require(endpointFile);

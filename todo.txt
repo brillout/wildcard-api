@@ -7,6 +7,8 @@
  - assert existence of secret key can when reading context from cookie
  - replace `window.telefuncClient` with `window.telefunc` in tests
 
+- Try if new autoload logic works
+
 
 - Avoid user's TS to autocomplete internal interfaces
 - SSR + New context management

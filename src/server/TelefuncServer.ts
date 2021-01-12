@@ -1,6 +1,6 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
-import { autoLoadEndpointFiles } from "./autoload/autoLoadEndpointFiles";
+import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
 import {
   assert,
   assertUsage,
@@ -26,6 +26,8 @@ export { TelefuncServer };
 
 // The Telefunc server only works with Node.js
 assertNodejs();
+
+findAndLoadTelefuncFiles();
 
 // Endpoints
 type EndpointName = string;
@@ -268,10 +270,6 @@ async function directCall(
 ) {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
-
-  if (noEndpointsDefined(endpoints)) {
-    autoLoadEndpointFiles();
-  }
 
   {
     const isMissing = !endpointExists(endpointName, endpoints);

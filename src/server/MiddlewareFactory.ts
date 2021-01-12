@@ -1,4 +1,3 @@
-import { autoLoadEndpointFiles } from "./autoload/autoLoadEndpointFiles";
 import { telefuncServer as telefuncServer_ } from "./global-instance";
 import {
   ContextObject,
@@ -53,13 +52,6 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
     const telefuncServer = __INTERNAL_telefuncServer_middleware
       ? __INTERNAL_telefuncServer_middleware.telefuncServer
       : telefuncServer_;
-
-    if (
-      !__INTERNAL_telefuncServer_middleware &&
-      Object.keys(telefuncServer.endpoints).length === 0
-    ) {
-      autoLoadEndpointFiles();
-    }
 
     const context = setContext?.bind
       ? setContext.bind(null, requestObject)
