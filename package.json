@@ -32,7 +32,7 @@
     "// Clean": "",
     "clean": "yarn clean:all",
     "clean:all": "git clean -Xdf",
-    "clean:build": "git clean -Xf src/"
+    "clean:build": "git clean -Xdf src/"
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
