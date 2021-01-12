@@ -1,13 +1,3 @@
-import { MiddlewareFactory } from "./MiddlewareFactory";
-// @ts-ignore
-import ExpressAdapter = require("@universal-adapter/express");
-import { RequestHandler, Request } from "express";
-
-type ExpressMiddleware = RequestHandler;
-/** The request object `req` provided by Express. */
-type HttpRequest = Request;
-
-export const telefunc = MiddlewareFactory<ExpressMiddleware, HttpRequest>(
-  ExpressAdapter,
-  "express"
-);
+// Make middleware available at `telefunc/server/express`.
+// So that user can `import { telefunc } from 'telefunc/server/express`.
+export * from "./midlewares/express";

@@ -1,7 +1,3 @@
-import { MiddlewareFactory } from "./MiddlewareFactory";
-// @ts-ignore
-import HapiAdapter = require("@universal-adapter/hapi");
-
-export const telefunc = MiddlewareFactory(HapiAdapter, "hapi", {
-  useOnPreResponse: true,
-});
+// Make middleware available at `telefunc/server/hapi`.
+// So that user can `import { telefunc } from 'telefunc/server/hapi`.
+export * from "./midlewares/hapi";

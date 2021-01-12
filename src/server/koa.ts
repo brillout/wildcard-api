@@ -1,5 +1,3 @@
-import { MiddlewareFactory } from "./MiddlewareFactory";
-// @ts-ignore
-import KoaAdapter = require("@universal-adapter/koa");
-
-export const telefunc = MiddlewareFactory(KoaAdapter, "koa");
+// Make middleware available at `telefunc/server/koa`.
+// So that user can `import { telefunc } from 'telefunc/server/koa`.
+export * from "./midlewares/koa";

@@ -1,11 +1,11 @@
-import { telefuncServer as telefuncServer_ } from "./global-instance";
+import { telefuncServer as telefuncServer_ } from "../global-instance";
 import {
   ContextObject,
   HttpRequestProps,
   HttpResponseProps,
   UniversalAdapterName,
   TelefuncServer,
-} from "./TelefuncServer";
+} from "../TelefuncServer";
 
 export { MiddlewareFactory };
 
