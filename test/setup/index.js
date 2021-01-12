@@ -14,6 +14,9 @@ global.assert = assert;
 const { resolve: pathResolve } = require("path");
 const { TelefuncServer } = require("telefunc/server/TelefuncServer");
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
+const {
+  noPendingHooks,
+} = require("telefunc/server/context/async-hook-management");
 
 const bundle = require("./browser/bundle");
 //*/
@@ -64,6 +67,8 @@ const httpPort = 3442;
   }
 
   await closeBrowser();
+
+  assert(noPendingHooks());
 
   console.log(chalk.bold.green("All tests successfully passed."));
 })();

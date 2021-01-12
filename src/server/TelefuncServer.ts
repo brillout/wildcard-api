@@ -1,4 +1,3 @@
-// @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
