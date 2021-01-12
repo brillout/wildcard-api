@@ -881,10 +881,15 @@
     reassert "^1.1.14"
     string-width "^2.1.1"
 
-"@brillout/json-s@^0.1.0", "@brillout/json-s@^0.1.4":
+"@brillout/json-s@^0.1.0":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.1.5.tgz#805dbbdc39a3187ae65012ef6b8af2d873c78193"
   integrity sha512-J25bhw1BxtuyRx5CXMlAHH3SKX2dv0cghf2p7BCS6UNqgrUhXq96FhfsafF7a+/20Egi0m3U5PSjjtRXLzD8Kw==
+
+"@brillout/json-s@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.2.0.tgz#4ef2cc02803da43790bdff90a0b0a5762161ff6f"
+  integrity sha512-kYmNGXGrBXqF4rmIXDpQVUFK9af1DF38BjUXgEwnPk1bZv3dFVjn8iu4CgE+LP5KvMyyDWfGhQfIPuX+pc3jNg==
 
 "@brillout/libassert@^0.2.2":
   version "0.2.2"

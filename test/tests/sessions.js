@@ -28,7 +28,7 @@ async function contextChange_getApiHttpResponse({
     headers: {},
   });
   assert(responseProps.statusCode === 200);
-  assert(responseProps.body === `"json-s:tYpE|undefined"`);
+  assert(responseProps.body === `"!undefined"`);
   assert(responseProps.headers["Set-Cookie"]);
   assert(
     responseProps.headers["Set-Cookie"][0] ===
