@@ -1,29 +1,32 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
-import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  getUsageError,
-  internalErroPrefix,
-  UsageError,
-} from "./utils/assert";
 // @ts-ignore
 import getUrlProps = require("@brillout/url-props");
+
 import {
   getSetCookieHeader,
   __setSecretKey,
-  getContextFromCookie,
   __secretKey,
   SecretKey,
 } from "./context/cookie-management";
 import {
-  ContextHook,
   createContextHookFallback,
   deleteContextHookFallback,
   getContextHook,
 } from "./context/async-hook-management";
+import { resolveUserProvidedContext } from "./context/resolveUserProvidedContext";
+import { createContextProxy } from "./context/createContextProxy";
+
+import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
+
+import {
+  assert,
+  assertUsage,
+  getUsageError,
+  internalErroPrefix,
+  UsageError,
+} from "./utils/assert";
+import { isCallable } from "./utils/isCallable";
 
 export { TelefuncServer };
 
@@ -42,10 +45,7 @@ type EndpointError = Error | UsageError;
 
 // Context
 export type ContextObject = Record<string, any>;
-type ContextGetter = () =>
-  | Promise<ContextObject | undefined>
-  | ContextObject
-  | undefined;
+export type ContextGetter = () => Promise<ContextObject> | ContextObject;
 export type ContextModifications = { mods: null | Record<string, unknown> };
 
 /** Telefunc Server Configuration */
@@ -91,20 +91,6 @@ export type HttpResponseProps = {
   contentType: HttpResponseContentType;
   statusCode: HttpResponseStatusCode;
   headers?: HttpResponseHeaders;
-};
-
-type MinusContext<EndpointFunction, Context> = EndpointFunction extends (
-  this: Context,
-  ...rest: infer EndpointArguments
-) => infer EndpointReturnType
-  ? (...rest: EndpointArguments) => EndpointReturnType
-  : never;
-
-export type FrontendType<Endpoints, Context> = {
-  [EndpointName in keyof Endpoints]: MinusContext<
-    Endpoints[EndpointName],
-    Context
-  >;
 };
 
 // Whether to call the endpoint:
@@ -206,7 +192,7 @@ async function _getApiHttpResponse(
   }
 
   try {
-    userDefinedContext_ = await getUserDefinedContext(userDefinedContext_);
+    userDefinedContext_ = await resolveUserProvidedContext(userDefinedContext_);
   } catch (contextError) {
     return handleContextError(contextError);
   }
@@ -406,10 +392,6 @@ function validateEndpoint(
   return true;
 }
 
-function isCallable(thing: unknown) {
-  return thing instanceof Function || typeof thing === "function";
-}
-
 function isArrowFunction(fn: () => unknown) {
   // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
   // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
@@ -544,148 +526,6 @@ function getConfigProxy(configDefaults: Config): Config {
 
     configObject[configName] = configValue as never;
     return true;
-  }
-}
-
-function createContextProxy(telefuncServer: TelefuncServer) {
-  return new Proxy({}, { get, set });
-  function get(_: never, prop: string) {
-    const contextHook = getContextHook();
-    assertUsage(
-      contextHook,
-      [
-        `You are trying to access the context \`context.${prop}\``,
-        "outside the lifetime of an HTTP request.",
-        "Context is only available wihtin the lifetime of an HTTP request;",
-        `make sure to read \`context.${prop}\``,
-        "*after* Node.js received the HTTP request and",
-        "*before* the HTTP response has been sent.",
-      ].join(" ")
-    );
-
-    const {
-      contextModificationValue,
-      contextModificationValueExists,
-    } = getContextModificationValue(contextHook, prop);
-
-    const { userDefinedValue, userDefinedValueExists } = getUserDefinedValue(
-      contextHook,
-      prop
-    );
-
-    const {
-      telefuncCookieValue,
-      telefuncCookieValueExists,
-    } = getTelefuncCookieValue(contextHook, prop);
-
-    assertWarning(
-      !(userDefinedValueExists && telefuncCookieValueExists),
-      [
-        `The context \`context.${prop}\` is defined twice:`,
-        `you defined the value of \`context.${prop}\` but a`,
-        `Telfunc cookie does as well define \`context.${prop}\`.`,
-      ].join(" ")
-    );
-    assert(!(userDefinedValueExists && contextModificationValueExists));
-
-    if (contextModificationValueExists) {
-      return contextModificationValue;
-    }
-    if (userDefinedValueExists) {
-      return userDefinedValue;
-    }
-    if (telefuncCookieValueExists) {
-      return telefuncCookieValue;
-    }
-    return undefined;
-  }
-  function set(_: never, prop: string, newVal: unknown): boolean {
-    /*
-    assertUsage(
-      !isDirectCall,
-      "The context object can only be modified when running the Telefunc client in the browser, but you are using the Telefunc client on the server-side in Node.js."
-    );
-    */
-    const contextHook = getContextHook();
-    assertUsage(
-      contextHook,
-      [
-        `You are trying to change the context \`context.${prop}\``,
-        // "outside of a telefunction,",
-        // "but context can be changed only within a telefunction call.",
-        "outside the lifetime of an HTTP request.",
-        "Context is only available wihtin the lifetime of an HTTP request;",
-        `make sure to change \`context.${prop}\``,
-        "*after* Node.js received the HTTP request and",
-        "*before* the HTTP response has been sent.",
-      ].join(" ")
-    );
-
-    assertUsage(
-      telefuncServer[__secretKey],
-      [
-        `You are trying to change the context \`context.${prop}\`,`,
-        "but context can be modified only after `setSecretKey()` has been called.",
-        "Make sure you call `setSecretKey()` before modifying the context.",
-      ].join(" ")
-    );
-
-    const { userDefinedValueExists } = getUserDefinedValue(contextHook, prop);
-    assertUsage(
-      !userDefinedValueExists,
-      [
-        `You are trying to change the context \`context.${prop}\``,
-        `but you define the value \`context.${prop}\` yourself.`,
-      ].join(" ")
-    );
-
-    contextHook.contextModifications_[prop] = newVal;
-
-    return true;
-  }
-
-  function getContextModificationValue(contextHook: ContextHook, prop: string) {
-    assert(contextHook);
-    if (!(prop in contextHook.contextModifications_)) {
-      return { contextModificationValueExists: false };
-    }
-    const contextModificationValue = contextHook.contextModifications_[prop];
-    return { contextModificationValue, contextModificationValueExists: true };
-  }
-  function getUserDefinedValue(contextHook: ContextHook, prop: string) {
-    assert(contextHook);
-    if (!(prop in contextHook.userDefinedContext)) {
-      return { userDefinedValueExists: false };
-    }
-    const userDefinedValue = contextHook.userDefinedContext[prop];
-    return { userDefinedValue, userDefinedValueExists: true };
-  }
-
-  function getTelefuncCookieValue(contextHook: ContextHook, prop: string) {
-    assert(contextHook);
-    const headers = contextHook.getRequestHeaders();
-    const result = getContextFromCookie(
-      prop,
-      headers?.cookie,
-      telefuncServer[__secretKey]
-    );
-    assertUsage(
-      !("secretKeyMissing" in result),
-      [
-        `You are trying to access the \`context.${prop}\``,
-        "which does exist in a Telefunc Cookie,",
-        "but `setSecretKey()` has not been called yet.",
-        "Make sure to call `setSecretKey()` *before*",
-        `you try to access \`context.${prop}\`.`,
-      ].join(" ")
-    );
-
-    if ("contextValue" in result) {
-      const telefuncCookieValue = result.contextValue;
-      return { telefuncCookieValueExists: true, telefuncCookieValue };
-    } else {
-      return { telefuncCookieValueExists: false };
-    }
   }
 }
 
@@ -1155,118 +995,6 @@ function assertNodejs() {
       "The module `telefunc/server` is meant for your Node.js server. Load `telefunc/client` instead.",
     ].join(" ")
   );
-}
-
-/*
-  function getContext<Context extends Record<string, unknown>>(
-    this: TelefuncServer
-  ): Context {
-    return _getContext.bind(this)() as Context;
-  }
-
-  function _getContext(this: TelefuncServer): ContextObject {
-    const httpRequestHook = getContextHook();
-    assertUsage(
-      httpRequestHook,
-      "TODO- Calling `getContext()` outside the lifetime of an HTTP request. On the server-side, `getContext()` always needs to be called within the lifetime of an HTTP request: make sure to call `getContext()` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
-    );
-
-    if (httpRequestHook.contextProxy) {
-      return httpRequestHook.contextProxy;
-    }
-
-    const headers = httpRequestHook.getRequestHeaders();
-    if (!headers?.cookie) return {};
-    const { cookie } = headers;
-
-    const secretKey = this[__secretKey];
-    if (!secretKey) return {};
-
-    const retrievedContext = __getContextFromCookie(secretKey, cookie) || {};
-    httpRequestHook.contextProxy = createContextReadonlyProxy(retrievedContext);
-
-    return httpRequestHook.contextProxy;
-  }
-  */
-
-async function getUserDefinedContext(
-  context: ContextObject | undefined | ContextGetter
-): Promise<ContextObject> {
-  const userProvidedContext = await getUserProvidedContext(context);
-
-  if (userProvidedContext === undefined) {
-    return {};
-  }
-  assert(userProvidedContext instanceof Object);
-
-  return userProvidedContext;
-}
-async function getUserProvidedContext(
-  context: ContextObject | undefined | ContextGetter
-): Promise<ContextObject | undefined> {
-  if (context === undefined) {
-    return undefined;
-  }
-  const isContextFunction = isCallable(context);
-  const contextFunctionName = isContextFunction
-    ? getFunctionName(context as ContextGetter)
-    : null;
-  if (isContextFunction) {
-    context = await (context as ContextGetter)();
-  }
-  assertContext(
-    context as ContextObject,
-    isContextFunction,
-    contextFunctionName
-  );
-  assert(context && context instanceof Object);
-  return context as ContextObject;
-}
-
-function assertContext(
-  context: ContextObject | undefined,
-  isContextFunction: boolean,
-  contextFunctionName: string | null
-) {
-  if (isContextFunction) {
-    const errorMessageBegin = [
-      "Your context function",
-      ...(!contextFunctionName ? [] : ["`" + contextFunctionName + "`"]),
-      "should",
-    ].join(" ");
-    assertUsage(
-      context !== undefined && context !== null,
-      [
-        errorMessageBegin,
-        "not return `" + context + "`.",
-        "If there is no context, then return the empty object `{}`.",
-      ].join(" ")
-    );
-    assertUsage(
-      context instanceof Object,
-      [errorMessageBegin, "return a `instanceof Object`."].join(" ")
-    );
-  }
-  assertUsage(
-    context && context instanceof Object,
-    [
-      "The context cannot be `" + context + "`.",
-      "The context should be a `instanceof Object`.",
-      "If there is no context then use the empty object `{}`.",
-    ].join(" ")
-  );
-}
-
-function getFunctionName(fn: (...args: any[]) => any): string {
-  let { name } = fn;
-  if (!name) {
-    return name;
-  }
-  const PREFIX = "bound ";
-  if (name.startsWith(PREFIX)) {
-    return name.slice(PREFIX.length);
-  }
-  return name;
 }
 
 function handleError(unknownError: Error): void {
