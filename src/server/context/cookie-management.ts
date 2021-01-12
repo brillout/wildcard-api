@@ -13,9 +13,9 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
-import { ContextObject, TelefuncServer } from "./TelefuncServer";
-import { assertUsage, assertWarning, assert } from "./assert";
-import cookieModule = require("cookie");
+import { ContextObject, TelefuncServer } from "../TelefuncServer";
+import { assertUsage, assertWarning, assert } from "../assert";
+import cookieHelper = require("cookie");
 
 export { getContextFromCookie };
 export { getSetCookieHeader };
@@ -39,7 +39,7 @@ function getContextFromCookie(
   const cookieName = COOKIE_NAME + contextProp;
   const cookieSignatureName = COOKIE_SIGNATURE_NAME + contextProp;
 
-  const cookieList = cookieModule.parse(cookie);
+  const cookieList = cookieHelper.parse(cookie);
 
   if (!(cookieName in cookieList)) return {};
   if (!secretKey) return { secretKeyMissing: true };
@@ -140,7 +140,7 @@ function getSetCookieHeader(
 
   const values: string[] = [];
   cookieList.forEach(({ cookieName, cookieValue, cookieOptions }) => {
-    const value = cookieModule.serialize(
+    const value = cookieHelper.serialize(
       cookieName,
       cookieValue,
       cookieOptions

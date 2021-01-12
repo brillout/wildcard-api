@@ -18,8 +18,7 @@
     "@universal-adapter/hapi": "^0.8.0",
     "@universal-adapter/koa": "^0.8.0",
     "cookie": "^0.4.1",
-    "lsos": "^0.2.1",
-    "raw-body": "^2.4.1"
+    "lsos": "^0.2.1"
   },
   "keywords": [
     "rpc",

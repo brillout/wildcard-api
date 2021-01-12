@@ -17,9 +17,8 @@ import {
   getContextFromCookie,
   __secretKey,
   SecretKey,
-} from "./sessions";
+} from "./context/cookie-management";
 
-import { bodyParser } from "./bodyParser";
 import { IncomingMessage } from "http";
 import asyncHooks = require("async_hooks");
 
@@ -135,14 +134,6 @@ class TelefuncServer {
 
   context: ContextObject = createContextProxy(this);
 
-  /*
-    // Improve error message when T is not defined?
-    //  - https://stackoverflow.com/questions/51173191/typescript-require-generic-parameter-to-be-provided
-    getContext<T>(): T {
-      return getContext.call(this) as T;
-    }
-    */
-
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
    * @param requestProps.url HTTP request URL
@@ -158,10 +149,8 @@ class TelefuncServer {
     /** @ignore */
     {
       __INTERNAL_universalAdapter,
-      __INTERNAL_requestMock,
     }: {
       __INTERNAL_universalAdapter?: UniversalAdapterName;
-      __INTERNAL_requestMock?: HttpRequestProps;
     } = {}
   ): Promise<HttpResponseProps | null> {
     try {
@@ -255,8 +244,6 @@ async function _getApiHttpResponse(
     userDefinedContext_,
     false,
     endpoints,
-    universalAdapterName,
-    secretKey,
     contextProxy_,
     requestProps
   );
@@ -299,8 +286,6 @@ async function directCall(
     userDefinedContext_,
     true,
     endpoints,
-    undefined,
-    null,
     contextProxy_,
     null
   );
@@ -318,8 +303,6 @@ async function runEndpoint(
   userDefinedContext_: ContextObject,
   isDirectCall: IsDirectCall,
   endpoints: Endpoints,
-  universalAdapterName: UniversalAdapterName,
-  secretKey: SecretKey,
   contextProxy_: ContextObject,
   requestProps: HttpRequestProps | null
 ): Promise<{
@@ -703,85 +686,6 @@ function createContextProxy(telefuncServer: TelefuncServer) {
       return { telefuncCookieValueExists: false };
     }
   }
-}
-
-function createContextWritableProxy(
-  context: ContextObject | undefined,
-  endpointName: EndpointName,
-  isDirectCall: IsDirectCall,
-  universalAdapterName: UniversalAdapterName,
-  secretKey: SecretKey
-): { contextProxy: ContextObject; contextModifications: ContextModifications } {
-  let contextObj: ContextObject = { ...(context || {}) };
-  const contextProxy: ContextObject = new Proxy(contextObj, { get, set });
-  let contextModifications: ContextModifications = { mods: null };
-  return { contextProxy, contextModifications };
-
-  function set(_: ContextObject, contextName: string, contextValue: unknown) {
-    contextModifications.mods = contextModifications.mods || {};
-    contextModifications.mods[contextName] = contextValue;
-    contextObj[contextName] = contextValue;
-    return true;
-  }
-  function get(_: ContextObject, contextProp: string) {
-    assertUsage(
-      context,
-      getContextUsageNote(
-        endpointName,
-        contextProp,
-        isDirectCall,
-        universalAdapterName
-      )
-    );
-
-    return contextObj[contextProp];
-  }
-}
-
-function createContextReadonlyProxy(contextObj: ContextObject): ContextObject {
-  const contextProxy: ContextObject = new Proxy(contextObj, { set });
-  return contextProxy;
-
-  function set(_: any, contextName: string) {
-    assertUsage(
-      false,
-      `You are trying to change the context property \`${contextName}\` outside of a telefunction call, but context can be changed only within a telefunction.`
-    );
-    // Make TS happy
-    return false;
-  }
-}
-
-function getContextUsageNote(
-  endpointName: EndpointName,
-  prop: string,
-  isDirectCall: IsDirectCall,
-  universalAdapterName: UniversalAdapterName
-) {
-  const common = [
-    `Your endpoint function \`${endpointName}\` is trying to get \`this.${prop}\`,`,
-    "but you didn't define any context and",
-    "as a result `this` is `undefined`.",
-    `Make sure to provide a context`,
-  ].join(" ");
-
-  if (!isDirectCall) {
-    const contextSource = universalAdapterName
-      ? `with the \`setContext\` function when using the \`telefunc(setContext)\` ${universalAdapterName} middleware.`
-      : "when using `getApiHttpResponse(requestProps, context)`.";
-
-    return [common, contextSource].join(" ");
-  }
-
-  assert(isDirectCall);
-  assert(universalAdapterName === undefined);
-
-  return [
-    "Wrong usage of the Telefunc client in Node.js.",
-    common,
-    `by using \`bind({${prop}})\` when calling your \`${endpointName}\` endpoint in Node.js.`,
-    "More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md",
-  ].join(" ");
 }
 
 function parseRequestInfo(

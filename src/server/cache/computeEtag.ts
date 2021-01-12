@@ -1,4 +1,4 @@
-import { assert } from "./assert";
+import { assert } from "../assert";
 import { createHash } from "crypto";
 
 module.exports = computeEtag;

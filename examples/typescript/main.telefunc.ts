@@ -1,8 +1,9 @@
 import { server, context, setSecretKey } from "telefunc/server";
 
+export type PersonTelefuncs = typeof personTelefuncs;
+
 setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
 
-export type PersonTelefuncs = typeof personTelefuncs;
 const personTelefuncs = {
   getPerson,
 };
