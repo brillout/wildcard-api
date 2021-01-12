@@ -1,22 +1,13 @@
 import express from "express";
 import { telefunc } from "telefunc/server/express";
-import "./endpoints.ts";
-import { Context } from "./context";
+import "./main.telefunc";
 
 const app = express();
 
-// Server our API endpoints
-app.use(
-  /*
-  telefunc(() => {
-    const context: Context = { isLoggedIn: true };
-    return context;
-  })
-  */
-  telefunc()
-);
+// Serve telefunctions
+app.use(telefunc());
 
-// Serve our frontend
+// Serve static assets
 app.use(express.static("client/dist", { extensions: ["html"] }));
 
 app.listen(3000);
