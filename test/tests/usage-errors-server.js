@@ -14,7 +14,7 @@ module.exports = [
   wrongUsage_getApiHttpResponse_wrongHeaders,
   wrongUsage_getApiHttpResponse_4,
 
-  wrongEndpointFunction,
+  wrongTelefunction,
 ];
 
 module.exports.setProd = setProd;
@@ -256,7 +256,7 @@ function assertErrorResponse(responseProps) {
   assert(Object.keys(responseProps).length === 3);
 }
 
-async function wrongEndpointFunction({ server }) {
+async function wrongTelefunction({ server }) {
   try {
     server.arrowFunc = async () => {};
   } catch (err) {

@@ -34,13 +34,13 @@ assertNodejs();
 
 findAndLoadTelefuncFiles();
 
-// Endpoints
-type EndpointName = string;
-type EndpointArgs = unknown[];
-type EndpointFunction = (...args: EndpointArgs) => EndpointResult;
-type Endpoints = Record<EndpointName, EndpointFunction>;
-type EndpointResult = unknown;
-type EndpointError = Error | UsageError;
+// Telefunctions
+type TelefunctionName = string;
+type TelefunctionArgs = unknown[];
+type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
+type Telefunctions = Record<TelefunctionName, Telefunction>;
+type TelefunctionResult = unknown;
+type TelefunctionError = Error | UsageError;
 
 // Context
 export type ContextObject = Record<string, any>;
@@ -100,11 +100,11 @@ type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 // Parsing & (de-)serialization
 type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
 type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
-type EndpointArgsSerialized = ArgsInUrl | ArgsInHttpBody;
+type TelefunctionArgsSerialized = ArgsInUrl | ArgsInHttpBody;
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
-  endpointName?: EndpointName;
-  endpointArgs?: EndpointArgs;
+  endpointName?: TelefunctionName;
+  endpointArgs?: TelefunctionArgs;
   isHumanMode: IsHumanMode;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
@@ -117,7 +117,7 @@ const configDefault: Config = {
 };
 
 class TelefuncServer {
-  endpoints: Endpoints = getEndpointsProxy();
+  endpoints: Telefunctions = getEndpointsProxy();
   config: Config = getConfigProxy(configDefault);
   setSecretKey = __setSecretKey.bind(this);
   [__secretKey]: SecretKey = null;
@@ -161,8 +161,8 @@ class TelefuncServer {
 
   /** @private */
   async __directCall(
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
+    endpointName: TelefunctionName,
+    endpointArgs: TelefunctionArgs,
     userDefinedContext_: ContextObject = {}
   ) {
     assert(userDefinedContext_.constructor === Object);
@@ -179,7 +179,7 @@ class TelefuncServer {
 async function _getApiHttpResponse(
   requestProps: HttpRequestProps,
   userDefinedContext_: ContextObject | ContextGetter | undefined,
-  endpoints: Endpoints,
+  endpoints: Telefunctions,
   config: Config,
   secretKey: SecretKey,
   universalAdapterName: UniversalAdapterName,
@@ -250,10 +250,10 @@ async function _getApiHttpResponse(
 }
 
 async function directCall(
-  endpointName: EndpointName,
-  endpointArgs: EndpointArgs,
+  endpointName: TelefunctionName,
+  endpointArgs: TelefunctionArgs,
   userDefinedContext_: ContextObject,
-  endpoints: Endpoints,
+  endpoints: Telefunctions,
   contextProxy_: ContextObject
 ) {
   assert(endpointName);
@@ -284,28 +284,28 @@ async function directCall(
 }
 
 async function runEndpoint(
-  endpointName: EndpointName,
-  endpointArgs: EndpointArgs,
+  endpointName: TelefunctionName,
+  endpointArgs: TelefunctionArgs,
   userDefinedContext_: ContextObject,
   isDirectCall: IsDirectCall,
-  endpoints: Endpoints,
+  endpoints: Telefunctions,
   contextProxy_: ContextObject,
   requestProps: HttpRequestProps | null
 ): Promise<{
-  endpointResult?: EndpointResult;
-  endpointError?: EndpointError;
+  endpointResult?: TelefunctionResult;
+  endpointError?: TelefunctionError;
   contextModifications: ContextObject;
 }> {
   assert(endpointName);
   assert(endpointArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
-  const endpoint: EndpointFunction = endpoints[endpointName];
+  const endpoint: Telefunction = endpoints[endpointName];
   assert(endpoint);
   assert(endpointIsValid(endpoint));
 
-  let endpointResult: EndpointResult | undefined;
-  let endpointError: EndpointError | undefined;
+  let endpointResult: TelefunctionResult | undefined;
+  let endpointError: TelefunctionError | undefined;
 
   createContextHookFallback(requestProps);
   const contextHook = getContextHook();
@@ -325,21 +325,21 @@ async function runEndpoint(
   return { endpointResult, endpointError, contextModifications };
 }
 
-function endpointIsValid(endpoint: EndpointFunction) {
+function endpointIsValid(endpoint: Telefunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
 }
 
 function endpointExists(
-  endpointName: EndpointName,
-  endpoints: Endpoints
+  endpointName: TelefunctionName,
+  endpoints: Telefunctions
 ): boolean {
   return endpointName in endpoints;
 }
 
 function validateEndpoint(
-  obj: Endpoints,
-  prop: EndpointName,
-  value: EndpointFunction
+  obj: Telefunctions,
+  prop: TelefunctionName,
+  value: Telefunction
 ) {
   const endpointName = prop;
   const endpointFunction = value;
@@ -411,7 +411,7 @@ function isHumanReadableMode(method: HttpRequestMethod) {
 
 function makeHumanReadable(
   responseProps: HttpResponseProps,
-  endpointResult: EndpointResult
+  endpointResult: TelefunctionResult
 ) {
   const text =
     responseProps.contentType === "application/json"
@@ -478,9 +478,9 @@ function get_html_response(htmlBody: HttpResponseBody): HttpResponseProps {
   return responseProps;
 }
 
-function getEndpointsProxy(): Endpoints {
-  const Endpoints: Endpoints = {};
-  return new Proxy(Endpoints, { set: validateEndpoint });
+function getEndpointsProxy(): Telefunctions {
+  const telefunction: Telefunctions = {};
+  return new Proxy(telefunction, { set: validateEndpoint });
 }
 
 function getConfigProxy(configDefaults: Config): Config {
@@ -549,7 +549,7 @@ function parseRequestInfo(
     endpointArgs,
     malformedRequest,
     malformedIntegration,
-  } = getEndpointArgs(
+  } = getTelefunctionArgs(
     argsInUrl,
     requestBody,
     requestProps,
@@ -573,20 +573,20 @@ function parseRequestInfo(
   };
 }
 
-function getEndpointArgs(
+function getTelefunctionArgs(
   argsInUrl: ArgsInUrl,
   requestBody: HttpRequestBody | undefined,
   requestProps: HttpRequestProps,
   universalAdapterName: UniversalAdapterName
 ): {
-  endpointArgs?: EndpointArgs;
+  endpointArgs?: TelefunctionArgs;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
 } {
   const ARGS_IN_BODY = "args-in-body";
   const args_are_in_body = argsInUrl === ARGS_IN_BODY;
 
-  let endpointArgs__string: EndpointArgsSerialized;
+  let endpointArgs__string: TelefunctionArgsSerialized;
   if (args_are_in_body) {
     if (!requestBody) {
       const malformedIntegration = getUsageError(
@@ -620,7 +620,7 @@ function getEndpointArgs(
 
   assert(endpointArgs__string);
 
-  let endpointArgs: EndpointArgs;
+  let endpointArgs: TelefunctionArgs;
   try {
     endpointArgs = parse(endpointArgs__string);
   } catch (err_) {
@@ -670,20 +670,20 @@ function parsePathname(pathname: string, config: Config) {
 }
 
 function handleEndpointOutcome(
-  endpointResult: EndpointResult | undefined,
-  endpointError: EndpointError | undefined,
+  endpointResult: TelefunctionResult | undefined,
+  endpointError: TelefunctionError | undefined,
   contextModifications: ContextObject,
   isHumanMode: IsHumanMode,
-  endpointName: EndpointName,
+  endpointName: TelefunctionName,
   config: Config,
   secretKey: SecretKey
 ): HttpResponseProps {
   let responseProps: HttpResponseProps;
   if (endpointError) {
-    responseProps = handleEndpointError(endpointError);
+    responseProps = handleTelefunctionError(endpointError);
   } else {
-    responseProps = handleEndpointResult(
-      endpointResult as EndpointResult,
+    responseProps = handleTelefunctionResult(
+      endpointResult as TelefunctionResult,
       isHumanMode,
       endpointName
     );
@@ -710,7 +710,7 @@ function handleEndpointOutcome(
   return responseProps;
 }
 
-function getEndpointNames(endpoints: Endpoints): EndpointName[] {
+function getTelefunctionNames(endpoints: Telefunctions): TelefunctionName[] {
   return Object.keys(endpoints);
 }
 
@@ -737,7 +737,9 @@ function addErrorPrefix(err: Error, errorPrefix: string): Error {
 
   return err;
 }
-function handleEndpointError(endpointError: EndpointError): HttpResponseProps {
+function handleTelefunctionError(
+  endpointError: TelefunctionError
+): HttpResponseProps {
   handleError(endpointError);
   return HttpResponse_serverSideError();
 }
@@ -783,8 +785,8 @@ function HttpResponse_browserSideError(
   };
 }
 function handleEndpointMissing(
-  endpointName: EndpointName,
-  endpoints: Endpoints
+  endpointName: TelefunctionName,
+  endpoints: Telefunctions
 ): HttpResponseProps {
   // Avoid flooding of server-side error logs
   if (!isProduction() || noEndpointsDefined(endpoints)) {
@@ -799,8 +801,8 @@ function handleEndpointMissing(
   };
 }
 function getEndpointMissingText(
-  endpointName: EndpointName,
-  endpoints: Endpoints
+  endpointName: TelefunctionName,
+  endpoints: Telefunctions
 ): string {
   assert(!endpointExists(endpointName, endpoints));
 
@@ -825,7 +827,7 @@ function getEndpointMissingText(
 
   if (!noEndpoints) {
     endpointMissingText.push(
-      `Loaded endpoints: ${getEndpointNames(endpoints)
+      `Loaded endpoints: ${getTelefunctionNames(endpoints)
         .map((name) => `\`${name}\``)
         .join(", ")}.`
     );
@@ -838,13 +840,13 @@ function getEndpointMissingText(
   return endpointMissingText.join(" ");
 }
 
-function handleEndpointResult(
-  endpointResult: EndpointResult,
+function handleTelefunctionResult(
+  endpointResult: TelefunctionResult,
   isHumanMode: IsHumanMode,
-  endpointName: EndpointName
+  endpointName: TelefunctionName
 ): HttpResponseProps {
   let body: HttpResponseBody | undefined;
-  let endpointError: EndpointError | undefined;
+  let endpointError: TelefunctionError | undefined;
   try {
     const ret: string = stringify(endpointResult);
     body = ret;
@@ -859,7 +861,7 @@ function handleEndpointResult(
     );
   }
   if (endpointError) {
-    return handleEndpointError(endpointError);
+    return handleTelefunctionError(endpointError);
   }
 
   assert(body !== undefined);
@@ -949,8 +951,8 @@ function getBodyUsageNote(
   ].join(" ");
 }
 
-function noEndpointsDefined(endpoints: Endpoints) {
-  const endpointNames = getEndpointNames(endpoints);
+function noEndpointsDefined(endpoints: Telefunctions) {
+  const endpointNames = getTelefunctionNames(endpoints);
   return endpointNames.length === 0;
 }
 

@@ -9,11 +9,11 @@ export { TelefuncClient };
 loadTimeStuff();
 
 // Endpoints
-export type EndpointName = string;
-type EndpointArgs = any[];
-export type EndpointResult = any;
-type EndpointFunction = (...args: EndpointArgs) => EndpointResult;
-type Endpoints = Record<EndpointName, EndpointFunction>;
+export type TelefunctionName = string;
+type TelefunctionArgs = any[];
+export type TelefunctionResult = any;
+type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
+type Endpoints = Record<TelefunctionName, Telefunction>;
 
 // Context
 type Context = (object & { _brand?: "Context" }) | undefined;
@@ -41,11 +41,11 @@ export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 // For when using the Telefunc client server-side
 type TelefuncServer = {
   __directCall: (
-    endpointName: EndpointName,
-    endpointArgs: EndpointArgs,
+    endpointName: TelefunctionName,
+    endpointArgs: TelefunctionArgs,
     context: Context
   ) => // Doesn't have to be a promise; an endpoint can return its value synchronously
-  Promise<EndpointResult> | EndpointResult;
+  Promise<TelefunctionResult> | TelefunctionResult;
 };
 
 const configDefault: ConfigPrivate = {
@@ -61,11 +61,11 @@ class TelefuncClient {
 }
 
 function callEndpoint(
-  endpointName: EndpointName,
-  endpointArgs: EndpointArgs,
+  endpointName: TelefunctionName,
+  endpointArgs: TelefunctionArgs,
   context: Context,
   config: ConfigPrivate
-): EndpointResult {
+): TelefunctionResult {
   endpointArgs = endpointArgs || [];
 
   const telefuncServer: TelefuncServer = getTelefuncServer(config);
@@ -125,19 +125,19 @@ function getTelefuncServer(config: ConfigPrivate) {
 }
 
 async function callEndpointDirectly(
-  endpointName: EndpointName,
-  endpointArgs: EndpointArgs,
+  endpointName: TelefunctionName,
+  endpointArgs: TelefunctionArgs,
   telefuncServer: TelefuncServer,
   context: Context
-): Promise<EndpointResult> {
+): Promise<TelefunctionResult> {
   return telefuncServer.__directCall(endpointName, endpointArgs, context);
 }
 
 function callEndpointOverHttp(
-  endpointName: EndpointName,
-  endpointArgs: EndpointArgs,
+  endpointName: TelefunctionName,
+  endpointArgs: TelefunctionArgs,
   config: ConfigPrivate
-): EndpointResult {
+): TelefunctionResult {
   let body: HttpRequestBody | undefined;
   let urlArgs__string: string | undefined;
   const ARGS_IN_BODY = "args-in-body";
@@ -162,7 +162,7 @@ function callEndpointOverHttp(
 }
 
 function getEndpointUrl(
-  endpointName: EndpointName,
+  endpointName: TelefunctionName,
   config: ConfigPrivate
 ): HttpRequestUrl {
   let url: HttpRequestUrl = "";
@@ -202,7 +202,7 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
 
   return endpointsProxy;
 
-  function get({}, endpointName: EndpointName) {
+  function get({}, endpointName: TelefunctionName) {
     // Return native methods
     if (endpointName in emptyObject) {
       return emptyObject[endpointName];
@@ -225,7 +225,7 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
       return undefined;
     }
 
-    return function (this: Context, ...endpointArgs: EndpointArgs) {
+    return function (this: Context, ...endpointArgs: TelefunctionArgs) {
       let context: Context = undefined;
 
       if (isBinded(this, endpointsProxy)) {
@@ -293,8 +293,8 @@ function envSupportsProxy() {
 }
 
 function serializeArgs(
-  endpointArgs: EndpointArgs,
-  endpointName: EndpointName
+  endpointArgs: TelefunctionArgs,
+  endpointName: TelefunctionName
 ): string | undefined {
   assert(endpointArgs.length >= 0);
   if (endpointArgs.length === 0) {

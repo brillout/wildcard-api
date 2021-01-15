@@ -4,8 +4,8 @@ import { parse } from "@brillout/json-s";
 // @ts-ignore
 import fetch = require("@brillout/fetch");
 import {
-  EndpointName,
-  EndpointResult,
+  TelefunctionName,
+  TelefunctionResult,
   HttpRequestBody,
   HttpRequestUrl,
 } from "./TelefuncClient";
@@ -16,8 +16,8 @@ export { TelefuncError };
 async function makeHttpRequest(
   url: HttpRequestUrl,
   body: HttpRequestBody | undefined,
-  endpointName: EndpointName
-): Promise<EndpointResult> {
+  endpointName: TelefunctionName
+): Promise<TelefunctionResult> {
   const makeRequest = addHandli(() =>
     fetch(url, {
       /* Also enable `DEBUG_CACHE` flag on server-side.
@@ -110,7 +110,7 @@ class TelefuncError extends Error {
   }
 }
 
-function addHandli(fetcher: () => Promise<EndpointResult>) {
+function addHandli(fetcher: () => Promise<TelefunctionResult>) {
   return () => {
     if (
       typeof window !== "undefined" &&
