@@ -300,26 +300,6 @@ async function runEndpoint(
   assert(endpointArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
-  /* TODO
-    const { contextProxy, contextModifications } = createContextWritableProxy(
-      context,
-      endpointName,
-      isDirectCall,
-      universalAdapterName,
-      secretKey
-    );
-    assert(contextProxy !== undefined);
-    assert(contextProxy instanceof Object);
-
-    {
-      const contextHook = getContextHook();
-      assert(contextHook || isDirectCall);
-      if (contextHook) {
-        contextHook.contextProxy = contextProxy;
-      }
-    }
-    */
-
   const endpoint: EndpointFunction = endpoints[endpointName];
   assert(endpoint);
   assert(endpointIsValid(endpoint));
@@ -814,7 +794,7 @@ function handleEndpointMissing(
   }
   return {
     statusCode: 404,
-    body: `Endpoint \`${endpointName}\` does not exist. Check the server-side error for more information.`,
+    body: `Telefunction \`${endpointName}\` does not exist. Check the server-side error for more information.`,
     contentType: "text/plain",
   };
 }
@@ -827,22 +807,19 @@ function getEndpointMissingText(
   const noEndpoints = noEndpointsDefined(endpoints);
 
   const endpointMissingText = [
-    "Endpoint `" + endpointName + "` does not exist.",
+    "Telefunction `" + endpointName + "` does not exist.",
   ];
 
   if (noEndpoints) {
-    // TODO: rename to telefunction
-    endpointMissingText.push("You didn't define any endpoint.");
+    endpointMissingText.push("You didn't define any telefunction.");
   }
 
   endpointMissingText.push(
     [
-      "Make sure that your file that defines",
+      "Make sure that the name of your file that defines",
       "`" + endpointName + "`",
-      // TODO: rename to `telefunc.js`
-      "is named `endpoints.js` or ends with `.endpoints.js` and Telefunc will automatically load it.",
-      "For TypeScript `endpoints.ts` and `*.endpoints.ts` works as well.",
-      "Alternatively, manually load your file with `require`/`import`.",
+      "ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or",
+      "manually load your file with `require`/`import`.",
     ].join(" ")
   );
 

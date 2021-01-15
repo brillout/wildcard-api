@@ -8,6 +8,7 @@
  - replace `window.telefuncClient` with `window.telefunc` in tests
 
 - Try if new autoload logic works
+ - Make sure that all files are scanned except `node_modules/*`
 
 
 - Avoid user's TS to autocomplete internal interfaces

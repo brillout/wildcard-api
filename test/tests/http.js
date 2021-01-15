@@ -14,7 +14,7 @@ const { setProd, unsetProd } = require("./usage-errors-server");
 
 module.exports = [
   http_validRequest,
-  http_endpointMissing_noEndpoints,
+  http_endpointMissing_noTelefunctions,
   http_endpointMissing_notDefined,
   http_endpointReturnsUnserializable,
   http_wrongRequest1,
@@ -37,7 +37,7 @@ async function http_validRequest({ server, browserEval }) {
   });
 }
 
-async function http_endpointMissing_noEndpoints({ server, browserEval }) {
+async function http_endpointMissing_noTelefunctions({ server, browserEval }) {
   server.nothing = async function () {};
 
   setProd();
@@ -45,9 +45,9 @@ async function http_endpointMissing_noEndpoints({ server, browserEval }) {
     const resp = await window.fetch("/_telefunc/hello");
     const text = await resp.text();
     assert(resp.status === 404, resp.status);
-    assert(
-      text ===
-        "Endpoint `hello` does not exist. Check the server-side error for more information."
+    assert.strictEqual(
+      text,
+      "Telefunction `hello` does not exist. Check the server-side error for more information."
     );
     assert_noErrorStack(text);
   });
@@ -66,7 +66,7 @@ async function http_endpointMissing_notDefined({ server, browserEval }) {
     assert(resp.status === 404, resp.status);
     assert(
       text ===
-        "Endpoint `blub` does not exist. Check the server-side error for more information."
+        "Telefunction `blub` does not exist. Check the server-side error for more information."
     );
     assert_noErrorStack(text);
   });
@@ -78,18 +78,18 @@ async function http_endpointReturnsUnserializable({
   browserEval,
   assertStderr,
 }) {
-  server.fnEndpoint2 = async function () {
+  server.fn2 = async function () {
     return async () => {};
   };
 
   await browserEval(async () => {
-    const resp = await window.fetch("/_telefunc/fnEndpoint2");
+    const resp = await window.fetch("/_telefunc/fn2");
     const text = await resp.text();
     assert(resp.status === 500, resp.status);
     assert(text === "Internal Server Error");
   });
 
-  assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint2`");
+  assertStderr("Couldn't serialize value returned by endpoint `fn2`");
 }
 
 async function http_wrongRequest1({ server, browserEval }) {

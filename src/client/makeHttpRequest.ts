@@ -78,8 +78,8 @@ async function makeHttpRequest(
 
   const codeErrorText =
     statusCode === 404
-      ? `Endpoint \`${endpointName}\` does not exist. Check the server-side error for more information.`
-      : `Endpoint function \`${endpointName}\` threw an error.`;
+      ? `Telefunction \`${endpointName}\` does not exist. Check the server-side error for more information.`
+      : `Telefunction \`${endpointName}\` threw an error.`;
 
   throw new TelefuncError(codeErrorText, {
     isConnectionError: false,

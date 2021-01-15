@@ -206,9 +206,7 @@ async function wrongSetContext({
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
-      assert(
-        err.message === "Endpoint function `boringEndpoint` threw an error."
-      );
+      assert(err.message === "Telefunction `boringEndpoint` threw an error.");
     }
   });
   assertStderr(
@@ -461,9 +459,7 @@ async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
     }
     assert(err.isCodeError === true);
     assert(err.isConnectionError === false);
-    assert(
-      err.message === "Endpoint function `failingEndpoint` threw an error."
-    );
+    assert(err.message === "Telefunction `failingEndpoint` threw an error.");
   });
 
   assert(endpointCalled === false);
@@ -536,7 +532,7 @@ async function missingSecretKey({
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
-      assert(err.message === "Endpoint function `he` threw an error.");
+      assert(err.message === "Telefunction `he` threw an error.");
     }
   });
 
