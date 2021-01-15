@@ -89,7 +89,7 @@ async function http_endpointReturnsUnserializable({
     assert(text === "Internal Server Error");
   });
 
-  assertStderr("Couldn't serialize value returned by endpoint `fn2`");
+  assertStderr("Couldn't serialize value returned by telefunction `fn2`");
 }
 
 async function http_wrongRequest1({ server, browserEval }) {

@@ -10,8 +10,8 @@ async function basic_serverSide({ server, telefuncClient }) {
   server.hello = async function (name) {
     return "yo " + name;
   };
-  const endpointResult = await telefuncClient.endpoints.hello("Paul");
-  assert(endpointResult === "yo Paul");
+  const telefunctionResult = await telefuncClient.endpoints.hello("Paul");
+  assert(telefunctionResult === "yo Paul");
 }
 
 async function basic_getApiHttpResponse({ server, telefuncServer }) {
@@ -36,10 +36,10 @@ async function basic_serverSide_withContext({ server, telefuncClient }) {
     assert(this.headers === headers);
     return "heyy " + name;
   };
-  const endpointResult = await telefuncClient.endpoints.hello.bind({ headers })(
+  const telefunctionResult = await telefuncClient.endpoints.hello.bind({ headers })(
     "Paul"
   );
-  assert(endpointResult === "heyy Paul");
+  assert(telefunctionResult === "heyy Paul");
 }
 
 async function basic_clientSide({ server, browserEval }) {

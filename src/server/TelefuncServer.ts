@@ -103,8 +103,8 @@ type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
 type TelefunctionArgsSerialized = ArgsInUrl | ArgsInHttpBody;
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
-  endpointName?: TelefunctionName;
-  endpointArgs?: TelefunctionArgs;
+  telefunctionName?: TelefunctionName;
+  telefunctionArgs?: TelefunctionArgs;
   isHumanMode: IsHumanMode;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
@@ -161,14 +161,14 @@ class TelefuncServer {
 
   /** @private */
   async __directCall(
-    endpointName: TelefunctionName,
-    endpointArgs: TelefunctionArgs,
+    telefunctionName: TelefunctionName,
+    telefunctionArgs: TelefunctionArgs,
     userDefinedContext_: ContextObject = {}
   ) {
     assert(userDefinedContext_.constructor === Object);
     return await directCall(
-      endpointName,
-      endpointArgs,
+      telefunctionName,
+      telefunctionArgs,
       userDefinedContext_,
       this.endpoints,
       this.context
@@ -198,8 +198,8 @@ async function _getApiHttpResponse(
   assert(userDefinedContext_ instanceof Object);
 
   const {
-    endpointName,
-    endpointArgs,
+    telefunctionName,
+    telefunctionArgs,
     malformedRequest,
     malformedIntegration,
     isNotTelefuncRequest,
@@ -218,19 +218,19 @@ async function _getApiHttpResponse(
     return handleMalformedIntegration(malformedIntegration);
   }
 
-  assert(endpointName && endpointArgs);
+  assert(telefunctionName && telefunctionArgs);
 
-  if (!endpointExists(endpointName, endpoints)) {
-    return handleEndpointMissing(endpointName, endpoints);
+  if (!telefunctionExists(telefunctionName, endpoints)) {
+    return handleTelefunctionMissing(telefunctionName, endpoints);
   }
 
   const {
-    endpointResult,
-    endpointError,
+    telefunctionResult,
+    telefunctionError,
     contextModifications,
   } = await runEndpoint(
-    endpointName,
-    endpointArgs,
+    telefunctionName,
+    telefunctionArgs,
     userDefinedContext_,
     false,
     endpoints,
@@ -238,37 +238,37 @@ async function _getApiHttpResponse(
     requestProps
   );
 
-  return handleEndpointOutcome(
-    endpointResult,
-    endpointError,
+  return handleTelefunctionOutcome(
+    telefunctionResult,
+    telefunctionError,
     contextModifications,
     isHumanMode,
-    endpointName,
+    telefunctionName,
     config,
     secretKey
   );
 }
 
 async function directCall(
-  endpointName: TelefunctionName,
-  endpointArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName,
+  telefunctionArgs: TelefunctionArgs,
   userDefinedContext_: ContextObject,
   endpoints: Telefunctions,
   contextProxy_: ContextObject
 ) {
-  assert(endpointName);
-  assert(endpointArgs.constructor === Array);
+  assert(telefunctionName);
+  assert(telefunctionArgs.constructor === Array);
 
   {
-    const isMissing = !endpointExists(endpointName, endpoints);
+    const isMissing = !telefunctionExists(telefunctionName, endpoints);
     if (isMissing) {
-      assertUsage(false, getEndpointMissingText(endpointName, endpoints));
+      assertUsage(false, getEndpointMissingText(telefunctionName, endpoints));
     }
   }
 
-  const { endpointResult, endpointError } = await runEndpoint(
-    endpointName,
-    endpointArgs,
+  const { telefunctionResult, telefunctionError } = await runEndpoint(
+    telefunctionName,
+    telefunctionArgs,
     userDefinedContext_,
     true,
     endpoints,
@@ -276,36 +276,36 @@ async function directCall(
     null
   );
 
-  if (endpointError) {
-    throw endpointError;
+  if (telefunctionError) {
+    throw telefunctionError;
   } else {
-    return endpointResult;
+    return telefunctionResult;
   }
 }
 
 async function runEndpoint(
-  endpointName: TelefunctionName,
-  endpointArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName,
+  telefunctionArgs: TelefunctionArgs,
   userDefinedContext_: ContextObject,
   isDirectCall: IsDirectCall,
   endpoints: Telefunctions,
   contextProxy_: ContextObject,
   requestProps: HttpRequestProps | null
 ): Promise<{
-  endpointResult?: TelefunctionResult;
-  endpointError?: TelefunctionError;
+  telefunctionResult?: TelefunctionResult;
+  telefunctionError?: TelefunctionError;
   contextModifications: ContextObject;
 }> {
-  assert(endpointName);
-  assert(endpointArgs.constructor === Array);
+  assert(telefunctionName);
+  assert(telefunctionArgs.constructor === Array);
   assert([true, false].includes(isDirectCall));
 
-  const endpoint: Telefunction = endpoints[endpointName];
+  const endpoint: Telefunction = endpoints[telefunctionName];
   assert(endpoint);
   assert(endpointIsValid(endpoint));
 
-  let endpointResult: TelefunctionResult | undefined;
-  let endpointError: TelefunctionError | undefined;
+  let telefunctionResult: TelefunctionResult | undefined;
+  let telefunctionError: TelefunctionError | undefined;
 
   createContextHookFallback(requestProps);
   const contextHook = getContextHook();
@@ -313,27 +313,27 @@ async function runEndpoint(
   contextHook.userDefinedContext = userDefinedContext_;
 
   try {
-    endpointResult = await endpoint.apply(contextProxy_, endpointArgs);
+    telefunctionResult = await endpoint.apply(contextProxy_, telefunctionArgs);
   } catch (err) {
-    endpointError = err;
+    telefunctionError = err;
   }
 
   const contextModifications = contextHook.contextModifications_;
   contextHook.contextModifications_ = {};
   deleteContextHookFallback(contextHook);
 
-  return { endpointResult, endpointError, contextModifications };
+  return { telefunctionResult, telefunctionError, contextModifications };
 }
 
 function endpointIsValid(endpoint: Telefunction) {
   return isCallable(endpoint) && !isArrowFunction(endpoint);
 }
 
-function endpointExists(
-  endpointName: TelefunctionName,
+function telefunctionExists(
+  telefunctionName: TelefunctionName,
   endpoints: Telefunctions
 ): boolean {
-  return endpointName in endpoints;
+  return telefunctionName in endpoints;
 }
 
 function validateEndpoint(
@@ -341,14 +341,14 @@ function validateEndpoint(
   prop: TelefunctionName,
   value: Telefunction
 ) {
-  const endpointName = prop;
+  const telefunctionName = prop;
   const endpointFunction = value;
 
   assertUsage(
     isCallable(endpointFunction),
     [
       "An endpoint must be a function,",
-      `but the endpoint \`${endpointName}\` is`,
+      `but the endpoint \`${telefunctionName}\` is`,
       endpointFunction && endpointFunction.constructor
         ? `a \`${endpointFunction.constructor.name}\``
         : "`" + endpointFunction + "`",
@@ -358,7 +358,7 @@ function validateEndpoint(
   assertUsage(
     !isArrowFunction(endpointFunction),
     [
-      "The endpoint function `" + endpointName + "` is an arrow function.",
+      "The endpoint function `" + telefunctionName + "` is an arrow function.",
       "Endpoints cannot be defined with arrow functions (`() => {}`),",
       "use a plain function (`function(){}`) instead.",
     ].join(" ")
@@ -411,13 +411,13 @@ function isHumanReadableMode(method: HttpRequestMethod) {
 
 function makeHumanReadable(
   responseProps: HttpResponseProps,
-  endpointResult: TelefunctionResult
+  telefunctionResult: TelefunctionResult
 ) {
   const text =
     responseProps.contentType === "application/json"
       ? JSON.stringify(
-          endpointResult && endpointResult instanceof Object
-            ? endpointResult
+          telefunctionResult && telefunctionResult instanceof Object
+            ? telefunctionResult
             : JSON.parse(responseProps.body),
           null,
           2
@@ -533,20 +533,20 @@ function parseRequestInfo(
 
   const {
     malformedRequest: malformationError__pathname,
-    endpointName,
+    telefunctionName,
     argsInUrl,
   } = parsePathname(pathname, config);
 
   if (malformationError__pathname) {
     return {
       malformedRequest: malformationError__pathname,
-      endpointName,
+      telefunctionName,
       isHumanMode,
     };
   }
 
   const {
-    endpointArgs,
+    telefunctionArgs,
     malformedRequest,
     malformedIntegration,
   } = getTelefunctionArgs(
@@ -560,15 +560,15 @@ function parseRequestInfo(
     return {
       malformedRequest,
       malformedIntegration,
-      endpointName,
+      telefunctionName,
       isHumanMode,
     };
   }
 
-  assert(endpointArgs && endpointArgs.constructor === Array);
+  assert(telefunctionArgs && telefunctionArgs.constructor === Array);
   return {
-    endpointArgs,
-    endpointName,
+    telefunctionArgs,
+    telefunctionName,
     isHumanMode,
   };
 }
@@ -579,14 +579,14 @@ function getTelefunctionArgs(
   requestProps: HttpRequestProps,
   universalAdapterName: UniversalAdapterName
 ): {
-  endpointArgs?: TelefunctionArgs;
+  telefunctionArgs?: TelefunctionArgs;
   malformedRequest?: MalformedRequest;
   malformedIntegration?: MalformedIntegration;
 } {
   const ARGS_IN_BODY = "args-in-body";
   const args_are_in_body = argsInUrl === ARGS_IN_BODY;
 
-  let endpointArgs__string: TelefunctionArgsSerialized;
+  let telefunctionArgs__string: TelefunctionArgsSerialized;
   if (args_are_in_body) {
     if (!requestBody) {
       const malformedIntegration = getUsageError(
@@ -608,38 +608,38 @@ function getTelefunctionArgs(
           JSON.stringify(requestBody)
         : // Server framework didn't parse HTTP Request body
           requestBody;
-    endpointArgs__string = argsInHttpBody;
+    telefunctionArgs__string = argsInHttpBody;
   } else {
     if (!argsInUrl) {
       return {
-        endpointArgs: [],
+        telefunctionArgs: [],
       };
     }
-    endpointArgs__string = argsInUrl;
+    telefunctionArgs__string = argsInUrl;
   }
 
-  assert(endpointArgs__string);
+  assert(telefunctionArgs__string);
 
-  let endpointArgs: TelefunctionArgs;
+  let telefunctionArgs: TelefunctionArgs;
   try {
-    endpointArgs = parse(endpointArgs__string);
+    telefunctionArgs = parse(telefunctionArgs__string);
   } catch (err_) {
     const httpBodyErrorText = [
       "Malformatted API request.",
-      "Cannot parse `" + endpointArgs__string + "`.",
+      "Cannot parse `" + telefunctionArgs__string + "`.",
     ].join(" ");
     return {
       malformedRequest: { httpBodyErrorText },
     };
   }
-  if (!endpointArgs || endpointArgs.constructor !== Array) {
+  if (!telefunctionArgs || telefunctionArgs.constructor !== Array) {
     const httpBodyErrorText =
       "Malformatted API request. The parsed serialized endpoint arguments should be an array.";
     return {
       malformedRequest: { httpBodyErrorText },
     };
   }
-  return { endpointArgs };
+  return { telefunctionArgs };
 }
 function parsePathname(pathname: string, config: Config) {
   assert(pathname.startsWith(config.baseUrl));
@@ -648,12 +648,12 @@ function parsePathname(pathname: string, config: Config) {
   const isMalformatted =
     urlParts.length < 1 || urlParts.length > 2 || !urlParts[0];
 
-  const endpointName = urlParts[0];
+  const telefunctionName = urlParts[0];
   const argsInUrl: ArgsInUrl = urlParts[1] && decodeURIComponent(urlParts[1]);
   /*
     const pathname__prettified = isMalformatted
       ? pathname
-      : config.baseUrl + endpointName + "/" + argsInUrl;
+      : config.baseUrl + telefunctionName + "/" + argsInUrl;
     */
   let malformedRequest: MalformedRequest | undefined;
   if (isMalformatted) {
@@ -664,28 +664,28 @@ function parsePathname(pathname: string, config: Config) {
 
   return {
     malformedRequest,
-    endpointName,
+    telefunctionName,
     argsInUrl,
   };
 }
 
-function handleEndpointOutcome(
-  endpointResult: TelefunctionResult | undefined,
-  endpointError: TelefunctionError | undefined,
+function handleTelefunctionOutcome(
+  telefunctionResult: TelefunctionResult | undefined,
+  telefunctionError: TelefunctionError | undefined,
   contextModifications: ContextObject,
   isHumanMode: IsHumanMode,
-  endpointName: TelefunctionName,
+  telefunctionName: TelefunctionName,
   config: Config,
   secretKey: SecretKey
 ): HttpResponseProps {
   let responseProps: HttpResponseProps;
-  if (endpointError) {
-    responseProps = handleTelefunctionError(endpointError);
+  if (telefunctionError) {
+    responseProps = handleTelefunctionError(telefunctionError);
   } else {
     responseProps = handleTelefunctionResult(
-      endpointResult as TelefunctionResult,
+      telefunctionResult as TelefunctionResult,
       isHumanMode,
-      endpointName
+      telefunctionName
     );
   }
   assert(responseProps.body.constructor === String);
@@ -738,9 +738,9 @@ function addErrorPrefix(err: Error, errorPrefix: string): Error {
   return err;
 }
 function handleTelefunctionError(
-  endpointError: TelefunctionError
+  telefunctionError: TelefunctionError
 ): HttpResponseProps {
-  handleError(endpointError);
+  handleError(telefunctionError);
   return HttpResponse_serverSideError();
 }
 function handleContextError(contextError: ContextError): HttpResponseProps {
@@ -784,84 +784,84 @@ function HttpResponse_browserSideError(
     contentType: "text/plain",
   };
 }
-function handleEndpointMissing(
-  endpointName: TelefunctionName,
+function handleTelefunctionMissing(
+  telefunctionName: TelefunctionName,
   endpoints: Telefunctions
 ): HttpResponseProps {
   // Avoid flooding of server-side error logs
-  if (!isProduction() || noEndpointsDefined(endpoints)) {
-    const errorText = getEndpointMissingText(endpointName, endpoints);
+  if (!isProduction() || noTelefunctionsDefined(endpoints)) {
+    const errorText = getEndpointMissingText(telefunctionName, endpoints);
     const errorMissingEndpoint = getUsageError(errorText);
     handleError(errorMissingEndpoint);
   }
   return {
     statusCode: 404,
-    body: `Telefunction \`${endpointName}\` does not exist. Check the server-side error for more information.`,
+    body: `Telefunction \`${telefunctionName}\` does not exist. Check the server-side error for more information.`,
     contentType: "text/plain",
   };
 }
 function getEndpointMissingText(
-  endpointName: TelefunctionName,
+  telefunctionName: TelefunctionName,
   endpoints: Telefunctions
 ): string {
-  assert(!endpointExists(endpointName, endpoints));
+  assert(!telefunctionExists(telefunctionName, endpoints));
 
-  const noEndpoints = noEndpointsDefined(endpoints);
+  const noTelefunctions = noTelefunctionsDefined(endpoints);
 
-  const endpointMissingText = [
-    "Telefunction `" + endpointName + "` does not exist.",
+  const telefunctionMissingText = [
+    "Telefunction `" + telefunctionName + "` does not exist.",
   ];
 
-  if (noEndpoints) {
-    endpointMissingText.push("You didn't define any telefunction.");
+  if (noTelefunctions) {
+    telefunctionMissingText.push("You didn't define any telefunction.");
   }
 
-  endpointMissingText.push(
+  telefunctionMissingText.push(
     [
       "Make sure that the name of your file that defines",
-      "`" + endpointName + "`",
+      "`" + telefunctionName + "`",
       "ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or",
       "manually load your file with `require`/`import`.",
     ].join(" ")
   );
 
-  if (!noEndpoints) {
-    endpointMissingText.push(
+  if (!noTelefunctions) {
+    telefunctionMissingText.push(
       `Loaded endpoints: ${getTelefunctionNames(endpoints)
         .map((name) => `\`${name}\``)
         .join(", ")}.`
     );
   }
 
-  if (!noEndpoints) {
-    endpointMissingText.push("(This error is not shown in production.)");
+  if (!noTelefunctions) {
+    telefunctionMissingText.push("(This error is not shown in production.)");
   }
 
-  return endpointMissingText.join(" ");
+  return telefunctionMissingText.join(" ");
 }
 
 function handleTelefunctionResult(
-  endpointResult: TelefunctionResult,
+  telefunctionResult: TelefunctionResult,
   isHumanMode: IsHumanMode,
-  endpointName: TelefunctionName
+  telefunctionName: TelefunctionName
 ): HttpResponseProps {
   let body: HttpResponseBody | undefined;
-  let endpointError: TelefunctionError | undefined;
+  let telefunctionError: TelefunctionError | undefined;
   try {
-    const ret: string = stringify(endpointResult);
+    const ret: string = stringify(telefunctionResult);
     body = ret;
   } catch (stringifyError) {
-    endpointError = getUsageError(
+    telefunctionError = getUsageError(
       [
-        `Couldn't serialize value returned by endpoint \`${endpointName}\`.`,
+        `Couldn't serialize value returned by telefunction \`${telefunctionName}\`.`,
         "Make sure the returned values",
         "are only of the following types:",
         "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
       ].join(" ")
     );
   }
-  if (endpointError) {
-    return handleTelefunctionError(endpointError);
+  if (telefunctionError) {
+    return handleTelefunctionError(telefunctionError);
   }
 
   assert(body !== undefined);
@@ -874,7 +874,7 @@ function handleTelefunctionResult(
   };
 
   if (isHumanMode) {
-    return makeHumanReadable(responseProps, endpointResult);
+    return makeHumanReadable(responseProps, telefunctionResult);
   } else {
     return responseProps;
   }
@@ -951,9 +951,9 @@ function getBodyUsageNote(
   ].join(" ");
 }
 
-function noEndpointsDefined(endpoints: Telefunctions) {
-  const endpointNames = getTelefunctionNames(endpoints);
-  return endpointNames.length === 0;
+function noTelefunctionsDefined(endpoints: Telefunctions) {
+  const telefunctionNames = getTelefunctionNames(endpoints);
+  return telefunctionNames.length === 0;
 }
 
 function isProduction(): boolean {

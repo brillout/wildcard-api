@@ -16,7 +16,7 @@ export { TelefuncError };
 async function makeHttpRequest(
   url: HttpRequestUrl,
   body: HttpRequestBody | undefined,
-  endpointName: TelefunctionName
+  telefunctionName: TelefunctionName
 ): Promise<TelefunctionResult> {
   const makeRequest = addHandli(() =>
     fetch(url, {
@@ -78,8 +78,8 @@ async function makeHttpRequest(
 
   const codeErrorText =
     statusCode === 404
-      ? `Telefunction \`${endpointName}\` does not exist. Check the server-side error for more information.`
-      : `Telefunction \`${endpointName}\` threw an error.`;
+      ? `Telefunction \`${telefunctionName}\` does not exist. Check the server-side error for more information.`
+      : `Telefunction \`${telefunctionName}\` threw an error.`;
 
   throw new TelefuncError(codeErrorText, {
     isConnectionError: false,

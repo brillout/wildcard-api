@@ -28,14 +28,14 @@ async function endpointSyncFunction({ server, telefuncClient }) {
 // Endpoints can return undefined
 async function endpointReturnsUndefined_serverSide({ server, telefuncClient }) {
   server.helloUndefined = async function () {};
-  const endpointResult = await telefuncClient.endpoints.helloUndefined();
-  assert(endpointResult === undefined);
+  const telefunctionResult = await telefuncClient.endpoints.helloUndefined();
+  assert(telefunctionResult === undefined);
 }
 async function endpointReturnsUndefined_browserSide({ server, browserEval }) {
   server.helloUndefined = async function () {};
   await browserEval(async () => {
-    const endpointResult = await window.server.helloUndefined("Hm");
-    assert(endpointResult === undefined);
+    const telefunctionResult = await window.server.helloUndefined("Hm");
+    assert(telefunctionResult === undefined);
   });
 }
 

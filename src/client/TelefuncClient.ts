@@ -41,8 +41,8 @@ export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 // For when using the Telefunc client server-side
 type TelefuncServer = {
   __directCall: (
-    endpointName: TelefunctionName,
-    endpointArgs: TelefunctionArgs,
+    telefunctionName: TelefunctionName,
+    telefunctionArgs: TelefunctionArgs,
     context: Context
   ) => // Doesn't have to be a promise; an endpoint can return its value synchronously
   Promise<TelefunctionResult> | TelefunctionResult;
@@ -61,12 +61,12 @@ class TelefuncClient {
 }
 
 function callEndpoint(
-  endpointName: TelefunctionName,
-  endpointArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName,
+  telefunctionArgs: TelefunctionArgs,
   context: Context,
   config: ConfigPrivate
 ): TelefunctionResult {
-  endpointArgs = endpointArgs || [];
+  telefunctionArgs = telefunctionArgs || [];
 
   const telefuncServer: TelefuncServer = getTelefuncServer(config);
 
@@ -75,8 +75,8 @@ function callEndpoint(
   if (telefuncServer) {
     assert(isNodejs());
     return callEndpointDirectly(
-      endpointName,
-      endpointArgs,
+      telefunctionName,
+      telefunctionArgs,
       telefuncServer,
       context
     );
@@ -101,7 +101,7 @@ function callEndpoint(
     ].join(" ")
   );
 
-  return callEndpointOverHttp(endpointName, endpointArgs, config);
+  return callEndpointOverHttp(telefunctionName, telefunctionArgs, config);
 }
 
 function getTelefuncServer(config: ConfigPrivate) {
@@ -125,44 +125,44 @@ function getTelefuncServer(config: ConfigPrivate) {
 }
 
 async function callEndpointDirectly(
-  endpointName: TelefunctionName,
-  endpointArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName,
+  telefunctionArgs: TelefunctionArgs,
   telefuncServer: TelefuncServer,
   context: Context
 ): Promise<TelefunctionResult> {
-  return telefuncServer.__directCall(endpointName, endpointArgs, context);
+  return telefuncServer.__directCall(telefunctionName, telefunctionArgs, context);
 }
 
 function callEndpointOverHttp(
-  endpointName: TelefunctionName,
-  endpointArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName,
+  telefunctionArgs: TelefunctionArgs,
   config: ConfigPrivate
 ): TelefunctionResult {
   let body: HttpRequestBody | undefined;
   let urlArgs__string: string | undefined;
   const ARGS_IN_BODY = "args-in-body";
-  let endpointArgsStr = serializeArgs(endpointArgs, endpointName);
-  if (endpointArgsStr) {
+  let telefunctionArgsStr = serializeArgs(telefunctionArgs, telefunctionName);
+  if (telefunctionArgsStr) {
     // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-    if (endpointArgsStr.length >= 2000 || config.shortUrl) {
-      body = endpointArgsStr;
+    if (telefunctionArgsStr.length >= 2000 || config.shortUrl) {
+      body = telefunctionArgsStr;
       urlArgs__string = ARGS_IN_BODY;
     } else {
-      urlArgs__string = endpointArgsStr;
+      urlArgs__string = telefunctionArgsStr;
       assert(!urlArgs__string.startsWith(ARGS_IN_BODY));
     }
   }
 
-  let url: HttpRequestUrl = getEndpointUrl(endpointName, config);
+  let url: HttpRequestUrl = getEndpointUrl(telefunctionName, config);
   if (urlArgs__string) {
     url += "/" + encodeURIComponent(urlArgs__string);
   }
 
-  return makeHttpRequest(url, body, endpointName);
+  return makeHttpRequest(url, body, telefunctionName);
 }
 
 function getEndpointUrl(
-  endpointName: TelefunctionName,
+  telefunctionName: TelefunctionName,
   config: ConfigPrivate
 ): HttpRequestUrl {
   let url: HttpRequestUrl = "";
@@ -187,7 +187,7 @@ function getEndpointUrl(
   if (!url.endsWith("/")) {
     url += "/";
   }
-  url += endpointName;
+  url += telefunctionName;
 
   return url;
 }
@@ -202,14 +202,14 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
 
   return endpointsProxy;
 
-  function get({}, endpointName: TelefunctionName) {
+  function get({}, telefunctionName: TelefunctionName) {
     // Return native methods
-    if (endpointName in emptyObject) {
-      return emptyObject[endpointName];
+    if (telefunctionName in emptyObject) {
+      return emptyObject[telefunctionName];
     }
 
-    // We assume `endpointName` to always be a string
-    if (typeof endpointName !== "string") {
+    // We assume `telefunctionName` to always be a string
+    if (typeof telefunctionName !== "string") {
       return undefined;
     }
 
@@ -217,15 +217,15 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
     // Ideally: throw a usage error
     // But: `inspect` seems to be called automatically (by Node.js if I remember correclty)
     // Hence I'm not sure how to handle this. Maybe by checking if the caller is Node.js or the user.
-    if (endpointName === "inspect") {
+    if (telefunctionName === "inspect") {
       return undefined;
     }
 
-    if (typeof endpointName !== "string") {
+    if (typeof telefunctionName !== "string") {
       return undefined;
     }
 
-    return function (this: Context, ...endpointArgs: TelefunctionArgs) {
+    return function (this: Context, ...telefunctionArgs: TelefunctionArgs) {
       let context: Context = undefined;
 
       if (isBinded(this, endpointsProxy)) {
@@ -238,7 +238,7 @@ function getEndpointsProxy(config: ConfigPrivate): Endpoints {
         );
       }
 
-      return callEndpoint(endpointName, endpointArgs, context, config);
+      return callEndpoint(telefunctionName, telefunctionArgs, context, config);
     };
   }
 
@@ -293,22 +293,22 @@ function envSupportsProxy() {
 }
 
 function serializeArgs(
-  endpointArgs: TelefunctionArgs,
-  endpointName: TelefunctionName
+  telefunctionArgs: TelefunctionArgs,
+  telefunctionName: TelefunctionName
 ): string | undefined {
-  assert(endpointArgs.length >= 0);
-  if (endpointArgs.length === 0) {
+  assert(telefunctionArgs.length >= 0);
+  if (telefunctionArgs.length === 0) {
     return undefined;
   }
   let serializedArgs: string | undefined;
   try {
-    serializedArgs = stringify(endpointArgs);
+    serializedArgs = stringify(telefunctionArgs);
   } catch (err_) {
     assertUsage(
       false,
       [
-        `Couldn't serialize arguments for endpoint \`${endpointName}\`.`,
-        `Make sure all arguments passed to \`${endpointName}()\``,
+        `Couldn't serialize arguments for endpoint \`${telefunctionName}\`.`,
+        `Make sure all arguments passed to \`${telefunctionName}()\``,
         "are only of the following types:",
         "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
       ].join(" ")

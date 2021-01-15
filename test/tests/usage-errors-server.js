@@ -157,7 +157,9 @@ async function endpointReturnsUnserializable({
     assert(err.message === "Telefunction `fnEndpoint1` threw an error.");
   });
 
-  assertStderr("Couldn't serialize value returned by endpoint `fnEndpoint1`");
+  assertStderr(
+    "Couldn't serialize value returned by telefunction `fnEndpoint1`"
+  );
 }
 
 async function endpointThrowsError({ server, browserEval, assertStderr }) {
