@@ -228,7 +228,7 @@ async function _getApiHttpResponse(
     telefunctionResult,
     telefunctionError,
     contextModifications,
-  } = await runEndpoint(
+  } = await runTelefunction(
     telefunctionName,
     telefunctionArgs,
     userDefinedContext_,
@@ -264,12 +264,12 @@ async function directCall(
     if (isMissing) {
       assertUsage(
         false,
-        getEndpointMissingText(telefunctionName, telefunctions)
+        getTelefunctionMissingText(telefunctionName, telefunctions)
       );
     }
   }
 
-  const { telefunctionResult, telefunctionError } = await runEndpoint(
+  const { telefunctionResult, telefunctionError } = await runTelefunction(
     telefunctionName,
     telefunctionArgs,
     userDefinedContext_,
@@ -286,7 +286,7 @@ async function directCall(
   }
 }
 
-async function runEndpoint(
+async function runTelefunction(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
   userDefinedContext_: ContextObject,
@@ -305,7 +305,7 @@ async function runEndpoint(
 
   const telefunction: Telefunction = telefunctions[telefunctionName];
   assert(telefunction);
-  assert(endpointIsValid(telefunction));
+  assert(telefunctionIsValid(telefunction));
 
   let telefunctionResult: TelefunctionResult | undefined;
   let telefunctionError: TelefunctionError | undefined;
@@ -331,7 +331,7 @@ async function runEndpoint(
   return { telefunctionResult, telefunctionError, contextModifications };
 }
 
-function endpointIsValid(telefunction: Telefunction) {
+function telefunctionIsValid(telefunction: Telefunction) {
   return isCallable(telefunction) && !isArrowFunction(telefunction);
 }
 
@@ -342,27 +342,27 @@ function telefunctionExists(
   return telefunctionName in telefunctions;
 }
 
-function validateEndpoint(
+function validateTelefunction(
   obj: Telefunctions,
   prop: TelefunctionName,
   value: Telefunction
 ) {
   const telefunctionName = prop;
-  const endpointFunction = value;
+  const telefunction = value;
 
   assertUsage(
-    isCallable(endpointFunction),
+    isCallable(telefunction),
     [
       "A telefunction must be a function,",
       `but the telefunction \`${telefunctionName}\` is`,
-      endpointFunction && endpointFunction.constructor
-        ? `a \`${endpointFunction.constructor.name}\``
-        : "`" + endpointFunction + "`",
+      telefunction && telefunction.constructor
+        ? `a \`${telefunction.constructor.name}\``
+        : "`" + telefunction + "`",
     ].join(" ")
   );
 
   assertUsage(
-    !isArrowFunction(endpointFunction),
+    !isArrowFunction(telefunction),
     [
       "The telefunction `" + telefunctionName + "` is an arrow function.",
       "Telefunctions cannot be defined with arrow functions (`() => {}`),",
@@ -370,7 +370,7 @@ function validateEndpoint(
     ].join(" ")
   );
 
-  assert(endpointIsValid(endpointFunction));
+  assert(telefunctionIsValid(telefunction));
 
   obj[prop] = value;
 
@@ -486,7 +486,7 @@ function get_html_response(htmlBody: HttpResponseBody): HttpResponseProps {
 
 function getTelefunctionsProxy(): Telefunctions {
   const telefunction: Telefunctions = {};
-  return new Proxy(telefunction, { set: validateEndpoint });
+  return new Proxy(telefunction, { set: validateTelefunction });
 }
 
 function getConfigProxy(configDefaults: Config): Config {
@@ -798,9 +798,12 @@ function handleTelefunctionMissing(
 ): HttpResponseProps {
   // Avoid flooding of server-side error logs
   if (!isProduction() || noTelefunctionsDefined(telefunctions)) {
-    const errorText = getEndpointMissingText(telefunctionName, telefunctions);
-    const errorMissingEndpoint = getUsageError(errorText);
-    handleError(errorMissingEndpoint);
+    const errorText = getTelefunctionMissingText(
+      telefunctionName,
+      telefunctions
+    );
+    const errorMissingTelefunction = getUsageError(errorText);
+    handleError(errorMissingTelefunction);
   }
   return {
     statusCode: 404,
@@ -808,7 +811,7 @@ function handleTelefunctionMissing(
     contentType: "text/plain",
   };
 }
-function getEndpointMissingText(
+function getTelefunctionMissingText(
   telefunctionName: TelefunctionName,
   telefunctions: Telefunctions
 ): string {

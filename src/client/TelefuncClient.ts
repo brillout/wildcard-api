@@ -24,7 +24,7 @@ type Config = {
   serverUrl: ServerURL;
   /** Make API HTTP requests to `/${baseUrl}/*`. Default: `_telefunc`. */
   baseUrl: string;
-  /** Make API HTTP request URLs short: always use the the HTTP request body to transport endpoint arguments (instead of serializing endpoint arguments into the HTTP request URL). */
+  /** Make API HTTP request URLs short: always use the the HTTP request body to transport telefunction arguments (instead of serializing telefunction arguments into the HTTP request URL). */
   shortUrl: boolean;
 };
 type ServerURL = string | null;
@@ -44,7 +44,7 @@ type TelefuncServer = {
     telefunctionName: TelefunctionName,
     telefunctionArgs: TelefunctionArgs,
     context: Context
-  ) => // Doesn't have to be a promise; an endpoint can return its value synchronously
+  ) => // Doesn't have to be a promise; a telefunction can return its value synchronously
   Promise<TelefunctionResult> | TelefunctionResult;
 };
 
@@ -257,8 +257,8 @@ function getTelefunctionsProxy(config: ConfigPrivate): Telefunctions {
     assertUsage(
       false,
       [
-        "You cannot add/modify endpoint functions with the Telefunc client `telefunc/client`.",
-        "Instead, define your endpoint functions with the Telefunc server `telefunc/server`.",
+        "You cannot add or modify telefunctions with the Telefunc Client `telefunc/client`.",
+        "Instead, define your telefunctions with the Telefunc Server `telefunc/server`.",
       ].join(" ")
     );
 
@@ -318,7 +318,7 @@ function serializeArgs(
     assertUsage(
       false,
       [
-        `Couldn't serialize arguments for endpoint \`${telefunctionName}\`.`,
+        `Couldn't serialize arguments for telefunction \`${telefunctionName}\`.`,
         `Make sure all arguments passed to \`${telefunctionName}()\``,
         "are only of the following types:",
         "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",

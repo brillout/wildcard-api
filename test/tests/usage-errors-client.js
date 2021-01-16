@@ -44,7 +44,7 @@ async function endpointManipulationWithClient({
   }
 
   assertStderr(
-    "You cannot add/modify endpoint functions with the Telefunc client"
+    "You cannot add or modify telefunctions with the Telefunc Client"
   );
 }
 
@@ -55,7 +55,7 @@ async function cannotSerialize({ server, browserEval, assertStderr }) {
     await window.telefunc.server.oops({ someFunc: function () {} });
   });
 
-  assertStderr("Couldn't serialize arguments for endpoint `oops`");
+  assertStderr("Couldn't serialize arguments for telefunction `oops`");
 }
 
 async function wrongServerUrl({ telefuncClient, assertStderr }) {
