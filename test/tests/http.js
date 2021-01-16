@@ -6,8 +6,8 @@
 //   - TODO: wrap all Telefunc in a `catch` in order to catch Telefunc bugs.
 
 // HTTP responses that Telefunc can reply:
-// - 500 - if endpoint (or context getter, or Telefunc integration code) threw an error
-// - 404 - if endpoint doesn't exist
+// - 500 - if telefunction (or context getter, or Telefunc integration code) threw an error
+// - 404 - if telefunction doesn't exist
 // - 400 - if there is a malformed HTTP request; should never happen if the user uses the Telefunc client
 
 const { setProd, unsetProd } = require("./usage-errors-server");
@@ -130,7 +130,7 @@ async function http_wrongRequest3({ server, browserEval }) {
     assert(text.includes("Malformatted API request."));
     assert(
       text.includes(
-        "The parsed serialized endpoint arguments should be an array."
+        "The parsed serialized telefunction arguments should be an array."
       )
     );
     assert_noErrorStack(text);

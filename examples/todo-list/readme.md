@@ -94,9 +94,9 @@ A (simplistic) todo app built with:
 
 - [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
-  - [View Endpoints](#view-endpoints)
+  - [View Telefunctions](#view-endpoints)
   - [Server Integration](#server-integration)
-  - [Mutation Endpoints](#mutation-endpoints)
+  - [Mutation Telefunctions](#mutation-endpoints)
   - [React Frontend](#react-frontend)
 
 ## Run the Example
@@ -160,7 +160,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 This section highlights the interesting parts of the example.
 
-### View Endpoints
+### View Telefunctions
 
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
@@ -353,7 +353,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-### Mutation Endpoints
+### Mutation Telefunctions
 
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 

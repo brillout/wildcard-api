@@ -1,6 +1,6 @@
 module.exports = [
-  endpointMissing_noEndpoints_serverSide,
-  endpointMissing_noEndpoints_clientSide,
+  endpointMissing_noTelefunctions_serverSide,
+  endpointMissing_noTelefunctions_clientSide,
   endpointMissing_notDefined_clientSide,
   endpointMissing_notDefined_serverSide,
 
@@ -20,7 +20,7 @@ module.exports = [
 module.exports.setProd = setProd;
 module.exports.unsetProd = unsetProd;
 
-async function endpointMissing_noEndpoints_serverSide({
+async function endpointMissing_noTelefunctions_serverSide({
   telefuncClient,
   assertStderr,
 }) {
@@ -31,18 +31,18 @@ async function endpointMissing_noEndpoints_serverSide({
     err = _err;
   }
 
-  assert(
-    err.message ===
-      "[Telefunc][Wrong Usage] Telefunction `iAmNotHere` does not exist. You didn't define any telefunction. Make sure that the name of your file that defines `iAmNotHere` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`."
+  assert.strictEqual(
+    err.message,
+    "[Telefunc][Wrong Usage] Telefunction `iAmNotHere` does not exist. You didn't define any telefunction. Make sure that the name of your file that defines `iAmNotHere` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`."
   );
-  // Don't show: Loaded endpoints: ...
-  assert(!err.stack.includes("Loaded endpoints"));
+  // Don't show: Loaded telefunctions: ...
+  assert(!err.stack.includes("Loaded telefunctions"));
   // Don't show: (This error is not shown in production.)
   assert(!err.stack.includes("shown in production"));
 
   assertStderr(null);
 }
-async function endpointMissing_noEndpoints_clientSide({
+async function endpointMissing_noTelefunctions_clientSide({
   browserEval,
   assertStderr,
 }) {
@@ -126,7 +126,7 @@ async function endpointMissing_notDefined_serverSide({
 
   assert.strictEqual(
     err.message,
-    "[Telefunc][Wrong Usage] Telefunction `missingEndpoint` does not exist. Make sure that the name of your file that defines `missingEndpoint` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`. Loaded endpoints: `notUsed`. (This error is not shown in production.)"
+    "[Telefunc][Wrong Usage] Telefunction `missingEndpoint` does not exist. Make sure that the name of your file that defines `missingEndpoint` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`. Loaded telefunctions: `notUsed`. (This error is not shown in production.)"
   );
 
   assert(!err.stack.includes("You didn't define any telefunction."));
@@ -263,9 +263,7 @@ async function wrongTelefunction({ server }) {
     server.arrowFunc = async () => {};
   } catch (err) {
     assert(
-      err.stack.includes(
-        "The endpoint function `arrowFunc` is an arrow function."
-      )
+      err.stack.includes("The telefunction `arrowFunc` is an arrow function.")
     );
   }
 
@@ -273,9 +271,7 @@ async function wrongTelefunction({ server }) {
     server.arrowFunc2 = () => {};
   } catch (err) {
     assert(
-      err.stack.includes(
-        "The endpoint function `arrowFunc2` is an arrow function."
-      )
+      err.stack.includes("The telefunction `arrowFunc2` is an arrow function.")
     );
   }
 
@@ -284,7 +280,7 @@ async function wrongTelefunction({ server }) {
   } catch (err) {
     assert(
       err.message.includes(
-        "An endpoint must be a function, but the endpoint `undi` is `undefined`"
+        "A telefunction must be a function, but the telefunction `undi` is `undefined`"
       )
     );
   }
@@ -294,7 +290,7 @@ async function wrongTelefunction({ server }) {
   } catch (err) {
     assert(
       err.message.includes(
-        "An endpoint must be a function, but the endpoint `nulli` is `null`"
+        "A telefunction must be a function, but the telefunction `nulli` is `null`"
       )
     );
   }
@@ -304,7 +300,7 @@ async function wrongTelefunction({ server }) {
   } catch (err) {
     assert(
       err.message.includes(
-        "An endpoint must be a function, but the endpoint `stringi` is a `String`"
+        "A telefunction must be a function, but the telefunction `stringi` is a `String`"
       )
     );
   }

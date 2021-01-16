@@ -97,7 +97,7 @@ async function runStandardTests({
     for (let test of standardTests) {
       const telefuncServer = new TelefuncServer();
       const {
-        endpoints: server,
+        telefunctions: server,
         config,
         setSecretKey,
         context,

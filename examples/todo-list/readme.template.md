@@ -13,9 +13,9 @@ A (simplistic) todo app built with:
 
 - [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
-  - [View Endpoints](#view-endpoints)
+  - [View Telefunctions](#view-endpoints)
   - [Server Integration](#server-integration)
-  - [Mutation Endpoints](#mutation-endpoints)
+  - [Mutation Telefunctions](#mutation-endpoints)
   - [React Frontend](#react-frontend)
 
 ## Run the Example
@@ -60,7 +60,7 @@ Run the following npm scripts to build and serve the example:
 
 This section highlights the interesting parts of the example.
 
-### View Endpoints
+### View Telefunctions
 
 (With *view endpoint* we denote an endpoint that retrieves data.)
 
@@ -101,7 +101,7 @@ With Koa
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
-### Mutation Endpoints
+### Mutation Telefunctions
 
 (With *mutation endpoint* we denote an endpoint that mutates data.)
 

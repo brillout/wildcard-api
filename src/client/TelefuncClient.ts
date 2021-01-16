@@ -8,12 +8,12 @@ export { TelefuncClient };
 
 loadTimeStuff();
 
-// Endpoints
+// Telefunctions
 export type TelefunctionName = string;
 type TelefunctionArgs = any[];
 export type TelefunctionResult = any;
 type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
-type Endpoints = Record<TelefunctionName, Telefunction>;
+type Telefunctions = Record<TelefunctionName, Telefunction>;
 
 // Context
 type Context = (object & { _brand?: "Context" }) | undefined;
@@ -57,7 +57,7 @@ const configDefault: ConfigPrivate = {
 
 class TelefuncClient {
   config: Config = getConfigProxy(configDefault);
-  endpoints: Endpoints = getEndpointsProxy(this.config as ConfigPrivate);
+  endpoints: Telefunctions = getTelefunctionsProxy(this.config as ConfigPrivate);
 }
 
 function callEndpoint(
@@ -192,13 +192,13 @@ function getEndpointUrl(
   return url;
 }
 
-function getEndpointsProxy(config: ConfigPrivate): Endpoints {
-  const emptyObject: Endpoints = {};
+function getTelefunctionsProxy(config: ConfigPrivate): Telefunctions {
+  const emptyObject: Telefunctions = {};
 
-  const endpointsProxy: Endpoints = new Proxy(emptyObject, {
+  const endpointsProxy: Telefunctions = new Proxy(emptyObject, {
     get,
     set: forbidManipulation,
-  }) as Endpoints;
+  }) as Telefunctions;
 
   return endpointsProxy;
 

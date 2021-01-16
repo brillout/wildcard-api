@@ -13,7 +13,7 @@ module.exports = [
 ];
 module.exports.createServer = createServer;
 
-// Endpoints can be synchronous
+// Telefunctions can be synchronous
 async function endpointSyncFunction({ server, telefuncClient }) {
   const n = Math.random();
   server.syncFunc = function () {
@@ -25,7 +25,7 @@ async function endpointSyncFunction({ server, telefuncClient }) {
   const ret = await promise;
   assert(ret === n);
 }
-// Endpoints can return undefined
+// Telefunctions can return undefined
 async function endpointReturnsUndefined_serverSide({ server, telefuncClient }) {
   server.helloUndefined = async function () {};
   const telefunctionResult = await telefuncClient.endpoints.helloUndefined();
@@ -75,7 +75,7 @@ async function createServer({
     stopApp,
     app,
     telefuncServer,
-    server: telefuncServer.endpoints,
+    server: telefuncServer.telefunctions,
     telefuncClient,
   };
 }
@@ -88,4 +88,3 @@ async function serverSideEndpointCalling({ server }) {
   const ret = server.writeOnlyEndpoint();
   assert(ret === val);
 }
-
