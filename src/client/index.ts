@@ -1,5 +1,5 @@
 import { telefuncClient } from "./global-instance";
-export const server = telefuncClient.endpoints;
+export const server = telefuncClient.telefunctions;
 
 export const { config } = telefuncClient;
 

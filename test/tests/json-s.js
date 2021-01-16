@@ -8,7 +8,7 @@ async function dateInData({ server, browserEval }) {
 
   await browserEval(async () => {
     const today = new Date();
-    const today_copy = await server.mirrorDate(today);
+    const today_copy = await window.telefunc.server.mirrorDate(today);
     assert(today !== today_copy);
     assert(today_copy.constructor === Date);
     assert(today.getTime() === today_copy.getTime());

@@ -57,10 +57,12 @@ const configDefault: ConfigPrivate = {
 
 class TelefuncClient {
   config: Config = getConfigProxy(configDefault);
-  endpoints: Telefunctions = getTelefunctionsProxy(this.config as ConfigPrivate);
+  telefunctions: Telefunctions = getTelefunctionsProxy(
+    this.config as ConfigPrivate
+  );
 }
 
-function callEndpoint(
+function callTelefunction(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
   context: Context,
@@ -74,7 +76,7 @@ function callEndpoint(
   // Inter-process: the Telefunc client and the Telefunc server are loaded in the same Node.js process.
   if (telefuncServer) {
     assert(isNodejs());
-    return callEndpointDirectly(
+    return callTelefunctionDirectly(
       telefunctionName,
       telefunctionArgs,
       telefuncServer,
@@ -101,7 +103,7 @@ function callEndpoint(
     ].join(" ")
   );
 
-  return callEndpointOverHttp(telefunctionName, telefunctionArgs, config);
+  return callTelefunctionOverHttp(telefunctionName, telefunctionArgs, config);
 }
 
 function getTelefuncServer(config: ConfigPrivate) {
@@ -124,16 +126,20 @@ function getTelefuncServer(config: ConfigPrivate) {
   return telefuncServer;
 }
 
-async function callEndpointDirectly(
+async function callTelefunctionDirectly(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
   telefuncServer: TelefuncServer,
   context: Context
 ): Promise<TelefunctionResult> {
-  return telefuncServer.__directCall(telefunctionName, telefunctionArgs, context);
+  return telefuncServer.__directCall(
+    telefunctionName,
+    telefunctionArgs,
+    context
+  );
 }
 
-function callEndpointOverHttp(
+function callTelefunctionOverHttp(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
   config: ConfigPrivate
@@ -153,7 +159,7 @@ function callEndpointOverHttp(
     }
   }
 
-  let url: HttpRequestUrl = getEndpointUrl(telefunctionName, config);
+  let url: HttpRequestUrl = getTelefunctionUrl(telefunctionName, config);
   if (urlArgs__string) {
     url += "/" + encodeURIComponent(urlArgs__string);
   }
@@ -161,7 +167,7 @@ function callEndpointOverHttp(
   return makeHttpRequest(url, body, telefunctionName);
 }
 
-function getEndpointUrl(
+function getTelefunctionUrl(
   telefunctionName: TelefunctionName,
   config: ConfigPrivate
 ): HttpRequestUrl {
@@ -195,12 +201,12 @@ function getEndpointUrl(
 function getTelefunctionsProxy(config: ConfigPrivate): Telefunctions {
   const emptyObject: Telefunctions = {};
 
-  const endpointsProxy: Telefunctions = new Proxy(emptyObject, {
+  const telefunctionsProxy: Telefunctions = new Proxy(emptyObject, {
     get,
     set: forbidManipulation,
   }) as Telefunctions;
 
-  return endpointsProxy;
+  return telefunctionsProxy;
 
   function get({}, telefunctionName: TelefunctionName) {
     // Return native methods
@@ -228,17 +234,22 @@ function getTelefunctionsProxy(config: ConfigPrivate): Telefunctions {
     return function (this: Context, ...telefunctionArgs: TelefunctionArgs) {
       let context: Context = undefined;
 
-      if (isBinded(this, endpointsProxy)) {
+      if (isBinded(this, telefunctionsProxy)) {
         context = this;
         assert(context !== emptyObject);
-        assert(context !== endpointsProxy);
+        assert(context !== telefunctionsProxy);
         assertUsage(
           context instanceof Object,
           "The context object you `bind()` should be a `instanceof Object`."
         );
       }
 
-      return callEndpoint(telefunctionName, telefunctionArgs, context, config);
+      return callTelefunction(
+        telefunctionName,
+        telefunctionArgs,
+        context,
+        config
+      );
     };
   }
 

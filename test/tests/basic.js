@@ -10,7 +10,7 @@ async function basic_serverSide({ server, telefuncClient }) {
   server.hello = async function (name) {
     return "yo " + name;
   };
-  const telefunctionResult = await telefuncClient.endpoints.hello("Paul");
+  const telefunctionResult = await telefuncClient.telefunctions.hello("Paul");
   assert(telefunctionResult === "yo Paul");
 }
 
@@ -36,7 +36,7 @@ async function basic_serverSide_withContext({ server, telefuncClient }) {
     assert(this.headers === headers);
     return "heyy " + name;
   };
-  const telefunctionResult = await telefuncClient.endpoints.hello.bind({ headers })(
+  const telefunctionResult = await telefuncClient.telefunctions.hello.bind({ headers })(
     "Paul"
   );
   assert(telefunctionResult === "heyy Paul");
@@ -47,7 +47,7 @@ async function basic_clientSide({ server, browserEval }) {
     return "Dear " + name;
   };
   await browserEval(async () => {
-    const ret = await window.server.hello("rom");
+    const ret = await window.telefunc.server.hello("rom");
     assert(ret === "Dear rom");
   });
 }
@@ -59,7 +59,7 @@ async function basic_clientSide_withContext({ server, browserEval }) {
     return "Servus " + name;
   };
   await browserEval(async () => {
-    const ret = await window.server.hello("Romuald");
+    const ret = await window.telefunc.server.hello("Romuald");
     assert(ret === "Servus Romuald");
   });
 }

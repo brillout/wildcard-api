@@ -11,7 +11,7 @@ async function wrongBindUsage1({ server, browserEval, assertStderr }) {
   server.ohNo = async function () {};
 
   await browserEval(async () => {
-    await server.ohNo.bind({ some: "context" })();
+    await window.telefunc.server.ohNo.bind({ some: "context" })();
   });
 
   assertStderr(
@@ -23,7 +23,7 @@ async function wrongBindUsage2({ server, telefuncClient, assertStderr }) {
   server.hm = async function () {};
 
   try {
-    telefuncClient.endpoints.hm.bind(null)();
+    telefuncClient.telefunctions.hm.bind(null)();
   } catch (err) {
     console.error(err);
   }
@@ -38,7 +38,7 @@ async function endpointManipulationWithClient({
   assertStderr,
 }) {
   try {
-    telefuncClient.endpoints.thatWontHappen = async function () {};
+    telefuncClient.telefunctions.thatWontHappen = async function () {};
   } catch (err) {
     console.error(err);
   }
@@ -52,7 +52,7 @@ async function cannotSerialize({ server, browserEval, assertStderr }) {
   server.oops = async function () {};
 
   await browserEval(async () => {
-    await server.oops({ someFunc: function () {} });
+    await window.telefunc.server.oops({ someFunc: function () {} });
   });
 
   assertStderr("Couldn't serialize arguments for endpoint `oops`");
@@ -78,7 +78,7 @@ async function missingServerUrl({ assertStderr, TelefuncClient }) {
   delete global.__INTERNAL_telefuncServer_nodejs;
 
   try {
-    await telefuncClient.endpoints.unexisting();
+    await telefuncClient.telefunctions.unexisting();
   } catch (err) {
     console.error(err);
   }

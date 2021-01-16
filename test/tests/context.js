@@ -105,7 +105,7 @@ async function testSetContext({ setContext, browserEval, ...args }) {
   };
 
   await browserEval(async () => {
-    const ret = await window.server.myEndpoint();
+    const ret = await window.telefunc.server.myEndpoint();
     assert(ret === "4242yep");
   });
 
@@ -119,7 +119,7 @@ async function defineWith_bind({ server, telefuncClient }) {
     const sum = (arr) => arr.reduce((a, b) => a + b, 0);
     return prefix + sum(this.numbers);
   };
-  let { hello } = telefuncClient.endpoints;
+  let { hello } = telefuncClient.telefunctions;
   hello = hello.bind({ numbers });
   const res = await hello("Total: ");
   assert(res === "Total: 6");
@@ -142,16 +142,16 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     return "works fine " + msg;
   };
 
-  const ret_serverSide1 = await telefuncClient.endpoints.contextLessFunc("rom");
+  const ret_serverSide1 = await telefuncClient.telefunctions.contextLessFunc("rom");
   assert(ret_serverSide1 === "works fine rom");
 
-  const ret_serverSide2 = await telefuncClient.endpoints.contextLessFunc.bind(
+  const ret_serverSide2 = await telefuncClient.telefunctions.contextLessFunc.bind(
     undefined
   )("brillout");
   assert(ret_serverSide2 === "works fine brillout");
 
   await browserEval(async () => {
-    const ret_browserSide = await window.server.contextLessFunc("romi");
+    const ret_browserSide = await window.telefunc.server.contextLessFunc("romi");
     assert(ret_browserSide === "works fine romi");
   });
 
@@ -163,11 +163,11 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     return this.notExistingContext + " blib";
   };
 
-  await telefuncClient.endpoints.ctxFunc();
-  await telefuncClient.endpoints.ctxFunc.bind(undefined)();
+  await telefuncClient.telefunctions.ctxFunc();
+  await telefuncClient.telefunctions.ctxFunc.bind(undefined)();
 
   await browserEval(async () => {
-    await window.server.ctxFunc();
+    await window.telefunc.server.ctxFunc();
   });
 
   await stopApp();
@@ -202,7 +202,7 @@ async function wrongSetContext({
 
   await browserEval(async () => {
     try {
-      await window.server.boringEndpoint();
+      await window.telefunc.server.boringEndpoint();
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
@@ -242,11 +242,11 @@ async function emptyContext({ setContext, browserEval, ...args }) {
   };
 
   await browserEval(async () => {
-    const ret_browserSide = await window.server.ctxEndpoint();
+    const ret_browserSide = await window.telefunc.server.ctxEndpoint();
     assert(ret_browserSide === "undefined blib");
   });
 
-  const ret_serverSide = await telefuncClient.endpoints.ctxEndpoint.bind({})();
+  const ret_serverSide = await telefuncClient.telefunctions.ctxEndpoint.bind({})();
   assert(ret_serverSide === "undefined blib");
 
   await stopApp();
@@ -453,7 +453,7 @@ async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
   await browserEval(async () => {
     let err;
     try {
-      await window.server.failingEndpoint("rom");
+      await window.telefunc.server.failingEndpoint("rom");
     } catch (_err) {
       err = _err;
     }
@@ -521,14 +521,14 @@ async function missingSecretKey({
     "[Telefunc][Wrong Usage] You are trying to change the context `context.nop`, but context can be modified only after `setSecretKey()` has been called. Make sure you call `setSecretKey()` before modifying the context.";
 
   try {
-    await telefuncClient.endpoints.he();
+    await telefuncClient.telefunctions.he();
   } catch (err) {
     assert(err.message === missingKeyErrorMessage);
   }
 
   await browserEval(async () => {
     try {
-      await window.server.he();
+      await window.telefunc.server.he();
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
@@ -551,7 +551,7 @@ async function contextChange_withoutBrowser({
   };
 
   try {
-    await telefuncClient.endpoints.he();
+    await telefuncClient.telefunctions.he();
   } catch (err) {
     console.log(err.message);
     assert(

@@ -26,7 +26,7 @@ async function endpointMissing_noTelefunctions_serverSide({
 }) {
   let err;
   try {
-    await telefuncClient.endpoints.iAmNotHere();
+    await telefuncClient.telefunctions.iAmNotHere();
   } catch (_err) {
     err = _err;
   }
@@ -50,7 +50,7 @@ async function endpointMissing_noTelefunctions_clientSide({
     browserEval(async () => {
       let err;
       try {
-        await window.server.iDoNotExist({ some: 42, arg: "rom" });
+        await window.telefunc.server.iDoNotExist({ some: 42, arg: "rom" });
       } catch (_err) {
         err = _err;
       }
@@ -81,7 +81,7 @@ async function endpointMissing_notDefined_clientSide({
     browserEval(async () => {
       let err;
       try {
-        await window.server.iDoNotExist({ some: 42, arg: "rom" });
+        await window.telefunc.server.iDoNotExist({ some: 42, arg: "rom" });
       } catch (_err) {
         err = _err;
       }
@@ -115,7 +115,7 @@ async function endpointMissing_notDefined_serverSide({
 
   let err;
   try {
-    await telefuncClient.endpoints.missingEndpoint();
+    await telefuncClient.telefunctions.missingEndpoint();
   } catch (_err) {
     err = _err;
   }
@@ -148,7 +148,7 @@ async function endpointReturnsUnserializable({
   await browserEval(async () => {
     let err;
     try {
-      await server.fnEndpoint1();
+      await window.telefunc.server.fnEndpoint1();
     } catch (_err) {
       err = _err;
     }
@@ -172,7 +172,7 @@ async function endpointThrowsError({ server, browserEval, assertStderr }) {
   await browserEval(async () => {
     let err;
     try {
-      await server.aintWorking();
+      await window.telefunc.server.aintWorking();
     } catch (_err) {
       err = _err;
     }

@@ -1,14 +1,11 @@
 require("babel-polyfill");
-const telefunc = require("telefunc/client");
-const { server } = telefunc;
+require("telefunc/client"); // Will expose interface over `window`
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 const assert = require("assert");
 Object.assign(window, {
   assert,
   assert_noErrorStack,
-  server,
-  telefuncClient: telefunc,
-  TelefuncClient,
+  __TelefuncClient: TelefuncClient,
 });
 
 // TODO: run this assertion on every browser-side stdout & stderr

@@ -46,7 +46,7 @@ async function doesntIntefere2({ server, browserEval }) {
     const text1 = await resp1.text();
     assert(text1 === "Hello darling");
 
-    const endpointRet = await window.server.myEndpoint();
+    const endpointRet = await window.telefunc.server.myEndpoint();
     assert(endpointRet === "Grüß di");
 
     const resp2 = await window.fetch("/hey/after", {

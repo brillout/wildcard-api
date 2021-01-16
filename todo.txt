@@ -5,7 +5,6 @@
  - rename setSecretKey to setContextSecretKey
  - allow arrow functions
  - assert existence of secret key can when reading context from cookie
- - replace `window.telefuncClient` with `window.telefunc` in tests
 
 - Try if new autoload logic works
  - Make sure that all files are scanned except `node_modules/*`

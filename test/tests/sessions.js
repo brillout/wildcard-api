@@ -51,26 +51,26 @@ async function contextChange({ server, context, browserEval, setSecretKey }) {
   };
   await browserEval(async () => {
     // Removing an non-existing context won't choke
-    assert(window.telefuncClient.context.user === undefined);
-    delete window.telefuncClient.context.user;
-    assert(window.telefuncClient.context.user === undefined);
+    assert(window.telefunc.context.user === undefined);
+    delete window.telefunc.context.user;
+    assert(window.telefunc.context.user === undefined);
 
-    const ret1 = await window.server.whoAmI();
-    assert(window.telefuncClient.context.user === undefined);
+    const ret1 = await window.telefunc.server.whoAmI();
+    assert(window.telefunc.context.user === undefined);
     assert(ret1 === "You are: undefined");
 
-    await window.server.login("rom");
+    await window.telefunc.server.login("rom");
 
-    assert(window.telefuncClient.context.user === "rom");
-    const ret2 = await window.server.whoAmI();
+    assert(window.telefunc.context.user === "rom");
+    const ret2 = await window.telefunc.server.whoAmI();
     assert(ret2 === "You are: rom");
 
     // Removing an already removed context won't choke
-    assert(window.telefuncClient.context.user !== undefined);
-    delete window.telefuncClient.context.user;
-    assert(window.telefuncClient.context.user === undefined);
-    delete window.telefuncClient.context.user;
-    assert(window.telefuncClient.context.user === undefined);
+    assert(window.telefunc.context.user !== undefined);
+    delete window.telefunc.context.user;
+    assert(window.telefunc.context.user === undefined);
+    delete window.telefunc.context.user;
+    assert(window.telefunc.context.user === undefined);
   });
 }
 
@@ -96,14 +96,14 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   });
 
   await browserEval(async () => {
-    assert(window.telefuncClient.context.myName === undefined);
-    assert((await window.server.tellMyName()) === "You are: undefined");
+    assert(window.telefunc.context.myName === undefined);
+    assert((await window.telefunc.server.tellMyName()) === "You are: undefined");
     assert((await callCustomRoute()) === "Hello darling undefined");
 
-    await window.server.login("romBitch");
+    await window.telefunc.server.login("romBitch");
 
-    assert(window.telefuncClient.context.myName === "romBitch");
-    assert((await window.server.tellMyName()) === "You are: romBitch");
+    assert(window.telefunc.context.myName === "romBitch");
+    assert((await window.telefunc.server.tellMyName()) === "You are: romBitch");
     assert((await callCustomRoute()) === "Hello darling romBitch");
 
     return;
@@ -150,8 +150,8 @@ async function contextInterfaceIsIsomorphic({
     return "name: " + context.user;
   };
   await browserEval(async () => {
-    await window.server.login("romli");
-    assert((await window.server.myName()) === "name: romli");
+    await window.telefunc.server.login("romli");
+    assert((await window.telefunc.server.myName()) === "name: romli");
     assert(window.telefunc.context.user === "romli");
   });
 

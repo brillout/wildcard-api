@@ -15,7 +15,7 @@ async function option_shortUrl_1({ server, browserEval, httpPort }) {
 
   await browserEval(
     async () => {
-      await server.testEndpoint__shortUrl("just some args");
+      await window.telefunc.server.testEndpoint__shortUrl("just some args");
     },
     { onHttpRequest }
   );
@@ -48,11 +48,10 @@ async function option_shortUrl_2({ server, browserEval, httpPort }) {
 
   await browserEval(
     async () => {
-      const { config } = window.telefuncClient;
-      assert(config.shortUrl === false);
-      config.shortUrl = true;
-      await window.server.testEndpoint__shortUrl("just some args");
-      config.shortUrl = false;
+      assert(window.telefunc.config.shortUrl === false);
+      window.telefunc.config.shortUrl = true;
+      await window.telefunc.server.testEndpoint__shortUrl("just some args");
+      window.telefunc.config.shortUrl = false;
     },
     { onHttpRequest }
   );
@@ -86,10 +85,10 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
   assert(httpPort.constructor === Number && httpPort !== wrongHttpPort);
   await browserEval(
     async ({ wrongHttpPort }) => {
-      const { TelefuncClient } = window;
+      const TelefuncClient = window.__TelefuncClient;
       const telefuncClient = new TelefuncClient();
       telefuncClient.config.serverUrl = "http://localhost:" + wrongHttpPort;
-      const server = telefuncClient.endpoints;
+      const server = telefuncClient.telefunctions;
       let failed = false;
       try {
         await server.test_serverUrl();
@@ -126,10 +125,10 @@ async function option_baseUrl({ server, config, browserEval, httpPort }) {
 
   await browserEval(
     async ({ baseUrl }) => {
-      const { TelefuncClient } = window;
+      const TelefuncClient = window.__TelefuncClient;
       const telefuncClient = new TelefuncClient();
       telefuncClient.config.baseUrl = baseUrl;
-      const server = telefuncClient.endpoints;
+      const server = telefuncClient.telefunctions;
       await server.test_baseUrl();
     },
     { onHttpRequest, browserArgs: { baseUrl } }

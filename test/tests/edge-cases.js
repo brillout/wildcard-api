@@ -11,7 +11,9 @@ async function bigPayloads({ server, browserEval }) {
 
   await browserEval(
     async ({ _bigArg, _bigResult }) => {
-      const bigResult = await server.bigEndpoint({ bigArg: _bigArg });
+      const bigResult = await window.telefunc.server.bigEndpoint({
+        bigArg: _bigArg,
+      });
       assert(bigResult === _bigResult);
     },
     { browserArgs: { _bigResult, _bigArg } }
@@ -36,7 +38,7 @@ async function noConnection({ server, browserEval, assertStderr }) {
     async () => {
       let err;
       try {
-        await server.unreachableEndpoint();
+        await window.telefunc.server.unreachableEndpoint();
       } catch (err_) {
         err = err_;
       }
