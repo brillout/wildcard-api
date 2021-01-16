@@ -6,8 +6,6 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Telefunc compared to REST and GraphQL](#telefunc-compared-to-REST-and-GraphQL)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Learning Material](#learning-material)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -175,14 +173,14 @@ For an API used by many third parties with many diverse uses cases, GraphQL is t
 
 However,
 if you want to create a backend API that is meant to be consumed only by your frontend,
-then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Telefunc, is enough.
+then you don't need REST nor GraphQL &mdash; [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), such as Telefunc, is enough.
 
 For a large app, you may still want the structure that comes with a RESTful/GraphQL API.
 But this typically applies only for large companies that develop apps with a large number of developers.
 "Premature optimization is the root of all evil";
 start with
-[RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
-and later switch to [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
+RPC
+and later switch to REST or GraphQL
 when (and only if!) the need arises.
 
 In a nuthsell:
@@ -449,8 +447,6 @@ server.logout = async function () {
 };
 ```
 
-For SSR, read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
-
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
 ## Permissions
@@ -647,11 +643,11 @@ import "handli"; // npm install handli
 You can use your backend types on the frontend by using TypeScript's `typeof`.
 
 ```ts
-!INLINE / examples / typescript / endpoints.ts;
+!INLINE ../examples/typescript/main.telefunc.ts
 ```
 
 ```ts
-!INLINE / examples / typescript / client / index.ts;
+!INLINE ../examples/typescript/client/index.ts
 ```
 
 <p align="center">
@@ -696,8 +692,7 @@ You can disable caching by using the [`disableCache` option](#disablecache).
 
 The Telefunc client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
-If you don't need authentication, then SSR works out of the box.
-If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+SSR works out of the box.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path
 
@@ -852,44 +847,5 @@ import telefuncServer from "telefunc/server";
 
 telefuncServer.disableCache = true;
 ```
-
-!INLINE ./snippets/section-footer.md #readme --hide-source-path
-
-## Learning Material
-
-Material to learn more about RPC and Telefunc.
-
-###### RPC
-
-- [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
-  <br/>
-  Explains what RPC is.
-- [FAQ](/docs/faq.md#faq)
-  <br/>
-  FAQ about RPC.
-  Covers high-level questions such as "Which is more powerful, GraphQL or RPC?"
-  as well as low-level questions such as
-  "How can I do versioning with RPC?" or
-  "Doesn't RPC tightly couple frontend with backend?".
-- [What is the difference between REST and RPC?](/docs/blog/rest-rpc.md#readme)
-  <br/>
-  This post explains what REST, RPC, and RPC-like means.
-
-###### Blog
-
-- [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
-- [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
-
-###### Telefunc
-
-- [How Telefunc Works](/docs/how-telefunc-works.md#how-telefunc-works)
-  <br/>
-  Talks about the technologies Telefunc uses under the hood.
-- [Example - A Todo List](/examples/todo-list/#example---a-todo-list)
-  <br/>
-  Showcases a to-do list app built with RPC/Telefunc.
-- [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
-  <br/>
-  How to use Telefunc with SSR and Authentication.
 
 !INLINE ./snippets/section-footer.md #readme --hide-source-path

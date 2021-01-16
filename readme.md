@@ -86,8 +86,6 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Telefunc compared to REST and GraphQL](#telefunc-compared-to-REST-and-GraphQL)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Learning Material](#learning-material)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -129,28 +127,28 @@ Telefunc is a JavaScript library to create an API between your Node.js backend a
 With Telefunc,
 creating an API endpoint is as easy as creating a JavaScript function.
 
-~~~js
+```js
 // Node.js server
 
-const { server } = require('telefunc/server');
+const { server } = require("telefunc/server");
 
 // We define a `hello` function on the server
-server.hello = function(name) {
-  return {message: 'Welcome '+name};
+server.hello = function (name) {
+  return { message: "Welcome " + name };
 };
-~~~
+```
 
-~~~js
+```js
 // Browser
 
-import { server } from 'telefunc/client';
+import { server } from "telefunc/client";
 
 (async () => {
   // Telefunc makes our `hello` function available in the browser
-  const {message} = await server.hello('Elisabeth');
+  const { message } = await server.hello("Elisabeth");
   console.log(message); // Prints `Welcome Elisabeth`
 })();
-~~~
+```
 
 That's all Telefunc does:
 it makes functions,
@@ -160,14 +158,14 @@ Nothing more, nothing less.
 
 To retrieve and mutate data, you can direclty use SQL or an ORM.
 
-~~~js
+```js
 // Node.js server
 
-const { server } = require('telefunc/server');
-const Todo = require('./path/to/your/data/models/Todo');
+const { server } = require("telefunc/server");
+const Todo = require("./path/to/your/data/models/Todo");
 
-server.createTodoItem = async function(text) {
-  if( !this.user ) {
+server.createTodoItem = async function (text) {
+  if (!this.user) {
     // The user is not logged-in. We abort.
     // With Telefunc, you define permissions programmatically
     // which we talk more about in the "Permissions" section.
@@ -175,7 +173,7 @@ server.createTodoItem = async function(text) {
   }
 
   // With an ORM:
-  const newTodo = new Todo({text, authorId: this.user.id});
+  const newTodo = new Todo({ text, authorId: this.user.id });
   await newTodo.save();
 
   /* With SQL:
@@ -188,7 +186,7 @@ server.createTodoItem = async function(text) {
 
   return newTodo;
 };
-~~~
+```
 
 TypeScript has first-class support and you can use your backend types on the frontend!
 
@@ -228,6 +226,7 @@ It is financed with the [Lsos](https://github.com/telefunc/telefunc/issues/56).
 &nbsp;
 
 > The seamless "drop in and use" nature of Telefunc has enabled Vibescout to accelerate the development of new features, it enables us to quickly prototype new ideas and build out internal dashboards with ease (without the unneeded verbosity of things like GraphQL). The barrier between our server and client is almost nonexistent now- it's really just a function!
+
 <p align="right">
 Paul Myburgh, CTO of Vibescout <a href="https://github.com/telefunc/telefunc/issues/22#issuecomment-566983911">(ref)</a>
 </p>
@@ -235,6 +234,7 @@ Paul Myburgh, CTO of Vibescout <a href="https://github.com/telefunc/telefunc/iss
 &nbsp;
 
 > We are a web shop and decided to try Telefunc with one of our projects. We were delighted: not only made Telefunc our front-end development simpler and faster but it also allowed us to easily implement features that were previously difficult to implement with the rigid structure of REST and GraphQL. We now use it for all our new Node.js projects and we couldn't be happier. The cherry on the cake: it now supports TypeScript which, for us, makes Telefunc a no-brainer.
+
 <p align="right">
 Niels Litt <a href="https://github.com/telefunc/telefunc/issues/22#issuecomment-568246660">(ref)</a>
 </p>
@@ -253,14 +253,14 @@ For an API used by many third parties with many diverse uses cases, GraphQL is t
 
 However,
 if you want to create a backend API that is meant to be consumed only by your frontend,
-then you don't need REST nor GraphQL &mdash; [RPC](/docs/what-is-rpc.md#what-is-rpc), such as Telefunc, is enough.
+then you don't need REST nor GraphQL &mdash; [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), such as Telefunc, is enough.
 
 For a large app, you may still want the structure that comes with a RESTful/GraphQL API.
 But this typically applies only for large companies that develop apps with a large number of developers.
 "Premature optimization is the root of all evil";
 start with
-[RPC as default](/docs/blog/rpc-as-default.md#rpc-as-default)
-and later switch to [REST or GraphQL](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
+RPC
+and later switch to REST or GraphQL
 when (and only if!) the need arises.
 
 In a nuthsell:
@@ -276,10 +276,11 @@ Is your API meant to be used by yourself? Use RPC.
 1. Install Telefunc.
 
    With Express:
-   ~~~js
-   const express = require('express');
+
+   ```js
+   const express = require("express");
    // npm install telefunc/server
-   const { telefunc } = require('telefunc/server/express');
+   const { telefunc } = require("telefunc/server/express");
 
    const app = express();
 
@@ -294,17 +295,17 @@ Is your API meant to be used by yourself? Use RPC.
      context.user = req.user;
      return context;
    }
-   ~~~
+   ```
 
    <details>
    <summary>
    With Hapi
    </summary>
 
-   ~~~js
-   const Hapi = require('hapi');
+   ```js
+   const Hapi = require("hapi");
    // npm install telefunc/server
-   const { telefunc } = require('telefunc/server/hapi');
+   const { telefunc } = require("telefunc/server/hapi");
 
    const server = Hapi.Server();
 
@@ -317,10 +318,13 @@ Is your API meant to be used by yourself? Use RPC.
      const context = {};
      // Authentication plugins usually make user information
      // available at `request.auth.credentials`.
-     context.user = request.auth.isAuthenticated ? request.auth.credentials : null;
+     context.user = request.auth.isAuthenticated
+       ? request.auth.credentials
+       : null;
      return context;
    }
-   ~~~
+   ```
+
    </details>
 
    <details>
@@ -328,10 +332,10 @@ Is your API meant to be used by yourself? Use RPC.
    With Koa
    </summary>
 
-   ~~~js
-   const Koa = require('koa');
+   ```js
+   const Koa = require("koa");
    // npm install telefunc/server
-   const { telefunc } = require('telefunc/server/koa');
+   const { telefunc } = require("telefunc/server/koa");
 
    const app = new Koa();
 
@@ -345,7 +349,8 @@ Is your API meant to be used by yourself? Use RPC.
      context.user = ctx.state.user;
      return context;
    }
-   ~~~
+   ```
+
    </details>
 
    <details>
@@ -359,21 +364,21 @@ Is your API meant to be used by yourself? Use RPC.
    integrate Telefunc with any server framework.
    In fact, the Express/Koa/Hapi middlewares are just tiny wrappers around `getApiHttpResponse()`.
 
-   ~~~js
+   ```js
    // This is generic pseudo code for how to integrate Telefunc with any server framework.
 
    // npm install telefunc/server
-   const { getApiHttpResponse } = require('telefunc/server');
+   const { getApiHttpResponse } = require("telefunc/server");
 
    // A server framework usually provides a way to add a route and define an HTTP response.
-   const { addRoute, HttpResponse } = require('your-favorite-server-framework');
+   const { addRoute, HttpResponse } = require("your-favorite-server-framework");
 
    // Add a new route `/_telefunc/*` to your server
    addRoute(
-     '/_telefunc/*',
+     "/_telefunc/*",
      // A server framework usually provides an object holding
      // information about the request. We denote this object `req`.
-     async ({req}) => {
+     async ({ req }) => {
        // The context object is available to endpoint functions as `this`.
        const context = {
          user: req.user, // Information about the logged-in user.
@@ -382,73 +387,85 @@ Is your API meant to be used by yourself? Use RPC.
        const {
          url, // The HTTP request url (or pathname)
          method, // The HTTP request method (`GET`, `POST`, etc.)
+         headers, // The HTTP headers
          body, // The HTTP request body
        } = req;
 
-       const responseProps = await getApiHttpResponse({url, method, body}, context);
+       const responseProps = await getApiHttpResponse(
+         { url, method, headers, body },
+         context
+       );
 
-       const {body, statusCode, contentType} = responseProps;
-       const response = new HttpResponse({body, statusCode, contentType});
+       const { body, statusCode, contentType } = responseProps;
+       const response = new HttpResponse({ body, statusCode, contentType });
        return response;
      }
    );
-   ~~~
+   ```
+
    </details>
 
 2. Define an endpoint function `myFirstEndpoint` in a file called `endpoints.js`.
 
-   ~~~js
+   ```js
    // Node.js server
 
-   const { server } = require('telefunc/server');
+   const { server } = require("telefunc/server");
 
    server.myFirstEndpoint = async function () {
      // The `this` object is the `context` object we defined in `setContext`.
-     console.log('The logged-in user is: ', this.user.username);
+     console.log("The logged-in user is: ", this.user.username);
 
-     return {msg: 'Hello, from my first Telefunc endpoint'};
+     return { msg: "Hello, from my first Telefunc endpoint" };
    };
-   ~~~
+   ```
 
    > :information_source:
    > Telefunc automatically loads files named `endpoints.js` or `*.endpoints.js`.
 
 3. Use the `telefunc/client` package to remotely call `enpdoint.myFirstEndpoint` from the browser.
 
-   ~~~js
+   ```js
    // Browser
 
    // npm install telefunc/client
-   import { server } from 'telefunc/client';
+   import { server } from "telefunc/client";
 
    (async () => {
-     const {msg} = await server.myFirstEndpoint();
+     const { msg } = await server.myFirstEndpoint();
      console.log(msg);
    })();
-   ~~~
+   ```
 
    <details>
    <summary>
    Without bundler
    </summary>
 
-   ~~~html
-   <script crossorigin src="https://unpkg.com/telefunc/umd/telefunc-client.min.js"></script>
+   ```html
+   <script
+     crossorigin
+     src="https://unpkg.com/telefunc/umd/telefunc-client.min.js"
+   ></script>
    <script src="my-script.js"></script>
    <!-- You may or may not need the babel polyfill, depending on whether your `my-script.js`
         arleady includes the babel polyfill -->
-   <script crossorigin src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
-   ~~~
-   ~~~js
+   <script
+     crossorigin
+     src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"
+   ></script>
+   ```
+
+   ```js
    // my-script-using-telefunc.js
 
    (async () => {
-     const {msg} = await telefunc.server.myFirstEndpoint();
+     const { msg } = await telefunc.server.myFirstEndpoint();
      console.log(msg);
    })();
-   ~~~
-   </details>
+   ```
 
+   </details>
 
 That's it.
 
@@ -473,17 +490,15 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## Authentication
 
 Use the context object to authenticate requests. For example:
 
-~~~js
+```js
 // Node.js server
 
-const express = require('express');
-const { telefunc } = require('telefunc/server/express');
+const express = require("express");
+const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
@@ -492,9 +507,8 @@ app.use(telefunc(setContext));
 
 async function setContext(
   // The `req` Express request object.
-    req
-  ) {
-
+  req
+) {
   const context = {};
 
   // Express authentication middlewares usually make information
@@ -508,31 +522,29 @@ async function setContext(
 
   return context;
 }
-~~~
+```
 
 The context object is available to endpoint functions as `this`.
 
-~~~js
+```js
 // Node.js server
 
-const { server } = require('telefunc/server');
+const { server } = require("telefunc/server");
 
-server.whoAmI = async function() {
-  const {user} = this;
+server.whoAmI = async function () {
+  const { user } = this;
   return user.name;
 };
 
-server.login = async function(username, password) {
+server.login = async function (username, password) {
   const user = await this.login(username, password);
   return user;
 };
 
-server.logout = async function() {
+server.logout = async function () {
   await this.logout();
 };
-~~~
-
-For SSR, read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+```
 
 
 <br/>
@@ -555,84 +567,85 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## Permissions
 
 With Telefunc,
 permissions are defined programmatically.
 
-~~~js
+```js
 // Node.js server
 
-server.deletePost = async function(){
+server.deletePost = async function () {
   // Only admins are allowed to remove a post
-  if( !user.isAdmin ) {
+  if (!user.isAdmin) {
     // The user is not an admin — we abort.
     return;
   }
 
   // ...
 };
-~~~
+```
 
 It is crucial to define permissions; never do something like this:
-~~~js
+
+```js
 // Node.js server
 
-const db = require('your-favorite-sql-query-builder');
+const db = require("your-favorite-sql-query-builder");
 
-server.executeQuery = async function(query) {
+server.executeQuery = async function (query) {
   const result = await db.run(query);
   return result;
 };
-~~~
+```
 
 That's a bad idea since anyone can go to your website,
 open the browser's web dev console, and call your endpoint.
-~~~js
+
+```js
 // Browser
 
-const users = await server.executeQuery('SELECT login, password FROM users;');
-users.forEach(({login, password}) => {
+const users = await server.executeQuery("SELECT login, password FROM users;");
+users.forEach(({ login, password }) => {
   // W00t I have all passwords ｡^‿^｡
   console.log(login, password);
 });
-~~~
+```
 
 Instead, you should define permissions, for example:
-~~~js
+
+```js
 // Node.js server
 
 // This endpoint allows a to-do item's text to be modified only by its author.
 
-server.updateTodoText = async function(todoId, newText) {
+server.updateTodoText = async function (todoId, newText) {
   // The user is not logged in — we abort.
-  if( !this.user ) return;
+  if (!this.user) return;
 
   const todo = await db.getTodo(todoId);
   // There is no to-do item in the database with the ID `todoId` — we abort.
-  if( !todo ) return;
+  if (!todo) return;
 
   // The user is not the author of the to-do item — we abort.
-  if( todo.authorId !== this.user.id ) return;
+  if (todo.authorId !== this.user.id) return;
 
   // The user is logged-in and is the author of the todo — we proceed.
   await db.updateTodoText(todoId, newText);
 };
-~~~
+```
 
 You may wonder why we return `undefined` when aborting.
 
-~~~js
+```js
 // Node.js server
 
-if( !this.user ){
+if (!this.user) {
   // Why do we return `undefined`?
   // Why don't we return something like `return {error: 'Permission denied'};`?
   return;
 }
-~~~
+```
 
 The reason is simple:
 when we develop the frontend we know what is allowed and we can
@@ -641,19 +654,20 @@ the `return;` sole goal are to protect our server from unsafe requests and
 there is no need to return information.
 
 That said, there are exceptions, for example:
-~~~js
+
+```js
 // When the user is not logged in, the frontend redirects the user to the login page.
 
-server.getTodoList = async function() {
+server.getTodoList = async function () {
   const isLoggedOut = !this.user;
-  if( isLoggedOut ) {
+  if (isLoggedOut) {
     // Instead of returning `undefined` we return `{isNotLoggedIn: true}` so that
     // the frontend knows that the user should be redirected to the login page.
-    return {isNotLoggedIn: true};
+    return { isNotLoggedIn: true };
   }
   // ...
 };
-~~~
+```
 
 In any case,
 as long as you protect your endpoints from unsafe requests,
@@ -680,83 +694,84 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
 ## Validation
 
 You shouldn't throw exceptions upon validation failures,
 instead return an object containing the validation failure reason.
 
-~~~js
+```js
 // Node.js server
 
-const { server } = require('telefunc/server');
-const isStrongPassword = require('./path/to/isStrongPassword');
+const { server } = require("telefunc/server");
+const isStrongPassword = require("./path/to/isStrongPassword");
 
-server.createAccount = async function({email, password}) {
-  if( !isStrongPassword(password) ){
+server.createAccount = async function ({ email, password }) {
+  if (!isStrongPassword(password)) {
     /* Don't deliberately throw exceptions
     throw new Error("Password is too weak.");
     */
     // Return a value instead:
-    return {validationError: "Password is too weak."};
+    return { validationError: "Password is too weak." };
   }
 
   // ..
 };
-~~~
-
+```
 
 ## Error Handling
 
 Calling an endpoint throws an error if and only if:
+
 - the browser couldn't connect to the server (`isConnectionError`), or
 - the endpoint threw an error or doesn't exist (`isCodeError`).
 
 The client-side thrown error has the properties `isCodeError` and `isConnectionError`
 enabling you to handle errors with precision, for example:
 
-~~~js
+```js
 // Browser
 
-import { server } from 'telefunc/client';
+import { server } from "telefunc/client";
 
 (async () => {
   let data, err;
   try {
     data = await server.getSomeData();
-  } catch(_err) {
+  } catch (_err) {
     err = _err;
   }
 
-  if( err.isCodeError ){
+  if (err.isCodeError) {
     // The endpoint function threw an uncaught error (there is a bug in your server code)
     alert(
       "Something went wrong on our side. We have been notified and we are working on a fix." +
-      "Try again later."
+        "Try again later."
     );
   }
-  if( err.isConnectionError ){
+  if (err.isConnectionError) {
     // The browser couldn't connect to the server: the user is offline (or your server is down).
-    alert("You don't seem to have an internet connection, try again once you are back online.");
+    alert(
+      "You don't seem to have an internet connection, try again once you are back online."
+    );
   }
 
-  if( err ) {
-    return {success: false};
+  if (err) {
+    return { success: false };
   } else {
-    return {success: true, data};
+    return { success: true, data };
   }
 })();
-~~~
+```
 
 You can also use [Handli](https://github.com/brillout/handli) which will automatically and gracefully handle errors for you.
 
-~~~js
+```js
 // Browser
 
-import 'handli'; // npm install handli
+import "handli"; // npm install handli
 // That's it, Telefunc will automatically use Handli.
 // Errors are now handled by Handli.
-~~~
+```
 
 
 <br/>
@@ -779,23 +794,29 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## TypeScript
 
 You can use your backend types on the frontend by using TypeScript's `typeof`.
 
-~~~ts
-// /examples/typescript/endpoints.ts
+```ts
+// ../examples/typescript/main.telefunc.ts
 
-import { server as _server, FrontendType } from "telefunc/server";
-import { Context } from "./context";
+import { server, context, setSecretKey } from "telefunc/server";
 
-interface Person {
+export type PersonTelefuncs = typeof personTelefuncs;
+
+setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
+
+const personTelefuncs = {
+  getPerson,
+};
+Object.assign(server, personTelefuncs);
+
+type Person = {
   firstName: string;
   lastName: string;
   id: number;
-}
+};
 
 const persons: Array<Person> = [
   { firstName: "John", lastName: "Smith", id: 0 },
@@ -803,30 +824,27 @@ const persons: Array<Person> = [
   { firstName: "Harry", lastName: "Thompson", id: 2 },
 ];
 
-async function getPerson(this: Context, id: number) {
-  if (!this.isLoggedIn) return null;
+async function getPerson(id: number): Promise<Person | null> {
+  if (!context.isLoggedIn) {
+    context.isLoggedIn = true;
+    return null;
+  }
   return persons.find((person) => person.id === id) || null;
 }
+```
 
-const server = {
-  getPerson,
-};
-export type Server = FrontendType<typeof server, Context>;
-
-Object.assign(_server, server);
-~~~
-~~~ts
-// /examples/typescript/client/index.ts
+```ts
+// ../examples/typescript/client/index.ts
 
 import "babel-polyfill";
-import { Server } from "../endpoints";
-import { server as serverUntyped } from "telefunc/client";
+import { server } from "telefunc/client";
+import { PersonTelefuncs } from "../main.telefunc";
 
-const server = serverUntyped as Server;
+const personTelefuncs = server as PersonTelefuncs;
 
 (async () => {
   const id = Math.floor(Math.random() * 3);
-  const person = await server.getPerson(id);
+  const person = await personTelefuncs.getPerson(id);
   if (person === null) {
     document.body.innerHTML = "Could not retrieve person";
   } else {
@@ -835,7 +853,7 @@ const server = serverUntyped as Server;
     document.body.innerHTML = personHtml;
   }
 })();
-~~~
+```
 
 <p align="center">
   <a href="#typescript">
@@ -847,6 +865,7 @@ const server = serverUntyped as Server;
 </p>
 
 TypeScript usage examples:
+
 - [/examples/typescript/](/examples/typescript/)
 - [/examples/prisma/](/examples/prisma/)
 
@@ -870,8 +889,6 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 <br/>
 <br/>
-
-
 
 ## API Documentation
 
@@ -907,8 +924,6 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## Caching
 
 Telefunc automatically caches your endpoint results by using the HTTP ETag header.
@@ -935,14 +950,11 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## SSR
 
 The Telefunc client is isomorphic (aka universal) and works in the browser as well as in Node.js.
 
-If you don't need authentication, then SSR works out of the box.
-If you do, then read [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication).
+SSR works out of the box.
 
 
 <br/>
@@ -965,36 +977,36 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
-
 ## Options
 
 All options with their default value:
-~~~js
+
+```js
 // Browser (or Node.js)
 
-import { config } from 'telefunc/client';
+import { config } from "telefunc/client";
 
 // The URL of the Node.js server that serves the API
 config.serverUrl = null;
 
 // The base URL of Telefunc HTTP requests
-config.baseUrl = '/_telefunc/';
+config.baseUrl = "/_telefunc/";
 
 // Whether the endpoint arguments are always passed in the HTTP body
 config.shortUrl = false;
-~~~
-~~~js
+```
+
+```js
 // Node.js
 
-import { config } from 'telefunc/server';
+import { config } from "telefunc/server";
 
 // Whether Telefunc generates an ETag header.
 config.disableCache = false;
 
 // The base URL of Telefunc HTTP requests
-config.baseUrl = '/_telefunc/';
-~~~
+config.baseUrl = "/_telefunc/";
+```
 
 - [`serverUrl`](#serverurl)
 - [`baseUrl`](#baseUrl)
@@ -1010,32 +1022,33 @@ But if your API and your browser-side assets are not served by the same server,
 then you need to provide a `serverUrl`.
 
 `serverUrl` can be one of the following:
+
 - `null`. (Default value.)
 - The URL of the server, for example `http://localhost:3333/api` or `https://api.example.org`.
 - The IP address of the server, for example `92.194.249.32`.
 
 When `serverUrl` is `null`, the Telefunc client uses `window.location.origin` as server URL.
 
-~~~js
-import { server, config } from 'telefunc/client';
-import assert from 'assert';
+```js
+import { server, config } from "telefunc/client";
+import assert from "assert";
 
-config.serverUrl = 'https://api.example.com:1337';
+config.serverUrl = "https://api.example.com:1337";
 
 callEndpoint();
 
 async function callEndpoint() {
   await server.myEndpoint();
 
-  assert(window.location.origin==='https://example.com');
+  assert(window.location.origin === "https://example.com");
   // Normally, Telefunc would make an HTTP request to the same origin:
   //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
   // But because we have set `serverUrl`, Telefunc makes
   // the HTTP request to `https://api.example.com:1337` instead:
   //   POST https://api.example.com:1337/_telefunc/myEndpoint HTTP/1.1
-};
-~~~
+}
+```
 
 <br/>
 
@@ -1044,35 +1057,35 @@ async function callEndpoint() {
 By default, the pathname of any HTTP request that Telefunc makes starts with `/_willdcard_api/`.
 You can change this base URL by using the `baseUrl` option.
 
-~~~js
-import { server, config } from 'telefunc/client';
-import assert from 'assert';
+```js
+import { server, config } from "telefunc/client";
+import assert from "assert";
 
-config.baseUrl = '/_my_custom_api_base_url/';
+config.baseUrl = "/_my_custom_api_base_url/";
 
 callEndpoint();
 
 async function callEndpoint() {
   await server.myEndpoint();
 
-  assert(window.location.origin==='https://example.com');
+  assert(window.location.origin === "https://example.com");
   // Normally, Telefunc would make an HTTP request to `/_telefunc/`:
   //   POST https://example.com/_telefunc/myEndpoint HTTP/1.1
 
   // But because we have changed `baseUrl`, Telefunc makes
   // the HTTP request to `/_my_custom_api_base_url/` instead:
   //   POST https://example.com/_my_custom_api_base_url/myEndpoint HTTP/1.1
-};
-~~~
+}
+```
 
 If you change the `baseUrl` option of your Telefunc client,
 then make sure that the `baseUrl` of your Telefunc server is the same:
 
-~~~js
-import { config } from 'telefunc/server';
+```js
+import { config } from "telefunc/server";
 
-config.baseUrl = '/_my_custom_api_base_url/';
-~~~
+config.baseUrl = "/_my_custom_api_base_url/";
+```
 
 <br/>
 
@@ -1082,15 +1095,15 @@ The `shortUrl` option is about configuring whether
 arguments are always passed in the HTTP request body.
 (Instead of being passed in the HTTP request URL.)
 
-~~~js
-import { server, config } from 'telefunc/client';
+```js
+import { server, config } from "telefunc/client";
 
 config.shortUrl = true; // Default value is `false`
 
 callEndpoint();
 
 async function callEndpoint() {
-  await server.myEndpoint({some: 'arguments' }, 'second arg');
+  await server.myEndpoint({ some: "arguments" }, "second arg");
 
   // Normally, Telefunc would pass the arguments in the HTTP request URL:
   //   POST /_telefunc/myEndpoint/[{"some":"arguments"},"second arg"] HTTP/1.1
@@ -1099,8 +1112,8 @@ async function callEndpoint() {
   // Telefunc passes the arguments in the HTTP request body instead:
   //   POST /_telefunc/myEndpoint HTTP/1.1
   //   Request payload: [{"some":"arguments"},"second arg"]
-};
-~~~
+}
+```
 
 <br/>
 
@@ -1110,72 +1123,11 @@ By default Telefunc generates an HTTP ETag cache header.
 If you need to save CPU computation time,
 you can set `disableCache` to `true` and Telefunc will skip generating HTTP ETag headers.
 
-~~~js
-import telefuncServer from 'telefunc/server';
+```js
+import telefuncServer from "telefunc/server";
 
 telefuncServer.disableCache = true;
-~~~
-
-
-
-<br/>
-
-<p align="center">
-
-<sup>
-<a href="https://github.com/telefunc/telefunc/issues/new">Open a GitHub ticket</a>
-if you have questions or something's not clear &mdash; we enjoy talking with our users.
-</sup>
-
-<br/>
-
-<sup>
-<a href="#readme"><b>&#8679;</b> <b>TOP</b> <b>&#8679;</b></a>
-</sup>
-
-</p>
-
-<br/>
-<br/>
-
-
-
-## Learning Material
-
-Material to learn more about RPC and Telefunc.
-
-###### RPC
-
-- [What is RPC](/docs/what-is-rpc.md#what-is-rpc)
-  <br/>
-  Explains what RPC is.
-- [FAQ](/docs/faq.md#faq)
-  <br/>
-  FAQ about RPC.
-  Covers high-level questions such as "Which is more powerful, GraphQL or RPC?"
-  as well as low-level questions such as
-  "How can I do versioning with RPC?" or
-  "Doesn't RPC tightly couple frontend with backend?".
-- [What is the difference between REST and RPC?](/docs/blog/rest-rpc.md#readme)
-  <br/>
-  This post explains what REST, RPC, and RPC-like means.
-
-###### Blog
-
-- [RPC as Default](/docs/blog/rpc-as-default.md#rpc-as-default)
-- [REST or GraphQL? A simple answer.](/docs/blog/rest-or-graphql.md#rest-or-graphql-a-simple-answer)
-
-###### Telefunc
-
-- [How Telefunc Works](/docs/how-telefunc-works.md#how-telefunc-works)
-  <br/>
-  Talks about the technologies Telefunc uses under the hood.
-- [Example - A Todo List](/examples/todo-list/#example---a-todo-list)
-  <br/>
-  Showcases a to-do list app built with RPC/Telefunc.
-- [SSR & Authentication](/docs/ssr-auth.md#ssr--authentication)
-  <br/>
-  How to use Telefunc with SSR and Authentication.
+```
 
 
 <br/>
@@ -1197,9 +1149,6 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 <br/>
 <br/>
-
-
-
 
 <!---
 
