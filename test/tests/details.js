@@ -3,18 +3,18 @@
 // Should include all possible details
 
 module.exports = [
-  // Endpoint functions
-  endpointSyncFunction,
-  endpointReturnsUndefined_serverSide,
-  endpointReturnsUndefined_browserSide,
+  // Telefunction definition
+  telefunctionSyncFunction,
+  telefunctionReturnsUndefined_serverSide,
+  telefunctionReturnsUndefined_browserSide,
 
-  // Calling a server endpoint directly without using the `telefunc/client` is not a problem
-  serverSideEndpointCalling,
+  // Calling a server telefunction directly without using the `telefunc/client` is not a problem
+  serverSideTelefunctionCalling,
 ];
 module.exports.createServer = createServer;
 
 // Telefunctions can be synchronous
-async function endpointSyncFunction({ server, telefuncClient }) {
+async function telefunctionSyncFunction({ server, telefuncClient }) {
   const n = Math.random();
   server.syncFunc = function () {
     return n;
@@ -26,15 +26,17 @@ async function endpointSyncFunction({ server, telefuncClient }) {
   assert(ret === n);
 }
 // Telefunctions can return undefined
-async function endpointReturnsUndefined_serverSide({ server, telefuncClient }) {
+async function telefunctionReturnsUndefined_serverSide({ server, telefuncClient }) {
   server.helloUndefined = async function () {};
   const telefunctionResult = await telefuncClient.telefunctions.helloUndefined();
   assert(telefunctionResult === undefined);
 }
-async function endpointReturnsUndefined_browserSide({ server, browserEval }) {
+async function telefunctionReturnsUndefined_browserSide({ server, browserEval }) {
   server.helloUndefined = async function () {};
   await browserEval(async () => {
-    const telefunctionResult = await window.telefunc.server.helloUndefined("Hm");
+    const telefunctionResult = await window.telefunc.server.helloUndefined(
+      "Hm"
+    );
     assert(telefunctionResult === undefined);
   });
 }
@@ -80,11 +82,11 @@ async function createServer({
   };
 }
 
-async function serverSideEndpointCalling({ server }) {
+async function serverSideTelefunctionCalling({ server }) {
   const val = "yep this works" + Math.random();
-  server.writeOnlyEndpoint = function () {
+  server.writeOnlyTelefunction = function () {
     return val;
   };
-  const ret = server.writeOnlyEndpoint();
+  const ret = server.writeOnlyTelefunction();
   assert(ret === val);
 }

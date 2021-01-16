@@ -4,14 +4,14 @@ async function bigPayloads({ server, browserEval }) {
   const _bigArg = gen_big_string();
   const _bigResult = gen_big_string();
 
-  server.bigEndpoint = async function ({ bigArg }) {
+  server.bigTelefunction = async function ({ bigArg }) {
     assert(bigArg === _bigArg);
     return _bigResult;
   };
 
   await browserEval(
     async ({ _bigArg, _bigResult }) => {
-      const bigResult = await window.telefunc.server.bigEndpoint({
+      const bigResult = await window.telefunc.server.bigTelefunction({
         bigArg: _bigArg,
       });
       assert(bigResult === _bigResult);
@@ -30,7 +30,7 @@ function gen_big_string() {
 }
 
 async function noConnection({ server, browserEval, assertStderr }) {
-  server.unreachableEndpoint = async function () {
+  server.unreachableTelefunction = async function () {
     assert(false);
   };
 
@@ -38,7 +38,7 @@ async function noConnection({ server, browserEval, assertStderr }) {
     async () => {
       let err;
       try {
-        await window.telefunc.server.unreachableEndpoint();
+        await window.telefunc.server.unreachableTelefunction();
       } catch (err_) {
         err = err_;
       }

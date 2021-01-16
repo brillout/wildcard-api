@@ -1,11 +1,11 @@
 module.exports = [
-  endpointMissing_noTelefunctions_serverSide,
-  endpointMissing_noTelefunctions_clientSide,
-  endpointMissing_notDefined_clientSide,
-  endpointMissing_notDefined_serverSide,
+  telefunctionMissing_noTelefunctions_serverSide,
+  telefunctionMissing_noTelefunctions_clientSide,
+  telefunctionMissing_notDefined_clientSide,
+  telefunctionMissing_notDefined_serverSide,
 
-  endpointThrowsError,
-  endpointReturnsUnserializable,
+  telefunctionThrowsError,
+  telefunctionReturnsUnserializable,
 
   wrongUsage_getApiHttpResponse_1,
   wrongUsage_getApiHttpResponse_2,
@@ -20,7 +20,7 @@ module.exports = [
 module.exports.setProd = setProd;
 module.exports.unsetProd = unsetProd;
 
-async function endpointMissing_noTelefunctions_serverSide({
+async function telefunctionMissing_noTelefunctions_serverSide({
   telefuncClient,
   assertStderr,
 }) {
@@ -42,7 +42,7 @@ async function endpointMissing_noTelefunctions_serverSide({
 
   assertStderr(null);
 }
-async function endpointMissing_noTelefunctions_clientSide({
+async function telefunctionMissing_noTelefunctions_clientSide({
   browserEval,
   assertStderr,
 }) {
@@ -69,13 +69,13 @@ async function endpointMissing_noTelefunctions_clientSide({
     "[Telefunc][Wrong Usage] Telefunction `iDoNotExist` does not exist. You didn't define any telefunction. Make sure that the name of your file that defines `iDoNotExist` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`."
   );
 }
-async function endpointMissing_notDefined_clientSide({
+async function telefunctionMissing_notDefined_clientSide({
   server,
   browserEval,
   assertStderr,
 }) {
-  server.neverCalledEndpoint = async function () {};
-  server.emptyEndpoint = async function () {};
+  server.neverCalledTelefunction = async function () {};
+  server.emptyTelefunction = async function () {};
 
   const callTelefunc = () =>
     browserEval(async () => {
@@ -106,7 +106,7 @@ async function endpointMissing_notDefined_clientSide({
     "[Telefunc][Wrong Usage] Telefunction `iDoNotExist` does not exist. Make sure that the name of your file that defines `iDoNotExist` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`."
   );
 }
-async function endpointMissing_notDefined_serverSide({
+async function telefunctionMissing_notDefined_serverSide({
   server,
   telefuncClient,
   assertStderr,
@@ -115,7 +115,7 @@ async function endpointMissing_notDefined_serverSide({
 
   let err;
   try {
-    await telefuncClient.telefunctions.missingEndpoint();
+    await telefuncClient.telefunctions.missingTelefunction();
   } catch (_err) {
     err = _err;
   }
@@ -126,7 +126,7 @@ async function endpointMissing_notDefined_serverSide({
 
   assert.strictEqual(
     err.message,
-    "[Telefunc][Wrong Usage] Telefunction `missingEndpoint` does not exist. Make sure that the name of your file that defines `missingEndpoint` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`. Loaded telefunctions: `notUsed`. (This error is not shown in production.)"
+    "[Telefunc][Wrong Usage] Telefunction `missingTelefunction` does not exist. Make sure that the name of your file that defines `missingTelefunction` ends with `.telefunc.js`/`.telefunc.ts` (and Telefunc will automatically load it), or manually load your file with `require`/`import`. Loaded telefunctions: `notUsed`. (This error is not shown in production.)"
   );
 
   assert(!err.stack.includes("You didn't define any telefunction."));
@@ -136,33 +136,31 @@ async function endpointMissing_notDefined_serverSide({
   unsetProd();
 }
 
-async function endpointReturnsUnserializable({
+async function telefunctionReturnsUnserializable({
   server,
   browserEval,
   assertStderr,
 }) {
-  server.fnEndpoint1 = async function () {
+  server.telef1 = async function () {
     return function heloFn() {};
   };
 
   await browserEval(async () => {
     let err;
     try {
-      await window.telefunc.server.fnEndpoint1();
+      await window.telefunc.server.telef1();
     } catch (_err) {
       err = _err;
     }
     assert(err.isCodeError === true);
     assert(err.isConnectionError === false);
-    assert(err.message === "Telefunction `fnEndpoint1` threw an error.");
+    assert(err.message === "Telefunction `telef1` threw an error.");
   });
 
-  assertStderr(
-    "Couldn't serialize value returned by telefunction `fnEndpoint1`"
-  );
+  assertStderr("Couldn't serialize value returned by telefunction `telef1`");
 }
 
-async function endpointThrowsError({ server, browserEval, assertStderr }) {
+async function telefunctionThrowsError({ server, browserEval, assertStderr }) {
   const errorText = "[EXPECTED_ERROR] oh-oh-error" + Math.random();
 
   server.aintWorking = async function () {

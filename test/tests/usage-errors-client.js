@@ -1,7 +1,7 @@
 module.exports = [
   wrongBindUsage1,
   wrongBindUsage2,
-  endpointManipulationWithClient,
+  telefunctionManipulationWithClient,
   cannotSerialize,
   wrongServerUrl,
   missingServerUrl,
@@ -33,7 +33,7 @@ async function wrongBindUsage2({ server, telefuncClient, assertStderr }) {
   );
 }
 
-async function endpointManipulationWithClient({
+async function telefunctionManipulationWithClient({
   telefuncClient,
   assertStderr,
 }) {

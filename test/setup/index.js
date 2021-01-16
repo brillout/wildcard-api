@@ -343,7 +343,7 @@ function removeHiddenLog(stdLogs) {
 function removeNetworkErrorLogs(stdLogs) {
   return stdLogs.filter(
     (log) =>
-      // Browser-side puppeteer logs when endpoint failed
+      // Browser-side puppeteer logs when telefunction failed
       ![
         "Failed to load resource: net::ERR_INTERNET_DISCONNECTED\n",
         "Failed to load resource: net::ERR_CONNECTION_REFUSED\n",

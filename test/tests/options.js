@@ -8,14 +8,14 @@ module.exports = [
 async function option_shortUrl_1({ server, browserEval, httpPort }) {
   let execCount = 0;
 
-  server.testEndpoint__shortUrl = async function (arg) {
+  server.testTelefunction__shortUrl = async function (arg) {
     assert(arg === "just some args");
     execCount++;
   };
 
   await browserEval(
     async () => {
-      await window.telefunc.server.testEndpoint__shortUrl("just some args");
+      await window.telefunc.server.testTelefunction__shortUrl("just some args");
     },
     { onHttpRequest }
   );
@@ -28,7 +28,7 @@ async function option_shortUrl_1({ server, browserEval, httpPort }) {
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_telefunc/testEndpoint__shortUrl/%5B%22just%20some%20args%22%5D",
+          "/_telefunc/testTelefunction__shortUrl/%5B%22just%20some%20args%22%5D",
       { _url }
     );
     assert(_postData === undefined, { _postData });
@@ -38,25 +38,25 @@ async function option_shortUrl_1({ server, browserEval, httpPort }) {
 }
 
 async function option_shortUrl_2({ server, browserEval, httpPort }) {
-  let endpointCalled = false;
+  let telefunctionCalled = false;
   let onHttpRequestCalled = false;
 
-  server.testEndpoint__shortUrl = async function (arg) {
+  server.testTelefunction__shortUrl = async function (arg) {
     assert(arg === "just some args");
-    endpointCalled = true;
+    telefunctionCalled = true;
   };
 
   await browserEval(
     async () => {
       assert(window.telefunc.config.shortUrl === false);
       window.telefunc.config.shortUrl = true;
-      await window.telefunc.server.testEndpoint__shortUrl("just some args");
+      await window.telefunc.server.testTelefunction__shortUrl("just some args");
       window.telefunc.config.shortUrl = false;
     },
     { onHttpRequest }
   );
 
-  assert(endpointCalled && onHttpRequestCalled);
+  assert(telefunctionCalled && onHttpRequestCalled);
 
   function onHttpRequest(request) {
     const { _url, _postData } = request;
@@ -64,7 +64,7 @@ async function option_shortUrl_2({ server, browserEval, httpPort }) {
       _url ===
         "http://localhost:" +
           httpPort +
-          "/_telefunc/testEndpoint__shortUrl/args-in-body",
+          "/_telefunc/testTelefunction__shortUrl/args-in-body",
       { _url }
     );
     assert(_postData === '["just some args"]', { _postData });
@@ -74,11 +74,11 @@ async function option_shortUrl_2({ server, browserEval, httpPort }) {
 }
 
 async function option_serverUrl({ server, browserEval, httpPort }) {
-  let endpointCalled = false;
+  let telefunctionCalled = false;
   let onHttpRequestCalled = false;
 
   server.test_serverUrl = async function () {
-    endpointCalled = true;
+    telefunctionCalled = true;
   };
 
   const wrongHttpPort = 3449;
@@ -100,8 +100,8 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
     { onHttpRequest, browserArgs: { wrongHttpPort } }
   );
 
-  assert(endpointCalled === false && onHttpRequestCalled === true, {
-    endpointCalled,
+  assert(telefunctionCalled === false && onHttpRequestCalled === true, {
+    telefunctionCalled,
     onHttpRequestCalled,
   });
 
@@ -115,12 +115,12 @@ async function option_serverUrl({ server, browserEval, httpPort }) {
 }
 
 async function option_baseUrl({ server, config, browserEval, httpPort }) {
-  let endpointCalled = false;
+  let telefunctionCalled = false;
   let onHttpRequestCalled = false;
 
   const baseUrl = (config.baseUrl = "/_api/my_custom_base/");
   server.test_baseUrl = async function () {
-    endpointCalled = true;
+    telefunctionCalled = true;
   };
 
   await browserEval(
@@ -134,8 +134,8 @@ async function option_baseUrl({ server, config, browserEval, httpPort }) {
     { onHttpRequest, browserArgs: { baseUrl } }
   );
 
-  assert(endpointCalled === true && onHttpRequestCalled === true, {
-    endpointCalled,
+  assert(telefunctionCalled === true && onHttpRequestCalled === true, {
+    telefunctionCalled,
     onHttpRequestCalled,
   });
 

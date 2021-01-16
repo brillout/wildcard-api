@@ -34,7 +34,7 @@ async function doesntIntefere1({ server, telefuncServer }) {
 }
 
 async function doesntIntefere2({ server, browserEval }) {
-  server.myEndpoint = async function () {
+  server.myTelefunction = async function () {
     return "Grüß di";
   };
 
@@ -46,8 +46,8 @@ async function doesntIntefere2({ server, browserEval }) {
     const text1 = await resp1.text();
     assert(text1 === "Hello darling");
 
-    const endpointRet = await window.telefunc.server.myEndpoint();
-    assert(endpointRet === "Grüß di");
+    const telefunctionRet = await window.telefunc.server.myTelefunction();
+    assert(telefunctionRet === "Grüß di");
 
     const resp2 = await window.fetch("/hey/after", {
       method: "POST",
@@ -60,9 +60,9 @@ async function doesntIntefere2({ server, browserEval }) {
 
 // Playground: https://jsfiddle.net/bj4sLdh1/1/
 async function unpkg({ server, browserEval }) {
-  let endpointCalled = false;
+  let telefunctionCalled = false;
   server.bonj = async function () {
-    endpointCalled = true;
+    telefunctionCalled = true;
     return "Bonjour";
   };
 
@@ -118,7 +118,7 @@ async function unpkg({ server, browserEval }) {
     }
   });
 
-  assert(endpointCalled);
+  assert(telefunctionCalled);
 }
 
 async function API({ browserEval }) {

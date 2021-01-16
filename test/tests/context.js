@@ -100,12 +100,12 @@ async function testSetContext({ setContext, browserEval, ...args }) {
     ...args,
   });
 
-  server.myEndpoint = async function () {
+  server.myTelefunction = async function () {
     return this.userId + "yep";
   };
 
   await browserEval(async () => {
-    const ret = await window.telefunc.server.myEndpoint();
+    const ret = await window.telefunc.server.myTelefunction();
     assert(ret === "4242yep");
   });
 
@@ -142,7 +142,9 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
     return "works fine " + msg;
   };
 
-  const ret_serverSide1 = await telefuncClient.telefunctions.contextLessFunc("rom");
+  const ret_serverSide1 = await telefuncClient.telefunctions.contextLessFunc(
+    "rom"
+  );
   assert(ret_serverSide1 === "works fine rom");
 
   const ret_serverSide2 = await telefuncClient.telefunctions.contextLessFunc.bind(
@@ -151,7 +153,9 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   assert(ret_serverSide2 === "works fine brillout");
 
   await browserEval(async () => {
-    const ret_browserSide = await window.telefunc.server.contextLessFunc("romi");
+    const ret_browserSide = await window.telefunc.server.contextLessFunc(
+      "romi"
+    );
     assert(ret_browserSide === "works fine romi");
   });
 
@@ -195,18 +199,18 @@ async function wrongSetContext({
   });
 
   /*
-   * Cannot call any endpoint
+   * Cannot call any telefunction
    */
 
-  server.boringEndpoint = function () {};
+  server.boringTelefunction = function () {};
 
   await browserEval(async () => {
     try {
-      await window.telefunc.server.boringEndpoint();
+      await window.telefunc.server.boringTelefunction();
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
-      assert(err.message === "Telefunction `boringEndpoint` threw an error.");
+      assert(err.message === "Telefunction `boringTelefunction` threw an error.");
     }
   });
   assertStderr(
@@ -237,16 +241,18 @@ async function emptyContext({ setContext, browserEval, ...args }) {
     ...args,
   });
 
-  server.ctxEndpoint = async function () {
+  server.ctxTelefunction = async function () {
     return this.notExistingContext + " blib";
   };
 
   await browserEval(async () => {
-    const ret_browserSide = await window.telefunc.server.ctxEndpoint();
+    const ret_browserSide = await window.telefunc.server.ctxTelefunction();
     assert(ret_browserSide === "undefined blib");
   });
 
-  const ret_serverSide = await telefuncClient.telefunctions.ctxEndpoint.bind({})();
+  const ret_serverSide = await telefuncClient.telefunctions.ctxTelefunction.bind(
+    {}
+  )();
   assert(ret_serverSide === "undefined blib");
 
   await stopApp();
@@ -284,8 +290,8 @@ async function setContextReturnsUndefined_getApiHttpResponse({
   telefuncServer,
   assertStderr,
 }) {
-  server.boringEndpoint = function () {};
-  const url = "https://example.org/_telefunc/boringEndpoint";
+  server.boringTelefunction = function () {};
+  const url = "https://example.org/_telefunc/boringTelefunction";
   const method = "POST";
   const headers = {};
   const myCtxFunc = async () => undefined;
@@ -432,37 +438,41 @@ setContextReturnsWrongValue1.isIntegrationTest = true;
 async function setContextReturnsWrongValue1({ assertStderr, ...args }) {
   const setContext = () => "wrong-context-type";
 
-  await _createAndCallAnEndpoint({ setContext, ...args });
+  await _createAndCallATelefunction({ setContext, ...args });
 
   assertStderr(
     "Your context function `setContext` should return a `instanceof Object`."
   );
 }
-async function _createAndCallAnEndpoint({ setContext, browserEval, ...args }) {
+async function _createAndCallATelefunction({
+  setContext,
+  browserEval,
+  ...args
+}) {
   const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
 
-  let endpointCalled = false;
-  server.failingEndpoint = async function (name) {
-    endpointCalled = true;
+  let telefunctionCalled = false;
+  server.failingTelefunction = async function (name) {
+    telefunctionCalled = true;
     return "Dear " + name;
   };
 
   await browserEval(async () => {
     let err;
     try {
-      await window.telefunc.server.failingEndpoint("rom");
+      await window.telefunc.server.failingTelefunction("rom");
     } catch (_err) {
       err = _err;
     }
     assert(err.isCodeError === true);
     assert(err.isConnectionError === false);
-    assert(err.message === "Telefunction `failingEndpoint` threw an error.");
+    assert(err.message === "Telefunction `failingTelefunction` threw an error.");
   });
 
-  assert(endpointCalled === false);
+  assert(telefunctionCalled === false);
 
   await stopApp();
 }
@@ -474,7 +484,7 @@ async function setContextThrows({ assertStderr, ...args }) {
     throw new Error(errText);
   };
 
-  await _createAndCallAnEndpoint({ setContext, ...args });
+  await _createAndCallATelefunction({ setContext, ...args });
 
   assertStderr(errText);
 }

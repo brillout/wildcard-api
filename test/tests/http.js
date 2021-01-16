@@ -14,9 +14,9 @@ const { setProd, unsetProd } = require("./usage-errors-server");
 
 module.exports = [
   http_validRequest,
-  http_endpointMissing_noTelefunctions,
-  http_endpointMissing_notDefined,
-  http_endpointReturnsUnserializable,
+  http_telefunctionMissing_noTelefunctions,
+  http_telefunctionMissing_notDefined,
+  http_telefunctionReturnsUnserializable,
   http_wrongRequest1,
   http_wrongRequest2,
   http_wrongRequest3,
@@ -37,7 +37,7 @@ async function http_validRequest({ server, browserEval }) {
   });
 }
 
-async function http_endpointMissing_noTelefunctions({ server, browserEval }) {
+async function http_telefunctionMissing_noTelefunctions({ server, browserEval }) {
   server.nothing = async function () {};
 
   setProd();
@@ -54,7 +54,7 @@ async function http_endpointMissing_noTelefunctions({ server, browserEval }) {
   unsetProd();
 }
 
-async function http_endpointMissing_notDefined({ server, browserEval }) {
+async function http_telefunctionMissing_notDefined({ server, browserEval }) {
   server.hello = async function (name) {
     return "Greetings " + name;
   };
@@ -73,7 +73,7 @@ async function http_endpointMissing_notDefined({ server, browserEval }) {
   unsetProd();
 }
 
-async function http_endpointReturnsUnserializable({
+async function http_telefunctionReturnsUnserializable({
   server,
   browserEval,
   assertStderr,
