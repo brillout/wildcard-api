@@ -53,7 +53,7 @@ function getContextFromCookie(
     const isMissing = !(cookieSignatureName in cookieList);
     assertWarning(
       cookieSignature === validSignature,
-      `Cookie signature is ${isMissing ? "missing" : "wrong"}.`
+      `Telefunc cookie signature is ${isMissing ? "missing" : "wrong"}.`
     );
     assert(!isMissing);
   }
