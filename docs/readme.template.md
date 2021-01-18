@@ -4,8 +4,6 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Telefunc](#what-is-telefunc)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-[Telefunc compared to REST and GraphQL](#telefunc-compared-to-REST-and-GraphQL)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 Usage
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [Getting Started](#getting-started)
@@ -42,10 +40,7 @@ More
 
 ## What is Telefunc
 
-Telefunc is a JavaScript library to create an API between your Node.js backend and your browser frontend.
-
-With Telefunc,
-creating an API endpoint is as easy as creating a JavaScript function.
+Telefunc is a JavaScript library to create an API-less Node.js backend by using so-called *tele*functions.
 
 ```js
 // Node.js server
@@ -64,28 +59,26 @@ server.hello = function (name) {
 import { server } from "telefunc/client";
 
 (async () => {
-  // Telefunc makes our `hello` function available in the browser
+  // Telefunc makes our `hello` function available in the browser.
   const { message } = await server.hello("Elisabeth");
   console.log(message); // Prints `Welcome Elisabeth`
 })();
 ```
 
-That's all Telefunc does:
-it makes functions,
-that are defined on your Node.js server,
-callable in the browser.
-Nothing more, nothing less.
+Instead of creating API endpoints, you create telefunctions: functions that are defined on the server-side but called remotely from the browser-side.
 
-To retrieve and mutate data, you can direclty use SQL or an ORM.
+For example, to retrieve and mutate data, you can create telefunctions that use SQL or ORM queries:
 
 ```js
 // Node.js server
 
 const { server } = require("telefunc/server");
-const Todo = require("./path/to/your/data/models/Todo");
+const { context } = require("telefunc/context");
+const Todo = require("./path/to/data/models/Todo");
+const User = require("./path/to/data/models/User");
 
-server.createTodoItem = async function (text) {
-  if (!this.user) {
+server.createTodoItem = async (text) => {
+  if (!context.user) {
     // The user is not logged-in. We abort.
     // With Telefunc, you define permissions programmatically
     // which we talk more about in the "Permissions" section.
@@ -93,55 +86,51 @@ server.createTodoItem = async function (text) {
   }
 
   // With an ORM:
-  const newTodo = new Todo({ text, authorId: this.user.id });
+  const newTodo = new Todo({ text, authorId: context.user.id });
   await newTodo.save();
 
   /* With SQL:
   const db = require('your-favorite-sql-query-builder');
   const [newTodo] = await db.query(
     "INSERT INTO todos VALUES (:text, :authorId);",
-    {text, authorId: this.user.id}
+    {text, authorId: context.user.id}
   );
   */
 
   return newTodo;
 };
+
+// We can also modify `context` to login the user
+
+server.login = async (userEmail, password) => {
+  if (!User.verifyCredentials(userEmail, password)) {
+    return { wrongCredentials: true };
+  }
+  const user = await User.findByEmail(userEmail);
+  // Telefunc persists the `context.user` changes using a Cookie saved
+  // in the user's browser; the user is now logged in.
+  context.user = {
+    id: user.id,
+    email: userEmail,
+  };
+};
 ```
 
-TypeScript has first-class support and you can use your backend types on the frontend!
+Philoshopy
 
-Telefunc is used in production at many companies,
-every release is assailed against a heavy suit of automated tests,
-and issues are fixed promptly.
-It is financed with the [Lsos](https://github.com/telefunc/telefunc/issues/56).
+- **Do one thing and do it well**. Telefunc focuses on one thing and one thing only and you keep control over the rest of your stack.
+- **Simplicity**. Simple setup. Simple permissions. Simple error handling.
+- **Delightful developer experience**. No unnecessary configuration, minimal (yet powerful) functionalities, clear error messages, clear documention. Telefunc gets out of your way so you can focus on what makes your app special.
+- **Performance**. Automatic caching. Optimal fetching (no N+1 and no overfetching thanks to API-less).
 
-&nbsp;
+Features
 
-<p align="center">
-  :sparkles:
-  <b>Easy Setup</b>
-  <img src="/docs/images/blank.svg" height="1" width="85" align="middle"/>
-  :shield:
-  <b>Simple Permissions</b>
-  <img src="/docs/images/blank.svg" height="1" width="42" align="middle"/>
-  :rotating_light:
-  <b>Simple Error Handling</b>
-  <img src="/docs/images/blank.svg" height="1" width="1" align="middle"/>
-  <br/>
-  :detective:
-  <b>Dev Tools</b>
-  <img src="/docs/images/blank.svg" height="1" width="96" align="middle"/>
-  :microscope:
-  <b>TypeScript Support</b>
-  <img src="/docs/images/blank.svg" height="1" width="47" align="middle"/>
-  :memo:
-  <b>SSR Support</b>
-  <img src="/docs/images/blank.svg" height="1" width="71" align="middle"/>
-  <br/>
-  :zap:
-  <b>Automatic Caching</b>
-  <img src="/docs/images/blank.svg" height="1" width="455" align="middle"/>
-</p>
+- TypeScript support.
+- SSR support.
+- Auth support.
+- Works with any server framework (Express/Koa/Hapi/Fastify/...), any frontend (React/Vue/Angluar/...), any authentication strategy (third-party login, custom strategy, auth0, firebase auth, ...), any third-party/mobile API strategy (GraphQL/[NQL]()/...).
+- Battle-tested in production at several companies. Each release is assailed against a heavy suit of automated tests.
+- Bugs are fixed promptly. All GitHub issues are answered. No pesky GitHub issue template: just write down your thoughts.
 
 &nbsp;
 
@@ -158,36 +147,6 @@ Paul Myburgh, CTO of Vibescout <a href="https://github.com/telefunc/telefunc/iss
 <p align="right">
 Niels Litt <a href="https://github.com/telefunc/telefunc/issues/22#issuecomment-568246660">(ref)</a>
 </p>
-
-&nbsp;
-
-## Telefunc compared to REST and GraphQL
-
-REST and GraphQL are well-suited tools to create an API that is meant to be used by third-party developers.
-Facebook's API, for example, is used by ~200k third parties.
-It is no surprise that Facebook is using (and invented) GraphQL;
-it enables third-party developers
-to extensively access Facebook's social graph
-allowing them to build all kinds of applications.
-For an API used by many third parties with many diverse uses cases, GraphQL is the right tool.
-
-However,
-if you want to create a backend API that is meant to be consumed only by your frontend,
-then you don't need REST nor GraphQL &mdash; [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), such as Telefunc, is enough.
-
-For a large app, you may still want the structure that comes with a RESTful/GraphQL API.
-But this typically applies only for large companies that develop apps with a large number of developers.
-"Premature optimization is the root of all evil";
-start with
-RPC
-and later switch to REST or GraphQL
-when (and only if!) the need arises.
-
-In a nuthsell:
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be used by third parties? Use REST or GraphQL.
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-Is your API meant to be used by yourself? Use RPC.
 
 &nbsp;
 
