@@ -4,7 +4,7 @@ module.exports = [
   contextChange_getApiHttpResponse,
   contextChange,
   canGetContextOutsideOfTelefunc,
-  contextInterfaceIsIsomorphic,
+  cannotGetContextOutsideRequest,
 ];
 
 async function contextChange_getApiHttpResponse({
@@ -97,7 +97,9 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
 
   await browserEval(async () => {
     assert(window.telefunc.context.myName === undefined);
-    assert((await window.telefunc.server.tellMyName()) === "You are: undefined");
+    assert(
+      (await window.telefunc.server.tellMyName()) === "You are: undefined"
+    );
     assert((await callCustomRoute()) === "Hello darling undefined");
 
     await window.telefunc.server.login("romBitch");
@@ -119,54 +121,15 @@ async function canGetContextOutsideOfTelefunc({ browserEval, ...args }) {
   await stopApp();
 }
 
-contextInterfaceIsIsomorphic.isIntegrationTest = true;
-async function contextInterfaceIsIsomorphic({
-  browserEval,
-  httpPort,
-  staticDir,
-}) {
-  const express = require("express");
-  const { telefunc } = require("telefunc/server/express");
-  const { stop, start } = require("../setup/servers/express");
-
-  const app = express();
-  app.use(express.json());
-  app.use(express.static(staticDir, { extensions: ["html"] }));
-  app.use(telefunc());
-
-  const appServer = await start(app, httpPort);
-
-  // We are importing `context` from the client module instead of the server module
-  const { context } = require("telefunc/client");
-  // This is (and should be) the only test that uses the global TelefuncServer instance.
-  const { server, setSecretKey } = require("telefunc/server");
-
-  setSecretKey("uhe1h20189HODH@(*H9e81hd9");
-
-  server.login = async function (name) {
-    context.user = name;
-  };
-  server.myName = async function () {
-    return "name: " + context.user;
-  };
-  await browserEval(async () => {
-    await window.telefunc.server.login("romli");
-    assert((await window.telefunc.server.myName()) === "name: romli");
-    assert(window.telefunc.context.user === "romli");
-  });
-
-  {
-    let err;
-    try {
-      context.user;
-    } catch (_err) {
-      err = _err;
-    }
-    assert(
-      err.message ===
-        "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
-    );
+async function cannotGetContextOutsideRequest({ context }) {
+  let err;
+  try {
+    context.user;
+  } catch (_err) {
+    err = _err;
   }
-
-  await stop(appServer);
+  assert(
+    err.message ===
+      "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
+  );
 }

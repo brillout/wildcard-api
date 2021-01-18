@@ -7,7 +7,10 @@ export { createContextProxy };
 
 function createContextProxy(telefuncServer: TelefuncServer) {
   return new Proxy({}, { get, set });
-  function get(_: never, prop: string) {
+  function get(emptyObjec: never, prop: string) {
+    // Enable native methods such as `constructor`
+    if (prop in emptyObjec) return emptyObjec[prop];
+
     const contextHook = getContextHook();
     assertUsage(
       contextHook,

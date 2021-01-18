@@ -11,18 +11,8 @@ import { context } from "./sessions";
 export { context };
 */
 
-let context;
-if (isNodejs()) {
-  context = module.exports.context = eval("require")("telefunc/server").context;
-} else {
-  // Is Browser
-  context = module.exports.context = require("./sessions").context;
-}
-function isNodejs(): boolean {
-  return typeof window === "undefined" || !("cookie" in window?.document);
-}
-
 if (typeof window !== "undefined") {
+  const { context } = require("telefunc/context");
   window.telefunc = {
     context,
     server,

@@ -122,6 +122,10 @@ async function unpkg({ server, browserEval }) {
 }
 
 async function API({ browserEval }) {
+  const telefunc_context = require("telefunc/context");
+  assert(telefunc_context.context.constructor === Object);
+  assert(Object.keys(telefunc_context).length === 1);
+
   const telefunc_server = require("telefunc/server");
   // 1
   assert(telefunc_server.server.constructor === Object);
@@ -134,17 +138,14 @@ async function API({ browserEval }) {
   );
   // 4
   assert(telefunc_server.setSecretKey);
-  // 5
-  assert(telefunc_server.context);
-  // 5===5
-  assert(Object.keys(telefunc_server).length === 5);
+  // 4===4
+  assert(Object.keys(telefunc_server).length === 4);
 
   const telefunc_client = require("telefunc/client");
   assert(telefunc_client.server);
   assert(telefunc_client.config);
-  assert(telefunc_client.context);
   assert(telefunc_client.TelefuncError);
-  assert(Object.keys(telefunc_client).length === 4);
+  assert(Object.keys(telefunc_client).length === 3);
 
   ["express", "koa", "hapi"].forEach((serverFramework) => {
     const export_ = require("telefunc/server/" + serverFramework);

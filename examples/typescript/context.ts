@@ -1,7 +1,7 @@
-export type Context = {
+type Context = {
   isLoggedIn: boolean;
 };
 
-declare module "telefunc/server" {
+declare module "telefunc/context" {
   export const context: Context;
 }
