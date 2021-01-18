@@ -9,6 +9,9 @@ export { internalErroPrefix };
 
 const libName = "Telefunc";
 
+export const requestForContact =
+  "Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack.";
+
 function assert(condition: unknown): asserts condition {
   if (condition) {
     return;
@@ -20,7 +23,7 @@ function assert(condition: unknown): asserts condition {
 
   throw internalError;
 }
-const internalErroPrefix = `[${libName}][Internal Error] Something unexpected happened. Please open a new issue at https://github.com/telefunc/telefunc/issues/new and include this error stack.`;
+const internalErroPrefix = `[${libName}][Internal Error] Something unexpected happened. ${requestForContact}`;
 
 type UsageError = Error & { _brand?: "UsageError" };
 function assertUsage(

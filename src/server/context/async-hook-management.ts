@@ -7,13 +7,21 @@ import {
   HttpRequestUrl,
   HttpRequestProps,
 } from "../TelefuncServer";
-import { assert, assertUsage } from "../utils/assert";
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  requestForContact,
+} from "../utils/assert";
 
 export { getContextHook };
 export { ContextHook };
 export { createContextHookFallback };
 export { deleteContextHookFallback };
 export { noPendingHooks };
+
+const contextHooks: Record<AsyncId, ContextHook> = {};
+const contextHooksMap: Record<AsyncId, AsyncId> = {};
 
 installAsyncHook();
 
@@ -28,6 +36,7 @@ type ContextHook = {
   contextModifications_: ContextObject;
   userDefinedContext: ContextObject;
   isFallbackHook: boolean;
+  dateCreated: Date;
 };
 
 function getContextHook(): ContextHook | null {
@@ -39,10 +48,12 @@ function getContextHook(): ContextHook | null {
   return httpRequest;
 }
 
-const contextHooks: Record<AsyncId, ContextHook> = {};
-const contextHooksMap: Record<AsyncId, AsyncId> = {};
 function installAsyncHook() {
-  const asyncHook = asyncHooks.createHook({
+  const asyncHook = createAsyncHook();
+  asyncHook.enable();
+}
+function createAsyncHook() {
+  return asyncHooks.createHook({
     init: (
       asyncId: AsyncId,
       type: string,
@@ -53,13 +64,13 @@ function installAsyncHook() {
         const incomingMsg = resource as IncomingMessage;
         assert(incomingMsg);
         /*
-          const getRequestProps = async (): Promise<HttpRequestProps> => {
-            const req = getParsedReq(incomingMsg);
-            const { url, method, headers } = req;
-            const body = await bodyParser(req);
-            return { url, method, headers, body };
-          };
-          */
+        const getRequestProps = async (): Promise<HttpRequestProps> => {
+          const req = getParsedReq(incomingMsg);
+          const { url, method, headers } = req;
+          const body = await bodyParser(req);
+          return { url, method, headers, body };
+        };
+        */
         // inspectIncomingMessage(incomingMsg);
         const getRequestHeaders = (): HttpRequestHeaders => {
           // inspectIncomingMessage(incomingMsg);
@@ -80,7 +91,36 @@ function installAsyncHook() {
       deleteContextHook(contextHookId);
     },
   });
-  asyncHook.enable();
+}
+let garbageCollector: NodeJS.Timeout | undefined;
+function deleteGarbageCollector() {
+  if (!garbageCollector) return;
+  if (Object.keys(contextHooks).length !== 0) return;
+  clearInterval(garbageCollector);
+  garbageCollector = undefined;
+}
+function enableGarbageCollector() {
+  if (garbageCollector) return;
+
+  const TEN_MINUTES = 10 * 60 * 1000;
+
+  garbageCollector = setInterval(collectGarbage, TEN_MINUTES);
+
+  function collectGarbage() {
+    for (const asyncId in contextHooks) {
+      const contextHook = contextHooks[asyncId];
+      if (
+        new Date().getTime() - contextHook.dateCreated.getTime() >
+        TEN_MINUTES
+      ) {
+        delete contextHooks[asyncId];
+        assertWarning(
+          false,
+          `Context prematurely deleted. ${requestForContact}`
+        );
+      }
+    }
+  }
 }
 function createContextHook(
   contextHookId: AsyncId,
@@ -96,9 +136,14 @@ function createContextHook(
     contextModifications_: {},
     userDefinedContext: {},
     isFallbackHook,
+    dateCreated: new Date(),
   };
   contextHooks[contextHookId] = contextHook;
+
   addDescendent(contextHookId, contextHookId);
+
+  enableGarbageCollector();
+
   return contextHook;
 }
 function deleteContextHook(contextHookId: AsyncId) {
@@ -122,6 +167,8 @@ function deleteContextHook(contextHookId: AsyncId) {
     delete contextHooksMap[id];
   }
   delete contextHooks[contextHookId];
+
+  deleteGarbageCollector();
 }
 function addDescendent(contextHookId: AsyncId, asyncId: AsyncId) {
   contextHooks[contextHookId].descendents.push(asyncId);
