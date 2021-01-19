@@ -238,7 +238,7 @@ async function _getApiHttpResponse(
     requestProps
   );
 
-  return handleTelefunctionOutcome(
+  return await handleTelefunctionOutcome(
     telefunctionResult,
     telefunctionError,
     contextModifications,
@@ -675,7 +675,7 @@ function parsePathname(pathname: string, config: Config) {
   };
 }
 
-function handleTelefunctionOutcome(
+async function handleTelefunctionOutcome(
   telefunctionResult: TelefunctionResult | undefined,
   telefunctionError: TelefunctionError | undefined,
   contextModifications: ContextObject,
@@ -683,7 +683,7 @@ function handleTelefunctionOutcome(
   telefunctionName: TelefunctionName,
   config: Config,
   secretKey: SecretKey
-): HttpResponseProps {
+): Promise<HttpResponseProps> {
   let responseProps: HttpResponseProps;
   if (telefunctionError) {
     responseProps = handleTelefunctionError(telefunctionError);
@@ -697,7 +697,7 @@ function handleTelefunctionOutcome(
   assert(responseProps.body.constructor === String);
 
   if (!config.disableCache) {
-    const computeEtag = require("./cache/computeEtag");
+    const { computeEtag } = await import("./cache/computeEtag");
     const etag = computeEtag(responseProps.body);
     assert(etag);
     responseProps.headers = responseProps.headers || {};

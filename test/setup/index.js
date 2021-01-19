@@ -16,7 +16,7 @@ const { TelefuncServer } = require("telefunc/server/TelefuncServer");
 const { TelefuncClient } = require("telefunc/client/TelefuncClient");
 const {
   noPendingHooks,
-} = require("telefunc/server/context/async-hook-management");
+} = require("telefunc/context/server/async-hook-management");
 
 const bundle = require("./browser/bundle");
 //*/

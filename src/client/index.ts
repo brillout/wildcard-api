@@ -1,15 +1,9 @@
 import { telefuncClient } from "./global-instance";
-export const server = telefuncClient.telefunctions;
-
-export const { config } = telefuncClient;
-
 import { TelefuncError } from "./makeHttpRequest";
-export { TelefuncError };
 
-/*
-import { context } from "./sessions";
-export { context };
-*/
+export const server = telefuncClient.telefunctions;
+export const { config } = telefuncClient;
+export { TelefuncError };
 
 if (typeof window !== "undefined") {
   const { context } = require("telefunc/context");
@@ -20,7 +14,8 @@ if (typeof window !== "undefined") {
     TelefuncError,
   } as never;
 }
-// TypeScript users should not use `window.telefunc`
+
+// TypeScript users should never use `window.telefunc`
 declare global {
   interface Window {
     telefunc: never;

@@ -17,9 +17,9 @@
 
 let context;
 if (isBrowser()) {
-  context = require("telefunc/client/sessions").context;
+  context = require("telefunc/context/browser").context;
 } else {
-  context = eval("require")("telefunc/server/context").context;
+  context = eval("require")("telefunc/context/server").context;
 }
 
 module.exports.context = context;
