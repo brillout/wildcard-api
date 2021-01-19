@@ -1,20 +1,8 @@
-// TODO
-//  - clean signature cookie upon client-side context removal
-//  - add TS support for client-side `context` object
-//  - add tests
-//    - when security token is corrupt
-//    - all assertUsage
-//  - Try secure cookies
-//  - Investiage sameSite
-//  - Make context available outside of telefunc
-//  - update docs
-//    - update getApiHttpResponse
-
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
-import { ContextObject, TelefuncServer } from "../../server/TelefuncServer";
-import { assertUsage, assertWarning, assert } from "../../server/utils/assert";
+import { ContextObject, TelefuncServer } from "telefunc/server/TelefuncServer";
+import { assertUsage, assert } from "telefunc/server/utils/assert";
 import cookieHelper = require("cookie");
 
 export { getContextFromCookie };
@@ -52,12 +40,6 @@ function getContextFromCookie(
     assert(validSignature);
     const isMissing = !(cookieSignatureName in cookieList);
     const isValid = cookieSignature === validSignature;
-    /*
-    assertWarning(
-      isValid,
-      `Telefunc cookie signature is ${isMissing ? "missing" : "wrong"}.`
-    );
-    */
     assert(!isMissing);
     if (!isValid) return {};
   }
