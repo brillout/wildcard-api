@@ -7,14 +7,14 @@ import {
   __setSecretKey,
   __secretKey,
   SecretKey,
-} from "../context/server/cookie-management";
+} from "telefunc/context/server/cookie-management";
 import {
   createContextHookFallback,
   deleteContextHookFallback,
   getContextHook,
-} from "../context/server/async-hook-management";
-import { resolveUserProvidedContext } from "../context/server/resolveUserProvidedContext";
-import { createContextProxy } from "../context/server/createContextProxy";
+} from "telefunc/context/server/async-hook-management";
+import { resolveUserProvidedContext } from "telefunc/context/server/resolveUserProvidedContext";
+import { createContextProxy } from "telefunc/context/server/createContextProxy";
 
 import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
 

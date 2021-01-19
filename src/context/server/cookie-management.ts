@@ -1,4 +1,3 @@
-// @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
 import { ContextObject, TelefuncServer } from "telefunc/server/TelefuncServer";
