@@ -1,6 +1,6 @@
-import { assert, assertUsage } from "../utils/assert";
-import { ContextGetter, ContextObject } from "../TelefuncServer";
-import { isCallable } from "../utils/isCallable";
+import { assert, assertUsage } from "../../server/utils/assert";
+import { ContextGetter, ContextObject } from "../../server/TelefuncServer";
+import { isCallable } from "../../server/utils/isCallable";
 
 export { resolveUserProvidedContext };
 

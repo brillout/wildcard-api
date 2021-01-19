@@ -1,5 +1,4 @@
 import { assert } from "./assert";
-// @ts-ignore
 import { parse } from "@brillout/json-s";
 // @ts-ignore
 import fetch = require("@brillout/fetch");

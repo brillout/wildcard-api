@@ -1,4 +1,3 @@
-// @ts-ignore
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage } from "./assert";

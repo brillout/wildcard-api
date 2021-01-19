@@ -13,8 +13,8 @@
 // @ts-ignore
 import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
-import { ContextObject, TelefuncServer } from "../TelefuncServer";
-import { assertUsage, assertWarning, assert } from "../utils/assert";
+import { ContextObject, TelefuncServer } from "../../server/TelefuncServer";
+import { assertUsage, assertWarning, assert } from "../../server/utils/assert";
 import cookieHelper = require("cookie");
 
 export { getContextFromCookie };

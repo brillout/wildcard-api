@@ -1,7 +1,7 @@
 import { assert } from "../utils/assert";
 import { createHash } from "crypto";
 
-module.exports = computeEtag;
+export { computeEtag };
 
 function computeEtag(body: string): string {
   const etagValue = getEtagValue(body);
