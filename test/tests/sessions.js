@@ -1,10 +1,13 @@
 const { createServer } = require("./details");
+const cookieLibrary = require("cookie");
 
 module.exports = [
   contextChange_getApiHttpResponse,
   contextChange,
   canGetContextOutsideOfTelefunc,
   cannotGetContextOutsideRequest,
+  brokenSignature,
+  wrongSecretKey,
 ];
 
 async function contextChange_getApiHttpResponse({
@@ -131,5 +134,161 @@ async function cannotGetContextOutsideRequest({ context }) {
   assert(
     err.message ===
       "[Telefunc][Wrong Usage] You are trying to access the context `context.user` outside the lifetime of an HTTP request. Context is only available wihtin the lifetime of an HTTP request; make sure to read `context.user` *after* Node.js received the HTTP request and *before* the HTTP response has been sent."
+  );
+}
+
+brokenSignature.isIntegrationTest = true;
+async function brokenSignature({ browserEval, ...args }) {
+  await runTest("2209hUWDLH@@@H@9e1p0hawdhUHW", { isSecondRun: false });
+
+  // We can change the secret key and Telefunc won't choke
+  await runTest("92IAuahew(@(U)aaeaaaad!!!)_", { isSecondRun: true });
+
+  return;
+  async function runTest(secretKey, { isSecondRun }) {
+    const {
+      stopApp,
+      server,
+      app,
+      telefuncServer: { setSecretKey, context },
+    } = await createServer(args);
+
+    setSecretKey(secretKey);
+    server.login = async function (name) {
+      context.user = name;
+    };
+    server.whoAmI = async function () {
+      return "You are: " + context.user;
+    };
+
+    const signatureCookieName = "telefunc-signature_user";
+    app.get("/break-signature", (req, res) => {
+      const cookieValues = cookieLibrary.parse(req.headers.cookie);
+      const signatureCookieValue = cookieValues[signatureCookieName];
+      const newCookieValue = cookieLibrary.serialize(
+        signatureCookieName,
+        signatureCookieValue + "-corrupt"
+      );
+      res.set("Set-Cookie", newCookieValue);
+      res.send();
+    });
+    app.get("/remove-signature", (req, res) => {
+      const newCookieValue = cookieLibrary.serialize(
+        signatureCookieName,
+        undefined
+      );
+      res.set("Set-Cookie", newCookieValue);
+      res.send();
+    });
+    app.get("/fake-signature", (req, res) => {
+      const newCookieValue = cookieLibrary.serialize(
+        signatureCookieName,
+        "abc"
+      );
+      res.set("Set-Cookie", newCookieValue);
+      res.send();
+    });
+
+    await browserEval(
+      async ({ isSecondRun }) => {
+        if (isSecondRun) {
+          assert(document.cookie === "telefunc_user=%22rom%22");
+          // The cookie signature is broken: it was set by the previous run which
+          // had a different secret key. Telefunc won't choke.
+          assert(
+            (await window.telefunc.server.whoAmI()) === "You are: undefined"
+          );
+        }
+
+        assert(
+          (await window.telefunc.server.whoAmI()) === "You are: undefined"
+        );
+        await window.telefunc.server.login("rom");
+        assert((await window.telefunc.server.whoAmI()) === "You are: rom");
+
+        {
+          const cookieName = "telefunc_user";
+          let cookieValues = window.cookieLibrary.parse(window.document.cookie);
+          assert(Object.keys(cookieValues).length === 1);
+          assert(cookieValues[cookieName] === '"rom"');
+
+          window.deleteAllCookies();
+          assert(document.cookie === "");
+          assert(
+            (await window.telefunc.server.whoAmI()) === "You are: undefined"
+          );
+
+          const cookieNameFake = cookieName + "fake";
+          document.cookie = window.cookieLibrary.serialize(
+            cookieNameFake,
+            '"rombi"'
+          );
+          assert(document.cookie === "telefunc_userfake=%22rombi%22");
+          cookieValues = window.cookieLibrary.parse(window.document.cookie);
+          assert(cookieValues[cookieNameFake] === '"rombi"');
+          assert(Object.keys(cookieValues).length === 1);
+          assert(
+            (await window.telefunc.server.whoAmI()) === "You are: undefined"
+          );
+
+          window.deleteAllCookies();
+          assert(document.cookie === "");
+          assert(
+            (await window.telefunc.server.whoAmI()) === "You are: undefined"
+          );
+
+          await window.telefunc.server.login("rom");
+          assert((await window.telefunc.server.whoAmI()) === "You are: rom");
+        }
+
+        await window.fetch("/break-signature");
+        assert(
+          (await window.telefunc.server.whoAmI()) === "You are: undefined"
+        );
+
+        // Broken signature can be fixed
+        await window.telefunc.server.login("rom");
+        assert((await window.telefunc.server.whoAmI()) === "You are: rom");
+
+        await window.fetch("/remove-signature");
+        assert(
+          (await window.telefunc.server.whoAmI()) === "You are: undefined"
+        );
+
+        await window.telefunc.server.login("rom");
+        assert((await window.telefunc.server.whoAmI()) === "You are: rom");
+      },
+      { browserArgs: { isSecondRun } }
+    );
+
+    await stopApp();
+  }
+}
+
+async function wrongSecretKey({ setSecretKey }) {
+  [undefined, null, 123, "123456789"].forEach((secretKey) => {
+    let err;
+    try {
+      setSecretKey(secretKey);
+    } catch (_err) {
+      err = _err;
+    }
+    assert(
+      err.message ===
+        "[Telefunc][Wrong Usage] `setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 10 characters."
+    );
+  });
+
+  const validKey = "1234567890";
+  setSecretKey(validKey);
+  let err;
+  try {
+    setSecretKey(validKey);
+  } catch (_err) {
+    err = _err;
+  }
+  assert.strictEqual(
+    err.message,
+    "[Telefunc][Wrong Usage] `setSecretKey()` should be called only once."
   );
 }

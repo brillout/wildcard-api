@@ -51,11 +51,15 @@ function getContextFromCookie(
     const validSignature = computeSignature(cookieValue, secretKey);
     assert(validSignature);
     const isMissing = !(cookieSignatureName in cookieList);
+    const isValid = cookieSignature === validSignature;
+    /*
     assertWarning(
-      cookieSignature === validSignature,
+      isValid,
       `Telefunc cookie signature is ${isMissing ? "missing" : "wrong"}.`
     );
+    */
     assert(!isMissing);
+    if (!isValid) return {};
   }
 
   const contextValue = deserializeContext(cookieValue);
@@ -65,15 +69,11 @@ function getContextFromCookie(
 function __setSecretKey(this: TelefuncServer, secretKey: string) {
   assertUsage(
     this[__secretKey] === null,
-    "You should call `setSecretKey()` only once."
+    "`setSecretKey()` should be called only once."
   );
-  assertUsage(secretKey, "Argument `key` missing in `setSecretKey(key)` call.");
-  const len = secretKey.length;
   assertUsage(
-    len >= 10,
-    "You are calling `setSecretKey(key)` with a `key` of length `" +
-      len +
-      "`, but `key` should have at least 10 characters."
+    secretKey && secretKey.length && secretKey.length >= 10,
+    "`setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 10 characters."
   );
 
   this[__secretKey] = secretKey;

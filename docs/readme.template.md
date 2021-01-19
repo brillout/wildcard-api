@@ -74,8 +74,8 @@ For example, to retrieve and mutate data, you can create telefunctions that use 
 
 const { server } = require("telefunc/server");
 const { context } = require("telefunc/context");
-const Todo = require("./path/to/data/models/Todo");
-const User = require("./path/to/data/models/User");
+const Todo = require("./path/to/orm/model/Todo");
+const User = require("./path/to/orm/model/User");
 
 server.createTodoItem = async (text) => {
   if (!context.user) {
