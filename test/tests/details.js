@@ -89,6 +89,8 @@ async function createServer({
     app,
     telefuncServer,
     server: telefuncServer.telefunctions,
+    setSecretKey: telefuncServer.setSecretKey,
+    context: telefuncServer.context,
     telefuncClient,
   };
 }

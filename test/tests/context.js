@@ -121,13 +121,13 @@ async function defineWith_setContext3(args) {
   await testSetContext({ setContext, ...args });
 }
 async function testSetContext({ setContext, browserEval, ...args }) {
-  const { stopApp, server } = await createServer({
+  const { stopApp, server, context } = await createServer({
     setContext,
     ...args,
   });
 
   server.myTelefunction = async function () {
-    return this.userId + "yep";
+    return context.userId + "yep";
   };
 
   await browserEval(async () => {
@@ -142,7 +142,7 @@ undefinedContext.isIntegrationTest = true;
 async function undefinedContext({ browserEval, assertStderr, ...args }) {
   const setContext = undefined;
 
-  const { stopApp, server, telefuncClient } = await createServer({
+  const { stopApp, server, telefuncClient, context } = await createServer({
     setContext,
     ...args,
   });
@@ -172,7 +172,7 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
    */
 
   server.ctxFunc = async function () {
-    return this.notExistingContext + " blib";
+    return context.notExistingContext + " blib";
   };
 
   await telefuncClient.telefunctions.ctxFunc();
@@ -769,12 +769,9 @@ async function brokenSignature({ browserEval, ...args }) {
 
   return;
   async function runTest(secretKey, { isSecondRun }) {
-    const {
-      stopApp,
-      server,
-      app,
-      telefuncServer: { setSecretKey, context },
-    } = await createServer(args);
+    const { stopApp, server, app, setSecretKey, context } = await createServer(
+      args
+    );
 
     setSecretKey(secretKey);
     server.login = async function (name) {
