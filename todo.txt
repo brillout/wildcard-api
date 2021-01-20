@@ -13,6 +13,7 @@
 //  - Make context available outside of telefunc
 //  - update docs
 //    - update getApiHttpResponse
+- remove `this`
 
 - Try if new autoload logic works
  - Make sure that all files are scanned except `node_modules/*`
