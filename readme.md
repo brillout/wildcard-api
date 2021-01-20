@@ -120,7 +120,7 @@ More
 
 ## What is Telefunc
 
-Telefunc is a JavaScript library to create an API-less Node.js backend by using so-called *tele*functions.
+Telefunc is a JavaScript/TypeScript library to create an API-less app by using so-called *tele*functions.
 
 ```js
 // Node.js server
@@ -147,15 +147,15 @@ import { server } from "telefunc/client";
 
 Instead of creating API endpoints, you create telefunctions: functions that are defined on the server-side but called remotely from the browser-side.
 
-For example, to retrieve and mutate data, you can create telefunctions that use SQL or ORM queries:
+For example, to retrieve and mutate data, you can create a telefunction that uses an SQL or ORM query:
 
 ```js
 // Node.js server
 
 const { server } = require("telefunc/server");
 const { context } = require("telefunc/context");
-const Todo = require("./path/to/data/models/Todo");
-const User = require("./path/to/data/models/User");
+const Todo = require("./path/to/orm/model/Todo");
+const User = require("./path/to/orm/model/User");
 
 server.createTodoItem = async (text) => {
   if (!context.user) {
@@ -180,37 +180,33 @@ server.createTodoItem = async (text) => {
   return newTodo;
 };
 
-// We can also modify `context` to login the user
+// The `context` object is mutable, enabling user sessions.
 
 server.login = async (userEmail, password) => {
   if (!User.verifyCredentials(userEmail, password)) {
     return { wrongCredentials: true };
   }
   const user = await User.findByEmail(userEmail);
-  // Telefunc persists the `context.user` changes using a Cookie saved
-  // in the user's browser; the user is now logged in.
+  // Telefunc persists `context` using a Cookie saved
+  // in the user's browser.
   context.user = {
     id: user.id,
+    name: user.name,
     email: userEmail,
   };
 };
 ```
 
-Philoshopy
-
-- **Do one thing and do it well**. Telefunc focuses on one thing and one thing only and you keep control over the rest of your stack.
-- **Simplicity**. Simple setup. Simple permissions. Simple error handling.
-- **Delightful developer experience**. No unnecessary configuration, minimal (yet powerful) functionalities, clear error messages, clear documention. Telefunc gets out of your way so you can focus on what makes your app special.
-- **Performance**. Automatic caching. Optimal fetching (no N+1 and no overfetching thanks to API-less).
-
 Features
 
-- TypeScript support.
-- SSR support.
-- Auth support.
-- Works with any server framework (Express/Koa/Hapi/Fastify/...), any frontend (React/Vue/Angluar/...), any authentication strategy (third-party login, custom strategy, auth0, firebase auth, ...), any third-party/mobile API strategy (GraphQL/[NQL]()/...).
+- TypeScript
+- User sessions
+- SSR support
+- Flexible: works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login, email/password login, password-less email login, ...), any third-party/mobile API strategy (GraphQL/[NQL]()/...).
 - Battle-tested in production at several companies. Each release is assailed against a heavy suit of automated tests.
 - Bugs are fixed promptly. All GitHub issues are answered. No pesky GitHub issue template: just write down your thoughts.
+- Simplicity & clarity: simple design, minimal interface, clear error messages, clear documentation.
+- Performance: automatic ETag caching.
 
 &nbsp;
 
@@ -760,7 +756,8 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ```ts
 // ../examples/typescript/main.telefunc.ts
 
-import { server, context, setSecretKey } from "telefunc/server";
+import { server, setSecretKey } from "telefunc/server";
+import { context } from "telefunc/context";
 
 export type PersonTelefuncs = typeof personTelefuncs;
 
