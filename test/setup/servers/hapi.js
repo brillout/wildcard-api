@@ -23,14 +23,7 @@ async function startServer({
   });
 
   server.register(
-    telefunc(
-      async (request) => {
-        const { headers } = request;
-        const context = { headers };
-        return context;
-      },
-      { __INTERNAL_telefuncServer_middleware }
-    )
+    telefunc(undefined, { __INTERNAL_telefuncServer_middleware })
   );
 
   server.route({

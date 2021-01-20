@@ -23,16 +23,7 @@ async function startServer({
 
   app.use(router.routes());
 
-  app.use(
-    telefunc(
-      async (ctx) => {
-        const { headers } = ctx.request;
-        const context = { headers };
-        return context;
-      },
-      { __INTERNAL_telefuncServer_middleware }
-    )
-  );
+  app.use(telefunc(undefined, { __INTERNAL_telefuncServer_middleware }));
 
   app.use(Static(staticDir, { extensions: [".html"] }));
 

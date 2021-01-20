@@ -20,6 +20,11 @@ const cookieLibrary = require("cookie");
 
 module.exports = [
   /****
+    Context basic functionality
+  ****/
+  context_basic,
+
+  /****
     Context setting
   ****/
   // `telefunc(async () => context)`
@@ -101,6 +106,22 @@ module.exports = [
   brokenSignature,
   wrongSecretKey,
 ];
+
+async function context_basic({ server, context, browserEval, setSecretKey }) {
+  setSecretKey("quieahbcqbohiawlubcsbi*&@381y87wqiwdhawbl");
+
+  server.login = async function (name) {
+    context.user = name;
+  };
+  server.whoAmI = async function () {
+    return "You are: " + context.user;
+  };
+  await browserEval(async () => {
+    assert((await window.telefunc.server.whoAmI()) === "You are: undefined");
+    await window.telefunc.server.login("rom");
+    assert((await window.telefunc.server.whoAmI()) === "You are: rom");
+  });
+}
 
 // Async `setContext`
 defineWith_setContext1.isIntegrationTest = true;

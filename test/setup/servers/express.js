@@ -20,16 +20,7 @@ async function startServer({
     res.send("Hello darling");
   });
 
-  app.use(
-    telefunc(
-      async (req) => {
-        const { headers } = req;
-        const context = { headers };
-        return context;
-      },
-      { __INTERNAL_telefuncServer_middleware }
-    )
-  );
+  app.use(telefunc(undefined, { __INTERNAL_telefuncServer_middleware }));
 
   app.post("/hey/after", (_, res) => {
     res.send("Hello again");

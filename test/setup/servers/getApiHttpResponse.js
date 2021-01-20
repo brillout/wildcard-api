@@ -56,12 +56,8 @@ async function startServer({
       body: request.payload,
       headers: request.headers,
     };
-    const context = {
-      headers: request.headers,
-    };
     const responseProps = await __INTERNAL_telefuncServer_middleware.telefuncServer.getApiHttpResponse(
-      requestProps,
-      context
+      requestProps
     );
     if (responseProps === null) {
       return h.continue;

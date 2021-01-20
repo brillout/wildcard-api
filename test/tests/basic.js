@@ -1,9 +1,4 @@
-module.exports = [
-  basic_serverSide,
-  basic_getApiHttpResponse,
-  basic_clientSide,
-  basic_clientSide_withContext,
-];
+module.exports = [basic_serverSide, basic_getApiHttpResponse, basic_clientSide];
 
 async function basic_serverSide({ server, telefuncClient }) {
   server.hello = async function (name) {
@@ -36,17 +31,5 @@ async function basic_clientSide({ server, browserEval }) {
   await browserEval(async () => {
     const ret = await window.telefunc.server.hello("rom");
     assert(ret === "Dear rom");
-  });
-}
-
-async function basic_clientSide_withContext({ server, browserEval }) {
-  server.hello = async function (name) {
-    assert(this.headers.host.startsWith("localhost"));
-    assert(this.headers["user-agent"].includes("HeadlessChrome"));
-    return "Servus " + name;
-  };
-  await browserEval(async () => {
-    const ret = await window.telefunc.server.hello("Romuald");
-    assert(ret === "Servus Romuald");
   });
 }
