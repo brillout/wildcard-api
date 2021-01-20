@@ -26,12 +26,18 @@ async function telefunctionSyncFunction({ server, telefuncClient }) {
   assert(ret === n);
 }
 // Telefunctions can return undefined
-async function telefunctionReturnsUndefined_serverSide({ server, telefuncClient }) {
+async function telefunctionReturnsUndefined_serverSide({
+  server,
+  telefuncClient,
+}) {
   server.helloUndefined = async function () {};
   const telefunctionResult = await telefuncClient.telefunctions.helloUndefined();
   assert(telefunctionResult === undefined);
 }
-async function telefunctionReturnsUndefined_browserSide({ server, browserEval }) {
+async function telefunctionReturnsUndefined_browserSide({
+  server,
+  browserEval,
+}) {
   server.helloUndefined = async function () {};
   await browserEval(async () => {
     const telefunctionResult = await window.telefunc.server.helloUndefined(
@@ -47,6 +53,7 @@ async function createServer({
   setContext,
   staticDir,
   httpPort,
+  addMiddleware,
 }) {
   const express = require("express");
   const { telefunc } = require("telefunc/server/express");
@@ -61,6 +68,10 @@ async function createServer({
   app.use(express.json());
 
   app.use(express.static(staticDir, { extensions: ["html"] }));
+
+  if (addMiddleware) {
+    addMiddleware(app);
+  }
 
   app.use(
     telefunc(setContext, {

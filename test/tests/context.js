@@ -550,41 +550,44 @@ async function contextChange_withoutBrowser({
 
 defineWith_addContext.isIntegrationTest = true;
 async function defineWith_addContext({ browserEval, ...args }) {
+  const { addContext } = require("telefunc/server");
+
+  const addMiddleware = (app) => {
+    app.use((req, _, next) => {
+      {
+        let err;
+        try {
+          addContext([]);
+        } catch (_err) {
+          err = _err;
+        }
+        assert.strictEqual(
+          err.message,
+          "[Telefunc][Wrong Usage] The `context` provided by `addContext(context)` is not allowed to be a `context.constructor===Array`; it should be a `context.constructor===Object` instead."
+        );
+      }
+      addContext({ headers: req.headers });
+      next();
+    });
+  };
+
   const {
     stopApp,
     server,
-    app,
-    telefuncServer: { setSecretKey, addContext, context },
-  } = await createServer(args);
+    telefuncServer: { setSecretKey, context },
+  } = await createServer({ addMiddleware, ...args });
 
   setSecretKey("u912u98haaewoi");
 
-  app.use((req, _, next) => {
-    {
-      let err;
-      try {
-        addContext([]);
-      } catch (_err) {
-        err = _err;
-      }
-      assert.strictEqual(
-        err.message,
-        "[Telefunc][Wrong Usage] The `context` provided by `addContext(context)` is not allowed to be a `context.constructor===Array`; it should be a `context.constructor===Object` instead."
-      );
-    }
-    console.log("h", req.headers);
-    addContext(req.headers);
-    next();
-  });
-
-  server.getHeader = async function () {
-    console.log(context.headers);
-    assert(context.headers["eqwuhu"] === "euiqh");
+  server.getUserAgent = async function () {
+    const userAgent = context.headers["user-agent"];
+    assert(userAgent.includes("HeadlessChrome"));
+    return userAgent;
   };
 
   await browserEval(async () => {
-    const ret = await window.telefunc.server.getHeader();
-    assert(ret === "4242yep");
+    const userAgent = await window.telefunc.server.getUserAgent();
+    assert(userAgent.includes("HeadlessChrome"));
   });
 
   await stopApp();

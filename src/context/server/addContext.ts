@@ -1,7 +1,7 @@
 import { assert, assertUsage } from "telefunc/server/utils/assert";
 import { ContextObject } from "telefunc/server/TelefuncServer";
 import { getContextHook } from "./async-hook-management";
-import { assertContextObject } from "./resolveUserProvidedContext";
+import { assertContextObject } from "./assertContextObject";
 
 export { addContext };
 
