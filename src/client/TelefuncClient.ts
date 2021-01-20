@@ -14,9 +14,6 @@ export type TelefunctionResult = any;
 type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
 type Telefunctions = Record<TelefunctionName, Telefunction>;
 
-// Context
-type Context = (object & { _brand?: "Context" }) | undefined;
-
 /** Telefunc Client Configuration */
 type Config = {
   /** The address of the server, e.g. `https://api.example.org/`. */
@@ -41,8 +38,7 @@ export type HttpRequestBody = string & { _brand?: "HttpRequestBody" };
 type TelefuncServer = {
   __directCall: (
     telefunctionName: TelefunctionName,
-    telefunctionArgs: TelefunctionArgs,
-    context: Context
+    telefunctionArgs: TelefunctionArgs
   ) => // Doesn't have to be a promise; a telefunction can return its value synchronously
   Promise<TelefunctionResult> | TelefunctionResult;
 };
@@ -64,7 +60,6 @@ class TelefuncClient {
 function callTelefunction(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
-  context: Context,
   config: ConfigPrivate
 ): TelefunctionResult {
   telefunctionArgs = telefunctionArgs || [];
@@ -78,8 +73,7 @@ function callTelefunction(
     return callTelefunctionDirectly(
       telefunctionName,
       telefunctionArgs,
-      telefuncServer,
-      context
+      telefuncServer
     );
   }
 
@@ -91,15 +85,6 @@ function callTelefunction(
   assertUsage(
     config.serverUrl || isBrowser(),
     "`config.serverUrl` missing. You are using the Telefunc client in Node.js, and the Telefunc client is loaded in a different Node.js process than the Node.js process that loaded the Telefunc server; the `config.serverUrl` configuration is required."
-  );
-
-  assertUsage(
-    !context,
-    [
-      "Using `bind` to provide the context object is forbidden on the browser-side.",
-      "You should use `bind` only on the server-side.",
-      "More infos at https://github.com/telefunc/telefunc/blob/master/docs/ssr-auth.md",
-    ].join(" ")
   );
 
   return callTelefunctionOverHttp(telefunctionName, telefunctionArgs, config);
@@ -128,14 +113,9 @@ function getTelefuncServer(config: ConfigPrivate) {
 async function callTelefunctionDirectly(
   telefunctionName: TelefunctionName,
   telefunctionArgs: TelefunctionArgs,
-  telefuncServer: TelefuncServer,
-  context: Context
+  telefuncServer: TelefuncServer
 ): Promise<TelefunctionResult> {
-  return telefuncServer.__directCall(
-    telefunctionName,
-    telefunctionArgs,
-    context
-  );
+  return telefuncServer.__directCall(telefunctionName, telefunctionArgs);
 }
 
 function callTelefunctionOverHttp(
@@ -230,25 +210,13 @@ function getTelefunctionsProxy(config: ConfigPrivate): Telefunctions {
       return undefined;
     }
 
-    return function (this: Context, ...telefunctionArgs: TelefunctionArgs) {
-      let context: Context = undefined;
-
-      if (isBinded(this, telefunctionsProxy)) {
-        context = this;
-        assert(context !== emptyObject);
-        assert(context !== telefunctionsProxy);
-        assertUsage(
-          context instanceof Object,
-          "The context object you `bind()` should be a `instanceof Object`."
-        );
-      }
-
-      return callTelefunction(
-        telefunctionName,
-        telefunctionArgs,
-        context,
-        config
+    return function (this: unknown, ...telefunctionArgs: TelefunctionArgs) {
+      assertUsage(
+        !isBinded(this, telefunctionsProxy),
+        "Binding the context object with `bind()` is deprecated."
       );
+
+      return callTelefunction(telefunctionName, telefunctionArgs, config);
     };
   }
 

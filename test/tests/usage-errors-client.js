@@ -1,37 +1,9 @@
 module.exports = [
-  wrongBindUsage1,
-  wrongBindUsage2,
   telefunctionManipulationWithClient,
   cannotSerialize,
   wrongServerUrl,
   missingServerUrl,
 ];
-
-async function wrongBindUsage1({ server, browserEval, assertStderr }) {
-  server.ohNo = async function () {};
-
-  await browserEval(async () => {
-    await window.telefunc.server.ohNo.bind({ some: "context" })();
-  });
-
-  assertStderr(
-    "Using `bind` to provide the context object is forbidden on the browser-side."
-  );
-}
-
-async function wrongBindUsage2({ server, telefuncClient, assertStderr }) {
-  server.hm = async function () {};
-
-  try {
-    telefuncClient.telefunctions.hm.bind(null)();
-  } catch (err) {
-    console.error(err);
-  }
-
-  assertStderr(
-    "The context object you `bind()` should be a `instanceof Object`."
-  );
-}
 
 async function telefunctionManipulationWithClient({
   telefuncClient,

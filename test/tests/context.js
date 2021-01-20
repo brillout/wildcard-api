@@ -25,8 +25,6 @@ module.exports = [
   defineWith_setContext2,
   // `telefunc(context)`
   defineWith_setContext3,
-  // `bind(context)`
-  defineWith_bind,
   // `getApiHttpResponse(_, context)`
   // `getApiHttpResponse(_, async () => context)`
   defineWith_getApiHttpResponse,
@@ -74,6 +72,7 @@ module.exports = [
   missingSecretKey_getContext_with_telefuncCookie,
   missingSecretKey,
   contextChange_withoutBrowser,
+  bindIsDeprecated,
 ];
 
 // Async `setContext`
@@ -112,19 +111,6 @@ async function testSetContext({ setContext, browserEval, ...args }) {
   await stopApp();
 }
 
-async function defineWith_bind({ server, telefuncClient }) {
-  const numbers = [1, 2, 3];
-  server.hello = async function (prefix) {
-    assert(this.numbers === numbers);
-    const sum = (arr) => arr.reduce((a, b) => a + b, 0);
-    return prefix + sum(this.numbers);
-  };
-  let { hello } = telefuncClient.telefunctions;
-  hello = hello.bind({ numbers });
-  const res = await hello("Total: ");
-  assert(res === "Total: 6");
-}
-
 undefinedContext.isIntegrationTest = true;
 async function undefinedContext({ browserEval, assertStderr, ...args }) {
   const setContext = undefined;
@@ -147,11 +133,6 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   );
   assert(ret_serverSide1 === "works fine rom");
 
-  const ret_serverSide2 = await telefuncClient.telefunctions.contextLessFunc.bind(
-    undefined
-  )("brillout");
-  assert(ret_serverSide2 === "works fine brillout");
-
   await browserEval(async () => {
     const ret_browserSide = await window.telefunc.server.contextLessFunc(
       "romi"
@@ -168,7 +149,6 @@ async function undefinedContext({ browserEval, assertStderr, ...args }) {
   };
 
   await telefuncClient.telefunctions.ctxFunc();
-  await telefuncClient.telefunctions.ctxFunc.bind(undefined)();
 
   await browserEval(async () => {
     await window.telefunc.server.ctxFunc();
@@ -210,7 +190,9 @@ async function wrongSetContext({
     } catch (err) {
       assert(err.isCodeError === true);
       assert(err.isConnectionError === false);
-      assert(err.message === "Telefunction `boringTelefunction` threw an error.");
+      assert(
+        err.message === "Telefunction `boringTelefunction` threw an error."
+      );
     }
   });
   assertStderr(
@@ -249,11 +231,6 @@ async function emptyContext({ setContext, browserEval, ...args }) {
     const ret_browserSide = await window.telefunc.server.ctxTelefunction();
     assert(ret_browserSide === "undefined blib");
   });
-
-  const ret_serverSide = await telefuncClient.telefunctions.ctxTelefunction.bind(
-    {}
-  )();
-  assert(ret_serverSide === "undefined blib");
 
   await stopApp();
 }
@@ -469,7 +446,9 @@ async function _createAndCallATelefunction({
     }
     assert(err.isCodeError === true);
     assert(err.isConnectionError === false);
-    assert(err.message === "Telefunction `failingTelefunction` threw an error.");
+    assert(
+      err.message === "Telefunction `failingTelefunction` threw an error."
+    );
   });
 
   assert(telefunctionCalled === false);
@@ -570,4 +549,48 @@ async function contextChange_withoutBrowser({
         "bla"
     );
   }
+}
+
+/*
+addContext.isIntegrationTest = true;
+async function addContext({browserEval, ...args}) {
+  const {
+    stopApp,
+    server,
+    app,
+    telefuncServer: { setSecretKey, addContext, context },
+  } = await createServer(args);
+  setSecretKey('u912u98haaewoi');
+
+  app.use((req, _, next) => {
+    addContext(req.headers);
+    next();
+  });
+
+  server.get = async function () {
+    console.log(context.headers);
+    assert(context.headers['eqwuhu']==='euiqh');
+  };
+
+  await browserEval(async () => {
+    const ret = await window.telefunc.server.get();
+    assert(ret === "4242yep");
+  });
+
+  await stopApp();
+}
+*/
+
+async function bindIsDeprecated({ server, telefuncClient }) {
+  server.someTelFct = function () {};
+  let err;
+  try {
+    await telefuncClient.telefunctions.someTelFct.bind({})();
+  } catch (_err) {
+    err = _err;
+  }
+  assert.strictEqual(
+    err.message,
+    "[Telefunc][Wrong Usage] Binding the context object with `bind()` is deprecated."
+  );
 }

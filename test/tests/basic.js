@@ -1,7 +1,6 @@
 module.exports = [
   basic_serverSide,
   basic_getApiHttpResponse,
-  basic_serverSide_withContext,
   basic_clientSide,
   basic_clientSide_withContext,
 ];
@@ -28,18 +27,6 @@ async function basic_getApiHttpResponse({ server, telefuncServer }) {
   });
   assert(responseProps.statusCode === 200);
   assert(responseProps.body === `"bonjourno!"`);
-}
-
-async function basic_serverSide_withContext({ server, telefuncClient }) {
-  const headers = [];
-  server.hello = async function (name) {
-    assert(this.headers === headers);
-    return "heyy " + name;
-  };
-  const telefunctionResult = await telefuncClient.telefunctions.hello.bind({ headers })(
-    "Paul"
-  );
-  assert(telefunctionResult === "heyy Paul");
 }
 
 async function basic_clientSide({ server, browserEval }) {
