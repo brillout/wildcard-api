@@ -28,6 +28,7 @@ module.exports = [
   // `getApiHttpResponse(_, context)`
   // `getApiHttpResponse(_, async () => context)`
   defineWith_getApiHttpResponse,
+  defineWith_addContext,
 
   // ### Context is `undefined`
   // [Client-side] `telefunc(undefined)`, not using context: valid
@@ -196,7 +197,7 @@ async function wrongSetContext({
     }
   });
   assertStderr(
-    "Your context function `setContext` should not return `undefined`. If there is no context, then return the empty object `{}`."
+    "[Telefunc][Wrong Usage] The `context` returned by your context function `setContext` is not allowed to be `undefined`; it should be a `context.constructor===Object` instead; if there is no context then use the empty object `{}`."
   );
 
   await stopApp();
@@ -218,7 +219,7 @@ async function emptyContext3(args) {
   await emptyContext({ setContext, ...args });
 }
 async function emptyContext({ setContext, browserEval, ...args }) {
-  const { stopApp, server, telefuncClient } = await createServer({
+  const { stopApp, server } = await createServer({
     setContext,
     ...args,
   });
@@ -279,14 +280,10 @@ async function setContextReturnsUndefined_getApiHttpResponse({
   assert(responseProps.statusCode === 500);
   assert(responseProps.body === `Internal Server Error`);
   assertStderr(
-    "Your context function `myCtxFunc` should not return `undefined`. If there is no context, then return the empty object `{}`."
+    "[Telefunc][Wrong Usage] The `context` returned by your context function `myCtxFunc` is not allowed to be `undefined`; it should be a `context.constructor===Object` instead; if there is no context then use the empty object `{}`."
   );
 }
-async function undefinedContext_getApiHttpResponse({
-  server,
-  telefuncServer,
-  assertStderr,
-}) {
+async function undefinedContext_getApiHttpResponse({ server, telefuncServer }) {
   server.without_context = function () {
     return " cba";
   };
@@ -340,9 +337,9 @@ async function wrongContext_getApiHttpResponse({
     assert(responseProps.statusCode === 500);
     assert(responseProps.body === `Internal Server Error`);
     assertStderr(
-      "The context cannot be `" +
+      "[Telefunc][Wrong Usage] The `context` provided by `getApiHttpResponse(requestProps, context)` is not allowed to be `" +
         context +
-        "`. The context should be a `instanceof Object`. If there is no context then use the empty object `{}`."
+        "`; it should be a `context.constructor===Object` instead; if there is no context then use the empty object `{}`."
     );
   }
 }
@@ -418,7 +415,7 @@ async function setContextReturnsWrongValue1({ assertStderr, ...args }) {
   await _createAndCallATelefunction({ setContext, ...args });
 
   assertStderr(
-    "Your context function `setContext` should return a `instanceof Object`."
+    "[Telefunc][Wrong Usage] The `context` returned by your context function `setContext` is not allowed to be `wrong-context-type`; it should be a `context.constructor===Object` instead; if there is no context then use the empty object `{}`."
   );
 }
 async function _createAndCallATelefunction({
@@ -551,35 +548,47 @@ async function contextChange_withoutBrowser({
   }
 }
 
-/*
-addContext.isIntegrationTest = true;
-async function addContext({browserEval, ...args}) {
+defineWith_addContext.isIntegrationTest = true;
+async function defineWith_addContext({ browserEval, ...args }) {
   const {
     stopApp,
     server,
     app,
     telefuncServer: { setSecretKey, addContext, context },
   } = await createServer(args);
-  setSecretKey('u912u98haaewoi');
+
+  setSecretKey("u912u98haaewoi");
 
   app.use((req, _, next) => {
+    {
+      let err;
+      try {
+        addContext([]);
+      } catch (_err) {
+        err = _err;
+      }
+      assert.strictEqual(
+        err.message,
+        "[Telefunc][Wrong Usage] The `context` provided by `addContext(context)` is not allowed to be a `context.constructor===Array`; it should be a `context.constructor===Object` instead."
+      );
+    }
+    console.log("h", req.headers);
     addContext(req.headers);
     next();
   });
 
-  server.get = async function () {
+  server.getHeader = async function () {
     console.log(context.headers);
-    assert(context.headers['eqwuhu']==='euiqh');
+    assert(context.headers["eqwuhu"] === "euiqh");
   };
 
   await browserEval(async () => {
-    const ret = await window.telefunc.server.get();
+    const ret = await window.telefunc.server.getHeader();
     assert(ret === "4242yep");
   });
 
   await stopApp();
 }
-*/
 
 async function bindIsDeprecated({ server, telefuncClient }) {
   server.someTelFct = function () {};

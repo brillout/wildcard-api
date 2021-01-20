@@ -3,6 +3,31 @@ import { ContextGetter, ContextObject } from "telefunc/server/TelefuncServer";
 import { isCallable } from "telefunc/server/utils/isCallable";
 
 export { resolveUserProvidedContext };
+export { assertContextObject };
+
+function assertContextObject(context: any, contextSource: string) {
+  assertUsage(
+    context && typeof context === "object",
+    [
+      "The `context`",
+      contextSource,
+      "is not allowed to be",
+      "`" + context + "`;",
+      "it should be a `context.constructor===Object` instead;",
+      "if there is no context then use the empty object `{}`.",
+    ].join(" ")
+  );
+  assertUsage(
+    context.constructor === Object,
+    [
+      "The `context`",
+      contextSource,
+      "is not allowed to be",
+      "a `context.constructor===" + context.constructor + "`;",
+      "it should be a `context.constructor===Object` instead;",
+    ].join(" ")
+  );
+}
 
 async function resolveUserProvidedContext(
   context: ContextGetter | ContextObject | undefined
@@ -14,43 +39,20 @@ async function resolveUserProvidedContext(
   if (isCallable(context)) {
     const contextFunctionName = getFunctionName(context);
     context = await context();
-    assertContextGetterResult(context, contextFunctionName);
+    assertContextObject(
+      context,
+      "returned by your context function" +
+        (contextFunctionName ? " `" + contextFunctionName + "`" : "")
+    );
   } else {
-    assertUsage(
-      context && context instanceof Object,
-      [
-        "The context cannot be `" + context + "`.",
-        "The context should be a `instanceof Object`.",
-        "If there is no context then use the empty object `{}`.",
-      ].join(" ")
+    assertContextObject(
+      context,
+      "provided by `getApiHttpResponse(requestProps, context)`"
     );
   }
-  assert(context && context instanceof Object);
+  assert(context.constructor === Object);
 
   return context as ContextObject;
-}
-
-function assertContextGetterResult(
-  context: unknown,
-  contextFunctionName: string | null
-) {
-  const errorMessageBegin = [
-    "Your context function",
-    ...(!contextFunctionName ? [] : ["`" + contextFunctionName + "`"]),
-    "should",
-  ].join(" ");
-  assertUsage(
-    context !== undefined && context !== null,
-    [
-      errorMessageBegin,
-      "not return `" + context + "`.",
-      "If there is no context, then return the empty object `{}`.",
-    ].join(" ")
-  );
-  assertUsage(
-    context instanceof Object,
-    [errorMessageBegin, "return a `instanceof Object`."].join(" ")
-  );
 }
 
 function getFunctionName(fn: Function): string {

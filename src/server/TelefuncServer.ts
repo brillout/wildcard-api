@@ -124,10 +124,6 @@ class TelefuncServer {
 
   context: ContextObject = createContextProxy(this);
 
-  addContext(context: ContextObject): void {
-    const contextHook = getContextHook();
-    assert(contextHook);
-  }
   /**
    * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
    * @param requestProps.url HTTP request URL
@@ -313,7 +309,10 @@ async function runTelefunction(
   createContextHookFallback(requestProps);
   const contextHook = getContextHook();
   assert(contextHook);
-  contextHook.userDefinedContext = userDefinedContext_;
+  contextHook.userDefinedContext = {
+    ...contextHook.userDefinedContext,
+    ...userDefinedContext_,
+  };
 
   try {
     telefunctionResult = await telefunction.apply(
