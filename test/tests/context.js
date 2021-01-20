@@ -245,13 +245,13 @@ async function emptyContext3(args) {
   await emptyContext({ setContext, ...args });
 }
 async function emptyContext({ setContext, browserEval, ...args }) {
-  const { stopApp, server } = await createServer({
+  const { stopApp, server, context } = await createServer({
     setContext,
     ...args,
   });
 
   server.ctxTelefunction = async function () {
-    return this.notExistingContext + " blib";
+    return context.notExistingContext + " blib";
   };
 
   await browserEval(async () => {
@@ -262,9 +262,13 @@ async function emptyContext({ setContext, browserEval, ...args }) {
   await stopApp();
 }
 
-async function defineWith_getApiHttpResponse({ server, telefuncServer }) {
+async function defineWith_getApiHttpResponse({
+  server,
+  context,
+  telefuncServer,
+}) {
   server.square = function () {
-    return this.num * this.num;
+    return context.num * context.num;
   };
   const url = "https://example.org/_telefunc/square";
   const method = "POST";
@@ -309,12 +313,16 @@ async function setContextReturnsUndefined_getApiHttpResponse({
     "[Telefunc][Wrong Usage] The `context` returned by your context function `myCtxFunc` is not allowed to be `undefined`; it should be a `context.constructor===Object` instead; if there is no context then use the empty object `{}`."
   );
 }
-async function undefinedContext_getApiHttpResponse({ server, telefuncServer }) {
+async function undefinedContext_getApiHttpResponse({
+  server,
+  context,
+  telefuncServer,
+}) {
   server.without_context = function () {
     return " cba";
   };
   server.with_context = function () {
-    return this.doesNotExist + " abc";
+    return context.doesNotExist + " abc";
   };
 
   {
@@ -369,9 +377,13 @@ async function wrongContext_getApiHttpResponse({
     );
   }
 }
-async function emptyContext_getApiHttpResponse({ server, telefuncServer }) {
+async function emptyContext_getApiHttpResponse({
+  server,
+  context,
+  telefuncServer,
+}) {
   server.contexti3 = function () {
-    return this.doesNotExist + " abc";
+    return context.doesNotExist + " abc";
   };
   const url = "https://example.org/_telefunc/contexti3";
   const method = "POST";
@@ -524,9 +536,10 @@ async function missingSecretKey({
   telefuncClient,
   browserEval,
   assertStderr,
+  context,
 }) {
   server.he = async function () {
-    this.nop = 11;
+    context.nop = 11;
   };
 
   const missingKeyErrorMessage =
@@ -555,11 +568,12 @@ async function contextChange_withoutBrowser({
   server,
   telefuncClient,
   setSecretKey,
+  context,
 }) {
   setSecretKey("uihewqiehqiuehuaheliuhawiulehqchbas");
 
   server.he = async function () {
-    this.nop = 11;
+    context.nop = 11;
   };
 
   try {
@@ -597,11 +611,10 @@ async function defineWith_addContext({ browserEval, ...args }) {
     });
   };
 
-  const {
-    stopApp,
-    server,
-    telefuncServer: { setSecretKey, context },
-  } = await createServer({ addMiddleware, ...args });
+  const { stopApp, server, setSecretKey, context } = await createServer({
+    addMiddleware,
+    ...args,
+  });
 
   setSecretKey("u912u98haaewoi");
 
@@ -702,12 +715,9 @@ async function contextChange({ server, context, browserEval, setSecretKey }) {
 
 contextOutsideOfTelefunction.isIntegrationTest = true;
 async function contextOutsideOfTelefunction({ browserEval, ...args }) {
-  const {
-    stopApp,
-    server,
-    app,
-    telefuncServer: { setSecretKey, context },
-  } = await createServer(args);
+  const { stopApp, server, app, context, setSecretKey } = await createServer(
+    args
+  );
 
   setSecretKey("ueqwhiue128e8199quiIQUU(*@@1dwq");
 
