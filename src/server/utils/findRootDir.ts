@@ -34,9 +34,17 @@ async function findRootDir() {
 
 function getFirstUserFile() {
   const userScripts = getUserFiles();
+  // const userScript = userScripts.slice(-1)[0] || null;
+  const userScript = userScripts[0] || null;
+  return userScript;
+}
+/*
+function getLastUserFile() {
+  const userScripts = getUserFiles();
   const userScript = userScripts.slice(-1)[0] || null;
   return userScript;
 }
+*/
 function getUserFiles() {
   const userScripts = [];
   for (let i = 0; i < callstack.length; i++) {

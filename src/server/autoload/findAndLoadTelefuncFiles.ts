@@ -22,6 +22,7 @@ async function findTelefuncFiles(): Promise<NodeJS.ReadableStream | null> {
     dot: false, // Skip hidden files. E.g. Yarn v2's `.yarn` or Parcel's `.cache`.
     ignore: ["**/node_modules"],
     cwd: rootDir,
+    absolute: true,
   });
 
   return stream;
