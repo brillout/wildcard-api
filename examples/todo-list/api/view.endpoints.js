@@ -1,4 +1,5 @@
 const { server } = require("telefunc/server");
+const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
@@ -6,8 +7,8 @@ const { getLoggedUser } = require("../auth");
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
 server.getLandingPageData = async function () {
-  // `this` holds request information such as HTTP headers
-  const user = await getLoggedUser(this.headers);
+  // `context` holds request information such as HTTP headers
+  const user = await getLoggedUser(context.headers);
   if (!user) return { userIsNotLoggedIn: true };
 
   const todos = await db.query(
@@ -20,7 +21,7 @@ server.getLandingPageData = async function () {
 };
 
 server.getCompletedPageData = async function () {
-  const user = await getLoggedUser(this.headers);
+  const user = await getLoggedUser(context.headers);
   if (!user) return { userIsNotLoggedIn: true };
 
   const todos = await db.query(

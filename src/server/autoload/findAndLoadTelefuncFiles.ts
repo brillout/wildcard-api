@@ -3,7 +3,8 @@ import { findFiles } from "@brillout/project-files";
 
 export { findAndLoadTelefuncFiles };
 
-function findAndLoadTelefuncFiles() {
+async function findAndLoadTelefuncFiles() {
+  await Promise.resolve();
   [...findFiles("*.endpoints.js"), ...findFiles("endpoints.js")].forEach(
     (endpointFile) => {
       require(endpointFile);

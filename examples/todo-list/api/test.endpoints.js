@@ -1,4 +1,5 @@
 const { server, setSecretKey } = require("telefunc/server");
+const { context } = require("telefunc/context");
 
 // A simple endpoint to test Telefunc
 server.mirror = async function (str) {
@@ -9,8 +10,8 @@ server.mirror = async function (str) {
 // Simple endpoints to test reading/writing the context
 setSecretKey("iuhwdbp2899d742h834fwh*(@huDqwuhd");
 server.login = function (username) {
-  this.username = username;
+  context.username = username;
 };
 server.whoAmI = function () {
-  return "You are: " + this.username;
+  return "You are: " + context.username;
 };

@@ -696,10 +696,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@brillout/assert@^0.2.2":
-  version "0.2.3"
-  resolved "https://registry.npmjs.org/@brillout/assert/-/assert-0.2.3.tgz#10cd3cda8d5e33e118c8e98df295a536d3fdd77a"
-  integrity sha512-YPwfk7Rgklyq39mKjgHA93v5jx2RYRG/4FkFaz26uDlGQ0NXsxOGlrezKviwPv5oihfdYaau9lEc/NgRe0XVsQ==
+"@brillout/assert@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@brillout/assert/-/assert-0.2.5.tgz#3aaab598db575ecd32fb4f80fe815f69da3b3876"
+  integrity sha512-k8BUaSLO+7nY52zJDlJSbnIUNx0+F8PZ8Us4uNZ7F1MDER991pnAi7E4hJME/tf+xrpdW6PMrpqLh0lwsZHp7Q==
   dependencies:
     "@types/node" "^14.11.2"
 
