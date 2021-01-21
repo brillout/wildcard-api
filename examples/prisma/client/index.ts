@@ -1,5 +1,5 @@
 import "babel-polyfill";
-import { Server } from "../endpoints";
+import { Server } from "../main.telefunc";
 import { server as serverUntyped } from "telefunc/client";
 const server = serverUntyped as Server;
 

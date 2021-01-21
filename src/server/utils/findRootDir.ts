@@ -17,7 +17,8 @@ const callstack = getCallstack();
  */
 async function findRootDir() {
   const firstUserFile = getFirstUserFile();
-  assert(firstUserFile && pathIsAbsolute(firstUserFile));
+  if (!firstUserFile) return;
+  assert(pathIsAbsolute(firstUserFile));
 
   const packageJsonFile = await findUp(
     "package.json",
@@ -50,8 +51,7 @@ function getUserFiles() {
   for (let i = 0; i < callstack.length; i++) {
     const filePath = callstack[i];
     if (isDependency(filePath)) {
-      // We can cut off the whole stack at the first `node_modules/*` file
-      break;
+      continue;
     }
     userScripts.push(filePath);
   }

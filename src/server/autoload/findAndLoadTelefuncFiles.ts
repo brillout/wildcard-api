@@ -6,19 +6,33 @@ import { findRootDir } from "../utils/findRootDir";
 export { findAndLoadTelefuncFiles };
 
 async function findAndLoadTelefuncFiles() {
-  const stream = await findTelefuncFiles();
-  if (!stream) return;
-  for await (const entry of stream) {
-    require(entry.toString());
+  const rootDir = await findRootDir();
+  if (!rootDir) return;
+
+  let loadedFiles = [];
+  for await (const telefuncFile of findTelefuncFiles(rootDir)) {
+    loadedFiles.push(telefuncFile);
+    require(telefuncFile.toString());
+  }
+
+  // If ts-node: directly load `.telefunc.ts` files
+  if (loadedFiles.length > 0) return;
+  // `ts-node` uses require.extensions:
+  //   - https://github.com/TypeStrong/ts-node/issues/641
+  if (!(".ts" in require.extensions)) return;
+
+  for await (const telefuncFile of findTelefuncFiles(rootDir, "ts")) {
+    require(telefuncFile.toString());
   }
 }
 
-async function findTelefuncFiles(): Promise<NodeJS.ReadableStream | null> {
-  const rootDir = await findRootDir();
-  if (!rootDir) return null;
+function findTelefuncFiles(
+  rootDir: string,
+  fileExtension = "js"
+): NodeJS.ReadableStream {
   assert(isAbsolute(rootDir));
 
-  const stream = fastGlob.stream(["**/*.telefunc.js"], {
+  const stream = fastGlob.stream([`**/*.telefunc.${fileExtension}`], {
     dot: false, // Skip hidden files. E.g. Yarn v2's `.yarn` or Parcel's `.cache`.
     ignore: ["**/node_modules"],
     cwd: rootDir,
