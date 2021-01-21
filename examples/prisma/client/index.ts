@@ -1,10 +1,12 @@
 import "babel-polyfill";
-import endpoints from "./endpoints";
+import { Server } from "../endpoints";
+import { server as serverUntyped } from "telefunc/client";
+const server = serverUntyped as Server;
 
 main();
 
 async function main() {
-  const posts = await endpoints.getPosts();
+  const posts = await server.getPosts();
   const viewEl = document.getElementById("view");
   posts.forEach((post) => {
     viewEl.innerHTML += "<h2>" + post.title + "</h2>";
