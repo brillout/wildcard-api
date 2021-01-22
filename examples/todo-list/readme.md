@@ -85,10 +85,11 @@
 # Example - A Todo List
 
 A (simplistic) todo app built with:
- - React
- - Telefunc
- - Node.js
- - SQLite
+
+- React
+- Telefunc
+- Node.js
+- SQLite
 
 #### Contents
 
@@ -105,34 +106,36 @@ Run the following npm scripts to build and serve the example:
 
 0. Get the code.
 
-   ~~~shell
+   ```shell
    $ git clone git@github.com:telefunc/telefunc
-   ~~~
+   ```
 
 1. Install dependencies.
 
    First the dependencies of Telefunc:
-   ~~~shell
+
+   ```shell
    $ yarn
-   ~~~
+   ```
 
    Then the dependencies of the example:
-   ~~~shell
+
+   ```shell
    $ cd example/todo-list/
    $ yarn
-   ~~~
+   ```
 
 2. Build the frontend.
 
-   ~~~shell
+   ```shell
    $ yarn start:build
-   ~~~
+   ```
 
 3. Run the server.
 
-   ~~~shell
+   ```shell
    $ npm run start:server
-   ~~~
+   ```
 
 
 <br/>
@@ -155,16 +158,15 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 <br/>
 <br/>
 
-
 ## Code Highlights
 
 This section highlights the interesting parts of the example.
 
 ### View Telefunctions
 
-(With *view telefunction* we denote an telefunction that retrieves data.)
+(With _view telefunction_ we denote an telefunction that retrieves data.)
 
-~~~js
+```js
 // ./api/view.telefunc.js
 
 const { server } = require("telefunc/server");
@@ -201,7 +203,7 @@ server.getCompletedPageData = async function () {
   // We don't return `user` as the page doesn't need it
   return { todos };
 };
-~~~
+```
 
 
 <br/>
@@ -228,7 +230,7 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 With Express:
 
-~~~js
+```js
 // ./start-with-express
 
 const express = require("express");
@@ -251,14 +253,14 @@ app.use(express.static("client/dist", { extensions: ["html"] }));
 app.listen(3000);
 
 console.log("Express server is running, go to http://localhost:3000");
-~~~
+```
 
 <details>
 <summary>
 With Hapi
 </summary>
 
-~~~js
+```js
 // ./start-with-hapi
 
 const Hapi = require("hapi");
@@ -297,7 +299,8 @@ async function startServer() {
 
   console.log("Hapi server is running, go to http://localhost:3000");
 }
-~~~
+```
+
 </details>
 
 <details>
@@ -305,7 +308,7 @@ async function startServer() {
 With Koa
 </summary>
 
-~~~js
+```js
 // ./start-with-koa
 
 const Koa = require("koa");
@@ -329,9 +332,9 @@ app.use(Static("client/dist", { extensions: [".html"] }));
 app.listen(3000);
 
 console.log("Koa server is running, go to http://localhost:3000");
-~~~
-</details>
+```
 
+</details>
 
 
 <br/>
@@ -356,9 +359,9 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ### Mutation Telefunctions
 
-(With *mutation telefunction* we denote an telefunction that mutates data.)
+(With _mutation telefunction_ we denote an telefunction that mutates data.)
 
-~~~js
+```js
 // ./api/mutation.telefunc.js
 
 const { server } = require("telefunc/server");
@@ -397,7 +400,7 @@ async function getTodo(todoId) {
   });
   return todo;
 }
-~~~
+```
 
 
 <br/>
@@ -427,7 +430,7 @@ uses our Telefunc to retrieve the user information,
 the user todos,
 and to update a todo.
 
-~~~js
+```js
 // ./client/LandingPage
 
 import "./common";
@@ -469,9 +472,9 @@ function LandingPage() {
     </LoadingWrapper>
   );
 }
-~~~
+```
 
-~~~js
+```js
 // ./client/Todo
 
 import React from "react";
@@ -493,7 +496,7 @@ function Todo({ todo, updateTodo }) {
     updateTodo(todo, { completed });
   }
 }
-~~~
+```
 
 
 <br/>

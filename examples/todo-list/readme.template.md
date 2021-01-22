@@ -4,10 +4,11 @@
 # Example - A Todo List
 
 A (simplistic) todo app built with:
- - React
- - Telefunc
- - Node.js
- - SQLite
+
+- React
+- Telefunc
+- Node.js
+- SQLite
 
 #### Contents
 
@@ -24,37 +25,38 @@ Run the following npm scripts to build and serve the example:
 
 0. Get the code.
 
-   ~~~shell
+   ```shell
    $ git clone git@github.com:telefunc/telefunc
-   ~~~
+   ```
 
 1. Install dependencies.
 
    First the dependencies of Telefunc:
-   ~~~shell
+
+   ```shell
    $ yarn
-   ~~~
+   ```
 
    Then the dependencies of the example:
-   ~~~shell
+
+   ```shell
    $ cd example/todo-list/
    $ yarn
-   ~~~
+   ```
 
 2. Build the frontend.
 
-   ~~~shell
+   ```shell
    $ yarn start:build
-   ~~~
+   ```
 
 3. Run the server.
 
-   ~~~shell
+   ```shell
    $ npm run start:server
-   ~~~
+   ```
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
-
 
 ## Code Highlights
 
@@ -62,11 +64,11 @@ This section highlights the interesting parts of the example.
 
 ### View Telefunctions
 
-(With *view telefunction* we denote an telefunction that retrieves data.)
+(With _view telefunction_ we denote an telefunction that retrieves data.)
 
-~~~js
+```js
 !INLINE ./api/view.telefunc.js
-~~~
+```
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
@@ -74,18 +76,19 @@ This section highlights the interesting parts of the example.
 
 With Express:
 
-~~~js
+```js
 !INLINE ./start-with-express
-~~~
+```
 
 <details>
 <summary>
 With Hapi
 </summary>
 
-~~~js
+```js
 !INLINE ./start-with-hapi
-~~~
+```
+
 </details>
 
 <details>
@@ -93,21 +96,21 @@ With Hapi
 With Koa
 </summary>
 
-~~~js
+```js
 !INLINE ./start-with-koa
-~~~
-</details>
+```
 
+</details>
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
 ### Mutation Telefunctions
 
-(With *mutation telefunction* we denote an telefunction that mutates data.)
+(With _mutation telefunction_ we denote an telefunction that mutates data.)
 
-~~~js
+```js
 !INLINE ./api/mutation.telefunc.js
-~~~
+```
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
 
@@ -118,12 +121,12 @@ uses our Telefunc to retrieve the user information,
 the user todos,
 and to update a todo.
 
-~~~js
+```js
 !INLINE ./client/LandingPage
-~~~
+```
 
-~~~js
+```js
 !INLINE ./client/Todo
-~~~
+```
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
