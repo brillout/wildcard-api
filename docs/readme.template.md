@@ -65,23 +65,22 @@ import { server } from "telefunc/client";
 })();
 ```
 
-Instead of creating API endpoints, you create telefunctions: functions that are defined on the server-side but called remotely from the browser-side.
-
-For example, to retrieve and mutate data, you can create a telefunction that uses an SQL or ORM query:
+Instead of creating API endpoints, you create _telefunctions_: functions that are defined on the server-side but called remotely from the browser-side.
+To retrieve and mutate data, you can create telefunctions that use SQL or an ORM.
 
 ```js
 // Node.js server
 
-const { server } = require("telefunc/server");
+const { server, setSecretKey } = require("telefunc/server");
 const { context } = require("telefunc/context");
 const Todo = require("./path/to/orm/model/Todo");
 const User = require("./path/to/orm/model/User");
 
 server.createTodoItem = async (text) => {
   if (!context.user) {
-    // The user is not logged-in. We abort.
-    // With Telefunc, you define permissions programmatically
-    // which we talk more about in the "Permissions" section.
+    // The user is not logged-in; we abort. With Telefunc, permissions
+    // are defined programmatically, and you can use the full
+    // power of JavaScript to specify permissions.
     return;
   }
 
@@ -100,31 +99,41 @@ server.createTodoItem = async (text) => {
   return newTodo;
 };
 
-// The `context` object is mutable, enabling user sessions.
+// The `context` object is mutable, enabling user authentication:
 
 server.login = async (userEmail, password) => {
   if (!User.verifyCredentials(userEmail, password)) {
     return { wrongCredentials: true };
   }
+
   const user = await User.findByEmail(userEmail);
-  // Telefunc persists `context` using a Cookie saved
-  // in the user's browser.
+
+  // Telefunc persists `context`. (By using a Cookie saved in the user's browser.)
   context.user = {
     id: user.id,
     name: user.name,
     email: userEmail,
   };
+  // Now that `context.user` is set (and persisted), subsequent telefunction calls
+  // can use it to get the logged-in user's `id`, `name`, and `email`.
+  // Which is what the `createTodoItem` telefunction above does.
 };
+
+// Telefunc uses a secret key to create a signature which ensures that the
+// context was set by the server. (Otherwise, a user could change the Cookie
+// and pretend to be another user.)
+setSecretKey("zv!ku1SZi2AiZb$Pym-o");
 ```
 
-Features
+Features:
 
-- TypeScript
-- User sessions
-- SSR support
+- Authentication.
+- Programmatic permissions.
+- SSR support.
+- First-class TypeScript support.
 - Flexible: works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login, email/password login, password-less email login, ...), any third-party/mobile API strategy (GraphQL/[NQL]()/...).
-- Battle-tested in production at several companies. Each release is assailed against a heavy suit of automated tests.
-- Bugs are fixed promptly. All GitHub issues are answered. No pesky GitHub issue template: just write down your thoughts.
+- Robust: battle-tested in production at several companies, each release is assailed against a heavy suit of automated tests, bugs are fixed promptly and then unit tested.
+- Responsive: all GitHub issues are answered, no pesky GitHub issue template (just write down your thoughts).
 - Simplicity & clarity: simple design, minimal interface, clear error messages, clear documentation.
 - Performance: automatic ETag caching.
 
