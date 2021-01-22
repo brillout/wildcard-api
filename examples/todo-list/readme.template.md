@@ -64,7 +64,7 @@ This section highlights the interesting parts of the example.
 
 ### View Telefunctions
 
-(With _view telefunction_ we denote an telefunction that retrieves data.)
+(With _view telefunction_ we denote a telefunction that retrieves data.)
 
 ```js
 !INLINE ./api/view.telefunc.js
@@ -106,7 +106,7 @@ With Koa
 
 ### Mutation Telefunctions
 
-(With _mutation telefunction_ we denote an telefunction that mutates data.)
+(With _mutation telefunction_ we denote a telefunction that mutates data.)
 
 ```js
 !INLINE ./api/mutation.telefunc.js

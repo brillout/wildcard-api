@@ -130,7 +130,7 @@ class TelefuncServer {
    * @param requestProps.method HTTP request method
    * @param requestProps.body HTTP request body
    * @param requestProps.headers HTTP request headers
-   * @param context The context object - the endpoint functions' `this`. TODO
+   * @param context The context object, or a function that return the context object
    * @returns HTTP response
    */
   async getApiHttpResponse(

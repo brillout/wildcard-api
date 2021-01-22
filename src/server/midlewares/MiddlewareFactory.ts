@@ -9,7 +9,7 @@ import {
 
 export { MiddlewareFactory };
 
-type SetContext<HttpRequest> = (
+type AddContext<HttpRequest> = (
   req: HttpRequest
 ) => Promise<ContextObject | undefined> | ContextObject | undefined;
 
@@ -38,7 +38,7 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
   serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
   __INTERNAL_telefuncServer_middleware: TelefuncServerHolder | undefined,
   adapterOptions: ServerAdapterOptions,
-  setContext: SetContext<HttpRequest> | undefined,
+  addContext: AddContext<HttpRequest> | undefined,
   __INTERNAL_universalAdapter: UniversalAdapterName
 ): ServerMiddleware {
   const middleware = serverAdapter([requestHandler], adapterOptions);
@@ -53,9 +53,9 @@ function createMiddleware<ServerMiddleware, HttpRequest>(
       ? __INTERNAL_telefuncServer_middleware.telefuncServer
       : telefuncServer_;
 
-    const context = setContext?.bind
-      ? setContext.bind(null, requestObject)
-      : setContext;
+    const context = addContext?.bind
+      ? addContext.bind(null, requestObject)
+      : addContext;
 
     return telefuncServer.getApiHttpResponse(requestProps, context, {
       __INTERNAL_universalAdapter,
@@ -67,21 +67,15 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
   serverAdapter: ServerAdapter<ServerMiddleware, HttpRequest>,
   __INTERNAL_universalAdapter: UniversalAdapterName,
   adapterOptions?: ServerAdapterOptions
-): (setContext?: SetContext<HttpRequest>) => ServerMiddleware {
+): (addContext?: AddContext<HttpRequest>) => ServerMiddleware {
   return telefunc;
   /**
-   * Set the context object - the endpoint functions' `this`.
-   * @callback setContext
-   * @param req The request object provided by server framework (Epxress, Koa, or Hapi).
-   * @returns The context object - the endpoint functions' `this`.
-   */
-  /**
    * Create a Telefunc server middleware.
-   * @param [setContext] Set the context object - the endpoint functions' `this`.
+   * @param [addContext] Add context
    * @returns Server middleware.
    */
   function telefunc(
-    setContext?: SetContext<HttpRequest>,
+    addContext?: AddContext<HttpRequest>,
     /** @ignore */
     { __INTERNAL_telefuncServer_middleware }: TelefuncServerOption = {}
   ): ServerMiddleware {
@@ -89,7 +83,7 @@ function MiddlewareFactory<ServerMiddleware, HttpRequest>(
       serverAdapter,
       __INTERNAL_telefuncServer_middleware,
       adapterOptions,
-      setContext,
+      addContext,
       __INTERNAL_universalAdapter
     );
     return middleware;
