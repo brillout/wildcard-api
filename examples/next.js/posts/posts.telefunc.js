@@ -1,6 +1,6 @@
 const { server } = require("telefunc/server");
 
-const posts = require("./db/posts.json");
+const posts = require("./posts.json");
 
 server.getPostList = async function () {
   return posts.map(({ title }, id) => ({ id, title }));

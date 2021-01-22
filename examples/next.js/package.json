@@ -1,16 +1,22 @@
 {
-  "name": "custom-server-express",
-  "version": "1.0.0",
   "scripts": {
-    "dev": "node server/start.js",
-    "build": "next build",
-    "start": "cross-env NODE_ENV=production node server/start.js"
+    "// Run the example": "",
+    "start": "yarn install:all && yarn dev",
+    "// Develop the example": "",
+    "dev": "node server.js",
+    "// Run for prod": "",
+    "prod": "yarn prod:build && yarn prod:start",
+    "prod:build": "next build",
+    "prod:start": "cross-env NODE_ENV=production node server.js",
+    "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
+    "install:telefunc": "cd ../../ && yarn install"
   },
   "dependencies": {
-    "cross-env": "^5.2.0",
-    "express": "^4.14.0",
-    "next": "latest",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "next": "^10.0.5",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { server } from "telefunc/client";
+import { server as posts } from "telefunc/client";
 
 export default class extends Component {
   static async getInitialProps({ query: { id } }) {
     const postId = id;
-    const { title, content, noPostFound } = await server.getPostData({
+    const { title, content, noPostFound } = await posts.getPostData({
       postId,
     });
     return { title, content, noPostFound, postId };

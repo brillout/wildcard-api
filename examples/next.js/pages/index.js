@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import Link from "next/link";
-import { server } from "telefunc/client";
+import { server as posts } from "telefunc/client";
 
 export default class extends Component {
   static async getInitialProps() {
-    const posts = await server.getPostList();
-    return { posts };
+    const postList = await posts.getPostList();
+    return { postList };
   }
 
   render() {
-    const { posts } = this.props;
+    const { postList } = this.props;
     return (
       <ul>
-        {posts.map(({ id, title }) => (
+        {postList.map(({ id, title }) => (
           <li key={id}>
             <Link
               href={{ pathname: "/posts", query: { id } }}
