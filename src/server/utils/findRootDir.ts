@@ -50,29 +50,39 @@ function getUserFiles() {
   const userScripts = [];
   for (let i = 0; i < callstack.length; i++) {
     const filePath = callstack[i];
-    if (isDependency(filePath)) {
+    if (isNodeModules(filePath)) {
+      continue;
+    }
+    if (isTsNodeDev(filePath)) {
       continue;
     }
     userScripts.push(filePath);
   }
   return userScripts;
 }
-function isDependency(filePath: string) {
-  // If a `filePath` contains `node_modules` then it's a dependency
-  const inNodeModuleDir = filePath.split(pathSep).includes("node_modules");
-  if (inNodeModuleDir) {
-    return true;
-  }
-
-  /*
-  // Catch the case when using `npm link` for `@brillout/project-files`
-  const isLinked = filePath.startsWith(__dirname);
-  if (isLinked) {
-    return true;
-  }
-  */
-
-  return false;
+function isNodeModules(filePath: string) {
+  // Whether `filePath` contains `node_modules`
+  return filePath.split(pathSep).includes("node_modules");
+}
+function isTsNodeDev(filePath: string) {
+  /* ts-node-dev seems to first run ts-node-dev code,
+   * leading to call stacks like this:
+   *  [
+   *   '/tmp/ts-node-dev-hook-9277274223384615.js',
+   *   '/tmp/ts-node-dev-hook-9277274223384615.js',
+   *   '/home/romuuu/code/telefunc/examples/file-upload/server.ts',
+   *   '/home/romuuu/code/telefunc/src/server/express.js',
+   *   '/home/romuuu/code/telefunc/src/server/midlewares/express.js',
+   *   '/home/romuuu/code/telefunc/src/server/midlewares/MiddlewareFactory.js',
+   *   '/home/romuuu/code/telefunc/src/server/global-instance.js',
+   *   '/home/romuuu/code/telefunc/src/server/TelefuncServer.js',
+   *   '/home/romuuu/code/telefunc/src/server/autoload/findAndLoadTelefuncFiles.js',
+   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js',
+   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js',
+   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js'
+   * ]
+   */
+  return filePath.includes("ts-node-dev-hook");
 }
 
 function getCallstack() {
