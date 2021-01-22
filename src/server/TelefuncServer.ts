@@ -331,7 +331,7 @@ async function runTelefunction(
 }
 
 function telefunctionIsValid(telefunction: Telefunction) {
-  return isCallable(telefunction) && !isArrowFunction(telefunction);
+  return isCallable(telefunction);
 }
 
 function telefunctionExists(
@@ -360,37 +360,11 @@ function validateTelefunction(
     ].join(" ")
   );
 
-  assertUsage(
-    !isArrowFunction(telefunction),
-    [
-      "The telefunction `" + telefunctionName + "` is an arrow function.",
-      "Telefunctions cannot be defined with arrow functions (`() => {}`),",
-      "use a plain function (`function(){}`) instead.",
-    ].join(" ")
-  );
-
   assert(telefunctionIsValid(telefunction));
 
   obj[prop] = value;
 
   return true;
-}
-
-function isArrowFunction(fn: () => unknown) {
-  // https://stackoverflow.com/questions/28222228/javascript-es6-test-for-arrow-function-built-in-function-regular-function
-  // https://gist.github.com/brillout/51da4cb90a5034e503bc2617070cfbde
-
-  assert(!yes(function () {}));
-  assert(yes(() => {}));
-  assert(!yes(async function () {}));
-  assert(yes(async () => {}));
-
-  return yes(fn);
-
-  function yes(fn: () => unknown) {
-    // This (unfortunately...) seems to be the most reliable way.
-    return typeof fn === "function" && /^[^{]+?=>/.test(fn.toString());
-  }
 }
 
 function isHumanReadableMode(method: HttpRequestMethod) {

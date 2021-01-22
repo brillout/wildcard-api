@@ -15,6 +15,7 @@ module.exports = [
   wrongUsage_getApiHttpResponse_4,
 
   wrongTelefunction,
+  validTelefunction,
 ];
 
 module.exports.setProd = setProd;
@@ -258,22 +259,6 @@ function assertErrorResponse(responseProps) {
 
 async function wrongTelefunction({ server }) {
   try {
-    server.arrowFunc = async () => {};
-  } catch (err) {
-    assert(
-      err.stack.includes("The telefunction `arrowFunc` is an arrow function.")
-    );
-  }
-
-  try {
-    server.arrowFunc2 = () => {};
-  } catch (err) {
-    assert(
-      err.stack.includes("The telefunction `arrowFunc2` is an arrow function.")
-    );
-  }
-
-  try {
     server.undi = undefined;
   } catch (err) {
     assert(
@@ -302,6 +287,18 @@ async function wrongTelefunction({ server }) {
       )
     );
   }
+}
+async function validTelefunction({ server, browserEval }) {
+  server.arrowFunc = async () => 0.41;
+  server.arrowFunc2 = () => 0.42;
+  server.syncFunc = function () {
+    return 0.43;
+  };
+  await browserEval(async () => {
+    assert((await window.telefunc.server.arrowFunc()) === 0.41);
+    assert((await window.telefunc.server.arrowFunc2()) === 0.42);
+    assert((await window.telefunc.server.syncFunc()) === 0.43);
+  });
 }
 
 function setProd() {
