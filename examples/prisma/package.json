@@ -1,25 +1,30 @@
 {
-  "name": "rest-express",
-  "version": "1.0.0",
-  "license": "MIT",
   "scripts": {
-    "start": "yarn run build:client && yarn run start:server",
-    "build:client": "cd client && parcel build *.html",
-    "start:server": "ts-node src/index.ts"
+    "// Run the example": "",
+    "start": "yarn install:all && yarn build:prisma && yarn build:client && yarn start:server",
+    "build:prisma": "prisma generate",
+    "build:client": "yarn clean:parcel && parcel build index.html",
+    "start:server": "ts-node server.ts",
+    "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
+    "install:telefunc": "cd ../../ && yarn install",
+    "// Clean caches": "",
+    "clean:parcel": "rm -rf dist/ .cache/"
   },
   "dependencies": {
-    "@prisma/photon": "2.0.0-preview019",
-    "babel-polyfill": "^6.26.0",
-    "body-parser": "1.19.0",
-    "express": "4.17.1"
-  },
-  "devDependencies": {
+    "@prisma/client": "2.15.0",
+    "@prisma/cli": "2.15.0",
     "@types/body-parser": "1.17.1",
     "@types/express": "4.17.2",
     "@types/node": "12.12.24",
-    "parcel": "^1.12.4",
-    "prisma2": "2.0.0-preview019",
-    "ts-node": "8.5.4",
-    "typescript": "3.7.4"
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "1.19.0",
+    "express": "4.17.1",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.3",
+    "parcel": "^1.12.4"
+  },
+  "prisma": {
+    "schema": "database/schema.prisma"
   }
 }
