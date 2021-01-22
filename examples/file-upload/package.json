@@ -1,0 +1,35 @@
+{
+  "scripts": {
+    "// Run the example": "",
+    "start": "yarn install:all && yarn build && yarn start:server",
+    "start:server": "ts-node server.ts",
+    "// Build": "",
+    "build": "yarn build:telefunc && yarn build:browser",
+    "build:telefunc": "cd ../../ && yarn build",
+    "build:browser": "yarn clean:parcel && parcel build index.html",
+    "// Develop the example": "",
+    "dev": "concurrently \"yarn dev:browser\" \"yarn dev:server\" \"yarn dev:telefunc\" --kill-others",
+    "dev:browser": "parcel watch index.html",
+    "dev:server": "ts-node-dev server.ts",
+    "dev:telefunc": "cd ../../ && yarn dev --preserveWatchOutput",
+    "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
+    "install:telefunc": "cd ../../ && yarn install",
+    "// Clean caches": "",
+    "clean:parcel": "rm -r dist/ .cache/"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.21",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "babel-polyfill": "^6.26.0",
+    "concurrently": "^5.3.0",
+    "express": "^4.16.4",
+    "parcel": "^1.12.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "ts-node": "^8.5.4",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^3.7.3"
+  }
+}
