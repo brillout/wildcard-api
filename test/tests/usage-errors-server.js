@@ -258,9 +258,13 @@ function assertErrorResponse(responseProps) {
 }
 
 async function wrongTelefunction({ server }) {
-  try {
-    server.undi = undefined;
-  } catch (err) {
+  {
+    let err;
+    try {
+      server.undi = undefined;
+    } catch (_err) {
+      err = _err;
+    }
     assert(
       err.message.includes(
         "A telefunction must be a function, but the telefunction `undi` is `undefined`"
@@ -268,9 +272,13 @@ async function wrongTelefunction({ server }) {
     );
   }
 
-  try {
-    server.nulli = null;
-  } catch (err) {
+  {
+    let err;
+    try {
+      server.nulli = null;
+    } catch (_err) {
+      err = _err;
+    }
     assert(
       err.message.includes(
         "A telefunction must be a function, but the telefunction `nulli` is `null`"
@@ -278,9 +286,13 @@ async function wrongTelefunction({ server }) {
     );
   }
 
-  try {
-    server.stringi = "bubbabi";
-  } catch (err) {
+  {
+    let err;
+    try {
+      server.stringi = "bubbabi";
+    } catch (_err) {
+      err = _err;
+    }
     assert(
       err.message.includes(
         "A telefunction must be a function, but the telefunction `stringi` is a `String`"
