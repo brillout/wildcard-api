@@ -1,6 +1,6 @@
 A basic hello world usage of Telefunc with TypeScript.
 
-Run it with:
+To run it:
 
 ```bash
 git clone git@github.com:telefunc/telefunc
