@@ -1,4 +1,4 @@
-// Example of unrecommended way of designing endpoints
+// Example of unrecommended way of designing telefunctions
 
 const { server } = require("telefunc/server");
 const { context } = require("telefunc/context");

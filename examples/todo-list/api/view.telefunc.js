@@ -3,7 +3,7 @@ const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
-// Our view endpoints are tailored to the frontend. For example, the endpoint
+// Our view telefunctions are tailored to the frontend. For example, the telefunction
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
 server.getLandingPageData = async function () {

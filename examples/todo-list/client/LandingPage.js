@@ -8,7 +8,7 @@ import Todo from "./Todo";
 renderPage(<LandingPage />);
 
 function LandingPage() {
-  // We use our Telefunc endpoint to get user information and the user's todos
+  // We use our telefunction to get user information and the user's todos
   const fetchData = async () => await server.getLandingPageData();
 
   return (

@@ -13,9 +13,9 @@ A (simplistic) todo app built with:
 
 - [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
-  - [View Telefunctions](#view-endpoints)
+  - [View Telefunctions](#view-telefunctions)
   - [Server Integration](#server-integration)
-  - [Mutation Telefunctions](#mutation-endpoints)
+  - [Mutation Telefunctions](#mutation-telefunctions)
   - [React Frontend](#react-frontend)
 
 ## Run the Example
@@ -62,10 +62,10 @@ This section highlights the interesting parts of the example.
 
 ### View Telefunctions
 
-(With *view endpoint* we denote an endpoint that retrieves data.)
+(With *view telefunction* we denote an telefunction that retrieves data.)
 
 ~~~js
-!INLINE ./api/view.endpoints.js
+!INLINE ./api/view.telefunc.js
 ~~~
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path
@@ -103,10 +103,10 @@ With Koa
 
 ### Mutation Telefunctions
 
-(With *mutation endpoint* we denote an endpoint that mutates data.)
+(With *mutation telefunction* we denote an telefunction that mutates data.)
 
 ~~~js
-!INLINE ./api/mutation.endpoints.js
+!INLINE ./api/mutation.telefunc.js
 ~~~
 
 !INLINE /docs/snippets/section-footer.md #contents --hide-source-path

@@ -3,7 +3,7 @@ const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
-// Server our API endpoints
+// Server our telefunctions
 app.use(
   telefunc(async (req) => {
     const { headers } = req;

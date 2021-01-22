@@ -94,9 +94,9 @@ A (simplistic) todo app built with:
 
 - [Run the Example](#run-the-example)
 - [Code Highlights](#code-highlights)
-  - [View Telefunctions](#view-endpoints)
+  - [View Telefunctions](#view-telefunctions)
   - [Server Integration](#server-integration)
-  - [Mutation Telefunctions](#mutation-endpoints)
+  - [Mutation Telefunctions](#mutation-telefunctions)
   - [React Frontend](#react-frontend)
 
 ## Run the Example
@@ -162,21 +162,22 @@ This section highlights the interesting parts of the example.
 
 ### View Telefunctions
 
-(With *view endpoint* we denote an endpoint that retrieves data.)
+(With *view telefunction* we denote an telefunction that retrieves data.)
 
 ~~~js
-// ./api/view.endpoints.js
+// ./api/view.telefunc.js
 
 const { server } = require("telefunc/server");
+const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
-// Our view endpoints are tailored to the frontend. For example, the endpoint
+// Our view telefunctions are tailored to the frontend. For example, the telefunction
 // `getLandingPageData` returns exactly and only the data needed by the landing page
 
 server.getLandingPageData = async function () {
-  // `this` holds request information such as HTTP headers
-  const user = await getLoggedUser(this.headers);
+  // `context` holds request information such as HTTP headers
+  const user = await getLoggedUser(context.headers);
   if (!user) return { userIsNotLoggedIn: true };
 
   const todos = await db.query(
@@ -189,7 +190,7 @@ server.getLandingPageData = async function () {
 };
 
 server.getCompletedPageData = async function () {
-  const user = await getLoggedUser(this.headers);
+  const user = await getLoggedUser(context.headers);
   if (!user) return { userIsNotLoggedIn: true };
 
   const todos = await db.query(
@@ -235,7 +236,7 @@ const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
-// Server our API endpoints
+// Server our telefunctions
 app.use(
   telefunc(async (req) => {
     const { headers } = req;
@@ -355,19 +356,20 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ### Mutation Telefunctions
 
-(With *mutation endpoint* we denote an endpoint that mutates data.)
+(With *mutation telefunction* we denote an telefunction that mutates data.)
 
 ~~~js
-// ./api/mutation.endpoints.js
+// ./api/mutation.telefunc.js
 
 const { server } = require("telefunc/server");
+const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
-// We tailor mutation endpoints to the frontend as well
+// We tailor mutation telefunctions to the frontend as well
 
 server.toggleComplete = async function (todoId) {
-  const user = await getLoggedUser(this.headers);
+  const user = await getLoggedUser(context.headers);
   // Do nothing if user is not logged in
   if (!user) return;
 
@@ -438,7 +440,7 @@ import Todo from "./Todo";
 renderPage(<LandingPage />);
 
 function LandingPage() {
-  // We use our Telefunc endpoint to get user information and the user's todos
+  // We use our telefunction to get user information and the user's todos
   const fetchData = async () => await server.getLandingPageData();
 
   return (
