@@ -1,14 +1,13 @@
-import express from "express";
+import express = require("express");
 import { telefunc } from "telefunc/server/express";
-import "./main.telefunc";
 
 const app = express();
 
 // Serve telefunctions
 app.use(telefunc());
 
-// Serve static assets
-app.use(express.static("client/dist", { extensions: ["html"] }));
+// Serve index.html
+app.use(express.static("dist/", { extensions: ["html"] }));
 
 app.listen(3000);
 

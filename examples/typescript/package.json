@@ -1,23 +1,22 @@
 {
   "scripts": {
     "// Run the example": "",
-    "start": "yarn start:install && yarn start:build && yarn run start:server",
-    "start:install": "yarn install:telefunc && yarn install",
-    "start:build": "yarn build",
+    "start": "yarn install:all && yarn build && yarn start:server",
     "start:server": "ts-node server.ts",
     "// Build": "",
-    "build": "yarn build:telefunc && yarn build:client",
+    "build": "yarn build:telefunc && yarn build:browser",
     "build:telefunc": "cd ../../ && yarn build",
-    "build:client": "cd client/ && parcel build *.html",
+    "build:browser": "yarn clean:parcel && parcel build index.html",
     "// Develop the example": "",
-    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:telefunc\" --kill-others",
-    "dev:client": "cd client/ && parcel watch *.html",
+    "dev": "concurrently \"yarn dev:browser\" \"yarn dev:server\" \"yarn dev:telefunc\" --kill-others",
+    "dev:browser": "parcel watch index.html",
     "dev:server": "ts-node-dev server.ts",
     "dev:telefunc": "cd ../../ && yarn dev --preserveWatchOutput",
     "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
     "install:telefunc": "cd ../../ && yarn install",
-    "// Clean all cache": "",
-    "clean": "cd ../../ && yarn clean"
+    "// Clean caches": "",
+    "clean:parcel": "rm -r dist/ .cache/"
   },
   "dependencies": {
     "@types/node": "^12.12.21",
