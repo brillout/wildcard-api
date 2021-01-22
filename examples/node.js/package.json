@@ -1,9 +1,16 @@
 {
   "scripts": {
-    "server": "node ./server.js",
-    "client": "node ./client.js"
+    "// Run the example": "",
+    "start": "yarn install:all && yarn start:run",
+    "start:run": "concurrently \"yarn start:server\" \"yarn start:client\"",
+    "start:server": "node ./server.js",
+    "start:client": "sleep 2 && node ./client.js",
+    "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
+    "install:telefunc": "cd ../../ && yarn install"
   },
   "dependencies": {
+    "concurrently": "^5.3.0",
     "express": "^4.16.4"
   }
 }
