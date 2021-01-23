@@ -1,5 +1,8 @@
 import express = require("express");
 import { telefunc } from "telefunc/server/express";
+import { setSecretKey } from "telefunc/server";
+
+setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
 
 const app = express();
 

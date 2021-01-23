@@ -1,13 +1,10 @@
-import { server, context, setSecretKey } from "telefunc/server";
+import { server, context } from "telefunc/server";
 
-export type PersonTelefuncs = typeof personTelefuncs;
-
-setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
-
-const personTelefuncs = {
-  getPerson,
-};
-Object.assign(server, personTelefuncs);
+const telefunctions = { getPerson };
+Object.assign(server, telefunctions);
+declare module "telefunc/client" {
+  export const server: typeof telefunctions;
+}
 
 type Person = {
   firstName: string;

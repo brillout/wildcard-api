@@ -3,6 +3,7 @@ import { server } from "telefunc/client";
 import { Hello } from "./hello.telefunc";
 import ReactDOM = require("react-dom");
 import React = require("react");
+import assert = require("assert");
 
 const hello = server.hello as Hello;
 
@@ -17,9 +18,11 @@ function Form() {
       </form>
     </>
   );
-  function handleChangeFile(event: HTMLInputEvent) {
+  function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
     const { files } = event.target;
+    assert(files);
     const file = files[0];
+    assert(file);
     let formData = new FormData();
     formData.append("file", file);
     submitForm("some-string", file);
@@ -31,6 +34,7 @@ function Form() {
   }
 }
 
+// submitForm = decorator(submitForm);
 function submitForm(s: string, file: File) {
   console.log(s);
   console.log(file);

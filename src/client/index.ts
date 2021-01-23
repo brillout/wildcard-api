@@ -2,11 +2,15 @@ import { telefuncClient } from "./global-instance";
 import { TelefuncError } from "./makeHttpRequest";
 
 export { TelefuncError };
-export const server = telefuncClient.telefunctions;
 export const { config } = telefuncClient;
+
 //@ts-ignore
 import { context } from "telefunc/context/contextUntyped";
 export { context };
+
+//@ts-ignore
+import { server } from "./serverUntyped";
+export { server };
 
 if (typeof window !== "undefined") {
   window.telefunc = {
