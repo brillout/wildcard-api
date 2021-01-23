@@ -10,7 +10,7 @@ function LoadingWrapper({ fetchData, children: renderContent }) {
       const fetchedData = await fetchData();
       setData(fetchedData);
     })();
-  }, {});
+  }, []);
 
   if (data === null) {
     return "Loading...";

@@ -1,17 +1,16 @@
 // Example of unrecommended way of designing telefunctions
 
 const { server } = require("telefunc/server");
-const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
 server.getUser = async function () {
-  const user = await getLoggedUser(context.headers);
+  const user = await getLoggedUser();
   return user;
 };
 
 server.getTodos = async function (completed) {
-  const user = await getLoggedUser(context.headers);
+  const user = await getLoggedUser();
   if (!user) return;
 
   if (![true, false].includes(completed)) return;

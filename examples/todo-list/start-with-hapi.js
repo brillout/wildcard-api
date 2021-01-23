@@ -10,21 +10,17 @@ async function startServer() {
     debug: { request: ["internal"] },
   });
 
-  await server.register(
-    telefunc(async (request) => {
-      const { headers } = request;
-      const context = { headers };
-      return context;
-    })
-  );
+  // Serve telefunctions
+  await server.register(telefunc());
 
+  // Serve index.html
   await server.register(Inert);
   server.route({
     method: "*",
     path: "/{param*}",
     handler: {
       directory: {
-        path: "client/dist",
+        path: "./browser/dist/",
         defaultExtension: "html",
       },
     },

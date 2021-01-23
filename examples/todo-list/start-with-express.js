@@ -3,17 +3,11 @@ const { telefunc } = require("telefunc/server/express");
 
 const app = express();
 
-// Server our telefunctions
-app.use(
-  telefunc(async (req) => {
-    const { headers } = req;
-    const context = { headers };
-    return context;
-  })
-);
+// Serve telefunctions
+app.use(telefunc());
 
-// Serve our frontend
-app.use(express.static("client/dist", { extensions: ["html"] }));
+// Serve index.html
+app.use(express.static("./browser/dist/", { extensions: ["html"] }));
 
 app.listen(3000);
 

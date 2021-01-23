@@ -1,1 +1,7 @@
 *.sqlite
+
+node_modules/
+
+# Parcel
+dist/
+.cache/

@@ -7,6 +7,6 @@ const hello = server.hello as Hello;
 main();
 
 async function main() {
-  const msg = await hello("Johny");
+  const msg = await hello("Alice");
   document.body.innerHTML += msg;
 }

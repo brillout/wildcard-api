@@ -1,12 +1,11 @@
 const { server } = require("telefunc/server");
-const { context } = require("telefunc/context");
 const db = require("../db");
 const { getLoggedUser } = require("../auth");
 
 // We tailor mutation telefunctions to the frontend as well
 
 server.toggleComplete = async function (todoId) {
-  const user = await getLoggedUser(context.headers);
+  const user = await getLoggedUser();
   // Do nothing if user is not logged in
   if (!user) return;
 

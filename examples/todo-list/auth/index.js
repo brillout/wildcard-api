@@ -1,8 +1,7 @@
-const assert = require("assert");
-
 module.exports = { getLoggedUser };
 
-function getLoggedUser(headers) {
-  assert(headers.host === "localhost:3000", { headers });
+function getLoggedUser() {
+  // `context` holds request information such as HTTP headers
+  // if (headers.host !== "localhost:3000") throw new Error();
   return { id: 1, username: "brillout" };
 }

@@ -16,16 +16,16 @@
     "install:all": "yarn install:telefunc && yarn install",
     "install:telefunc": "cd ../../ && yarn install",
     "// Clean caches": "",
-    "clean:parcel": "rm -r dist/ .cache/"
+    "clean:parcel": "rm -rf dist/ .cache/"
   },
   "dependencies": {
-    "@types/node": "^12.12.21",
+    "@types/node": "^14.14.22",
     "babel-polyfill": "^6.26.0",
     "concurrently": "^5.3.0",
-    "express": "^4.16.4",
-    "parcel": "^1.12.3",
-    "ts-node": "^8.5.4",
+    "express": "^4.17.1",
+    "parcel": "^1.12.4",
+    "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.1",
-    "typescript": "^3.7.3"
+    "typescript": "^4.1.3"
   }
 }

@@ -4,17 +4,11 @@ const { telefunc } = require("telefunc/server/koa");
 
 const app = new Koa();
 
-// Serve our Wilcard API
-app.use(
-  telefunc(async (ctx) => {
-    const { headers } = ctx.request;
-    const context = { headers };
-    return context;
-  })
-);
+// Serve telefunctions
+app.use(telefunc());
 
-// Serve our frontend
-app.use(Static("client/dist", { extensions: [".html"] }));
+// Serve index.html
+app.use(Static("./browser/dist/", { extensions: [".html"] }));
 
 app.listen(3000);
 
