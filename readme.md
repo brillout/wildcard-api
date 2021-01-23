@@ -151,8 +151,7 @@ To retrieve and mutate data, you can create telefunctions that use SQL or an ORM
 ```js
 // Node.js server
 
-const { server, setSecretKey } = require("telefunc/server");
-const { context } = require("telefunc/context");
+const { server, context, setSecretKey } = require("telefunc/server");
 const Todo = require("./path/to/orm/model/Todo");
 const User = require("./path/to/orm/model/User");
 
@@ -207,15 +206,17 @@ setSecretKey("zv!ku1SZi2AiZb$Pym-o");
 
 Features:
 
-- Authentication.
-- Programmatic permissions.
-- SSR support.
-- First-class TypeScript support.
-- Flexible: works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login, email/password login, password-less email login, ...), any third-party/mobile API strategy (GraphQL/REST/...).
-- Robust: battle-tested in production at several companies, each release is assailed against a heavy suit of automated tests, bugs are fixed promptly and then unit tested.
-- Responsive: all GitHub issues are answered, no pesky GitHub issue template (just write down your thoughts).
-- Simplicity & clarity: simple design, minimal interface, clear error messages, clear documentation.
-- Performance: automatic ETag caching.
+- **Authentication**: Easily implement authentication thanks to mutable contexts.
+- **Programmatic Permissions**: Use the full power of JavaScript to define permissions.
+- **SSR**: Works with SSR out-of-the-box and with zero config.
+- **TypeScript**: Every design decision is made with first-class TypeScript support in mind.
+- **Flexible**: Works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login, email/password login, password-less email login, ...), any third-party API strategy (GraphQL/REST/...).
+- **Robust**: Battle-tested in production at several companies, each release is assailed against a heavy suit of automated tests, bugs are fixed promptly and then unit tested.
+- **Responsive**: All GitHub issues are answered, no annoying GitHub issue template (just write down your thoughts).
+- **Simple & Clear**: Simple design, minimal interface, clear error messages, clear documentation.
+- **Performance**: Automatic ETag caching.
+
+**Don't see a feature on this list?** Search GitHub issues if someone has already requested it and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
 
 &nbsp;
 
@@ -765,8 +766,7 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ```ts
 // ../examples/typescript/main.telefunc.ts
 
-import { server, setSecretKey } from "telefunc/server";
-import { context } from "telefunc/context";
+import { server, context, setSecretKey } from "telefunc/server";
 
 export type PersonTelefuncs = typeof personTelefuncs;
 
@@ -799,7 +799,7 @@ async function getPerson(id: number): Promise<Person | null> {
 ```
 
 ```ts
-// ../examples/typescript/client/index.ts
+// ../examples/typescript/browser.ts
 
 import "babel-polyfill";
 import { server } from "telefunc/client";
@@ -820,17 +820,9 @@ const personTelefuncs = server as PersonTelefuncs;
 })();
 ```
 
-<p align="center">
-  <a href="#typescript">
-    <img src="/examples/typescript/screenshots/types-on-frontend-1.png" width="850" height="195" align="middle" />
-    <br/>
-    <br/>
-    <img src="/examples/typescript/screenshots/types-on-frontend-2.png" width="850" height="212" align="middle" />
-  </a>
-</p>
-
 TypeScript usage examples:
 
+- [/examples/hello-world/](/examples/typescript/)
 - [/examples/typescript/](/examples/typescript/)
 - [/examples/prisma/](/examples/prisma/)
 

@@ -71,8 +71,7 @@ To retrieve and mutate data, you can create telefunctions that use SQL or an ORM
 ```js
 // Node.js server
 
-const { server, setSecretKey } = require("telefunc/server");
-const { context } = require("telefunc/context");
+const { server, context, setSecretKey } = require("telefunc/server");
 const Todo = require("./path/to/orm/model/Todo");
 const User = require("./path/to/orm/model/User");
 
@@ -613,20 +612,12 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ```
 
 ```ts
-!INLINE ../examples/typescript/client/index.ts
+!INLINE ../examples/typescript/browser.ts
 ```
-
-<p align="center">
-  <a href="#typescript">
-    <img src="/examples/typescript/screenshots/types-on-frontend-1.png" width="850" height="195" align="middle" />
-    <br/>
-    <br/>
-    <img src="/examples/typescript/screenshots/types-on-frontend-2.png" width="850" height="212" align="middle" />
-  </a>
-</p>
 
 TypeScript usage examples:
 
+- [/examples/hello-world/](/examples/typescript/)
 - [/examples/typescript/](/examples/typescript/)
 - [/examples/prisma/](/examples/prisma/)
 
