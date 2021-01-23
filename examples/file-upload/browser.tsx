@@ -17,17 +17,23 @@ function Form() {
       </form>
     </>
   );
-  function handleChangeFile(event: any) {
+  function handleChangeFile(event: HTMLInputEvent) {
     const { files } = event.target;
     const file = files[0];
     let formData = new FormData();
     formData.append("file", file);
+    submitForm("some-string", file);
     console.log(files.length);
     console.log(file);
     console.log(file.constructor);
     // @ts-ignore
     window.file = file;
   }
+}
+
+function submitForm(s: string, file: File) {
+  console.log(s);
+  console.log(file);
 }
 
 async function renderApp() {
