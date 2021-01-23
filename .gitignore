@@ -10,7 +10,7 @@ src/**/*.js
 !src/context/contextUntyped.js
 src/**/*.map
 src/**/*.d.ts
-src/**/tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
 
 # Npm
 npm-debug.log*
