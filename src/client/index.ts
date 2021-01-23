@@ -1,12 +1,14 @@
 import { telefuncClient } from "./global-instance";
 import { TelefuncError } from "./makeHttpRequest";
 
+export { TelefuncError };
 export const server = telefuncClient.telefunctions;
 export const { config } = telefuncClient;
-export { TelefuncError };
+//@ts-ignore
+import { context } from "telefunc/context/contextUntyped";
+export { context };
 
 if (typeof window !== "undefined") {
-  const { context } = require("telefunc/context");
   window.telefunc = {
     context,
     server,

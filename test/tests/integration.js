@@ -122,10 +122,9 @@ async function unpkg({ server, browserEval }) {
 }
 
 async function API({ browserEval }) {
-  const telefunc_context = require("telefunc/context");
-  assert(telefunc_context.context.constructor === Object);
-  assert(Object.keys(telefunc_context).length === 1);
-
+  /*
+   * telefunc/server
+   */
   const telefunc_server = require("telefunc/server");
   // 1
   assert(telefunc_server.server.constructor === Object);
@@ -140,15 +139,23 @@ async function API({ browserEval }) {
   assert(telefunc_server.setSecretKey);
   // 5
   assert(telefunc_server.addContext);
-  // 5===5
-  assert(Object.keys(telefunc_server).length === 5);
+  assert(telefunc_server.context);
+  // 6===6
+  assert(Object.keys(telefunc_server).length === 6);
 
+  /*
+   * telefunc/client
+   */
   const telefunc_client = require("telefunc/client");
   assert(telefunc_client.server);
   assert(telefunc_client.config);
+  assert(telefunc_client.context);
   assert(telefunc_client.TelefuncError);
-  assert(Object.keys(telefunc_client).length === 3);
+  assert(Object.keys(telefunc_client).length === 4);
 
+  /*
+   * Telefunc middlewares
+   */
   ["express", "koa", "hapi"].forEach((serverFramework) => {
     const export_ = require("telefunc/server/" + serverFramework);
     assert(export_.telefunc.name === "telefunc");
@@ -156,6 +163,9 @@ async function API({ browserEval }) {
     assert(Object.keys(export_).length === 1);
   });
 
+  /*
+   * UMD
+   */
   await browserEval(async () => {
     assert(window.telefunc.server);
     assert(window.telefunc.config);
@@ -163,6 +173,20 @@ async function API({ browserEval }) {
     assert(window.telefunc.TelefuncError);
     assert(Object.keys(window.telefunc).length === 4);
   });
+
+  /*
+   * telefunc/context
+   */
+  // User should not import from `telefunc/context`
+  {
+    let err;
+    try {
+      require("telefunc/context");
+    } catch (_err) {
+      err = _err;
+    }
+    assert(err.message.startsWith("Cannot find module 'telefunc/context'"));
+  }
 }
 
 async function mainImportForbidden() {

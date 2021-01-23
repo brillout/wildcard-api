@@ -1,5 +1,4 @@
-const { server, setSecretKey } = require("telefunc/server");
-const { context } = require("telefunc/context");
+const { server, context, setSecretKey } = require("telefunc/server");
 
 // A simple telefunction to test Telefunc
 server.mirror = async function (str) {

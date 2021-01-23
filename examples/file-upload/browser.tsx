@@ -36,6 +36,12 @@ function submitForm(s: string, file: File) {
   console.log(file);
 }
 
+function decorator(
+  fn: (str: string, f: File) => void
+): (str: string, f: File) => void {
+  return fn;
+}
+
 async function renderApp() {
   const msg = await hello("Johny");
   console.log(msg);

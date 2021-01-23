@@ -1,5 +1,4 @@
-import { server, setSecretKey } from "telefunc/server";
-import { context } from "telefunc/context";
+import { server, context, setSecretKey } from "telefunc/server";
 
 export type PersonTelefuncs = typeof personTelefuncs;
 

@@ -1,6 +1,6 @@
 import "babel-polyfill";
 import { server } from "telefunc/client";
-import { PersonTelefuncs } from "../main.telefunc";
+import { PersonTelefuncs } from "./main.telefunc";
 
 const personTelefuncs = server as PersonTelefuncs;
 
