@@ -1,6 +1,6 @@
 const Hapi = require("hapi");
 const Inert = require("inert");
-const { assert } = require("@brillout/assert");
+const assert = require("assert");
 
 module.exports = startServer;
 

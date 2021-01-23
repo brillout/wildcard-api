@@ -275,8 +275,9 @@ async function checkStderr({ expectedStderr, stderrLogs }) {
       assert(false);
     });
 
-    // Stack trace should never show @brillout/assert code
+    // Stack trace should never show @brillout/assert trace
     assert(!stripAnsi(stderrLog).includes("@brillout/assert"));
+    assert(!stripAnsi(stderrLog).includes("@brillout/libassert"));
   }
   function checkIfErrorIsExpected(stderrLogs) {
     stderrLogs.forEach((stderrLog) => {
