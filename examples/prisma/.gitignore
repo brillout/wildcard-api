@@ -1,8 +1,5 @@
 node_modules/
 
-# Database
-database/dev.db
-
 # Parcel
 dist/
 .cache/
