@@ -25,36 +25,84 @@ function Form() {
     assert(file);
     let formData = new FormData();
     formData.append("file", file);
-    submitForm("some-string", file, { anotherFile: file, param: "str" });
     console.log(files.length);
     console.log(file);
     console.log(file.constructor);
-    // @ts-ignore
-    window.file = file;
+
+    submitForm("some-string", file, { anotherFile: file, param: "str" });
+    submit("some-string", file, { anotherFile: file, param: "str" });
   }
 }
 
-const submitForm = decorator2(_submitForm);
+const submitForm = decorator(_submitForm);
 function _submitForm(
   s: string,
-  file: SuperFile,
-  { anotherFile, param }: { anotherFile: SuperFile; param?: string }
+  file: FileHandler,
+  { anotherFile, param }: { anotherFile: FileHandler; param?: string }
 ) {
   console.log(s);
   console.log(param);
   console.log(file.filePath);
   console.log(anotherFile.filePath);
+
+  cast<number>(anotherFile);
+  anotherFile.filePath;
 }
 
-function decorator2<T>(fn: T): TransformTelefunction<T> {
+async function submit(
+  s: string,
+  file: File,
+  { anotherFile, param }: { anotherFile: File; param?: string }
+) {
+  console.log(s);
+  console.log(param);
+  const files = await handleFiles([file, anotherFile]);
+  file = await handleFile(file);
+
+  await handleFilesInline([file, anotherFile]);
+  console.log(file);
+  handleFilesInline_([file]);
+  console.log(file.type);
+  handleSingleFile(file);
+  console.log(await file.filePath);
+
+  console.log(files[0].filePath);
+  console.log(files[0].filePath);
+}
+
+function decorator<T>(fn: T): TransformTelefunction<T> {
   return fn as any;
 }
-type SuperFile = {
+type FileHandler = {
   filePath: string;
 };
+type FileHandler2 = {
+  filePath: Promise<string>;
+};
+async function handleFile(file: File): Promise<FileHandler & File> {
+  return { ...file, filePath: "/bla" };
+}
+async function handleFiles(files: File[]): Promise<FileHandler[]> {
+  return files.map(() => ({ filePath: "/bla" }));
+}
+async function handleFilesInline(files: File[]): Promise<void> {
+  handleFilesInline_(files);
+  assert(files);
+}
+function handleFilesInline_(files: File[]): asserts files is never {}
+function handleSingleFile(file: File): asserts file is File & FileHandler2 {}
+async function handleSingleFileWrapper(file: File): Promise<void> {
+  handleSingleFile(file);
+  file.filePath;
+}
+
+function cast<T>(thing: unknown): asserts thing is T {}
+// Attempt with: https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypetype
+function castStrong<T, T2>(thing: T2): asserts thing is Extract<T, T2> & T {}
+function forbid<T>(thing: unknown): asserts thing is never {}
 
 type TransformArguments<Arguments> = {
-  [ArgumentIndex in keyof Arguments]: Arguments[ArgumentIndex] extends SuperFile
+  [ArgumentIndex in keyof Arguments]: Arguments[ArgumentIndex] extends FileHandler
     ? File
     : TransformArguments<Arguments[ArgumentIndex]>;
 };
