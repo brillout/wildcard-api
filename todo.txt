@@ -15,8 +15,8 @@
 //    - update getApiHttpResponse
 - remove `this`
 
-- Try if new autoload logic works
- - Make sure that all files are scanned except `node_modules/*`
+
+- Evtl. update assert usage message for `telefunc.js` autoload
 
 
 - Avoid user's TS to autocomplete internal interfaces

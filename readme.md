@@ -766,16 +766,13 @@ You can use your backend types on the frontend by using TypeScript's `typeof`.
 ```ts
 // ../examples/typescript/main.telefunc.ts
 
-import { server, context, setSecretKey } from "telefunc/server";
+import { server, context } from "telefunc/server";
 
-export type PersonTelefuncs = typeof personTelefuncs;
-
-setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
-
-const personTelefuncs = {
-  getPerson,
-};
-Object.assign(server, personTelefuncs);
+const telefunctions = { getPerson };
+Object.assign(server, telefunctions);
+declare module "telefunc/client" {
+  export const server: typeof telefunctions;
+}
 
 type Person = {
   firstName: string;
@@ -803,21 +800,22 @@ async function getPerson(id: number): Promise<Person | null> {
 
 import "babel-polyfill";
 import { server } from "telefunc/client";
-import { PersonTelefuncs } from "../main.telefunc";
 
-const personTelefuncs = server as PersonTelefuncs;
+main();
 
-(async () => {
+async function main() {
   const id = Math.floor(Math.random() * 3);
-  const person = await personTelefuncs.getPerson(id);
+  const person = await server.getPerson(id);
+
   if (person === null) {
     document.body.innerHTML = "Could not retrieve person";
-  } else {
-    const personHtml =
-      person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
-    document.body.innerHTML = personHtml;
+    return;
   }
-})();
+
+  const personHtml =
+    person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
+  document.body.innerHTML = personHtml;
+}
 ```
 
 TypeScript usage examples:

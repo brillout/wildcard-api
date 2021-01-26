@@ -1,10 +1,6 @@
-import { server, context } from "telefunc/server";
+import { context } from "telefunc/server";
 
-const telefunctions = { getPerson };
-Object.assign(server, telefunctions);
-declare module "telefunc/client" {
-  export const server: typeof telefunctions;
-}
+export { getPerson };
 
 type Person = {
   firstName: string;
