@@ -34,7 +34,7 @@ function findTelefuncFiles(
 
   const pattern = [
     `**/*.telefunc.${fileExtension}`,
-    // `**/telefunc.${fileExtension}`,
+    `**/telefunc.${fileExtension}`,
   ];
 
   const stream = fastGlob.stream(pattern, {

@@ -1,5 +1,7 @@
+import { UserBasicInfo } from "./users/types";
+
 type Context = {
-  isLoggedIn: boolean;
+  user?: UserBasicInfo;
 };
 
 import "telefunc/server";

@@ -9,7 +9,7 @@
     "build:browser": "yarn clean:parcel && parcel build index.html",
     "// Develop the example": "",
     "dev": "concurrently \"yarn dev:browser\" \"yarn dev:server\" \"yarn dev:telefunc\" --kill-others",
-    "dev:browser": "parcel watch index.html",
+    "dev:browser": "yarn clean:parcel && parcel watch index.html",
     "dev:server": "ts-node-dev server.ts",
     "dev:telefunc": "cd ../../ && yarn dev --preserveWatchOutput",
     "// Install dependencies": "",
@@ -19,11 +19,17 @@
     "clean:parcel": "rm -rf dist/ .cache/"
   },
   "dependencies": {
+    "@types/fs-extra": "^9.0.6",
     "@types/node": "^14.14.22",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "babel-polyfill": "^6.26.0",
     "concurrently": "^5.3.0",
     "express": "^4.17.1",
+    "fs-extra": "^9.1.0",
     "parcel": "^1.12.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.1",
     "typescript": "^4.1.3"
