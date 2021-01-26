@@ -31,6 +31,8 @@ function Form() {
 
     submitForm("some-string", file, { anotherFile: file, param: "str" });
     submit("some-string", file, { anotherFile: file, param: "str" });
+
+    submit3("some-string", file, { anotherFile: file, param: "str" }, file);
   }
 }
 
@@ -69,6 +71,74 @@ async function submit(
   console.log(files[0].filePath);
   console.log(files[0].filePath);
 }
+
+type FileIso = File & {
+  filePath?: "a-path";
+  fileStream?: "a-stream";
+  fileData?: "bin-data";
+};
+
+async function submit3(
+  s: string,
+  file: FileIso,
+  { anotherFile, param }: { anotherFile: FileIso; param?: string },
+  thirdFile: FileIso
+) {
+  await loadFiles([
+    { file, loadTo: ["memory"] },
+    { file: anotherFile, uploadToStream: true },
+    { file: thirdFile, uploadToDisk: true },
+  ]);
+  console.log(file.fileData);
+  console.log(thirdFile.filePath);
+  console.log(thirdFile.fileStream);
+  console.log(thirdFile.fileData);
+}
+
+async function loadFiles(...args: any): Promise<void> {}
+
+async function submit2(
+  s: string,
+  file: File,
+  { anotherFile, param }: { anotherFile: File; param?: string },
+  thirdFile: File
+) {
+  handle(file, { uploadToMemory: true });
+  file.data;
+  handle(anotherFile, { uploadToStream: true });
+  anotherFile.stream;
+  handle(thirdFile, { uploadToDisk: true });
+  thirdFile.filePath;
+}
+
+type FileStream = File & {
+  stream: "a-stream";
+};
+type FileOnDisk = File & {
+  filePath: "a-path-to-disk";
+};
+type FileInMemory = File & {
+  data: "binary-data";
+};
+/*
+ */
+function handle(
+  file: File,
+  { uploadToDisk }: { uploadToDisk: true }
+): asserts file is FileOnDisk;
+function handle(
+  file: File,
+  { uploadToMemory }: { uploadToMemory: true }
+): asserts file is FileInMemory;
+function handle(
+  file: File,
+  { uploadToStream }: { uploadToStream: true }
+): asserts file is FileStream;
+function handle(file: File, param: any) {}
+
+function overl(file: string): number;
+function overl(file: number): string;
+function overl(file: any): any {}
 
 function decorator<T>(fn: T): TransformTelefunction<T> {
   return fn as any;
