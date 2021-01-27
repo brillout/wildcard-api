@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "// Run the example": "",
+    "start": "yarn install:all && yarn build && yarn start:server",
+    "start:server": "ts-node server.ts",
+    "// Build": "",
+    "build": "yarn build:telefunc && yarn build:browser",
+    "build:telefunc": "cd ../../ && yarn build",
+    "build:browser": "yarn clean:parcel && parcel build index.html",
+    "// Install dependencies": "",
+    "install:all": "yarn install:telefunc && yarn install",
+    "install:telefunc": "cd ../../ && yarn install",
+    "// Clean caches": "",
+    "clean:parcel": "rm -rf dist/ .cache/"
+  },
+  "dependencies": {
+    "@types/node": "^14.14.22",
+    "babel-polyfill": "^6.26.0",
+    "express": "^4.17.1",
+    "parcel": "^1.12.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
