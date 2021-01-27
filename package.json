@@ -5,20 +5,19 @@
   ],
   "scripts": {
     "// Demo": "",
-    "demo": "yarn install:all && yarn build:once && yarn demo:run",
-    "demo:run": "cd examples/todo-list/ && yarn dev",
+    "demo": "cd examples/todo-list/ && yarn start",
     "// Dev": "",
     "dev": "yarn install:all && yarn build:watch",
     "// Test": "",
     "test": "cd test/ && yarn test",
-    "// Install": "",
-    "install:all": "if [ ! -d ./node_modules/yarn/ ]; then npm run install:yarn; fi && yarn install",
-    "install:yarn": "npm install yarn --no-save",
     "// Build": "",
-    "build": "yarn build:once",
+    "build": "yarn install:all && yarn build:once",
     "build:once": "tsc --build",
     "build:watch": "tsc --build --watch",
     "build:umd": "parcel build src/client/index.js --out-dir ./src/umd/ --out-file telefunc-client.min.js",
+    "// Install": "",
+    "install:all": "if [ ! -d ./node_modules/yarn/ ]; then npm run install:yarn; fi && yarn install",
+    "install:yarn": "npm install yarn --no-save",
     "// Release": "",
     "bump": "yarn bump:version",
     "bump:yarn": "yarn git:clean && rm yarn.lock test/yarn.lock && yarn && (cd test/ && yarn) && git commit -am 'bump yarn.lock' || exit 0",
@@ -36,6 +35,7 @@
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
+    "parcel": "^1.12.4",
     "typescript": "^4.1.3",
     "yarn": "^1.22.10"
   }
