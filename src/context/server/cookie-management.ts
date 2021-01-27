@@ -2,7 +2,7 @@ import { stringify, parse } from "@brillout/json-s";
 import { createHmac } from "crypto";
 import { ContextObject, TelefuncServer } from "telefunc/server/TelefuncServer";
 import { assertUsage, assert } from "telefunc/server/utils/assert";
-import cookieHelper = require("cookie");
+import * as cookieHelper from "cookie";
 
 export { getContextFromCookie };
 export { getSetCookieHeader };

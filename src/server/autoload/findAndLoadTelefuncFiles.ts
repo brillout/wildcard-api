@@ -1,4 +1,4 @@
-import fastGlob = require("fast-glob");
+import * as fastGlob from "fast-glob";
 import { isAbsolute } from "path";
 import { assert } from "../utils/assert";
 import { findRootDir } from "../utils/findRootDir";

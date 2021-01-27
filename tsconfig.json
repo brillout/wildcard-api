@@ -2,8 +2,8 @@
   "compilerOptions": {
     "rootDir": "./src/",
     "lib": ["DOM"],
-    "target": "es2017",
-    "module": "commonjs",
+    "target": "ES2017",
+    "module": "CommonJS",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

@@ -5,7 +5,7 @@ import {
 } from "path";
 import { findUp } from "./findUp";
 import { assert } from "./assert";
-import getCallsites = require("callsites");
+import getCallsites from "callsites";
 
 export { findRootDir };
 

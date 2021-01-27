@@ -1,4 +1,4 @@
-import asyncHooks = require("async_hooks");
+import * as asyncHooks from "async_hooks";
 import { IncomingMessage } from "http";
 import {
   ContextObject,
