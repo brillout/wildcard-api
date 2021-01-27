@@ -13,7 +13,7 @@
     "install:all": "yarn install:telefunc && yarn install",
     "install:telefunc": "cd ../../ && yarn install",
     "// Clean caches": "",
-    "clean:build": "rm -rf browser/dist browser/.cache/"
+    "clean:build": "rm -rf dist/ .cache/"
   },
   "dependencies": {
     "@hapi/inert": "^6.0.3",
