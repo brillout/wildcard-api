@@ -10,7 +10,6 @@
     "dev:telefunc": "cd ../../ && yarn dev --preserveWatchOutput"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
