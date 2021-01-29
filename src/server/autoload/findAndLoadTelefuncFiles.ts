@@ -39,7 +39,7 @@ function findTelefuncFiles(
 
   const stream = fastGlob.stream(pattern, {
     dot: false, // Skip hidden files. E.g. Yarn v2's `.yarn` or Parcel's `.cache`.
-    ignore: ["**/node_modules"],
+    ignore: ["**/node_modules", "**/.git"],
     cwd: rootDir,
     absolute: true,
   });

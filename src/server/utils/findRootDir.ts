@@ -15,9 +15,9 @@ const callstack = getCallstack();
 /**
  * Find the user's project root directory
  */
-async function findRootDir() {
+async function findRootDir(): Promise<string | null> {
   const firstUserFile = getFirstUserFile();
-  if (!firstUserFile) return;
+  if (!firstUserFile) return null;
   assert(pathIsAbsolute(firstUserFile));
 
   const packageJsonFile = await findUp(
@@ -70,16 +70,7 @@ function isTsNodeDev(filePath: string) {
    *  [
    *   '/tmp/ts-node-dev-hook-9277274223384615.js',
    *   '/tmp/ts-node-dev-hook-9277274223384615.js',
-   *   '/home/romuuu/code/telefunc/examples/file-upload/server.ts',
-   *   '/home/romuuu/code/telefunc/src/server/express.js',
-   *   '/home/romuuu/code/telefunc/src/server/midlewares/express.js',
-   *   '/home/romuuu/code/telefunc/src/server/midlewares/MiddlewareFactory.js',
-   *   '/home/romuuu/code/telefunc/src/server/global-instance.js',
-   *   '/home/romuuu/code/telefunc/src/server/TelefuncServer.js',
-   *   '/home/romuuu/code/telefunc/src/server/autoload/findAndLoadTelefuncFiles.js',
-   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js',
-   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js',
-   *   '/home/romuuu/code/telefunc/src/server/utils/findRootDir.js'
+   *   ...
    * ]
    */
   return filePath.includes("ts-node-dev-hook");
