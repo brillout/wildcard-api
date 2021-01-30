@@ -18,10 +18,12 @@ function Form() {
       </form>
     </>
   );
-  function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
     const { files } = event.target;
     assert(files);
     const file = files[0];
+    const s = file.stream();
+    // s.on('data', () => {});
     assert(file);
     let formData = new FormData();
     formData.append("file", file);
