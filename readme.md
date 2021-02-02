@@ -190,8 +190,6 @@ server.createTodoItem = async function(text) {
 };
 ~~~
 
-TypeScript has first-class support and you can use your backend types on the frontend!
-
 Wildcard is used in production at many companies,
 every release is assailed against a heavy suit of automated tests,
 and issues are fixed promptly.
