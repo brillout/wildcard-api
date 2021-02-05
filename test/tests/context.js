@@ -637,7 +637,7 @@ async function defineWith_addContext({ browserEval, ...args }) {
     ...args,
   });
 
-  setSecretKey("u912u98haaewoi");
+  setSecretKey("u912!U*d9a8wd98aw80AHW(*DHu98haaewoi");
 
   server.getUserAgent = async function () {
     const userAgent = context.headers["user-agent"];
@@ -740,7 +740,7 @@ async function contextOutsideOfTelefunction({ browserEval, ...args }) {
     args
   );
 
-  setSecretKey("ueqwhiue128e8199quiIQUU(*@@1dwq");
+  setSecretKey("ueqwhiue1ahew828e8199quiIQUU(*@@1dwq");
 
   server.login = async function (name) {
     context.myName = name;
@@ -793,10 +793,10 @@ async function contextOutsideOfHttpRequest({ context }) {
 
 brokenSignature.isIntegrationTest = true;
 async function brokenSignature({ browserEval, ...args }) {
-  await runTest("2209hUWDLH@@@H@9e1p0hawdhUHW", { isSecondRun: false });
+  await runTest("2209hUWDLH@@*U(*AW*@H@9e1p0hawdhUHW", { isSecondRun: false });
 
   // We can change the secret key and Telefunc won't choke
-  await runTest("92IAuahew(@(U)aaeaaaad!!!)_", { isSecondRun: true });
+  await runTest("92IAuahew(@(U)aaea*DAHUIHidwqiaaad!!!)_", { isSecondRun: true });
 
   return;
   async function runTest(secretKey, { isSecondRun }) {
@@ -917,7 +917,7 @@ async function brokenSignature({ browserEval, ...args }) {
 }
 
 async function wrongSecretKey({ setSecretKey }) {
-  [undefined, null, 123, "123456789"].forEach((secretKey) => {
+  [undefined, null, 123, "a".repeat(31)].forEach((secretKey) => {
     let err;
     try {
       setSecretKey(secretKey);
@@ -926,12 +926,13 @@ async function wrongSecretKey({ setSecretKey }) {
     }
     assert(
       err.message ===
-        "[Telefunc][Wrong Usage] `setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 10 characters."
+        "[Telefunc][Wrong Usage] `setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 32 characters."
     );
   });
 
-  const validKey = "1234567890";
+  const validKey = "a".repeat(32);
   setSecretKey(validKey);
+
   let err;
   try {
     setSecretKey(validKey);

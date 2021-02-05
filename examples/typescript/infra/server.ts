@@ -4,7 +4,7 @@ import { telefunc } from "telefunc/server/express";
 import { setSecretKey } from "telefunc/server";
 import { readFileSync } from "fs";
 
-setSecretKey("PODQae!90911dw;)@)*H#D(UH1d21");
+setSecretKey("PODQae!AWUE)(idhwah;)@)*H#D(UH1d21");
 
 startServer();
 

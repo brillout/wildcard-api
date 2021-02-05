@@ -53,8 +53,8 @@ function __setSecretKey(this: TelefuncServer, secretKey: string) {
     "`setSecretKey()` should be called only once."
   );
   assertUsage(
-    secretKey && secretKey.length && secretKey.length >= 10,
-    "`setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 10 characters."
+    secretKey && secretKey.length && secretKey.length >= 32,
+    "`setSecretKey(secretKey)`: Argument `secretKey` should be a string with a length of at least 32 characters."
   );
 
   this[__secretKey] = secretKey;
