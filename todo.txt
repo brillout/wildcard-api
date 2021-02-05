@@ -1,26 +1,19 @@
 - New Context API
  - assert presence of headers in getApiHttpResponse
  - assert that there is no memory leak
- - remove getContextFromCookie
- - rename setSecretKey to setContextSecretKey
- - allow arrow functions
+ - rename setSecretKey to setContextSecretKey?
  - assert existence of secret key can when reading context from cookie
 //  - clean signature cookie upon client-side context removal
 //  - add tests
 //    - all assertUsage
 //  - Try secure cookies
 //  - Investiage sameSite
-//  - Make context available outside of telefunc
 //  - update docs
 //    - update getApiHttpResponse
-- remove `this`
 
 
 - Evtl. update assert usage message for `telefunc.js` autoload
 
-
-- Avoid user's TS to autocomplete internal interfaces
-- SSR + New context management
 - Remove wrong signature warning
 - Improve err msg to make it clear that importing in itself is ok, just not using it "[Telefunc][Wrong Usage] The context object `import { context } from "telefunc/client"` is available only in the browser. You seem to try to use it in Node.js. Consider using `import { getContext } from "telefunc/server"` instead."
 - Show all telefunctions upon 404
