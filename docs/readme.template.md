@@ -608,10 +608,11 @@ import "handli"; // npm install handli
 You can type `server` and `context` using `declare module`:
 
 ```ts
-!INLINE ../examples/typescript/server.telefunc.ts
+!INLINE ../examples/typescript/infra/server.telefunc.ts
 ```
+
 ```ts
-!INLINE ../examples/typescript/context.telefunc.ts
+!INLINE ../examples/typescript/infra/context.telefunc.ts
 ```
 
 You can then simply export your telefunctions:

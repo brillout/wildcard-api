@@ -764,11 +764,11 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 You can type `server` and `context` using `declare module`:
 
 ```ts
-// ../examples/typescript/server.telefunc.ts
+// ../examples/typescript/infra/server.telefunc.ts
 
 import { server } from "telefunc/server";
-import * as postTelefunctions from "./posts/posts.telefunc";
-import * as userTelefunctions from "./users/users.telefunc";
+import * as postTelefunctions from "../posts/posts.telefunc";
+import * as userTelefunctions from "../users/users.telefunc";
 
 const telefunctions = { ...postTelefunctions, ...userTelefunctions };
 
@@ -778,10 +778,11 @@ declare module "telefunc/client" {
   export const server: typeof telefunctions;
 }
 ```
-```ts
-// ../examples/typescript/context.telefunc.ts
 
-import { UserBasicInfo } from "./users/types";
+```ts
+// ../examples/typescript/infra/context.telefunc.ts
+
+import { UserBasicInfo } from "../users/types";
 
 type Context = {
   user?: UserBasicInfo;

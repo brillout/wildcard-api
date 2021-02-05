@@ -1,4 +1,4 @@
-import { UserBasicInfo } from "./users/types";
+import { UserBasicInfo } from "../users/types";
 
 type Context = {
   user?: UserBasicInfo;

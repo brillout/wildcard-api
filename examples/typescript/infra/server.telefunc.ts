@@ -1,6 +1,6 @@
 import { server } from "telefunc/server";
-import * as postTelefunctions from "./posts/posts.telefunc";
-import * as userTelefunctions from "./users/users.telefunc";
+import * as postTelefunctions from "../posts/posts.telefunc";
+import * as userTelefunctions from "../users/users.telefunc";
 
 const telefunctions = { ...postTelefunctions, ...userTelefunctions };
 
