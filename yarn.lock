@@ -3473,11 +3473,6 @@ log-symbols@^2.2.0:
   dependencies:
     chalk "^2.0.1"
 
-lsos@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/lsos/-/lsos-0.2.1.tgz#ff87bcf8b2afcb10191271ba77c3e72057db3934"
-  integrity sha512-wEwUU3F3DpwCd1nczaBw1RTdy1k6W/PfQy/yPL/uxtn0kD+iyCnm2e4POaNiXmbwp01CAMnpBuj2dZgS8kp9YA==
-
 magic-string@^0.22.4:
   version "0.22.5"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.22.5.tgz#8e9cf5afddf44385c1da5bc2a6a0dbd10b03657e"

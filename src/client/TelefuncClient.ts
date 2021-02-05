@@ -1,11 +1,11 @@
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage } from "./assert";
-import { verify } from "lsos";
 
 export { TelefuncClient };
 
-loadTimeStuff();
+// We need ES6 `Proxy`
+assertProxySupport();
 
 // Telefunctions
 export type TelefunctionName = string;
@@ -370,15 +370,4 @@ declare global {
       __INTERNAL_telefuncServer_nodejs: any;
     }
   }
-}
-
-function loadTimeStuff() {
-  // We need ES6 `Proxy`
-  assertProxySupport();
-
-  verify({
-    projectName: "Telefunc",
-    npm: "telefunc",
-    trustMode: true,
-  });
 }

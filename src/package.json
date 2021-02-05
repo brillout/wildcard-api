@@ -19,8 +19,7 @@
     "@universal-adapter/koa": "^0.8.0",
     "callsites": "^3.1.0",
     "cookie": "^0.4.1",
-    "fast-glob": "^3.2.5",
-    "lsos": "^0.2.1"
+    "fast-glob": "^3.2.5"
   },
   "keywords": [
     "rpc",
