@@ -201,22 +201,22 @@ server.login = async (userEmail, password) => {
 // Telefunc uses a secret key to create a signature which ensures that the
 // context was set by the server. (Otherwise, a user could change the Cookie
 // and pretend to be another user.)
-setSecretKey("zv!ku1SZi2AiZb$Pym-o");
+setSecretKey("zv!ku1SZi2AiZ*a8!UHIDBAopx(WihowdbwaAb$Pym-o");
 ```
 
 Features:
 
-- **Authentication**: Easily implement authentication thanks to mutable contexts.
-- **Programmatic Permissions**: Use the full power of JavaScript to define permissions.
-- **SSR**: Works with SSR out-of-the-box and with zero config.
+- **Authentication**: The context object is mutable allowing you to easily implement authentication.
+- **Programmatic Permissions**: Simply define permissions using JavaScript.
 - **TypeScript**: Every design decision is made with first-class TypeScript support in mind.
-- **Flexible**: Works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login, email/password login, password-less email login, ...), any third-party API strategy (GraphQL/REST/...).
+- **SSR**: Out-of-the-box SSR support.
+- **Caching**: Telefunction calls are automatically cached with `ETag`.
+- **Flexible**: Works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login with Facebook/Twitter/Google/..., email with password login, email-only password-less login, ...), any third-party API strategy (GraphQL/REST/...).
+- **Simple & clear**: Simple design, minimal interface, clear error messages, clear documentation.
 - **Robust**: Battle-tested in production at several companies, each release is assailed against a heavy suit of automated tests, bugs are fixed promptly and then unit tested.
-- **Responsive**: All GitHub issues are answered, no annoying GitHub issue template (just write down your thoughts).
-- **Simple & Clear**: Simple design, minimal interface, clear error messages, clear documentation.
-- **Performance**: Automatic ETag caching.
+- **Responsive**: All GitHub issues are answered, no issue template (just write down your thoughts), bugs are fixed within usually 24 hours.
 
-**Don't see a feature on this list?** Search GitHub issues if someone has already requested it and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
+**Don't see a feature on this list?** Search [GitHub issues](https://github.com/telefunc/telefunc/issues/) if someone has already requested it and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
 
 &nbsp;
 
@@ -761,60 +761,60 @@ if you have questions or something's not clear &mdash; we enjoy talking with our
 
 ## TypeScript
 
-You can use your backend types on the frontend by using TypeScript's `typeof`.
+You can type `server` and `context` using `declare module`:
 
 ```ts
-// ../examples/typescript/main.telefunc.ts
+// ../examples/typescript/server.telefunc.ts
 
-import { server, context } from "telefunc/server";
+import { server } from "telefunc/server";
+import * as postTelefunctions from "./posts/posts.telefunc";
+import * as userTelefunctions from "./users/users.telefunc";
 
-const telefunctions = { getPerson };
+const telefunctions = { ...postTelefunctions, ...userTelefunctions };
+
 Object.assign(server, telefunctions);
+
 declare module "telefunc/client" {
   export const server: typeof telefunctions;
 }
+```
+```ts
+// ../examples/typescript/context.telefunc.ts
 
-type Person = {
-  firstName: string;
-  lastName: string;
-  id: number;
+import { UserBasicInfo } from "./users/types";
+
+type Context = {
+  user?: UserBasicInfo;
 };
 
-const persons: Array<Person> = [
-  { firstName: "John", lastName: "Smith", id: 0 },
-  { firstName: "Alice", lastName: "Graham", id: 1 },
-  { firstName: "Harry", lastName: "Thompson", id: 2 },
-];
+import "telefunc/server";
+declare module "telefunc/server" {
+  export const context: Context;
+}
 
-async function getPerson(id: number): Promise<Person | null> {
-  if (!context.isLoggedIn) {
-    context.isLoggedIn = true;
-    return null;
-  }
-  return persons.find((person) => person.id === id) || null;
+import "telefunc/client";
+declare module "telefunc/client" {
+  export const context: Context;
 }
 ```
 
+You can then simply export your telefunctions:
+
 ```ts
-// ../examples/typescript/browser.ts
+// ../examples/typescript/posts/posts.telefunc.ts
 
-import "babel-polyfill";
-import { server } from "telefunc/client";
+import { context } from "telefunc/server";
+import { getPostsByAuthor } from "./db";
+import { Post } from "./types";
 
-main();
+export { getPosts };
 
-async function main() {
-  const id = Math.floor(Math.random() * 3);
-  const person = await server.getPerson(id);
-
-  if (person === null) {
-    document.body.innerHTML = "Could not retrieve person";
-    return;
+async function getPosts(): Promise<Post[] | null> {
+  if (!context.user) {
+    return null;
   }
-
-  const personHtml =
-    person.firstName + " " + person.lastName + " <b>(" + person.id + ")</b>";
-  document.body.innerHTML = personHtml;
+  const posts = await getPostsByAuthor(context.user.id);
+  return posts;
 }
 ```
 
