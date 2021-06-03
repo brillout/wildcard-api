@@ -213,7 +213,7 @@ Features:
 - **Caching**: Telefunction calls are automatically cached with `ETag`.
 - **Flexible**: Works with any server framework (Express/Koa/Hapi/Fastify/...), any view library (React/Vue/Angluar/...), any authentication strategy (third-party login with Facebook/Twitter/Google/..., email with password login, email-only password-less login, ...), any third-party API strategy (GraphQL/REST/...).
 - **Simple & clear**: Simple design, minimal interface, clear error messages, clear documentation.
-- **Robust**: Battle-tested in production at several companies, each release is assailed against a heavy suit of automated tests, bugs are fixed promptly and then unit tested.
+- **Robust**: Battle-tested in production at several companies, each release is assailed against a heavy suite of automated tests, bugs are fixed promptly and then unit tested.
 - **Responsive**: All GitHub issues are answered, no issue template (just write down your thoughts), bugs are fixed within usually 24 hours.
 
 **Don't see a feature on this list?** Search [GitHub issues](https://github.com/telefunc/telefunc/issues/) if someone has already requested it and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
