@@ -191,7 +191,7 @@ server.createTodoItem = async function(text) {
 ~~~
 
 Wildcard is used in production at many companies,
-every release is assailed against a heavy suit of automated tests,
+every release is assailed against a heavy suite of automated tests,
 and issues are fixed promptly.
 It is financed with the [Lsos](https://github.com/reframejs/wildcard-api/issues/56).
 
