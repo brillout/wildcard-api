@@ -2,6 +2,7 @@ import * as fastGlob from "fast-glob";
 import { isAbsolute } from "path";
 import { assert } from "../utils/assert";
 import { findRootDir } from "../utils/findRootDir";
+import { telefuncServer } from "../global-instance";
 
 export { findAndLoadTelefuncFiles };
 
@@ -22,7 +23,11 @@ async function findAndLoadTelefuncFiles() {
   if (!(".ts" in require.extensions)) return;
 
   for await (const telefuncFile of findTelefuncFiles(rootDir, "ts")) {
-    require(telefuncFile.toString());
+    const moduleExports = require(telefuncFile.toString());
+    console.log('e2', moduleExports)
+    Object.keys(moduleExports).forEach(telefunctionName => {
+      telefuncServer.telefunctions[telefunctionName] = moduleExports[telefunctionName]
+    })
   }
 }
 

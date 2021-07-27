@@ -16,7 +16,7 @@ import {
 import { resolveUserProvidedContext } from "telefunc/context/server/resolveUserProvidedContext";
 import { createContextProxy } from "telefunc/context/server/createContextProxy";
 
-import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
+// import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
 
 import {
   assert,
@@ -32,12 +32,12 @@ export { TelefuncServer };
 // The Telefunc server only works with Node.js
 assertNodejs();
 
-findAndLoadTelefuncFiles();
+// findAndLoadTelefuncFiles();
 
 // Telefunctions
 type TelefunctionName = string;
 type TelefunctionArgs = unknown[];
-type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
+export type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
 type Telefunctions = Record<TelefunctionName, Telefunction>;
 type TelefunctionResult = unknown;
 type TelefunctionError = Error | UsageError;

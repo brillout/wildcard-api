@@ -1,0 +1,5 @@
+export * from './assert'
+export * from './hasProp'
+export * from './isCallable'
+export * from './isPlainObject'
+export * from './isObject'

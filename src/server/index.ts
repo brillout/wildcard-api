@@ -6,3 +6,4 @@ export const { setSecretKey } = telefuncServer;
 export { addContext } from "telefunc/context/server/addContext";
 //@ts-ignore
 export { context } from "telefunc/context/contextUntyped";
+export { createTelefuncCaller } from "./createTelefuncCaller";
