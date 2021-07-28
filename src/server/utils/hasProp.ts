@@ -15,6 +15,8 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, Function>;
 // prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'null'): obj is ObjectType & Record<PropName, null>;
+// prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey, Enum>(obj: ObjectType, prop: PropName, type: Enum[]): obj is ObjectType & Record<PropName, Enum>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName): obj is ObjectType & Record<PropName, unknown>;
@@ -36,6 +38,9 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   }
   if( Array.isArray(type) ) {
     return typeof propValue === 'string' && type.includes(propValue)
+  }
+  if( type === 'null') {
+    return propValue===null
   }
   return typeof propValue === type;
 }
