@@ -26,6 +26,7 @@ import {
   UsageError,
 } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
+import {setContext} from "./getContext";
 
 export { TelefuncServer };
 
@@ -313,6 +314,8 @@ async function runTelefunction(
     ...contextHook.userDefinedContext,
     ...userDefinedContext_,
   };
+
+  setContext(contextProxy_, isDirectCall);
 
   try {
     telefunctionResult = await telefunction.apply(
