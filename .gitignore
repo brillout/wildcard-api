@@ -2,9 +2,6 @@ node_modules/
 
 # Typescript
 src/**/*.js
-!src/index.js
-!src/client/serverUntyped.js
-!src/context/contextUntyped.js
 src/**/*.map
 src/**/*.d.ts
 **/tsconfig.tsbuildinfo
