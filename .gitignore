@@ -1,9 +1,5 @@
 node_modules/
 
-# Parcel
-dist/
-.cache/
-
 # Typescript
 src/**/*.js
 !src/index.js
