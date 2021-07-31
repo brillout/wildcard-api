@@ -3,7 +3,7 @@
   "version": "0.0.26",
   "description": "Remote functions.",
   "repository": "https://github.com/telefunc/telefunc",
-  "homepage": "https://telefunc.org",
+  "homepage": "https://telefunc.com",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
