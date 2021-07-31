@@ -1,7 +1,7 @@
 {
   "private": "true",
   "workspaces": [
-    "src/"
+    "telefunc/"
   ],
   "scripts": {
     "// Demo": "",
@@ -20,21 +20,20 @@
     "// Release": "",
     "bump": "yarn bump:version",
     "bump:yarn": "yarn git:clean && rm yarn.lock test/yarn.lock && yarn && (cd test/ && yarn) && git commit -am 'bump yarn.lock' || exit 0",
-    "bump:version": "yarn git:clean && (cd src/ && npm version patch) && git commit -am 'release new minor' && git show HEAD",
+    "bump:version": "yarn git:clean && (cd telefunc/ && npm version patch) && git commit -am 'release new minor' && git show HEAD",
     "release": "yarn git:clean && yarn bump:yarn && yarn release:build && yarn test && yarn release:publish",
     "release:build": "yarn clean:all && yarn install && yarn build:once",
-    "release:publish": "cd src/ && npm publish",
+    "release:publish": "cd telefunc/ && npm publish",
     "git:clean": "bash -c 'if [[ `git status --porcelain` ]]; then echo [Error] Uncommited changes. && exit 1; fi'",
     "// Docs": "",
     "docs": "mdocs",
     "// Clean": "",
     "clean": "yarn clean:all",
     "clean:all": "git clean -Xdf",
-    "clean:build": "git clean -Xdf src/"
+    "clean:build": "git clean -Xdf telefunc/"
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.24",
-    "typescript": "^4.1.3",
     "yarn": "^1.22.10"
   }
 }

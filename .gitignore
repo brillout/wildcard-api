@@ -1,9 +1,6 @@
 node_modules/
 
 # Typescript
-src/**/*.js
-src/**/*.map
-src/**/*.d.ts
 **/tsconfig.tsbuildinfo
 
 # Npm
