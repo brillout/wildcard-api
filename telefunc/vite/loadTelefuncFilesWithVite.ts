@@ -11,7 +11,7 @@ async function loadTelefuncFilesWithVite(telefuncContext: {
   _viteDevServer?: ViteDevServer;
   _isProduction: boolean;
 }): Promise<TelefuncFiles> {
-  const viteEntryFile = 'globImportTelefuncFiles.js'
+  const viteEntryFile = 'importTelefuncFiles.js'
   assert(moduleExists(`./${viteEntryFile}`, __dirname))
   const userDist = `${telefuncContext._root}/dist`
   const prodPath = `${userDist}/server/${viteEntryFile}`
@@ -29,8 +29,8 @@ async function loadTelefuncFilesWithVite(telefuncContext: {
     isProduction: telefuncContext._isProduction
   })
 
-  assert(hasProp(moduleExports, 'globImportTelefuncFiles', 'function'))
-  const globResult = moduleExports.globImportTelefuncFiles()
+  assert(hasProp(moduleExports, 'importTelefuncFiles', 'function'))
+  const globResult = moduleExports.importTelefuncFiles()
   assert(hasProp(globResult, 'telefuncFiles', 'object'))
   const telefuncFiles = globResult.telefuncFiles;
   assert(isObjectOfObjects(telefuncFiles))

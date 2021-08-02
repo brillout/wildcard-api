@@ -1,6 +1,6 @@
-export { globImportTelefuncFiles };
+export { importTelefuncFiles };
 
-function globImportTelefuncFiles(): { telefuncFiles: Record<string, unknown> } {
+function importTelefuncFiles(): { telefuncFiles: Record<string, unknown> } {
   // Vite resolves globs with micromatch: https://github.com/micromatch/micromatch
   // Pattern `*([a-zA-Z0-9])` is an Extglob: https://github.com/micromatch/micromatch#extglobs
   // @ts-ignore
