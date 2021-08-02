@@ -4,17 +4,11 @@ import { TelefuncError } from "./makeHttpRequest";
 export { TelefuncError };
 export const { config } = telefuncClient;
 
-//@ts-ignore
-import { context } from "telefunc/context/contextUntyped";
-export { context };
-
-//@ts-ignore
-import { server } from "./serverUntyped";
+const server = telefuncClient.telefunctions
 export { server };
 
 if (typeof window !== "undefined") {
   window.telefunc = {
-    context,
     server,
     config,
     TelefuncError,

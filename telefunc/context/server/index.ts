@@ -1,2 +1,2 @@
-import { telefuncServer } from "telefunc/server/global-instance";
+import { telefuncServer } from "../../server/global-instance";
 export const { context } = telefuncServer;

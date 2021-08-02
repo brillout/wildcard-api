@@ -1,4 +1,4 @@
-import { assertUsage, assert } from "telefunc/client/assert";
+import { assertUsage, assert } from "../../client/assert";
 import { parse } from "@brillout/json-s";
 
 export const context = createContextProxy();

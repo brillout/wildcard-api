@@ -2,8 +2,8 @@ import {
   assert,
   assertUsage,
   assertWarning,
-} from "telefunc/server/utils/assert";
-import { TelefuncServer } from "telefunc/server/TelefuncServer";
+} from "../../server/utils/assert";
+import { TelefuncServer } from "../../server/TelefuncServer";
 import { ContextHook, getContextHook } from "./async-hook-management";
 import { getContextFromCookie, __secretKey } from "./cookie-management";
 

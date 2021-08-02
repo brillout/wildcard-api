@@ -6,13 +6,13 @@ import {
   HttpRequestMethod,
   HttpRequestUrl,
   HttpRequestProps,
-} from "telefunc/server/TelefuncServer";
+} from "../../server/TelefuncServer";
 import {
   assert,
   assertUsage,
   assertWarning,
   requestForContact,
-} from "telefunc/server/utils/assert";
+} from "../../server/utils/assert";
 
 export { getContextHook };
 export { ContextHook };

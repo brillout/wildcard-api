@@ -1,4 +1,4 @@
-import { assertUsage } from "telefunc/server/utils/assert";
+import { assertUsage } from "../../server/utils/assert";
 
 export { assertContextObject };
 
