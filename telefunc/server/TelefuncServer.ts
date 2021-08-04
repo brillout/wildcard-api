@@ -1,6 +1,15 @@
 import { stringify, parse } from "@brillout/json-s";
-// @ts-ignore
-import getUrlProps = require("@brillout/url-props");
+
+import type {
+  BodyParsed,
+  /*
+  TelefunctionName,
+  TelefunctionResult,
+  TelefunctionArgs,
+  Telefunction,
+  Telefunctions,
+  */
+} from "../shared/types";
 
 import {
   getSetCookieHeader,
@@ -26,7 +35,7 @@ import {
   UsageError,
 } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
-import {setContext} from "./getContext";
+import { setContext } from "./getContext";
 
 export { TelefuncServer };
 
@@ -100,8 +109,6 @@ type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 
 // Parsing & (de-)serialization
 type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
-type ArgsInHttpBody = string & { _brand?: "ArgsInHttpBody" };
-type TelefunctionArgsSerialized = ArgsInUrl | ArgsInHttpBody;
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
 type RequestInfo = {
   telefunctionName?: TelefunctionName;
@@ -114,7 +121,7 @@ type RequestInfo = {
 
 const configDefault: Config = {
   disableCache: false,
-  baseUrl: "/_telefunc/",
+  baseUrl: "/_telefunc",
 };
 
 class TelefuncServer {
@@ -125,33 +132,17 @@ class TelefuncServer {
 
   context: ContextObject = createContextProxy(this);
 
-  /**
-   * Get the HTTP response of API HTTP requests. Use this if you cannot use the express/koa/hapi middleware.
-   * @param requestProps.url HTTP request URL
-   * @param requestProps.method HTTP request method
-   * @param requestProps.body HTTP request body
-   * @param requestProps.headers HTTP request headers
-   * @param context The context object, or a function that return the context object
-   * @returns HTTP response
-   */
   async getApiHttpResponse(
-    requestProps: HttpRequestProps,
-    context?: ContextObject | undefined | ContextGetter,
-    /** @ignore */
-    {
-      __INTERNAL_universalAdapter,
-    }: {
-      __INTERNAL_universalAdapter?: UniversalAdapterName;
-    } = {}
+    context: Record<string, unknown> & {_telefunctionName: string, _telefunctionArgs: unknown[]},
+    //context: ContextObject | undefined | ContextGetter,
+    //telefuncContext: { _bodyParsed: BodyParsed }
   ): Promise<HttpResponseProps | null> {
     try {
       return await _getApiHttpResponse(
-        requestProps,
         context,
         this.telefunctions,
         this.config,
         this[__secretKey],
-        __INTERNAL_universalAdapter,
         this.context
       );
     } catch (internalError) {
@@ -175,39 +166,25 @@ class TelefuncServer {
 }
 
 async function _getApiHttpResponse(
-  requestProps: HttpRequestProps,
-  userDefinedContext_: ContextObject | ContextGetter | undefined,
+  userDefinedContext_: Record<string, unknown> & {_telefunctionName: string, _telefunctionArgs: unknown[]},
   telefunctions: Telefunctions,
   config: Config,
   secretKey: SecretKey,
-  universalAdapterName: UniversalAdapterName,
   contextProxy_: ContextObject
 ): Promise<HttpResponseProps | null> {
-  const wrongApiUsage = validateApiUsage(requestProps, universalAdapterName);
-  if (wrongApiUsage) {
-    return handleWrongApiUsage(wrongApiUsage);
-  }
-
-  try {
-    userDefinedContext_ = await resolveUserProvidedContext(userDefinedContext_);
-  } catch (contextError) {
-    return handleContextError(contextError);
-  }
-  assert(userDefinedContext_ instanceof Object);
 
   const {
-    telefunctionName,
-    telefunctionArgs,
-    malformedRequest,
-    malformedIntegration,
     isNotTelefuncRequest,
     isHumanMode,
-  }: RequestInfo = parseRequestInfo(requestProps, config, universalAdapterName);
+  } = {isHumanMode: false, isNotTelefuncRequest: false}
+  const telefunctionName = userDefinedContext_._telefunctionName
+  const telefunctionArgs = userDefinedContext_._telefunctionArgs
 
   if (isNotTelefuncRequest) {
     return null;
   }
 
+  /*
   if (malformedRequest) {
     return handleMalformedRequest(malformedRequest);
   }
@@ -215,6 +192,7 @@ async function _getApiHttpResponse(
   if (malformedIntegration) {
     return handleMalformedIntegration(malformedIntegration);
   }
+  */
 
   assert(telefunctionName && telefunctionArgs);
 
@@ -222,19 +200,15 @@ async function _getApiHttpResponse(
     return handleTelefunctionMissing(telefunctionName, telefunctions);
   }
 
-  const {
-    telefunctionResult,
-    telefunctionError,
-    contextModifications,
-  } = await runTelefunction(
-    telefunctionName,
-    telefunctionArgs,
-    userDefinedContext_,
-    false,
-    telefunctions,
-    contextProxy_,
-    requestProps
-  );
+  const { telefunctionResult, telefunctionError, contextModifications } =
+    await runTelefunction(
+      telefunctionName,
+      telefunctionArgs,
+      userDefinedContext_,
+      false,
+      telefunctions,
+      contextProxy_,
+    );
 
   return await handleTelefunctionOutcome(
     telefunctionResult,
@@ -273,7 +247,6 @@ async function directCall(
     true,
     telefunctions,
     contextProxy_,
-    null
   );
 
   if (telefunctionError) {
@@ -290,7 +263,6 @@ async function runTelefunction(
   isDirectCall: IsDirectCall,
   telefunctions: Telefunctions,
   contextProxy_: ContextObject,
-  requestProps: HttpRequestProps | null
 ): Promise<{
   telefunctionResult?: TelefunctionResult;
   telefunctionError?: TelefunctionError;
@@ -307,7 +279,6 @@ async function runTelefunction(
   let telefunctionResult: TelefunctionResult | undefined;
   let telefunctionError: TelefunctionError | undefined;
 
-  createContextHookFallback(requestProps);
   const contextHook = getContextHook();
   assert(contextHook);
   contextHook.userDefinedContext = {
@@ -488,167 +459,6 @@ function getConfigProxy(configDefaults: Config): Config {
     configObject[configName] = configValue as never;
     return true;
   }
-}
-
-function parseRequestInfo(
-  requestProps: HttpRequestProps,
-  config: Config,
-  universalAdapterName: UniversalAdapterName
-): RequestInfo {
-  assert(requestProps.url && requestProps.method);
-
-  const method: HttpRequestMethod = requestProps.method.toUpperCase() as HttpRequestMethod;
-
-  const urlProps = getUrlProps(requestProps.url);
-  assert(urlProps.pathname.startsWith("/"));
-
-  const { pathname } = urlProps;
-  const { body: requestBody } = requestProps;
-  const isHumanMode = isHumanReadableMode(method);
-
-  if (
-    !["GET", "POST"].includes(method) ||
-    !pathname.startsWith(config.baseUrl)
-  ) {
-    return { isNotTelefuncRequest: true, isHumanMode };
-  }
-
-  const {
-    malformedRequest: malformationError__pathname,
-    telefunctionName,
-    argsInUrl,
-  } = parsePathname(pathname, config);
-
-  if (malformationError__pathname) {
-    return {
-      malformedRequest: malformationError__pathname,
-      telefunctionName,
-      isHumanMode,
-    };
-  }
-
-  const {
-    telefunctionArgs,
-    malformedRequest,
-    malformedIntegration,
-  } = getTelefunctionArgs(
-    argsInUrl,
-    requestBody,
-    requestProps,
-    universalAdapterName
-  );
-  if (malformedRequest || malformedIntegration) {
-    assert(!malformedIntegration || !malformedRequest);
-    return {
-      malformedRequest,
-      malformedIntegration,
-      telefunctionName,
-      isHumanMode,
-    };
-  }
-
-  assert(telefunctionArgs && telefunctionArgs.constructor === Array);
-  return {
-    telefunctionArgs,
-    telefunctionName,
-    isHumanMode,
-  };
-}
-
-function getTelefunctionArgs(
-  argsInUrl: ArgsInUrl,
-  requestBody: HttpRequestBody | undefined,
-  requestProps: HttpRequestProps,
-  universalAdapterName: UniversalAdapterName
-): {
-  telefunctionArgs?: TelefunctionArgs;
-  malformedRequest?: MalformedRequest;
-  malformedIntegration?: MalformedIntegration;
-} {
-  const ARGS_IN_BODY = "args-in-body";
-  const args_are_in_body = argsInUrl === ARGS_IN_BODY;
-
-  let telefunctionArgs__string: TelefunctionArgsSerialized;
-  if (args_are_in_body) {
-    if (!requestBody) {
-      const malformedIntegration = getUsageError(
-        [
-          universalAdapterName
-            ? `Your ${universalAdapterName} server is not providing the HTTP request body.`
-            : "Argument `body` missing when calling `getApiHttpResponse()`.",
-          "You need to provide the HTTP request body when calling a telefunction with arguments serialized to >=2000 characters.",
-          getBodyUsageNote(requestProps, universalAdapterName),
-        ].join(" ")
-      );
-      return {
-        malformedIntegration,
-      };
-    }
-    const argsInHttpBody: ArgsInHttpBody =
-      requestBody.constructor === Array
-        ? // Server framework already parsed HTTP Request body with JSON
-          JSON.stringify(requestBody)
-        : // Server framework didn't parse HTTP Request body
-          requestBody;
-    telefunctionArgs__string = argsInHttpBody;
-  } else {
-    if (!argsInUrl) {
-      return {
-        telefunctionArgs: [],
-      };
-    }
-    telefunctionArgs__string = argsInUrl;
-  }
-
-  assert(telefunctionArgs__string);
-
-  let telefunctionArgs: TelefunctionArgs;
-  try {
-    telefunctionArgs = parse(telefunctionArgs__string);
-  } catch (err_) {
-    const httpBodyErrorText = [
-      "Malformatted API request.",
-      "Cannot parse `" + telefunctionArgs__string + "`.",
-    ].join(" ");
-    return {
-      malformedRequest: { httpBodyErrorText },
-    };
-  }
-  if (!telefunctionArgs || telefunctionArgs.constructor !== Array) {
-    const httpBodyErrorText =
-      "Malformatted API request. The parsed serialized telefunction arguments should be an array.";
-    return {
-      malformedRequest: { httpBodyErrorText },
-    };
-  }
-  return { telefunctionArgs };
-}
-function parsePathname(pathname: string, config: Config) {
-  assert(pathname.startsWith(config.baseUrl));
-  const urlParts = pathname.slice(config.baseUrl.length).split("/");
-
-  const isMalformatted =
-    urlParts.length < 1 || urlParts.length > 2 || !urlParts[0];
-
-  const telefunctionName = urlParts[0];
-  const argsInUrl: ArgsInUrl = urlParts[1] && decodeURIComponent(urlParts[1]);
-  /*
-    const pathname__prettified = isMalformatted
-      ? pathname
-      : config.baseUrl + telefunctionName + "/" + argsInUrl;
-    */
-  let malformedRequest: MalformedRequest | undefined;
-  if (isMalformatted) {
-    malformedRequest = {
-      httpBodyErrorText: "Malformatted API URL",
-    };
-  }
-
-  return {
-    malformedRequest,
-    telefunctionName,
-    argsInUrl,
-  };
 }
 
 async function handleTelefunctionOutcome(
@@ -865,77 +675,6 @@ function handleTelefunctionResult(
   } else {
     return responseProps;
   }
-}
-
-function validateApiUsage(
-  requestProps: HttpRequestProps,
-  universalAdapterName: UniversalAdapterName
-) {
-  try {
-    validate();
-  } catch (wrongApiUsage) {
-    return wrongApiUsage;
-  }
-  return;
-  function validate() {
-    assert(
-      (requestProps &&
-        requestProps.url &&
-        requestProps.method &&
-        requestProps.headers &&
-        "body" in requestProps) ||
-        !universalAdapterName
-    );
-
-    const missingArguments = [];
-    if (!requestProps?.url) missingArguments.push("url");
-    if (!requestProps?.method) missingArguments.push("method");
-    if (!requestProps?.headers) missingArguments.push("headers");
-    assertUsage(
-      missingArguments.length === 0,
-      [
-        "`getApiHttpResponse()`:",
-        `missing argument${missingArguments.length === 1 ? "" : "s"}`,
-        missingArguments.map((s) => "`" + s + "`").join(" and "),
-      ].join(" ")
-    );
-
-    assertUsage(
-      requestProps.headers instanceof Object &&
-        !("length" in requestProps.headers),
-      "`getApiHttpResponse()`: argument `headers` should be a `instanceof Object`."
-    );
-
-    assertUsage(
-      !requestProps.headers.cookie ||
-        typeof requestProps.headers.cookie === "string",
-      "getApiHttpResponse()`: argument `headers.cookie` should be a string or `undefined`."
-    );
-  }
-}
-
-function getBodyUsageNote(
-  requestProps: HttpRequestProps,
-  universalAdapterName: UniversalAdapterName
-) {
-  const expressNote =
-    "make sure to parse the body, for Express v4.16 and above: `app.use(express.json())`.";
-  const koaNote =
-    "make sure to parse the body, for example: `app.use(require('koa-bodyparser')())`.";
-  if (universalAdapterName === "express") {
-    return "You seem to be using Express; " + expressNote;
-  }
-  if (universalAdapterName === "koa") {
-    return "You seem to be using Koa; " + expressNote;
-  }
-  if (universalAdapterName === "hapi") {
-    assert("body" in requestProps);
-  }
-  return [
-    "If you are using Express: " + expressNote,
-    "If you are using Hapi: the HTTP request body is available at `request.payload`.",
-    "If you are using Koa: " + koaNote,
-  ].join(" ");
 }
 
 function noTelefunctionsDefined(telefunctions: Telefunctions) {

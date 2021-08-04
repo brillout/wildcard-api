@@ -11,6 +11,8 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'object'): obj is ObjectType & Record<PropName, Record<string, unknown>>;
 // prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'array'): obj is ObjectType & Record<PropName, unknown[]>;
+// prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'string[]'): obj is ObjectType & Record<PropName, string[]>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, (...args: any[]) => unknown>;
@@ -29,6 +31,9 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'unknown' ) {
     return true
+  }
+  if( type === 'array') {
+    return Array.isArray(propValue)
   }
   if( type === 'string[]') {
     return Array.isArray(propValue) && propValue.every(el => typeof el === 'string')

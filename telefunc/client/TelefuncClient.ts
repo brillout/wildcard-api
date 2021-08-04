@@ -1,18 +1,18 @@
 import { stringify } from "@brillout/json-s";
 import { makeHttpRequest } from "./makeHttpRequest";
 import { assert, assertUsage } from "./assert";
+import type {
+  TelefunctionName,
+  TelefunctionResult,
+  BodyParsed,
+  TelefunctionArgs,
+  Telefunctions,
+} from "../shared/types";
 
 export { TelefuncClient };
 
 // We need ES6 `Proxy`
 assertProxySupport();
-
-// Telefunctions
-export type TelefunctionName = string;
-type TelefunctionArgs = any[];
-export type TelefunctionResult = any;
-type Telefunction = (...args: TelefunctionArgs) => TelefunctionResult;
-type Telefunctions = Record<TelefunctionName, Telefunction>;
 
 /** Telefunc Client Configuration */
 type Config = {
@@ -45,7 +45,7 @@ type TelefuncServer = {
 
 const configDefault: ConfigPrivate = {
   serverUrl: null,
-  baseUrl: "/_telefunc/",
+  baseUrl: "/_telefunc",
   shortUrl: false,
   __INTERNAL_telefuncServer_test: null,
 };
@@ -123,33 +123,36 @@ function callTelefunctionOverHttp(
   telefunctionArgs: TelefunctionArgs,
   config: ConfigPrivate
 ): TelefunctionResult {
-  let body: HttpRequestBody | undefined;
-  let urlArgs__string: string | undefined;
-  const ARGS_IN_BODY = "args-in-body";
-  let telefunctionArgsStr = serializeArgs(telefunctionArgs, telefunctionName);
-  if (telefunctionArgsStr) {
-    // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-    if (telefunctionArgsStr.length >= 2000 || config.shortUrl) {
-      body = telefunctionArgsStr;
-      urlArgs__string = ARGS_IN_BODY;
-    } else {
-      urlArgs__string = telefunctionArgsStr;
-      assert(!urlArgs__string.startsWith(ARGS_IN_BODY));
-    }
-  }
+  assert(telefunctionArgs.length >= 0);
 
-  let url: HttpRequestUrl = getTelefunctionUrl(telefunctionName, config);
-  if (urlArgs__string) {
-    url += "/" + encodeURIComponent(urlArgs__string);
+  const bodyParsed: BodyParsed = {
+    name: telefunctionName,
+    args: telefunctionArgs,
+  };
+  assert(typeof telefunctionName === "string");
+  assert(Array.isArray(telefunctionArgs));
+  let body: HttpRequestBody | undefined;
+  try {
+    body = stringify(bodyParsed);
+  } catch (err_) {
+    assertUsage(
+      false,
+      [
+        `Couldn't serialize arguments for telefunction \`${telefunctionName}\`.`,
+        `Make sure all arguments passed to \`${telefunctionName}()\``,
+        "are only of the following types:",
+        "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
+      ].join(" ")
+    );
   }
+  assert(body);
+
+  let url: HttpRequestUrl = getTelefunctionUrl(config);
 
   return makeHttpRequest(url, body, telefunctionName);
 }
 
-function getTelefunctionUrl(
-  telefunctionName: TelefunctionName,
-  config: ConfigPrivate
-): HttpRequestUrl {
+function getTelefunctionUrl(config: ConfigPrivate): HttpRequestUrl {
   let url: HttpRequestUrl = "";
 
   const { serverUrl } = config;
@@ -168,11 +171,6 @@ function getTelefunctionUrl(
     }
     url += config.baseUrl;
   }
-
-  if (!url.endsWith("/")) {
-    url += "/";
-  }
-  url += telefunctionName;
 
   return url;
 }
@@ -268,31 +266,6 @@ function assertProxySupport() {
 }
 function envSupportsProxy() {
   return typeof "Proxy" !== "undefined";
-}
-
-function serializeArgs(
-  telefunctionArgs: TelefunctionArgs,
-  telefunctionName: TelefunctionName
-): string | undefined {
-  assert(telefunctionArgs.length >= 0);
-  if (telefunctionArgs.length === 0) {
-    return undefined;
-  }
-  let serializedArgs: string | undefined;
-  try {
-    serializedArgs = stringify(telefunctionArgs);
-  } catch (err_) {
-    assertUsage(
-      false,
-      [
-        `Couldn't serialize arguments for telefunction \`${telefunctionName}\`.`,
-        `Make sure all arguments passed to \`${telefunctionName}()\``,
-        "are only of the following types:",
-        "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
-      ].join(" ")
-    );
-  }
-  return serializedArgs;
 }
 
 function getConfigProxy(configDefaults: ConfigPrivate): ConfigPrivate {

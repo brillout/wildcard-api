@@ -5,6 +5,8 @@ import fetch = require("@brillout/fetch");
 import {
   TelefunctionName,
   TelefunctionResult,
+} from "../shared/types";
+import {
   HttpRequestBody,
   HttpRequestUrl,
 } from "./TelefuncClient";

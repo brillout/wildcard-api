@@ -1,5 +1,3 @@
 export { getContext } from "./server/getContext";
-export {
-  createTelefuncCaller,
-  setTelefuncFiles as __internal_setTelefuncFiles,
-} from "./server/createTelefuncCaller";
+export { createTelefuncCaller } from "./server/createTelefuncCaller";
+export { setTelefuncFiles as __internal_setTelefuncFiles } from "./server/callTelefunc";
