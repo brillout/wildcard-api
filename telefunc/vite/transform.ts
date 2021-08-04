@@ -10,7 +10,7 @@ function transform(): Plugin {
   return {
     name: "telefunc:transform",
     config: (config) => {
-      root = config.root;
+      root = config.root || process.cwd();
       return {
         ssr: { external: ["telefunc"] },
         optimizeDeps: { include: ["telefunc/client"] },
