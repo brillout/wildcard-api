@@ -691,6 +691,11 @@ util.inherits@^1.0.3:
   resolved "https://registry.yarnpkg.com/util.inherits/-/util.inherits-1.0.3.tgz#a9c626a0d06d34829d47ba56cab1278d745f9ce6"
   integrity sha1-qcYmoNBtNIKdR7pWyrEnjXRfnOY=
 
+vite-plugin-import-build@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-import-build/-/vite-plugin-import-build-0.1.0.tgz#525d4e835bf4a07defae5ef0b44b7a43ebb02d49"
+  integrity sha512-2v78hg7DbQ7AWgk/mkTvxveiq+WtBWeDHIn4hGCrAtDTZ6rsfT+zUe5fchHt4lObPd0Xl/HZ2NgHs/NzNun8XQ==
+
 vite@^2.4.3:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/vite/-/vite-2.4.4.tgz#8c402a07ad45f168f6eb5428bead38f3e4363e47"

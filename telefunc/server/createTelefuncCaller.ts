@@ -14,6 +14,9 @@ import type { ViteDevServer } from "vite";
 import { loadTelefuncFilesWithVite } from "../vite/loadTelefuncFilesWithVite";
 import type { Telefunction } from "../server/TelefuncServer";
 
+export { createTelefuncCaller };
+export { setTelefuncFiles };
+
 type CtxEnv =
   | {
       _isProduction: false;
@@ -25,6 +28,8 @@ type CtxEnv =
       _viteDevServer: undefined;
       _root?: string;
     };
+
+type Telefunctions = Record<string, Telefunction>;
 
 type HttpRequestMethd = "GET" | "POST";
 
@@ -39,8 +44,6 @@ type CtxRequestProps = {
 
 type HeaderArray = { key: string; value: string }[];
 type HeaderObject = Record<string, string>;
-
-export { createTelefuncCaller };
 
 function createTelefuncCaller({
   viteDevServer,
@@ -69,10 +72,13 @@ function createTelefuncCaller({
     addCtxEnv(telefuncContext, telefuncEnv);
     checkType<CtxEnv>(telefuncContext);
 
-    const telefunctions = await loadTelefunctions(telefuncContext);
-    telefunctions.forEach(({ telefunctionName, telefunction }) => {
-      telefuncServer.telefunctions[telefunctionName] = telefunction;
-    });
+    const telefunctions = await getTelefunctions(telefuncContext);
+    Object.entries(telefunctions).forEach(
+      ([telefunctionName, telefunction]) => {
+        telefuncServer.telefunctions[telefunctionName] = telefunction;
+      }
+    );
+
     const httpResponse: null | HttpResponseProps =
       //await telefuncServer.getApiHttpResponse(telefuncContext, telefuncContext);
       await telefuncServer.getApiHttpResponse(
@@ -254,26 +260,35 @@ function validateArgs(...args: unknown[]): CtxEnv {
   }
 }
 
-async function loadTelefunctions(telefuncContext: {
+var telefuncFiles: undefined | TelefuncFiles;
+
+function setTelefuncFiles(_telefuncFiles: TelefuncFiles) {
+  telefuncFiles = _telefuncFiles;
+}
+
+async function getTelefunctions(telefuncContext: {
   _viteDevServer?: ViteDevServer;
   _root?: string;
   _isProduction: boolean;
-}) {
-  const telefuncFiles = await loadTelefuncFiles(telefuncContext);
-  const telefunctions: {
-    telefunction: Telefunction;
-    telefunctionName: string;
-  }[] = [];
+}): Promise<Record<string, Telefunction>> {
+  if (telefuncFiles === undefined) {
+    const telefuncFiles = await loadTelefuncFiles(telefuncContext);
+    setTelefuncFiles(telefuncFiles);
+  }
+  assert(telefuncFiles);
+  const telefunctions: Telefunctions = {};
   Object.entries(telefuncFiles).forEach(
     ([telefuncFileName, telefuncFileExports]) => {
-      Object.keys(telefuncFileExports).forEach((telefunctionName) => {
-        const telefunction = telefuncFileExports[telefunctionName];
-        assertTelefunction(telefunction, {
-          telefunctionName,
-          telefuncFileName,
-        });
-        telefunctions.push({ telefunction, telefunctionName });
-      });
+      Object.entries(telefuncFileExports).forEach(
+        ([exportName, telefunction]) => {
+          const telefunctionName = telefuncFileName + "_" + exportName;
+          assertTelefunction(telefunction, {
+            exportName,
+            telefuncFileName,
+          });
+          telefunctions[telefunctionName] = telefunction;
+        }
+      );
     }
   );
   return telefunctions;
@@ -282,16 +297,16 @@ async function loadTelefunctions(telefuncContext: {
 function assertTelefunction(
   telefunction: unknown,
   {
-    telefunctionName,
+    exportName,
     telefuncFileName,
   }: {
-    telefunctionName: string;
+    exportName: string;
     telefuncFileName: string;
   }
 ): asserts telefunction is Telefunction {
   assertUsage(
     isCallable(telefunction),
-    `The telefunction \`${telefunctionName}\` defined in \`${telefuncFileName}\` is not a function. A tele-function should always be a function.`
+    `The telefunction \`${exportName}\` defined in \`${telefuncFileName}\` is not a function. A tele-function should always be a function.`
   );
 }
 
