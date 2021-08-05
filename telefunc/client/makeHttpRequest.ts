@@ -29,7 +29,8 @@ async function makeHttpRequest(
       //*/
       credentials: "same-origin",
       headers: {
-        "Content-Type": "application/json",
+        //"Content-Type": "application/json",
+        "Content-Type": "text/plain",
       },
     })
   );

@@ -1,29 +1,4 @@
-import { stringify, parse } from "@brillout/json-s";
-
-import type {
-  BodyParsed,
-  /*
-  TelefunctionName,
-  TelefunctionResult,
-  TelefunctionArgs,
-  Telefunction,
-  Telefunctions,
-  */
-} from "../shared/types";
-
-import {
-  getSetCookieHeader,
-  __setSecretKey,
-  __secretKey,
-  SecretKey,
-} from "../context/server/cookie-management";
-import {
-  createContextHookFallback,
-  deleteContextHookFallback,
-  getContextHook,
-} from "../context/server/async-hook-management";
-import { resolveUserProvidedContext } from "../context/server/resolveUserProvidedContext";
-import { createContextProxy } from "../context/server/createContextProxy";
+import { stringify } from "@brillout/json-s";
 
 // import { findAndLoadTelefuncFiles } from "./autoload/findAndLoadTelefuncFiles";
 
@@ -55,7 +30,6 @@ type TelefunctionError = Error | UsageError;
 // Context
 export type ContextObject = Record<string, any>;
 export type ContextGetter = () => Promise<ContextObject> | ContextObject;
-export type ContextModifications = { mods: null | Record<string, unknown> };
 
 /** Telefunc Server Configuration */
 type Config = {
@@ -108,16 +82,7 @@ export type HttpResponseProps = {
 type IsDirectCall = boolean & { _brand?: "IsDirectCall" };
 
 // Parsing & (de-)serialization
-type ArgsInUrl = string & { _brand?: "ArgsInUrl" };
 type IsHumanMode = boolean & { _brand?: "IsHumanMode" };
-type RequestInfo = {
-  telefunctionName?: TelefunctionName;
-  telefunctionArgs?: TelefunctionArgs;
-  isHumanMode: IsHumanMode;
-  malformedRequest?: MalformedRequest;
-  malformedIntegration?: MalformedIntegration;
-  isNotTelefuncRequest?: boolean & { _brand?: "IsNotTelefuncRequest" };
-};
 
 const configDefault: Config = {
   disableCache: false,
@@ -127,10 +92,8 @@ const configDefault: Config = {
 class TelefuncServer {
   telefunctions: Telefunctions = getTelefunctionsProxy();
   config: Config = getConfigProxy(configDefault);
-  setSecretKey = __setSecretKey.bind(this);
-  [__secretKey]: SecretKey = null;
 
-  context: ContextObject = createContextProxy(this);
+  context: ContextObject = {}
 
   async getApiHttpResponse(
     context: Record<string, unknown> & {_telefunctionName: string, _telefunctionArgs: unknown[]},
@@ -142,7 +105,6 @@ class TelefuncServer {
         context,
         this.telefunctions,
         this.config,
-        this[__secretKey],
         this.context
       );
     } catch (internalError) {
@@ -169,7 +131,6 @@ async function _getApiHttpResponse(
   userDefinedContext_: Record<string, unknown> & {_telefunctionName: string, _telefunctionArgs: unknown[]},
   telefunctions: Telefunctions,
   config: Config,
-  secretKey: SecretKey,
   contextProxy_: ContextObject
 ): Promise<HttpResponseProps | null> {
 
@@ -200,7 +161,7 @@ async function _getApiHttpResponse(
     return handleTelefunctionMissing(telefunctionName, telefunctions);
   }
 
-  const { telefunctionResult, telefunctionError, contextModifications } =
+  const { telefunctionResult, telefunctionError} =
     await runTelefunction(
       telefunctionName,
       telefunctionArgs,
@@ -213,11 +174,9 @@ async function _getApiHttpResponse(
   return await handleTelefunctionOutcome(
     telefunctionResult,
     telefunctionError,
-    contextModifications,
     isHumanMode,
     telefunctionName,
     config,
-    secretKey
   );
 }
 
@@ -266,7 +225,6 @@ async function runTelefunction(
 ): Promise<{
   telefunctionResult?: TelefunctionResult;
   telefunctionError?: TelefunctionError;
-  contextModifications: ContextObject;
 }> {
   assert(telefunctionName);
   assert(telefunctionArgs.constructor === Array);
@@ -279,13 +237,6 @@ async function runTelefunction(
   let telefunctionResult: TelefunctionResult | undefined;
   let telefunctionError: TelefunctionError | undefined;
 
-  const contextHook = getContextHook();
-  assert(contextHook);
-  contextHook.userDefinedContext = {
-    ...contextHook.userDefinedContext,
-    ...userDefinedContext_,
-  };
-
   setContext(contextProxy_, isDirectCall);
 
   try {
@@ -297,11 +248,7 @@ async function runTelefunction(
     telefunctionError = err;
   }
 
-  const contextModifications = contextHook.contextModifications_;
-  contextHook.contextModifications_ = {};
-  deleteContextHookFallback(contextHook);
-
-  return { telefunctionResult, telefunctionError, contextModifications };
+  return { telefunctionResult, telefunctionError };
 }
 
 function telefunctionIsValid(telefunction: Telefunction) {
@@ -464,11 +411,9 @@ function getConfigProxy(configDefaults: Config): Config {
 async function handleTelefunctionOutcome(
   telefunctionResult: TelefunctionResult | undefined,
   telefunctionError: TelefunctionError | undefined,
-  contextModifications: ContextObject,
   isHumanMode: IsHumanMode,
   telefunctionName: TelefunctionName,
   config: Config,
-  secretKey: SecretKey
 ): Promise<HttpResponseProps> {
   let responseProps: HttpResponseProps;
   if (telefunctionError) {
@@ -488,15 +433,6 @@ async function handleTelefunctionOutcome(
     assert(etag);
     responseProps.headers = responseProps.headers || {};
     responseProps.headers.ETag = [etag];
-  }
-
-  {
-    assert(Object.keys(contextModifications).length === 0 || secretKey);
-    const setCookieHeader = getSetCookieHeader(secretKey, contextModifications);
-    if (setCookieHeader !== null) {
-      responseProps.headers = responseProps.headers || {};
-      responseProps.headers["Set-Cookie"] = setCookieHeader;
-    }
   }
 
   return responseProps;

@@ -25,15 +25,7 @@ type TelefuncContextRequestProps = {
   _bodyParsed: BodyParsed;
   _telefunctionName: string;
   _telefunctionArgs: unknown[];
-  /*
-  _headers: null | unknown;
-  _headerArray: null | HeaderArray;
-  _headerObject: null | HeaderObject;
-  */
 };
-
-type HeaderArray = { key: string; value: string }[];
-type HeaderObject = Record<string, string>;
 
 async function callTelefunc(
   args: unknown[],
@@ -66,11 +58,6 @@ async function callTelefunc(
   Object.entries(telefunctions).forEach(([telefunctionName, telefunction]) => {
     telefuncServer.telefunctions[telefunctionName] = telefunction;
   });
-
-  const tmpArgs = {
-    method: "POST" as "POST",
-    url: telefuncContext._url,
-  };
 
   const httpResponse: null | HttpResponseProps =
     //await telefuncServer.getApiHttpResponse(telefuncContext, telefuncContext);
@@ -154,18 +141,6 @@ function parseArgs(args: unknown[]) {
     "body" in requestProps,
     "`callTelefunc({ body })`: argument `body` is missing."
   );
-  let _headers: null | HeaderArray | HeaderObject;
-  if (!("headers" in requestProps)) {
-    _headers = null;
-  } else {
-    const { headers } = requestProps;
-    assertUsage(
-      isHeaders(headers),
-      "`callTelefunc({ headers })`: argument `headers` should be an object of strings (`Record<string, string>`) or a an array of `{ key: string, value: string }`."
-    );
-    _headers = headers;
-  }
-  const { headerArray, headerObject } = parseHeaders(_headers);
 
   const requestPropsParsed = {
     url: requestProps.url,
@@ -177,63 +152,6 @@ function parseArgs(args: unknown[]) {
     requestPropsParsed,
     telefuncContext,
   };
-}
-
-function isHeaders(headers: unknown): headers is HeaderArray | HeaderObject {
-  if (!isObject(headers)) {
-    return false;
-  }
-  if (Array.isArray(headers)) {
-    if (
-      headers.every(
-        (h: unknown): h is { key: string; value: string } =>
-          hasProp(h, "key", "string") && hasProp(h, "value", "string")
-      )
-    ) {
-      checkType<{ key: string; value: string }[]>(headers);
-      checkType<HeaderArray>(headers);
-      return true;
-    }
-  } else {
-    if (isStringMap(headers)) {
-      checkType<Record<string, string>>(headers);
-      checkType<HeaderObject>(headers);
-      return true;
-    }
-  }
-  return false;
-}
-
-function isStringMap(obj: unknown): obj is Record<string, string> {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    Object.values(obj).every((h: unknown): h is string => typeof h === "string")
-  );
-}
-
-function parseHeaders(headers: null | HeaderObject | HeaderArray): {
-  headerArray: null | HeaderArray;
-  headerObject: null | HeaderObject;
-} {
-  let headerArray: null | HeaderArray;
-  let headerObject: null | HeaderObject;
-  if (headers === null) {
-    headerArray = null;
-    headerObject = null;
-  } else if (Array.isArray(headers)) {
-    headerArray = headers;
-    headerObject = Object.fromEntries(
-      headers.map(({ key, value }) => [key, value])
-    );
-  } else {
-    headerArray = Object.entries(headers).map(([key, value]) => ({
-      key,
-      value,
-    }));
-    headerObject = headers;
-  }
-  return { headerArray, headerObject };
 }
 
 function addCtxEnv<Ctx extends Record<string, unknown>>(
