@@ -1,7 +1,7 @@
 import { assert, assertUsage, hasProp, isPlainObject } from "./utils";
 import type { ViteDevServer } from "vite";
 import { callTelefunc } from "./callTelefunc";
-import { TelefuncContextEnv } from "./types";
+import { TelefuncContextConfig } from "./types";
 
 export { createTelefuncCaller };
 
@@ -9,15 +9,23 @@ function createTelefuncCaller({
   viteDevServer,
   root,
   isProduction,
+  baseUrl = "/_telefunc",
+  disableCache = false,
 }: {
   viteDevServer?: ViteDevServer;
   root?: string;
   isProduction?: boolean;
+  /** Whether Telefunc generates HTTP ETag headers. */
+  disableCache: boolean;
+  /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_telefunc`. */
+  baseUrl: string;
 }) {
-  const telefuncEnv: TelefuncContextEnv = parseArgs(...arguments);
-  assert("_viteDevServer" in telefuncEnv);
-  assert("_root" in telefuncEnv);
-  assert("_isProduction" in telefuncEnv);
+  const telefuncEnv: TelefuncContextConfig = parseArgs(...arguments);
+  assert(telefuncEnv._isProduction === isProduction);
+  assert(telefuncEnv._root === root);
+  assert(telefuncEnv._viteDevServer === viteDevServer);
+  assert(telefuncEnv._baseUrl === baseUrl);
+  assert(telefuncEnv._disableCache === disableCache);
 
   /**
    * Get the HTTP response of a telefunction call.
@@ -38,16 +46,11 @@ function createTelefuncCaller({
     };
     telefuncContext: Record<string, unknown>;
   }) {
-    try {
-      return await callTelefunc(Array.from(arguments), telefuncEnv);
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
+    return callTelefunc(Array.from(arguments), telefuncEnv);
   };
 }
 
-function parseArgs(...args: unknown[]): TelefuncContextEnv {
+function parseArgs(...args: unknown[]): TelefuncContextConfig {
   const [argObj, ...argsRest2] = args;
   assertUsage(
     argsRest2.length === 0,
@@ -61,6 +64,16 @@ function parseArgs(...args: unknown[]): TelefuncContextEnv {
     hasProp(argObj, "isProduction", "boolean"),
     "`createTelefuncCaller({ isProduction })`: argument `isProduction` should be a boolean."
   );
+  assertUsage(
+    hasProp(argObj, "disableCache", "boolean"),
+    "`createTelefuncCaller({ disableCache })`: argument `disableCache` should be a boolean."
+  );
+  assertUsage(
+    hasProp(argObj, "baseUrl", "string"),
+    "`createTelefuncCaller({ baseUrl })`: argument `baseUrl` should be a string."
+  );
+  const _baseUrl = argObj.baseUrl;
+  const _disableCache = argObj.disableCache;
   const _isProduction = argObj.isProduction;
   let _viteDevServer: undefined | ViteDevServer = undefined;
   let _root: undefined | string;
@@ -74,7 +87,7 @@ function parseArgs(...args: unknown[]): TelefuncContextEnv {
       );
       _root = argObj.root;
     }
-    return { _viteDevServer, _root, _isProduction };
+    return { _viteDevServer, _root, _isProduction, _baseUrl, _disableCache };
   } else {
     assertUsage(
       hasProp(argObj, "viteDevServer"),
@@ -86,6 +99,6 @@ function parseArgs(...args: unknown[]): TelefuncContextEnv {
     );
     _viteDevServer = argObj.viteDevServer as ViteDevServer;
     _root = argObj.root;
-    return { _viteDevServer, _root, _isProduction };
+    return { _viteDevServer, _root, _isProduction, _baseUrl, _disableCache };
   }
 }

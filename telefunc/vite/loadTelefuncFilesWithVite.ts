@@ -1,16 +1,15 @@
 import { assert, hasProp, isObject, moduleExists } from "../server/utils";
 import type { ViteDevServer } from "vite";
 import { loadViteEntry } from './loadViteEntry'
+import {TelefuncFilesUntyped} from "../server/types";
 
 export { loadTelefuncFilesWithVite };
-
-type TelefuncFiles = Record<string, Record<string, unknown>>;
 
 async function loadTelefuncFilesWithVite(telefuncContext: {
   _root: string;
   _viteDevServer?: ViteDevServer;
   _isProduction: boolean;
-}): Promise<TelefuncFiles> {
+}): Promise<TelefuncFilesUntyped> {
   const viteEntryFile = 'importTelefuncFiles.js'
   assert(moduleExists(`./${viteEntryFile}`, __dirname))
   const userDist = `${telefuncContext._root}/dist`

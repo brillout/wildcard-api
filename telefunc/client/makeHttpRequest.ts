@@ -2,14 +2,8 @@ import { assert } from "./assert";
 import { parse } from "@brillout/json-s";
 // @ts-ignore
 import fetch = require("@brillout/fetch");
-import {
-  TelefunctionName,
-  TelefunctionResult,
-} from "../shared/types";
-import {
-  HttpRequestBody,
-  HttpRequestUrl,
-} from "./TelefuncClient";
+import { TelefunctionName, TelefunctionResult } from "../shared/types";
+import { HttpRequestBody, HttpRequestUrl } from "./TelefuncClient";
 
 export { makeHttpRequest };
 export { TelefuncError };
@@ -21,15 +15,10 @@ async function makeHttpRequest(
 ): Promise<TelefunctionResult> {
   const makeRequest = addHandli(() =>
     fetch(url, {
-      /* Also enable `DEBUG_CACHE` flag on server-side.
-          method: 'GET',
-          /*/
       method: "POST",
       body,
-      //*/
       credentials: "same-origin",
       headers: {
-        //"Content-Type": "application/json",
         "Content-Type": "text/plain",
       },
     })
@@ -50,43 +39,23 @@ async function makeHttpRequest(
     });
   }
 
-  const responseBody = await response.text();
-  const contentType = response.headers.get("content-type");
+  const statusCode = response.status;
+  assert(statusCode === 500 || statusCode === 200);
   const isOk = response.ok;
   assert([true, false].includes(isOk));
+  assert(isOk === (statusCode === 200));
 
-  const value =
-    // TODO use mime type instead
-    contentType.includes("application/json")
-      ? parse(responseBody)
-      : responseBody;
-
-  const statusCode = response.status;
-
-  if (isOk) {
-    assert(statusCode === 200);
+  if (statusCode === 200) {
+    const responseBody = await response.text();
+    const value = parse(responseBody);
     return value;
+  } else {
+    const codeErrorText = `The telefunc \`${telefunctionName}\` threw an error. Check the server logs for more information.`;
+    throw new TelefuncError(codeErrorText, {
+      isConnectionError: false,
+      isCodeError: true,
+    });
   }
-
-  // The Telefunc client issued a malformatted request.
-  assert(statusCode !== 400);
-
-  // Status codes ever returned by the Wilcard server:
-  //  - 200
-  //  - 400
-  //  - 404
-  //  - 500
-  assert([500, 404].includes(statusCode));
-
-  const codeErrorText =
-    statusCode === 404
-      ? `Telefunction \`${telefunctionName}\` does not exist. Check the server-side error for more information.`
-      : `Telefunction \`${telefunctionName}\` threw an error.`;
-
-  throw new TelefuncError(codeErrorText, {
-    isConnectionError: false,
-    isCodeError: true,
-  });
 }
 
 class TelefuncError extends Error {
