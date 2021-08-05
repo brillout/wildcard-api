@@ -15,12 +15,12 @@ import {
 } from "./utils";
 import { loadTelefuncFilesWithVite } from "../vite/loadTelefuncFilesWithVite";
 import {
-  TelefuncContextConfig,
   TelefuncContextUserProvided,
   TelefuncFiles,
   TelefuncFilesUntyped,
 } from "./types";
-import {setContext} from "./getContext";
+import { setContext } from "./getContext";
+import { Config } from "./createTelefuncCaller";
 
 export { setTelefuncFiles };
 export { callTelefunc };
@@ -41,14 +41,11 @@ type Result = Promise<null | {
   contentType: "text/plain";
 }>;
 
-async function callTelefunc(
-  args: unknown[],
-  telefuncEnv: TelefuncContextConfig
-): Result {
+async function callTelefunc(args: unknown[], config: Config): Result {
   try {
-    return await callTelefunc_(args, telefuncEnv);
+    return await callTelefunc_(args, config);
   } catch (err: unknown) {
-    handleError(err, telefuncEnv);
+    handleError(err, config);
     return {
       contentType: "text/plain",
       body: "Internal Server Error",
@@ -58,12 +55,17 @@ async function callTelefunc(
   }
 }
 
-async function callTelefunc_(
-  args: unknown[],
-  telefuncEnv: TelefuncContextConfig
-): Result {
+async function callTelefunc_(args: unknown[], config: Config): Result {
   const { requestPropsParsed, telefuncContext } = parseArgs(args);
   checkType<TelefuncContextUserProvided>(telefuncContext);
+
+  objectAssign(telefuncContext, {
+    _isProduction: config.isProduction,
+    _root: config.root,
+    _viteDevServer: config.viteDevServer,
+    _baseUrl: config.baseUrl,
+    _disableCache: config.disableCache,
+  });
 
   if (
     requestPropsParsed.method !== "POST" &&
@@ -83,8 +85,7 @@ async function callTelefunc_(
   });
   checkType<TelefuncContextRequestProps>(telefuncContext);
 
-  objectAssign(telefuncContext, telefuncEnv);
-  checkType<TelefuncContextConfig>(telefuncContext);
+  objectAssign(telefuncContext, config);
 
   const { telefuncFiles, telefuncs } = await getTelefuncs(telefuncContext);
   objectAssign(telefuncContext, {
@@ -98,109 +99,108 @@ async function callTelefunc_(
 
   assertUsage(
     telefuncContext._telefunctionName in telefuncContext._telefuncs,
-    `Could not find telefunc \`${telefuncContext._telefunctionName}\`. Did you reload the browser (or deploy a new frontend) without reloading the server (or deploying the new backend)? Loaded telefuncs: [${Object.keys(telefuncContext._telefuncs).join(', ')}]`
+    `Could not find telefunc \`${
+      telefuncContext._telefunctionName
+    }\`. Did you reload the browser (or deploy a new frontend) without reloading the server (or deploying the new backend)? Loaded telefuncs: [${Object.keys(
+      telefuncContext._telefuncs
+    ).join(", ")}]`
   );
 
-  const { telefuncResult, telefuncHasErrored, telefuncError } = await executeTelefunc(telefuncContext)
-  objectAssign(
-    telefuncContext,
-    {
-      _telefuncResult: telefuncResult,
-      _telefuncHasError: telefuncHasErrored,
-      _telefuncError: telefuncError,
-      _err: telefuncError
-    }
-  )
+  const { telefuncResult, telefuncHasErrored, telefuncError } =
+    await executeTelefunc(telefuncContext);
+  objectAssign(telefuncContext, {
+    _telefuncResult: telefuncResult,
+    _telefuncHasError: telefuncHasErrored,
+    _telefuncError: telefuncError,
+    _err: telefuncError,
+  });
 
-  if (telefuncContext._telefuncError ) {
-    throw telefuncContext._telefuncError
+  if (telefuncContext._telefuncError) {
+    throw telefuncContext._telefuncError;
   }
 
   {
-    const serializationResult = serializeTelefuncResult(telefuncContext)
-      assertUsage(
-        !('serializationError' in serializationResult),
+    const serializationResult = serializeTelefuncResult(telefuncContext);
+    assertUsage(
+      !("serializationError" in serializationResult),
       [
         `Couldn't serialize value returned by telefunc \`${telefuncContext._telefunctionName}\`.`,
         "Make sure returned values",
         "to be of the following types:",
         "`Object`, `string`, `number`, `Date`, `null`, `undefined`, `Inifinity`, `NaN`, `RegExp`.",
       ].join(" ")
-      )
-    const { httpResponseBody } = serializationResult
-    objectAssign(telefuncContext, { _httpResponseBody: httpResponseBody })
+    );
+    const { httpResponseBody } = serializationResult;
+    objectAssign(telefuncContext, { _httpResponseBody: httpResponseBody });
   }
 
   {
-    let httpResponseEtag: null | string = null
-  if (!telefuncContext._disableCache) {
-    const { computeEtag } = await import("./cache/computeEtag");
-    const httpResponseEtag = computeEtag(telefuncContext._httpResponseBody);
-    assert(httpResponseEtag);
-  }
-    objectAssign(
-      telefuncContext,
-      {
-        _httpResponseEtag: httpResponseEtag
-      }
-    )
+    let httpResponseEtag: null | string = null;
+    if (!telefuncContext._disableCache) {
+      const { computeEtag } = await import("./cache/computeEtag");
+      const httpResponseEtag = computeEtag(telefuncContext._httpResponseBody);
+      assert(httpResponseEtag);
+    }
+    objectAssign(telefuncContext, {
+      _httpResponseEtag: httpResponseEtag,
+    });
   }
 
   return {
     body: telefuncContext._httpResponseBody,
     statusCode: 200,
     etag: telefuncContext._httpResponseEtag,
-    contentType: 'text/plain'
-  }
+    contentType: "text/plain",
+  };
 }
 
 async function executeTelefunc(telefuncContext: {
-  _telefunctionName: string,
-  _telefunctionArgs: unknown[],
-  _telefuncs: Record<string, Telefunction>
+  _telefunctionName: string;
+  _telefunctionArgs: unknown[];
+  _telefuncs: Record<string, Telefunction>;
 }) {
-  const telefunctionName = telefuncContext._telefunctionName
-  const telefunctionArgs = telefuncContext._telefunctionArgs
-  const telefuncs = telefuncContext._telefuncs
-  const telefunc = telefuncs[telefunctionName]
+  const telefunctionName = telefuncContext._telefunctionName;
+  const telefunctionArgs = telefuncContext._telefunctionArgs;
+  const telefuncs = telefuncContext._telefuncs;
+  const telefunc = telefuncs[telefunctionName];
 
   setContext(telefuncContext, false);
 
-  let resultSync: unknown
-  let telefuncError: unknown
-  let telefuncHasErrored = false
+  let resultSync: unknown;
+  let telefuncError: unknown;
+  let telefuncHasErrored = false;
   try {
-    resultSync = telefunc.apply(null, telefunctionArgs)
-  } catch(err) {
-    telefuncHasErrored = true
-    telefuncError = err
+    resultSync = telefunc.apply(null, telefunctionArgs);
+  } catch (err) {
+    telefuncHasErrored = true;
+    telefuncError = err;
   }
 
-  let telefuncResult: unknown
-  if( !telefuncHasErrored ) {
+  let telefuncResult: unknown;
+  if (!telefuncHasErrored) {
     assertUsage(
       isPromise(resultSync),
       `Your telefunc ${telefunctionName} did not return a promise. A telefunc should always return a promise. To solve this, you can simply use a \`async function\` (or \`async () => {}\`) instead of a normal function.`
-    )
+    );
     try {
-      telefuncResult = await resultSync
-    } catch(err) {
-      telefuncHasErrored = true
-      telefuncError = err
+      telefuncResult = await resultSync;
+    } catch (err) {
+      telefuncHasErrored = true;
+      telefuncError = err;
     }
   }
 
-  return { telefuncResult, telefuncHasErrored, telefuncError }
+  return { telefuncResult, telefuncHasErrored, telefuncError };
 }
 
 function serializeTelefuncResult(telefuncContext: {
-  _telefuncResult: unknown
+  _telefuncResult: unknown;
 }) {
   try {
-    const httpResponseBody = stringify(telefuncContext._telefuncResult)
-    return { httpResponseBody }
-  } catch(serializationError: unknown) {
-    return { serializationError }
+    const httpResponseBody = stringify(telefuncContext._telefuncResult);
+    return { httpResponseBody };
+  } catch (serializationError: unknown) {
+    return { serializationError };
   }
 }
 
@@ -355,16 +355,10 @@ function assertTelefunction(
   );
 }
 
-function handleError(
-  err: unknown,
-  {
-    _viteDevServer,
-    _isProduction,
-  }: { _viteDevServer?: ViteDevServer; _isProduction?: boolean }
-) {
+function handleError(err: unknown, config: Config) {
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
   const errStr = (hasProp(err, "stack") && String(err.stack)) || String(err);
-  if (!_isProduction && _viteDevServer) {
+  if (!config.isProduction && config.viteDevServer) {
     // TODO: check if Vite already logged the error
   }
   console.error(errStr);
