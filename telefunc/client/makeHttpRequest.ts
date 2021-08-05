@@ -4,6 +4,7 @@ import { parse } from "@brillout/json-s";
 import fetch = require("@brillout/fetch");
 import { TelefunctionName, TelefunctionResult } from "../shared/types";
 import { HttpRequestBody, HttpRequestUrl } from "./TelefuncClient";
+import { isObject } from "./utils";
 
 export { makeHttpRequest };
 export { TelefuncError };
@@ -48,7 +49,11 @@ async function makeHttpRequest(
   if (statusCode === 200) {
     const responseBody = await response.text();
     const value = parse(responseBody);
-    return value;
+    assert(value);
+    assert(isObject(value));
+    assert("telefuncResult" in value);
+    const telefuncResult: unknown = value.telefuncResult;
+    return telefuncResult;
   } else {
     const codeErrorText = `The telefunc \`${telefunctionName}\` threw an error. Check the server logs for more information.`;
     throw new TelefuncError(codeErrorText, {

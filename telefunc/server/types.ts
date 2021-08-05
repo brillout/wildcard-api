@@ -1,5 +1,21 @@
+import type { ViteDevServer } from "vite";
 export * from "../shared/types";
 import { Telefunctions } from "../shared/types";
+
+export type RequestProps = {
+  url: string;
+  method: string;
+  body: string | unknown;
+}
+
+export type Config = {
+  viteDevServer?: ViteDevServer;
+  root?: string;
+  isProduction: boolean;
+  baseUrl: string;
+  urlPath: string;
+  disableCache: boolean;
+};
 
 export type TelefuncContextUserProvided = Record<string, unknown>;
 

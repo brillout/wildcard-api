@@ -1,28 +1,30 @@
 import { assertUsage, hasProp, isPlainObject } from "./utils";
 import type { ViteDevServer } from "vite";
 import { callTelefunc } from "./callTelefunc";
+import {RequestProps, Config} from "./types";
 
 export { createTelefuncCaller };
-
-export type Config = {
-  viteDevServer?: ViteDevServer;
-  root?: string;
-  isProduction: boolean;
-  /** Whether Telefunc generates HTTP ETag headers. */
-  disableCache: boolean;
-  /** Serve Telefunc HTTP requests at `/${baseUrl}/*`. Default: `_telefunc`. */
-  baseUrl: string;
-};
 
 function createTelefuncCaller({
   viteDevServer,
   root,
   isProduction,
-  baseUrl = "/_telefunc",
-  disableCache = false,
-}: Config) {
-  const config = { viteDevServer, root, isProduction, baseUrl, disableCache };
-  assertArgs(config, ...arguments);
+  baseUrl = "/",
+  urlPath = "/_telefunc",
+  disableCache = false
+}: {
+  viteDevServer?: ViteDevServer;
+  root?: string;
+  isProduction: boolean;
+  /** URL at which Telefunc HTTP requests are served (default: `_telefunc`). */
+  urlPath?: string;
+  /** Whether Telefunc generates HTTP ETag headers. */
+  disableCache?: boolean;
+  /** Base URL (default: `/`). */
+  baseUrl?: string;
+}) {
+  const config: Config = { viteDevServer, root, isProduction, baseUrl, disableCache, urlPath };
+  assertArgs(config, Array.from(arguments));
 
   /**
    * Get the HTTP response of a telefunction call.
@@ -32,22 +34,15 @@ function createTelefuncCaller({
    * @param context The context object
    * @returns HTTP response
    */
-  return async function ({
-    requestProps,
-    telefuncContext,
-  }: {
-    requestProps: {
-      url: string;
-      method: string;
-      body: string | unknown;
-    };
-    telefuncContext: Record<string, unknown>;
-  }) {
-    return callTelefunc(Array.from(arguments), config);
+  return async function (
+    requestProps: RequestProps,
+    telefuncContext: Record<string, unknown>
+  ) {
+    return callTelefunc(requestProps, telefuncContext, config, Array.from(arguments));
   };
 }
 
-function assertArgs(config: unknown, ...args: unknown[]) {
+function assertArgs(config: unknown, args: unknown[]) {
   assertUsage(
     args.length === 1,
     "`createTelefuncCaller()`: all arguments should be passed as a single argument object."

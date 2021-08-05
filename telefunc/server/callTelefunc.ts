@@ -15,12 +15,14 @@ import {
 } from "./utils";
 import { loadTelefuncFilesWithVite } from "../vite/loadTelefuncFilesWithVite";
 import {
+  RequestProps,
   TelefuncContextUserProvided,
   TelefuncFiles,
   TelefuncFilesUntyped,
+  Config,
 } from "./types";
 import { setContext } from "./getContext";
-import { Config } from "./createTelefuncCaller";
+import { resolve } from "path";
 
 export { setTelefuncFiles };
 export { callTelefunc };
@@ -41,9 +43,14 @@ type Result = Promise<null | {
   contentType: "text/plain";
 }>;
 
-async function callTelefunc(args: unknown[], config: Config): Result {
+async function callTelefunc(
+  requestProps: RequestProps,
+  telefuncContext: {},
+  config: Config,
+  args: unknown[]
+): Result {
   try {
-    return await callTelefunc_(args, config);
+    return await callTelefunc_(requestProps, telefuncContext, config, args);
   } catch (err: unknown) {
     handleError(err, config);
     return {
@@ -55,9 +62,17 @@ async function callTelefunc(args: unknown[], config: Config): Result {
   }
 }
 
-async function callTelefunc_(args: unknown[], config: Config): Result {
-  const { requestPropsParsed, telefuncContext } = parseArgs(args);
-  checkType<TelefuncContextUserProvided>(telefuncContext);
+async function callTelefunc_(
+  requestProps: RequestProps,
+  telefuncContext: {},
+  config: Config,
+  args: unknown[]
+): Result {
+  validateArgs(requestProps, telefuncContext, args);
+  objectAssign(telefuncContext, {
+    _url: requestProps.url,
+    _method: requestProps.method,
+  });
 
   objectAssign(telefuncContext, {
     _isProduction: config.isProduction,
@@ -65,19 +80,30 @@ async function callTelefunc_(args: unknown[], config: Config): Result {
     _viteDevServer: config.viteDevServer,
     _baseUrl: config.baseUrl,
     _disableCache: config.disableCache,
+    _urlPath: config.urlPath,
   });
 
+  {
+    const urlPathResolved = getTelefuncUrlPath(telefuncContext);
+    objectAssign(telefuncContext, {
+      _urlPathResolved: urlPathResolved,
+    });
+  }
+
   if (
-    requestPropsParsed.method !== "POST" &&
-    requestPropsParsed.method !== "post"
+    telefuncContext._method !== "POST" &&
+    telefuncContext._method !== "post"
   ) {
     return null;
   }
+  if (telefuncContext._url !== telefuncContext._urlPathResolved) {
+    return null;
+  }
 
-  const requestBodyParsed = parseBody(requestPropsParsed);
+  const requestBodyParsed = parseBody(requestProps);
   objectAssign(telefuncContext, {
-    _url: requestPropsParsed.url,
-    _method: requestPropsParsed.method,
+    _url: requestProps.url,
+    _method: requestProps.method,
     _body: requestBodyParsed.body,
     _bodyParsed: requestBodyParsed.bodyParsed,
     _telefunctionName: requestBodyParsed.bodyParsed.name,
@@ -197,7 +223,9 @@ function serializeTelefuncResult(telefuncContext: {
   _telefuncResult: unknown;
 }) {
   try {
-    const httpResponseBody = stringify(telefuncContext._telefuncResult);
+    const httpResponseBody = stringify({
+      telefuncResult: telefuncContext._telefuncResult
+    });
     return { httpResponseBody };
   } catch (serializationError: unknown) {
     return { serializationError };
@@ -237,11 +265,14 @@ function parseBody({ url, body }: { url: string; body: unknown }) {
   return { body, bodyParsed };
 }
 
-function parseArgs(args: unknown[]) {
-  const [requestProps, telefuncContext, ...argsRest] = args;
+function validateArgs(
+  requestProps: unknown,
+  telefuncContext: unknown,
+  args: unknown[]
+) {
   assertUsage(
-    argsRest.length === 0,
-    "You are providing more than 2 arguments to `callTelefunc(arg1, arg2)` but `callTelefunc()` accepts only two arguments"
+    args.length === 2,
+    "You are providing more than 2 arguments to `callTelefunc()` but `callTelefunc()` accepts only two arguments"
   );
   assertUsage(
     requestProps,
@@ -279,17 +310,6 @@ function parseArgs(args: unknown[]) {
     "body" in requestProps,
     "`callTelefunc({ body })`: argument `body` is missing."
   );
-
-  const requestPropsParsed = {
-    url: requestProps.url,
-    method: requestProps.method,
-    body: requestProps.body,
-  };
-
-  return {
-    requestPropsParsed,
-    telefuncContext,
-  };
 }
 
 var telefuncFilesManuallySet: undefined | TelefuncFiles;
@@ -362,4 +382,13 @@ function handleError(err: unknown, config: Config) {
     // TODO: check if Vite already logged the error
   }
   console.error(errStr);
+}
+
+function getTelefuncUrlPath(telefuncContext: {
+  _baseUrl: string;
+  _urlPath: string;
+}) {
+  const { _baseUrl, _urlPath } = telefuncContext;
+  const urlPathResolved = resolve(_baseUrl, _urlPath);
+  return urlPathResolved;
 }
