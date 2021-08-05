@@ -16,7 +16,6 @@ import {
 import { loadTelefuncFilesWithVite } from "../vite/loadTelefuncFilesWithVite";
 import {
   RequestProps,
-  TelefuncContextUserProvided,
   TelefuncFiles,
   TelefuncFilesUntyped,
   Config,
@@ -110,8 +109,6 @@ async function callTelefunc_(
     _telefunctionArgs: requestBodyParsed.bodyParsed.args,
   });
   checkType<TelefuncContextRequestProps>(telefuncContext);
-
-  objectAssign(telefuncContext, config);
 
   const { telefuncFiles, telefuncs } = await getTelefuncs(telefuncContext);
   objectAssign(telefuncContext, {
