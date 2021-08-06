@@ -1,4 +1,4 @@
-*Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.*
+*Remote Functions. Instead of API.*
 
 Intro & docs: [telefunc.com](https://telefunc.com)
 <br/>
