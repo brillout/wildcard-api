@@ -1,0 +1,19 @@
+{
+  "_default/_default.page.client.ts": {
+    "file": "assets/_default/_default.page.client.ts.948143f6.js",
+    "src": "_default/_default.page.client.ts",
+    "isEntry": true,
+    "imports": [
+      "_vendor.7f883c29.js"
+    ],
+    "css": [
+      "assets/_default/_default.page.client.ts.5acf8709.css"
+    ],
+    "assets": [
+      "assets/Inter-Var.2bc54814.ttf"
+    ]
+  },
+  "_vendor.7f883c29.js": {
+    "file": "assets/vendor.7f883c29.js"
+  }
+}
