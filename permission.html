@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+    <html>
+      <head><link rel="stylesheet" type="text/css" href="/assets/_default/_default.page.client.ts.5acf8709.css"><link rel="preload" as="font" crossorigin type="font/ttf" href="/assets/Inter-Var.2bc54814.ttf"><link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.7f883c29.js">
+        <link rel="icon" href="/assets/telefunc.40358720.svg" />
+        <title>Permission &amp; Validation | Telefunc</title>
+        
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+      </head>
+      <body>
+        <div id="page-view"><div style="display:flex" data-reactroot=""><div id="navigation-container" style="flex-shrink:0;border-right:1px solid #eee"><div style="display:flex;flex-direction:column;align-items:center"><a id="navigation-header-logo" style="display:flex;align-items:center;color:inherit;justify-content:left;text-decoration:none;padding-top:20px;padding-bottom:11px" href="/"><img src="/assets/telefunc.40358720.svg" height="55" width="55"/>Telefunc</a><div style="display:flex;align-items:center;padding-top:0;justify-content:left"><a class="colorize-on-hover decolorize-4" href="https://github.com/brillout/telefunc" style="padding:3px;display:inline-block;line-height:0"><img src="/assets/github.86a91340.svg" height="20"/></a><a class="colorize-on-hover decolorize-6" href="https://discord.gg/qTq92FQzKb" style="padding:3px;display:inline-block;line-height:0"><img src="/assets/discord.c14881e9.svg" height="20"/></a><a class="colorize-on-hover decolorize-7" href="https://twitter.com/brillout" style="padding:3px;display:inline-block;line-height:0"><img src="/assets/twitter.c1bd51e1.svg" height="20"/></a><a href="https://github.com/brillout/telefunc/blob/master/CHANGELOG.md" class="button colorize-on-hover" style="display:flex;align-items:center;padding:1px 7px;margin-left:2px;font-size:0.97em;color:inherit"><span class="decolorize-7">v<!-- -->0.2.7</span><img class="decolorize-6" src="/assets/changelog.062bdc49.svg" height="16" style="margin-left:5px"/></a></div></div><div id="navigation-content" style="position:relative"><a class="nav-item nav-item-h1"><div class="nav-item-title"><span style="font-size:1.4em"><img src="/assets/compass.023c5145.svg" style="vertical-align:text-top;font-size:1em;width:1.4em"/> <span style="font-size:1rem">Overview</span></span></div></a><a class="nav-item nav-item-h2" href="/"><div class="nav-item-title">Introduction</div></a><a class="nav-item nav-item-h2" href="/tour"><div class="nav-item-title">Tour</div></a><a class="nav-item nav-item-h1"><div class="nav-item-title"><span style="font-size:1.4em">🌱<!-- --> <span style="font-size:1rem">Get Started</span></span></div></a><a class="nav-item nav-item-h2" href="/scaffold"><div class="nav-item-title">Scaffold new app</div></a><a class="nav-item nav-item-h2" href="/add"><div class="nav-item-title">Add to existing app</div></a><a class="nav-item nav-item-h1"><div class="nav-item-title"><span style="font-size:1.4em">📚<!-- --> <span style="font-size:1rem">Guides</span></span></div></a><a class="nav-item nav-item-h4"><div class="nav-item-title">Basics</div></a><a class="nav-item nav-item-h2 is-active" href="/permission"><div class="nav-item-title">Permission &amp; Validation</div></a><a class="nav-item nav-item-h2" href="/auth"><div class="nav-item-title">Authentication</div></a><a class="nav-item nav-item-h2" href="/error-handling"><div class="nav-item-title">Error Handling</div></a></div></div><div id="navigation-mask"></div><div id="page-container" class="doc-page"><div id="mobile-header" style="height:var(--mobile-header-height);width:100vw;position:relative"><div style="position:fixed;display:flex;align-items:center;background:white;z-index:999;top:0;left:0;height:var(--mobile-header-height);width:100%;border-bottom:1px solid #ddd"><div style="padding:20px;line-height:0" id="menu-toggle"><svg style="width:20px" class="icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div><a href="/" style="color:inherit;display:flex;align-items:center;justify-content:left;text-decoration:none"><img src="/assets/telefunc.40358720.svg" height="40" width="40"/>Telefunc</a></div></div><div id="page-content"><h1>Permission &amp; Validation</h1><p>Permissions are defined programmatically.</p><pre><code class="hljs language-js"><span class="hljs-comment">// *.telefunc.js</span>
+<span class="hljs-comment">// Environment: Node.js</span>
+
+<span class="hljs-keyword">import</span> { getContext, Abort } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;telefunc&#x27;</span>
+
+<span class="hljs-keyword">export</span> { deletePost }
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deletePost</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-comment">// See Authentication guide for an introduction about `getContext()`.</span>
+  <span class="hljs-keyword">const</span> context = getContext()
+
+  <span class="hljs-comment">// Only admins are allowed to remove posts</span>
+  <span class="hljs-keyword">if</span>( !context.user.isAdmin ) {
+    <span class="hljs-comment">// The user is not an admin — we abort.</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Abort()
+  }
+
+  <span class="hljs-comment">// ...</span>
+}</code></pre><p>It is crucial to define permissions; never do something like this:</p><pre><code class="hljs language-js"><span class="hljs-comment">// *.telefunc.js</span>
+<span class="hljs-comment">// Environment: Node.js</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">executeQuery</span>(<span class="hljs-params">query</span>) </span>{
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> database.runSQL(query);
+  <span class="hljs-keyword">return</span> result;
+};</code></pre><p>Always remember that telefunctions are public: anyone in the world can call your telefunctions.</p><pre><code class="hljs language-js"><span class="hljs-comment">// Environment: Anyone&#x27;s browser dev console</span>
+
+<span class="hljs-comment">// Anyone in the world can go to your website,</span>
+<span class="hljs-comment">// open the browser&#x27;s web dev console, and call your telefunctions.</span>
+
+<span class="hljs-keyword">const</span> users = <span class="hljs-keyword">await</span> server.executeQuery(<span class="hljs-string">&#x27;SELECT login, password FROM users;&#x27;</span>);
+users.forEach(<span class="hljs-function">(<span class="hljs-params">{login, password}</span>) =&gt;</span> {
+  <span class="hljs-comment">// W00t I have all passwords ｡^‿^｡</span>
+  <span class="hljs-built_in">console</span>.log(login, password);
+});</code></pre><p>You should <code>throw new Abort()</code> only for <em>unexpected</em> errors.
+For expected errors return a JavaScript value instead.</p><pre><code class="hljs language-js"><span class="hljs-comment">// *.telefunc.js</span>
+<span class="hljs-comment">// Environment: Node.js</span>
+
+<span class="hljs-keyword">import</span> { getContext } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;telefunc&#x27;</span>
+
+<span class="hljs-keyword">export</span> { getTodoList }
+server.getTodoList = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> isLoggedIn = getContext().user;
+  <span class="hljs-comment">// The user may not be logged in: this is an *expected* error.</span>
+  <span class="hljs-keyword">if</span>( isLoggedIn ) {
+    <span class="hljs-comment">// Instead of `throw new Abort()` we return a plain JavaScript object `{ isNotLoggedIn: true }`.</span>
+    <span class="hljs-comment">// The frontend can then for example redirect to the login page.</span>
+    <span class="hljs-keyword">return</span> { <span class="hljs-attr">isNotLoggedIn</span> : <span class="hljs-literal">true</span>};
+  }
+  <span class="hljs-comment">// ...</span>
+};</code></pre><p>If your app is bug-free and no-one is trying to hack you, then nothing unexpected would happen, and your <code>throw new Abort()</code> will never be called.</p><p>You can think of <code>throw new Abort()</code> as a safeguard for bugs &amp; hackers. For anything else return a JavaScript value.</p><p>That&#x27;s why Telefunc only provides <code>Abort</code> and doesn&#x27;t provide fine-grain exceptions (<code>NotLoggedIn</code>, <code>InvalidFormInput</code>, ...):
+for expected errors, you return a plain JavaScript value instead of throwing exceptions.</p></div></div></div></div>
+      <script>window.__vite_plugin_ssr__pageContext = {_pageId:"\u002Fpages\u002Fpermission",pageId:void 0}</script><script type="module" src="/assets/_default/_default.page.client.ts.948143f6.js"></script></body>
+    </html>
