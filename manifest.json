@@ -1,13 +1,13 @@
 {
   "_default/_default.page.client.ts": {
-    "file": "assets/_default/_default.page.client.ts.513fd32e.js",
+    "file": "assets/_default/_default.page.client.ts.0e35e7fe.js",
     "src": "_default/_default.page.client.ts",
     "isEntry": true,
     "imports": [
       "_vendor.7f883c29.js"
     ],
     "css": [
-      "assets/_default/_default.page.client.ts.5acf8709.css"
+      "assets/_default/_default.page.client.ts.1e01b109.css"
     ],
     "assets": [
       "assets/Inter-Var.2bc54814.ttf"
