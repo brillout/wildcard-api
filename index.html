@@ -29,7 +29,7 @@
   */</span>
 
   <span class="hljs-keyword">return</span> movies
-};</code></pre><pre><code class="hljs language-js"><span class="hljs-comment">// Environment: Browser</span>
+}</code></pre><pre><code class="hljs language-js"><span class="hljs-comment">// Environment: Browser</span>
 
 <span class="hljs-comment">// `movies.telefunc.js` is not actually imported: the Telefunc transformer transpiles all</span>
 <span class="hljs-comment">// `*.telefunc.js` imports into a thin library that makes HTTP requests. More infos at &quot;How It Works&quot;.</span>
@@ -37,9 +37,9 @@
 
 <span class="hljs-comment">// We call our telefunction `getStarWarsMovies()`, remotely from the browser</span>
 <span class="hljs-keyword">const</span> movies = <span class="hljs-keyword">await</span> getStarWarsMovies()
-<span class="hljs-comment">// Print all Star Wars movies in the browser&#x27;s dev console</span>
-<span class="hljs-built_in">console</span>.log(movies)</code></pre><p>Creating new telefunctions is cheap; instead of trying to create generic telefunctions and trying to re-use them, we simply create a new telefunction for each frontend need.</p><p>In other words, instead of thinking in terms of generic enpdoints, your frontend simply direclty use any SQL/ORM query it needs to do its job.</p><p>This essentially means that we remove the API layer abstraction.</p><blockquote><p>Historically, an API layer was needed because frontend and backend were deployed independently of each other.</p><p>The increasingly ubiquitous practice of deploying frontend and backend hand-in-hand makes the API layer obsolete.</p><p>For example, if you use Next.js, then you always deploy your React frontend and your backend code hand-in-hand.
-When frontend and backend are deployed at the same time, Telefunc (and RPC in general) is a simple and powerful solution.</p></blockquote></aside><summary class="feature colorize-on-hover has-learn-more" id="feature-feature-1" style="cursor:pointer"> <h2><img src="/assets/shield.67066f51.svg" style="vertical-align:text-top;font-size:1em;width:1.15em"/> Secure</h2><p>Thanks to Telefunc&#x27;s novel <code>Abort()</code> design,<!-- --> <b>permissions can be defined programmatically</b>.</p><p>It&#x27;s both <b>simple</b> and <b>flexible</b>. Say goodbye to ACL mess.</p><div style="text-align:center;margin-top:10px"><button type="button" style="text-align:center;padding:0 7px;padding-top:3px;padding-bottom:1px;display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600"><span class="decolorize-5">Learn more</span><br/><img class="decolorize-4 chevron" src="/assets/chevron.52d9d856.svg" height="7" style="margin-top:2px"/></button></div></summary><aside class="learn-more right-side" id="learn-more-feature-1"><p>With Telefunc, you defined permissions programmatically:</p><pre><code class="hljs language-js"><span class="hljs-comment">// todo.telefunc.js</span>
+<span class="hljs-comment">// Print the movies in the browser&#x27;s dev console</span>
+<span class="hljs-built_in">console</span>.log(movies)</code></pre><p>Creating new telefunctions is cheap; instead of trying to create generic telefunctions and re-use them, we simply create a new telefunction for each frontend need.</p><p>In other words, instead of thinking in terms of generic enpdoints, the frontend simply direclty use any SQL/ORM query it needs to do its job.</p><p>This essentially means that we remove the API layer abstraction.</p><blockquote><p>Historically, an API layer was needed because frontend and backend were deployed independently of each other.</p><p>The increasingly ubiquitous practice of deploying frontend and backend hand-in-hand makes the API layer obsolete.</p><p>For example, if you use Next.js, then you always deploy your React frontend and your backend code hand-in-hand.
+When frontend and backend are deployed at the same time, Telefunc (and RPC in general) is a simple and powerful solution.</p></blockquote></aside><summary class="feature colorize-on-hover has-learn-more" id="feature-feature-1" style="cursor:pointer"> <h2><img src="/assets/shield.67066f51.svg" style="vertical-align:text-top;font-size:1em;width:1.15em"/> Secure</h2><p>Thanks to Telefunc&#x27;s <code>Abort()</code>,<!-- --> <b>permissions can be defined programmatically</b>.</p><p>It&#x27;s both <b>simple</b> and <b>flexible</b>. Say goodbye to ACL mess.</p><div style="text-align:center;margin-top:10px"><button type="button" style="text-align:center;padding:0 7px;padding-top:3px;padding-bottom:1px;display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600"><span class="decolorize-5">Learn more</span><br/><img class="decolorize-4 chevron" src="/assets/chevron.52d9d856.svg" height="7" style="margin-top:2px"/></button></div></summary><aside class="learn-more right-side" id="learn-more-feature-1"><p>Permissions can simply be defined programmatically:</p><pre><code class="hljs language-js"><span class="hljs-comment">// todo.telefunc.js</span>
 <span class="hljs-comment">// Environment: Node.js server</span>
 
 <span class="hljs-keyword">import</span> { Abort, getContext } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;telefunc&#x27;</span>
@@ -50,31 +50,31 @@ When frontend and backend are deployed at the same time, Telefunc (and RPC in ge
   <span class="hljs-comment">// We talk more about `getContext()` in the &quot;Authentication&quot; guide</span>
   <span class="hljs-keyword">const</span> context = getContext()
 
+  <span class="hljs-comment">// Only logged-in users can create a new to-do item</span>
   <span class="hljs-keyword">if</span> (!context.user) {
-    <span class="hljs-comment">// The user is not logged in — we abort</span>
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Abort()
   }
 
-  <span class="hljs-keyword">const</span> newTodo = <span class="hljs-keyword">new</span> Todo({text, <span class="hljs-attr">authorId</span>: context.user.id});
-  <span class="hljs-keyword">await</span> newTodo.save();
+  <span class="hljs-keyword">const</span> newTodo = <span class="hljs-keyword">new</span> Todo({text, <span class="hljs-attr">authorId</span>: context.user.id})
+  <span class="hljs-keyword">await</span> newTodo.save()
   <span class="hljs-comment">/* Or if we use SQL:
   const [newTodo] = await sql.query(
-    &quot;INSERT INTO todos VALUES (:text, :authorId);&quot;,
+    &#x27;INSERT INTO todos VALUES (:text, :authorId);&#x27;,
     {text, authorId: context.user.id}
-  );
+  )
   */</span>
 
-  <span class="hljs-keyword">return</span> newTodo;
-};</code></pre><pre><code class="hljs language-js"><span class="hljs-comment">// Environment: Browser</span>
+  <span class="hljs-keyword">return</span> newTodo
+}</code></pre><pre><code class="hljs language-js"><span class="hljs-comment">// Environment: Browser</span>
 
 <span class="hljs-comment">// `todo.telefunc.js` is not actually imported (the Telefunc transformer transpiles</span>
-<span class="hljs-comment">//  all `*.telefunc.js` imports)</span>
+<span class="hljs-comment">// `*.telefunc.js` imports)</span>
 <span class="hljs-keyword">import</span> { createTodoItem } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./todo.telefunc&#x27;</span>
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onSubmit</span>(<span class="hljs-params">text</span>) </span>{
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onSubmit</span>(<span class="hljs-params">text</span>) </span>{
   <span class="hljs-keyword">const</span> <span class="hljs-keyword">new</span> Todo = <span class="hljs-keyword">await</span> createTodoItem(text)
   <span class="hljs-comment">// ...</span>
-}</code></pre><p>You define permissions by using <code>throw new Abort()</code> to interupt execution when a permission is not fulfilled.</p><p>Programmatic permissions enables you to easily
+}</code></pre><p>You define permissions by using <code>throw new Abort()</code> to interupt execution when a permission is not fulfilled.</p><p>Programmatic permissions enables to easily
 define and re-use arbitrary complex permissions.</p><pre><code class="hljs language-js"><span class="hljs-comment">// checkPermission.js</span>
 <span class="hljs-comment">// Environment: Node.js server</span>
 
@@ -91,8 +91,8 @@ funcion <span class="hljs-function"><span class="hljs-title">checkPermission</sp
   }
 
   <span class="hljs-comment">// Admins are allowed to do anything</span>
-  <span class="hljs-keyword">if</span> (context.user?.isAdmin) {
-    <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (context.user.role === <span class="hljs-string">&#x27;admin&#x27;</span>) {
+    <span class="hljs-keyword">return</span>
   }
 
   <span class="hljs-keyword">if</span>( !hasPermision(context.user.role, role) ){
