@@ -81,6 +81,10 @@
   </a>
 </p>
 
+<br/>
+
+> ⚠️ Check out [Telefunc](https://telefunc.com/), it is the official successor of Wildcard.
+
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
 [What is Wildcard](#what-is-wildcard)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
